@@ -1,0 +1,1020 @@
+=====================:
+semantic cluster: Point Point:
+  syntactic cluster:
+    semantic cluster: Application Update Open Recent Menu Default:[119716,149635,133125,]
+    semantic cluster: Application add Standard Actions To Default:[115974,115977,115506,]
+    semantic cluster: Clear Recent Files:[104501,119716,133125,]
+    semantic cluster: Loc Loc Moved Moved Loc:[111418,112185,137706,]
+    semantic cluster: Property Change Event String Property Change Listener:[137706,129037,146519,]
+    semantic cluster: Action Redo Action Cut Action:[104501,115974,]
+    semantic cluster: Application Init Look And Feel Default:[107744,133768,]
+    semantic cluster: Menu Item Menu:[162373,133125,]
+    semantic cluster: Project Count:[129037,146519,]
+    semantic cluster: Separator add get Action Set Focusable:[115974,115977,]
+    semantic cluster: Other Topics:[107816,129043,142742,144253,]
+
+  syntactic cluster:
+    semantic cluster: Value Name Value Upper Case:[1864,730,1918,3915,]
+    semantic cluster: Container:[431526,327425,327872,]
+    semantic cluster: Double:[1864,1918,434783,]
+    semantic cluster: Floating Text Area:[327425,327872,327764,]
+    semantic cluster: Width:[431718,239422,327872,]
+    semantic cluster: Attribute Object:[730,1918,]
+    semantic cluster: Invalid Value:[1864,1918,]
+    semantic cluster: OUT_ LEFT:[431588,431718,]
+    semantic cluster: Text Color:[327425,327764,]
+    semantic cluster: Other Topics:[434298,543248,]
+
+  syntactic cluster:
+    semantic cluster: Split Point Max Error Error Bezier Path:[407902,409258,]
+    semantic cluster: Other Topics:[20073,9666,412175,]
+
+  syntactic cluster:
+    semantic cluster: Geom:[217002,349910,275961,275997,278070,]
+    semantic cluster: Figure Draw Bounds:[217002,219036,219091,]
+    semantic cluster: Angle Point Point Angle:[275997,278070,]
+    semantic cluster: Connector Chop Box Connector Chop:[275961,275971,]
+    semantic cluster: INSIDE Grow Grow Grow:[275961,275997,]
+    semantic cluster: Rectangle2 Double Geom STROKE_:[217002,275961,]
+
+  syntactic cluster:
+    semantic cluster: Change:[217464,217727,217968,218224,334710,]
+    semantic cluster: Index Index:[217723,217727,218043,217968,218224,]
+    semantic cluster: Bounds Child Child:[218536,218379,219241,]
+    semantic cluster: Rectangle2 Double:[218536,219105,219241,]
+    semantic cluster: Start Start:[334247,334710,334791,]
+    semantic cluster: Figure Index will Change Basic Remove Child:[217727,217968,]
+    semantic cluster: Undoable Edit Listener:[219328,309862,]
+    semantic cluster: Other Topics:[329709,]
+
+  syntactic cluster:
+    semantic cluster: Set:[227283,262511,273129,]
+    semantic cluster: Area Invalidated:[224490,242905,]
+    semantic cluster: Lead Lead:[262511,273129,]
+
+  syntactic cluster:
+    semantic cluster: Bezier Path:[359482,255641,246110,255707,]
+    semantic cluster: Figure:[345071,251266,255417,255707,]
+    semantic cluster: Width Height Grow Grow Grow Grow:[320834,345071,327408,]
+    semantic cluster: Grow Stroke:[243444,359482,]
+    semantic cluster: Node fire Undoable Edit Happened Redo Redo:[255641,255707,]
+    semantic cluster: Rectangle2 Double:[320834,345071,]
+
+  syntactic cluster:
+    semantic cluster: Other Topics:[257862,434786,339352,]
+
+  syntactic cluster:
+    semantic cluster: Connection Set:[263022,271069,272515,271369,272550,272639,]
+    semantic cluster: Created Figure:[264709,289014,280097,271069,272515,]
+    semantic cluster: Created Figure Creation Edit:[264709,289014,272515,]
+    semantic cluster: Prototype:[280097,271069,272550,]
+    semantic cluster: Affine Transform:[323845,325918,]
+    semantic cluster: Attributes:[263022,280097,]
+    semantic cluster: Drawing get Target Figure:[271069,272550,]
+    semantic cluster: Editor:[263022,348310,]
+    semantic cluster: Target Figure Set Connectors Visible get Connection:[272550,272639,]
+
+  syntactic cluster:
+    semantic cluster: Other Topics:[275767,343444,]
+
+  syntactic cluster:
+    semantic cluster: Other Topics:[323848,]
+
+  syntactic cluster:
+    semantic cluster: Selection Bounds:[332875,366869,367313,368618,]
+    semantic cluster: Frames Horizontally MDI Desktop Pane:[468736,469418,]
+    semantic cluster: Other Topics:[332035,]
+
+
+=====================:
+=====================:
+semantic cluster: Attribute Keys Color:
+  syntactic cluster:
+    semantic cluster: Project App:[190398,190551,190554,190764,197921,203008,]
+    semantic cluster: Old Focus Owner:[179441,181420,184202,180981,187515,]
+    semantic cluster: Show MESSAGE Sheet get Component get String:[179441,184202,190551,190764,187515,]
+    semantic cluster: File Saved And Review:[181420,184164,184202,180981,]
+    semantic cluster: Frame Frame:[190551,190554,190771,]
+    semantic cluster: Couldn t Open the File b Br:[190551,190764,]
+    semantic cluster: Destructive Option:[179441,179472,]
+    semantic cluster: Execute Construct Read Finished:[190398,192740,]
+    semantic cluster: Label Default Label Name Label Scale Factor:[406289,406295,]
+    semantic cluster: Save Changes:[179441,180981,]
+    semantic cluster: Toggle Project Property Action:[203008,203505,]
+    semantic cluster: Undoable Edit Happened:[369502,381583,]
+    semantic cluster: View Group View Figures:[373936,374054,]
+    semantic cluster: Other Topics:[203693,369805,]
+
+  syntactic cluster:
+    semantic cluster: Value Name Value Upper Case:[1864,730,1918,3915,]
+    semantic cluster: Container:[431526,327425,327872,]
+    semantic cluster: Double:[1864,1918,434783,]
+    semantic cluster: Floating Text Area:[327425,327872,327764,]
+    semantic cluster: Width:[431718,239422,327872,]
+    semantic cluster: Attribute Object:[730,1918,]
+    semantic cluster: Invalid Value:[1864,1918,]
+    semantic cluster: OUT_ LEFT:[431588,431718,]
+    semantic cluster: Text Color:[327425,327764,]
+    semantic cluster: Other Topics:[434298,543248,]
+
+  syntactic cluster:
+    semantic cluster: Value Key:[215684,217055,217216,217005,]
+    semantic cluster: Graphical Composite Figure Abstract Composite Figure:[215817,217055,217216,]
+    semantic cluster: Composite Figure Abstract Composite Figure Hash:[215817,217005,]
+    semantic cluster: Element Open:[217055,217216,]
+    semantic cluster: Other Topics:[216412,]
+
+  syntactic cluster:
+    semantic cluster: Geom:[217002,349910,275961,275997,278070,]
+    semantic cluster: Figure Draw Bounds:[217002,219036,219091,]
+    semantic cluster: Angle Point Point Angle:[275997,278070,]
+    semantic cluster: Connector Chop Box Connector Chop:[275961,275971,]
+    semantic cluster: INSIDE Grow Grow Grow:[275961,275997,]
+    semantic cluster: Rectangle2 Double Geom STROKE_:[217002,275961,]
+
+  syntactic cluster:
+    semantic cluster: Current Document:[572264,579221,]
+    semantic cluster: DOM Storable:[580796,580793,]
+    semantic cluster: Enum Enum:[577204,580793,]
+    semantic cluster: Input Nano:[579221,83199,]
+    semantic cluster: New Instance New Transformer Transform:[572264,574467,]
+    semantic cluster: Objectids Objectids Objectids:[577820,582520,]
+    semantic cluster: Other Topics:[403220,580731,577880,]
+
+  syntactic cluster:
+    semantic cluster: Buttons:[485832,485137,]
+    semantic cluster: LAF Bundle:[485106,485137,]
+
+  syntactic cluster:
+    semantic cluster: Other Topics:[493326,]
+
+  syntactic cluster:
+    semantic cluster: Other Topics:[510177,]
+
+  syntactic cluster:
+    semantic cluster: Nano XML Lite DOM Input:[573605,579309,579353,579780,579871,579783,]
+    semantic cluster: Children Size get get Name Equals Push:[579353,579780,579871,579783,]
+    semantic cluster: Current Current Count List:[573110,579353,579871,]
+    semantic cluster: Element Count Nano:[573605,579353,579871,]
+    semantic cluster: Attribute get Attribute:[573605,579309,]
+    semantic cluster: Javax DOM Input Javax DOM Input:[573110,573605,]
+
+
+=====================:
+=====================:
+semantic cluster: Handles Handles:
+  syntactic cluster:
+    semantic cluster: Change:[217464,217727,217968,218224,334710,]
+    semantic cluster: Index Index:[217723,217727,218043,217968,218224,]
+    semantic cluster: Bounds Child Child:[218536,218379,219241,]
+    semantic cluster: Rectangle2 Double:[218536,219105,219241,]
+    semantic cluster: Start Start:[334247,334710,334791,]
+    semantic cluster: Figure Index will Change Basic Remove Child:[217727,217968,]
+    semantic cluster: Undoable Edit Listener:[219328,309862,]
+    semantic cluster: Other Topics:[329709,]
+
+  syntactic cluster:
+    semantic cluster: Area Invalidated fire Tool Started fire Tool:[223894,223934,]
+    semantic cluster: Other Topics:[235942,]
+
+  syntactic cluster:
+    semantic cluster: Set:[227283,262511,273129,]
+    semantic cluster: Area Invalidated:[224490,242905,]
+    semantic cluster: Lead Lead:[262511,273129,]
+
+  syntactic cluster:
+    semantic cluster: Bezier Path:[359482,255641,246110,255707,]
+    semantic cluster: Figure:[345071,251266,255417,255707,]
+    semantic cluster: Width Height Grow Grow Grow Grow:[320834,345071,327408,]
+    semantic cluster: Grow Stroke:[243444,359482,]
+    semantic cluster: Node fire Undoable Edit Happened Redo Redo:[255641,255707,]
+    semantic cluster: Rectangle2 Double:[320834,345071,]
+
+  syntactic cluster:
+    semantic cluster: Action Select:[382992,510132,]
+    semantic cluster: Other Topics:[245183,]
+
+  syntactic cluster:
+    semantic cluster: Other Topics:[296903,297462,327394,]
+
+  syntactic cluster:
+    semantic cluster: Floating Text:[354852,356595,365664,]
+    semantic cluster: Typing Target:[354649,354852,356595,]
+    semantic cluster: Set Text:[354852,356595,]
+    semantic cluster: Text Holder Text Holder Text Holder:[354649,354852,]
+    semantic cluster: Undoable Edit Happened fire Undoable Edit Happened:[356595,365664,]
+    semantic cluster: Other Topics:[310815,]
+
+  syntactic cluster:
+    semantic cluster: Other Topics:[492196,]
+
+  syntactic cluster:
+    semantic cluster: Other Topics:[510760,551729,]
+
+
+=====================:
+=====================:
+semantic cluster: Selection Abstract Selected Action Abstract Selected Action:
+  syntactic cluster:
+    semantic cluster: Application Update Open Recent Menu Default:[119716,149635,133125,]
+    semantic cluster: Application add Standard Actions To Default:[115974,115977,115506,]
+    semantic cluster: Clear Recent Files:[104501,119716,133125,]
+    semantic cluster: Loc Loc Moved Moved Loc:[111418,112185,137706,]
+    semantic cluster: Property Change Event String Property Change Listener:[137706,129037,146519,]
+    semantic cluster: Action Redo Action Cut Action:[104501,115974,]
+    semantic cluster: Application Init Look And Feel Default:[107744,133768,]
+    semantic cluster: Menu Item Menu:[162373,133125,]
+    semantic cluster: Project Count:[129037,146519,]
+    semantic cluster: Separator add get Action Set Focusable:[115974,115977,]
+    semantic cluster: Other Topics:[107816,129043,142742,144253,]
+
+  syntactic cluster:
+    semantic cluster: Labels:[188852,188843,399227,]
+    semantic cluster: APPROVE_ OPTION:[189505,206106,]
+    semantic cluster: File Chooser get Selected File:[206106,189630,]
+    semantic cluster: File Title Title File Title Unnamed File:[188852,188843,]
+    semantic cluster: Request Focus:[115258,206106,]
+
+  syntactic cluster:
+    semantic cluster: Project App:[190398,190551,190554,190764,197921,203008,]
+    semantic cluster: Old Focus Owner:[179441,181420,184202,180981,187515,]
+    semantic cluster: Show MESSAGE Sheet get Component get String:[179441,184202,190551,190764,187515,]
+    semantic cluster: File Saved And Review:[181420,184164,184202,180981,]
+    semantic cluster: Frame Frame:[190551,190554,190771,]
+    semantic cluster: Couldn t Open the File b Br:[190551,190764,]
+    semantic cluster: Destructive Option:[179441,179472,]
+    semantic cluster: Execute Construct Read Finished:[190398,192740,]
+    semantic cluster: Label Default Label Name Label Scale Factor:[406289,406295,]
+    semantic cluster: Save Changes:[179441,180981,]
+    semantic cluster: Toggle Project Property Action:[203008,203505,]
+    semantic cluster: Undoable Edit Happened:[369502,381583,]
+    semantic cluster: View Group View Figures:[373936,374054,]
+    semantic cluster: Other Topics:[203693,369805,]
+
+  syntactic cluster:
+    semantic cluster: Action Abstract Selected Action:[179512,180984,369498,374057,]
+    semantic cluster: File Chooser:[180984,189710,193118,]
+    semantic cluster: Abstract Application Action File Saved And Review:[180984,208341,]
+    semantic cluster: Old Focus Owner:[211099,208341,]
+    semantic cluster: Pane Options Pane:[179512,208341,]
+
+  syntactic cluster:
+    semantic cluster: Value:[203686,452338,472314,]
+    semantic cluster: Live Connect Applet get Parameter Info:[472314,478462,]
+    semantic cluster: Set Initial:[445847,452338,]
+    semantic cluster: Set Visible:[195474,445847,]
+
+  syntactic cluster:
+    semantic cluster: Selection Bounds:[332875,366869,367313,368618,]
+    semantic cluster: Frames Horizontally MDI Desktop Pane:[468736,469418,]
+    semantic cluster: Other Topics:[332035,]
+
+  syntactic cluster:
+    semantic cluster: Other Topics:[366872,]
+
+  syntactic cluster:
+    semantic cluster: Buttons:[485832,485137,]
+    semantic cluster: LAF Bundle:[485106,485137,]
+
+  syntactic cluster:
+    semantic cluster: Other Topics:[548643,549521,]
+
+
+=====================:
+=====================:
+semantic cluster: Affine Transform:
+  syntactic cluster:
+    semantic cluster: Other Topics:[218346,]
+
+  syntactic cluster:
+    semantic cluster: Collection Figure Figure Figure:[232671,232754,]
+    semantic cluster: Other Topics:[235953,]
+
+  syntactic cluster:
+    semantic cluster: Connection Set:[263022,271069,272515,271369,272550,272639,]
+    semantic cluster: Created Figure:[264709,289014,280097,271069,272515,]
+    semantic cluster: Created Figure Creation Edit:[264709,289014,272515,]
+    semantic cluster: Prototype:[280097,271069,272550,]
+    semantic cluster: Affine Transform:[323845,325918,]
+    semantic cluster: Attributes:[263022,280097,]
+    semantic cluster: Drawing get Target Figure:[271069,272550,]
+    semantic cluster: Editor:[263022,348310,]
+    semantic cluster: Target Figure Set Connectors Visible get Connection:[272550,272639,]
+
+  syntactic cluster:
+    semantic cluster: Draw Applet:[477588,473129,478591,478881,]
+    semantic cluster: Object:[472616,477588,478591,]
+    semantic cluster: Throwable Throwable:[472616,477588,478881,]
+    semantic cluster: Button Group:[481653,483621,]
+    semantic cluster: Content Pane Set Layout Remove:[472616,477588,]
+    semantic cluster: Draw Live Connect Applet Throwable:[477588,478881,]
+    semantic cluster: Info:[310668,473101,]
+
+  syntactic cluster:
+    semantic cluster: Other Topics:[323848,]
+
+  syntactic cluster:
+    semantic cluster: Selection Bounds:[332875,366869,367313,368618,]
+    semantic cluster: Frames Horizontally MDI Desktop Pane:[468736,469418,]
+    semantic cluster: Other Topics:[332035,]
+
+  syntactic cluster:
+    semantic cluster: Other Topics:[366872,]
+
+  syntactic cluster:
+    semantic cluster: Input Nano:[472321,477177,514241,]
+    semantic cluster: Affine Transform:[478588,478942,]
+    semantic cluster: Live Connect Applet Nano XMLDOM Input Nano:[477177,514241,]
+
+
+=====================:
+=====================:
+semantic cluster: Input Nano XML Lite DOM Input Nano:
+  syntactic cluster:
+    semantic cluster: Value:[203686,452338,472314,]
+    semantic cluster: Live Connect Applet get Parameter Info:[472314,478462,]
+    semantic cluster: Set Initial:[445847,452338,]
+    semantic cluster: Set Visible:[195474,445847,]
+
+  syntactic cluster:
+    semantic cluster: Current Document:[572264,579221,]
+    semantic cluster: DOM Storable:[580796,580793,]
+    semantic cluster: Enum Enum:[577204,580793,]
+    semantic cluster: Input Nano:[579221,83199,]
+    semantic cluster: New Instance New Transformer Transform:[572264,574467,]
+    semantic cluster: Objectids Objectids Objectids:[577820,582520,]
+    semantic cluster: Other Topics:[403220,580731,577880,]
+
+  syntactic cluster:
+    semantic cluster: Input Nano:[472321,477177,514241,]
+    semantic cluster: Affine Transform:[478588,478942,]
+    semantic cluster: Live Connect Applet Nano XMLDOM Input Nano:[477177,514241,]
+
+  syntactic cluster:
+    semantic cluster: Live Connect Applet:[472571,472796,]
+    semantic cluster: Parameter get Parameter:[472325,472571,]
+    semantic cluster: String Reader:[472325,472796,]
+
+  syntactic cluster:
+    semantic cluster: Editor View:[479134,479138,480012,]
+    semantic cluster: EAST Scroll Pane LOWER_ LEFT_ CORNER:[479134,479926,]
+    semantic cluster: Exception Internal Error Internal Error:[480900,491370,]
+    semantic cluster: Nano XML Lite DOM:[518554,491370,]
+    semantic cluster: Save Close:[480386,518554,]
+    semantic cluster: Zoom Button:[479134,479138,]
+    semantic cluster: Other Topics:[481093,]
+
+  syntactic cluster:
+    semantic cluster: Read Char Process Entity Read Char:[51980,52028,]
+    semantic cluster: Other Topics:[579787,]
+
+  syntactic cluster:
+    semantic cluster: Nano XML Lite DOM Input:[573605,579309,579353,579780,579871,579783,]
+    semantic cluster: Children Size get get Name Equals Push:[579353,579780,579871,579783,]
+    semantic cluster: Current Current Count List:[573110,579353,579871,]
+    semantic cluster: Element Count Nano:[573605,579353,579871,]
+    semantic cluster: Attribute get Attribute:[573605,579309,]
+    semantic cluster: Javax DOM Input Javax DOM Input:[573110,573605,]
+
+  syntactic cluster:
+    semantic cluster: Other Topics:[83203,]
+
+
+=====================:
+=====================:
+semantic cluster: Composite Figure Abstract Composite Figure:
+  syntactic cluster:
+    semantic cluster: Project App:[190398,190551,190554,190764,197921,203008,]
+    semantic cluster: Old Focus Owner:[179441,181420,184202,180981,187515,]
+    semantic cluster: Show MESSAGE Sheet get Component get String:[179441,184202,190551,190764,187515,]
+    semantic cluster: File Saved And Review:[181420,184164,184202,180981,]
+    semantic cluster: Frame Frame:[190551,190554,190771,]
+    semantic cluster: Couldn t Open the File b Br:[190551,190764,]
+    semantic cluster: Destructive Option:[179441,179472,]
+    semantic cluster: Execute Construct Read Finished:[190398,192740,]
+    semantic cluster: Label Default Label Name Label Scale Factor:[406289,406295,]
+    semantic cluster: Save Changes:[179441,180981,]
+    semantic cluster: Toggle Project Property Action:[203008,203505,]
+    semantic cluster: Undoable Edit Happened:[369502,381583,]
+    semantic cluster: View Group View Figures:[373936,374054,]
+    semantic cluster: Other Topics:[203693,369805,]
+
+  syntactic cluster:
+    semantic cluster: Value Key:[215684,217055,217216,217005,]
+    semantic cluster: Graphical Composite Figure Abstract Composite Figure:[215817,217055,217216,]
+    semantic cluster: Composite Figure Abstract Composite Figure Hash:[215817,217005,]
+    semantic cluster: Element Open:[217055,217216,]
+    semantic cluster: Other Topics:[216412,]
+
+  syntactic cluster:
+    semantic cluster: Geom:[217002,349910,275961,275997,278070,]
+    semantic cluster: Figure Draw Bounds:[217002,219036,219091,]
+    semantic cluster: Angle Point Point Angle:[275997,278070,]
+    semantic cluster: Connector Chop Box Connector Chop:[275961,275971,]
+    semantic cluster: INSIDE Grow Grow Grow:[275961,275997,]
+    semantic cluster: Rectangle2 Double Geom STROKE_:[217002,275961,]
+
+  syntactic cluster:
+    semantic cluster: Change:[217464,217727,217968,218224,334710,]
+    semantic cluster: Index Index:[217723,217727,218043,217968,218224,]
+    semantic cluster: Bounds Child Child:[218536,218379,219241,]
+    semantic cluster: Rectangle2 Double:[218536,219105,219241,]
+    semantic cluster: Start Start:[334247,334710,334791,]
+    semantic cluster: Figure Index will Change Basic Remove Child:[217727,217968,]
+    semantic cluster: Undoable Edit Listener:[219328,309862,]
+    semantic cluster: Other Topics:[329709,]
+
+  syntactic cluster:
+    semantic cluster: Buttons:[485832,485137,]
+    semantic cluster: LAF Bundle:[485106,485137,]
+
+  syntactic cluster:
+    semantic cluster: Other Topics:[492196,]
+
+  syntactic cluster:
+    semantic cluster: Other Topics:[510760,551729,]
+
+
+=====================:
+=====================:
+semantic cluster: Creation Buttons:
+  syntactic cluster:
+    semantic cluster: Draw Applet:[477588,473129,478591,478881,]
+    semantic cluster: Object:[472616,477588,478591,]
+    semantic cluster: Throwable Throwable:[472616,477588,478881,]
+    semantic cluster: Button Group:[481653,483621,]
+    semantic cluster: Content Pane Set Layout Remove:[472616,477588,]
+    semantic cluster: Draw Live Connect Applet Throwable:[477588,478881,]
+    semantic cluster: Info:[310668,473101,]
+
+  syntactic cluster:
+    semantic cluster: Other Topics:[439799,]
+
+  syntactic cluster:
+    semantic cluster: Tool Bar Title:[473240,485379,473243,485445,]
+    semantic cluster: Alignment Buttons Set Name get String:[473240,485379,]
+    semantic cluster: Other Topics:[485517,]
+
+  syntactic cluster:
+    semantic cluster: Other Topics:[473396,]
+
+  syntactic cluster:
+    semantic cluster: Buttons:[485832,485137,]
+    semantic cluster: LAF Bundle:[485106,485137,]
+
+  syntactic cluster:
+    semantic cluster: Other Topics:[493326,]
+
+  syntactic cluster:
+    semantic cluster: Other Topics:[510177,]
+
+
+=====================:
+=====================:
+semantic cluster: Evt View Evt:
+  syntactic cluster:
+    semantic cluster: Project App:[190398,190551,190554,190764,197921,203008,]
+    semantic cluster: Old Focus Owner:[179441,181420,184202,180981,187515,]
+    semantic cluster: Show MESSAGE Sheet get Component get String:[179441,184202,190551,190764,187515,]
+    semantic cluster: File Saved And Review:[181420,184164,184202,180981,]
+    semantic cluster: Frame Frame:[190551,190554,190771,]
+    semantic cluster: Couldn t Open the File b Br:[190551,190764,]
+    semantic cluster: Destructive Option:[179441,179472,]
+    semantic cluster: Execute Construct Read Finished:[190398,192740,]
+    semantic cluster: Label Default Label Name Label Scale Factor:[406289,406295,]
+    semantic cluster: Save Changes:[179441,180981,]
+    semantic cluster: Toggle Project Property Action:[203008,203505,]
+    semantic cluster: Undoable Edit Happened:[369502,381583,]
+    semantic cluster: View Group View Figures:[373936,374054,]
+    semantic cluster: Other Topics:[203693,369805,]
+
+  syntactic cluster:
+    semantic cluster: Action Abstract Selected Action:[179512,180984,369498,374057,]
+    semantic cluster: File Chooser:[180984,189710,193118,]
+    semantic cluster: Abstract Application Action File Saved And Review:[180984,208341,]
+    semantic cluster: Old Focus Owner:[211099,208341,]
+    semantic cluster: Pane Options Pane:[179512,208341,]
+
+  syntactic cluster:
+    semantic cluster: Bezier Path:[359482,255641,246110,255707,]
+    semantic cluster: Figure:[345071,251266,255417,255707,]
+    semantic cluster: Width Height Grow Grow Grow Grow:[320834,345071,327408,]
+    semantic cluster: Grow Stroke:[243444,359482,]
+    semantic cluster: Node fire Undoable Edit Happened Redo Redo:[255641,255707,]
+    semantic cluster: Rectangle2 Double:[320834,345071,]
+
+  syntactic cluster:
+    semantic cluster: Floating Text:[354852,356595,365664,]
+    semantic cluster: Typing Target:[354649,354852,356595,]
+    semantic cluster: Set Text:[354852,356595,]
+    semantic cluster: Text Holder Text Holder Text Holder:[354649,354852,]
+    semantic cluster: Undoable Edit Happened fire Undoable Edit Happened:[356595,365664,]
+    semantic cluster: Other Topics:[310815,]
+
+  syntactic cluster:
+    semantic cluster: Other Topics:[365655,]
+
+  syntactic cluster:
+    semantic cluster: Editor View:[479134,479138,480012,]
+    semantic cluster: EAST Scroll Pane LOWER_ LEFT_ CORNER:[479134,479926,]
+    semantic cluster: Exception Internal Error Internal Error:[480900,491370,]
+    semantic cluster: Nano XML Lite DOM:[518554,491370,]
+    semantic cluster: Save Close:[480386,518554,]
+    semantic cluster: Zoom Button:[479134,479138,]
+    semantic cluster: Other Topics:[481093,]
+
+  syntactic cluster:
+    semantic cluster: Other Topics:[489715,]
+
+
+=====================:
+=====================:
+semantic cluster: Mouse Motion Listener:
+  syntactic cluster:
+    semantic cluster: Area Invalidated fire Tool Started fire Tool:[223894,223934,]
+    semantic cluster: Other Topics:[235942,]
+
+  syntactic cluster:
+    semantic cluster: Collection Figure Figure Figure:[232671,232754,]
+    semantic cluster: Other Topics:[235953,]
+
+  syntactic cluster:
+    semantic cluster: Connection Set:[263022,271069,272515,271369,272550,272639,]
+    semantic cluster: Created Figure:[264709,289014,280097,271069,272515,]
+    semantic cluster: Created Figure Creation Edit:[264709,289014,272515,]
+    semantic cluster: Prototype:[280097,271069,272550,]
+    semantic cluster: Affine Transform:[323845,325918,]
+    semantic cluster: Attributes:[263022,280097,]
+    semantic cluster: Drawing get Target Figure:[271069,272550,]
+    semantic cluster: Editor:[263022,348310,]
+    semantic cluster: Target Figure Set Connectors Visible get Connection:[272550,272639,]
+
+  syntactic cluster:
+    semantic cluster: Mouse Motion Listener Remove Mouse Motion Listener:[289479,292178,]
+    semantic cluster: Other Topics:[458638,]
+
+  syntactic cluster:
+    semantic cluster: Floating Text:[354852,356595,365664,]
+    semantic cluster: Typing Target:[354649,354852,356595,]
+    semantic cluster: Set Text:[354852,356595,]
+    semantic cluster: Text Holder Text Holder Text Holder:[354649,354852,]
+    semantic cluster: Undoable Edit Happened fire Undoable Edit Happened:[356595,365664,]
+    semantic cluster: Other Topics:[310815,]
+
+  syntactic cluster:
+    semantic cluster: Other Topics:[439799,]
+
+  syntactic cluster:
+    semantic cluster: Buttons:[485832,485137,]
+    semantic cluster: LAF Bundle:[485106,485137,]
+
+
+=====================:
+=====================:
+semantic cluster: Undoable Edit Event:
+  syntactic cluster:
+    semantic cluster: Project App:[190398,190551,190554,190764,197921,203008,]
+    semantic cluster: Old Focus Owner:[179441,181420,184202,180981,187515,]
+    semantic cluster: Show MESSAGE Sheet get Component get String:[179441,184202,190551,190764,187515,]
+    semantic cluster: File Saved And Review:[181420,184164,184202,180981,]
+    semantic cluster: Frame Frame:[190551,190554,190771,]
+    semantic cluster: Couldn t Open the File b Br:[190551,190764,]
+    semantic cluster: Destructive Option:[179441,179472,]
+    semantic cluster: Execute Construct Read Finished:[190398,192740,]
+    semantic cluster: Label Default Label Name Label Scale Factor:[406289,406295,]
+    semantic cluster: Save Changes:[179441,180981,]
+    semantic cluster: Toggle Project Property Action:[203008,203505,]
+    semantic cluster: Undoable Edit Happened:[369502,381583,]
+    semantic cluster: View Group View Figures:[373936,374054,]
+    semantic cluster: Other Topics:[203693,369805,]
+
+  syntactic cluster:
+    semantic cluster: Figure Figure Figure:[220709,224019,]
+    semantic cluster: Undoable Edit Happened get Presentation Name:[220709,220910,]
+
+  syntactic cluster:
+    semantic cluster: Area Invalidated fire Tool Started fire Tool:[223894,223934,]
+    semantic cluster: Other Topics:[235942,]
+
+  syntactic cluster:
+    semantic cluster: Figure Changed:[224494,224499,]
+    semantic cluster: Figure Request Remove fire Figure:[224456,224461,]
+    semantic cluster: Undoable Edit Happened:[224002,224499,]
+
+  syntactic cluster:
+    semantic cluster: Collection Figure Figure Figure:[232671,232754,]
+    semantic cluster: Other Topics:[235953,]
+
+  syntactic cluster:
+    semantic cluster: Editor View:[479134,479138,480012,]
+    semantic cluster: EAST Scroll Pane LOWER_ LEFT_ CORNER:[479134,479926,]
+    semantic cluster: Exception Internal Error Internal Error:[480900,491370,]
+    semantic cluster: Nano XML Lite DOM:[518554,491370,]
+    semantic cluster: Save Close:[480386,518554,]
+    semantic cluster: Zoom Button:[479134,479138,]
+    semantic cluster: Other Topics:[481093,]
+
+  syntactic cluster:
+    semantic cluster: Other Topics:[489715,]
+
+
+=====================:
+=====================:
+semantic cluster: Application Model Default Application Model:
+  syntactic cluster:
+    semantic cluster: Application Update Open Recent Menu Default:[119716,149635,133125,]
+    semantic cluster: Application add Standard Actions To Default:[115974,115977,115506,]
+    semantic cluster: Clear Recent Files:[104501,119716,133125,]
+    semantic cluster: Loc Loc Moved Moved Loc:[111418,112185,137706,]
+    semantic cluster: Property Change Event String Property Change Listener:[137706,129037,146519,]
+    semantic cluster: Action Redo Action Cut Action:[104501,115974,]
+    semantic cluster: Application Init Look And Feel Default:[107744,133768,]
+    semantic cluster: Menu Item Menu:[162373,133125,]
+    semantic cluster: Project Count:[129037,146519,]
+    semantic cluster: Separator add get Action Set Focusable:[115974,115977,]
+    semantic cluster: Other Topics:[107816,129043,142742,144253,]
+
+  syntactic cluster:
+    semantic cluster: Shared Editor:[108425,160878,]
+    semantic cluster: Other Topics:[438645,]
+
+  syntactic cluster:
+    semantic cluster: Tool Bar Actions Default OSX Application:[127659,132910,127662,]
+    semantic cluster: Other Topics:[117400,]
+
+  syntactic cluster:
+    semantic cluster: Tool Bar Title:[473240,485379,473243,485445,]
+    semantic cluster: Alignment Buttons Set Name get String:[473240,485379,]
+    semantic cluster: Other Topics:[485517,]
+
+  syntactic cluster:
+    semantic cluster: Screen:[565925,565984,567149,567116,]
+    semantic cluster: Application Model Default Application Model:[484290,509434,]
+    semantic cluster: Width put Int get Component get Height:[565925,567116,]
+
+  syntactic cluster:
+    semantic cluster: Buttons:[485832,485137,]
+    semantic cluster: LAF Bundle:[485106,485137,]
+
+
+=====================:
+=====================:
+semantic cluster: Text Area:
+  syntactic cluster:
+    semantic cluster: Value Name Value Upper Case:[1864,730,1918,3915,]
+    semantic cluster: Container:[431526,327425,327872,]
+    semantic cluster: Double:[1864,1918,434783,]
+    semantic cluster: Floating Text Area:[327425,327872,327764,]
+    semantic cluster: Width:[431718,239422,327872,]
+    semantic cluster: Attribute Object:[730,1918,]
+    semantic cluster: Invalid Value:[1864,1918,]
+    semantic cluster: OUT_ LEFT:[431588,431718,]
+    semantic cluster: Text Color:[327425,327764,]
+    semantic cluster: Other Topics:[434298,543248,]
+
+  syntactic cluster:
+    semantic cluster: Connection Set:[263022,271069,272515,271369,272550,272639,]
+    semantic cluster: Created Figure:[264709,289014,280097,271069,272515,]
+    semantic cluster: Created Figure Creation Edit:[264709,289014,272515,]
+    semantic cluster: Prototype:[280097,271069,272550,]
+    semantic cluster: Affine Transform:[323845,325918,]
+    semantic cluster: Attributes:[263022,280097,]
+    semantic cluster: Drawing get Target Figure:[271069,272550,]
+    semantic cluster: Editor:[263022,348310,]
+    semantic cluster: Target Figure Set Connectors Visible get Connection:[272550,272639,]
+
+  syntactic cluster:
+    semantic cluster: Floating Text:[354852,356595,365664,]
+    semantic cluster: Typing Target:[354649,354852,356595,]
+    semantic cluster: Set Text:[354852,356595,]
+    semantic cluster: Text Holder Text Holder Text Holder:[354649,354852,]
+    semantic cluster: Undoable Edit Happened fire Undoable Edit Happened:[356595,365664,]
+    semantic cluster: Other Topics:[310815,]
+
+  syntactic cluster:
+    semantic cluster: Figure Round Rectangle Figure:[345162,321280,327414,]
+    semantic cluster: Figure Draw Bounds get Figure Draw Bounds:[321167,343811,]
+    semantic cluster: Growth Round Rectangle2:[345162,327414,]
+    semantic cluster: Growx Growy:[321167,321202,]
+    semantic cluster: Other Topics:[361318,]
+
+  syntactic cluster:
+    semantic cluster: Other Topics:[473396,]
+
+  syntactic cluster:
+    semantic cluster: Other Topics:[493326,]
+
+
+=====================:
+=====================:
+semantic cluster: Menu Bar Menu:
+  syntactic cluster:
+    semantic cluster: Application Update Open Recent Menu Default:[119716,149635,133125,]
+    semantic cluster: Application add Standard Actions To Default:[115974,115977,115506,]
+    semantic cluster: Clear Recent Files:[104501,119716,133125,]
+    semantic cluster: Loc Loc Moved Moved Loc:[111418,112185,137706,]
+    semantic cluster: Property Change Event String Property Change Listener:[137706,129037,146519,]
+    semantic cluster: Action Redo Action Cut Action:[104501,115974,]
+    semantic cluster: Application Init Look And Feel Default:[107744,133768,]
+    semantic cluster: Menu Item Menu:[162373,133125,]
+    semantic cluster: Project Count:[129037,146519,]
+    semantic cluster: Separator add get Action Set Focusable:[115974,115977,]
+    semantic cluster: Other Topics:[107816,129043,142742,144253,]
+
+  syntactic cluster:
+    semantic cluster: Tool Bar Actions Default OSX Application:[127659,132910,127662,]
+    semantic cluster: Other Topics:[117400,]
+
+  syntactic cluster:
+    semantic cluster: Draw Applet:[477588,473129,478591,478881,]
+    semantic cluster: Object:[472616,477588,478591,]
+    semantic cluster: Throwable Throwable:[472616,477588,478881,]
+    semantic cluster: Button Group:[481653,483621,]
+    semantic cluster: Content Pane Set Layout Remove:[472616,477588,]
+    semantic cluster: Draw Live Connect Applet Throwable:[477588,478881,]
+    semantic cluster: Info:[310668,473101,]
+
+  syntactic cluster:
+    semantic cluster: Tool Bar Title:[473240,485379,473243,485445,]
+    semantic cluster: Alignment Buttons Set Name get String:[473240,485379,]
+    semantic cluster: Other Topics:[485517,]
+
+  syntactic cluster:
+    semantic cluster: Buttons:[485832,485137,]
+    semantic cluster: LAF Bundle:[485106,485137,]
+
+
+=====================:
+=====================:
+semantic cluster: Panel Panel Border Layout:
+  syntactic cluster:
+    semantic cluster: Application Update Open Recent Menu Default:[119716,149635,133125,]
+    semantic cluster: Application add Standard Actions To Default:[115974,115977,115506,]
+    semantic cluster: Clear Recent Files:[104501,119716,133125,]
+    semantic cluster: Loc Loc Moved Moved Loc:[111418,112185,137706,]
+    semantic cluster: Property Change Event String Property Change Listener:[137706,129037,146519,]
+    semantic cluster: Action Redo Action Cut Action:[104501,115974,]
+    semantic cluster: Application Init Look And Feel Default:[107744,133768,]
+    semantic cluster: Menu Item Menu:[162373,133125,]
+    semantic cluster: Project Count:[129037,146519,]
+    semantic cluster: Separator add get Action Set Focusable:[115974,115977,]
+    semantic cluster: Other Topics:[107816,129043,142742,144253,]
+
+  syntactic cluster:
+    semantic cluster: Draw Applet:[477588,473129,478591,478881,]
+    semantic cluster: Object:[472616,477588,478591,]
+    semantic cluster: Throwable Throwable:[472616,477588,478881,]
+    semantic cluster: Button Group:[481653,483621,]
+    semantic cluster: Content Pane Set Layout Remove:[472616,477588,]
+    semantic cluster: Draw Live Connect Applet Throwable:[477588,478881,]
+    semantic cluster: Info:[310668,473101,]
+
+  syntactic cluster:
+    semantic cluster: Input Nano:[472321,477177,514241,]
+    semantic cluster: Affine Transform:[478588,478942,]
+    semantic cluster: Live Connect Applet Nano XMLDOM Input Nano:[477177,514241,]
+
+  syntactic cluster:
+    semantic cluster: Editor View:[479134,479138,480012,]
+    semantic cluster: EAST Scroll Pane LOWER_ LEFT_ CORNER:[479134,479926,]
+    semantic cluster: Exception Internal Error Internal Error:[480900,491370,]
+    semantic cluster: Nano XML Lite DOM:[518554,491370,]
+    semantic cluster: Save Close:[480386,518554,]
+    semantic cluster: Zoom Button:[479134,479138,]
+    semantic cluster: Other Topics:[481093,]
+
+  syntactic cluster:
+    semantic cluster: Other Topics:[489715,]
+
+
+=====================:
+=====================:
+semantic cluster: Quad:
+  syntactic cluster:
+    semantic cluster: Value Name Value Upper Case:[1864,730,1918,3915,]
+    semantic cluster: Container:[431526,327425,327872,]
+    semantic cluster: Double:[1864,1918,434783,]
+    semantic cluster: Floating Text Area:[327425,327872,327764,]
+    semantic cluster: Width:[431718,239422,327872,]
+    semantic cluster: Attribute Object:[730,1918,]
+    semantic cluster: Invalid Value:[1864,1918,]
+    semantic cluster: OUT_ LEFT:[431588,431718,]
+    semantic cluster: Text Color:[327425,327764,]
+    semantic cluster: Other Topics:[434298,543248,]
+
+  syntactic cluster:
+    semantic cluster: Other Topics:[275767,343444,]
+
+  syntactic cluster:
+    semantic cluster: Reader:[45251,46643,49313,50108,53680,76477,]
+    semantic cluster: Current:[76477,426868,430412,]
+    semantic cluster: Left:[568345,426868,430412,]
+    semantic cluster: Parameter Entity Resolver IXML Entity Resolver:[44829,45251,53680,]
+    semantic cluster: Section Process:[46643,49313,50108,]
+    semantic cluster: Std XML:[44829,45251,76477,]
+    semantic cluster: Process Att List:[49313,53680,]
+    semantic cluster: Set:[382350,426868,]
+
+  syntactic cluster:
+    semantic cluster: Other Topics:[418469,425111,]
+
+  syntactic cluster:
+    semantic cluster: East:[439918,439935,]
+    semantic cluster: Rectangle2 Double Map Entry Double:[438086,439918,]
+
+
+=====================:
+=====================:
+semantic cluster: Read Chars:
+  syntactic cluster:
+    semantic cluster: Project App:[190398,190551,190554,190764,197921,203008,]
+    semantic cluster: Old Focus Owner:[179441,181420,184202,180981,187515,]
+    semantic cluster: Show MESSAGE Sheet get Component get String:[179441,184202,190551,190764,187515,]
+    semantic cluster: File Saved And Review:[181420,184164,184202,180981,]
+    semantic cluster: Frame Frame:[190551,190554,190771,]
+    semantic cluster: Couldn t Open the File b Br:[190551,190764,]
+    semantic cluster: Destructive Option:[179441,179472,]
+    semantic cluster: Execute Construct Read Finished:[190398,192740,]
+    semantic cluster: Label Default Label Name Label Scale Factor:[406289,406295,]
+    semantic cluster: Save Changes:[179441,180981,]
+    semantic cluster: Toggle Project Property Action:[203008,203505,]
+    semantic cluster: Undoable Edit Happened:[369502,381583,]
+    semantic cluster: View Group View Figures:[373936,374054,]
+    semantic cluster: Other Topics:[203693,369805,]
+
+  syntactic cluster:
+    semantic cluster: Reader:[45251,46643,49313,50108,53680,76477,]
+    semantic cluster: Current:[76477,426868,430412,]
+    semantic cluster: Left:[568345,426868,430412,]
+    semantic cluster: Parameter Entity Resolver IXML Entity Resolver:[44829,45251,53680,]
+    semantic cluster: Section Process:[46643,49313,50108,]
+    semantic cluster: Std XML:[44829,45251,76477,]
+    semantic cluster: Process Att List:[49313,53680,]
+    semantic cluster: Set:[382350,426868,]
+
+  syntactic cluster:
+    semantic cluster: Chars:[39806,42046,40824,59990,60173,40836,]
+    semantic cluster: Reader Reader End Data:[59990,60173,]
+
+  syntactic cluster:
+    semantic cluster: Text Figure:[472835,472843,473017,]
+    semantic cluster: String:[472330,473017,]
+    semantic cluster: Throwable:[472330,472621,]
+
+  syntactic cluster:
+    semantic cluster: Read Char Process Entity Read Char:[51980,52028,]
+    semantic cluster: Other Topics:[579787,]
+
+
+=====================:
+=====================:
+semantic cluster: Path Data:
+  syntactic cluster:
+    semantic cluster: Value Name Value Upper Case:[1864,730,1918,3915,]
+    semantic cluster: Container:[431526,327425,327872,]
+    semantic cluster: Double:[1864,1918,434783,]
+    semantic cluster: Floating Text Area:[327425,327872,327764,]
+    semantic cluster: Width:[431718,239422,327872,]
+    semantic cluster: Attribute Object:[730,1918,]
+    semantic cluster: Invalid Value:[1864,1918,]
+    semantic cluster: OUT_ LEFT:[431588,431718,]
+    semantic cluster: Text Color:[327425,327764,]
+    semantic cluster: Other Topics:[434298,543248,]
+
+  syntactic cluster:
+    semantic cluster: Split Point Max Error Error Bezier Path:[407902,409258,]
+    semantic cluster: Other Topics:[20073,9666,412175,]
+
+  syntactic cluster:
+    semantic cluster: Path:[542242,542249,532365,532373,532647,532694,]
+    semantic cluster: Buf Buf Current Buf:[532365,532373,532647,532694,]
+    semantic cluster: Node Node Node:[542242,542249,]
+    semantic cluster: Stream Tokenizer Exception:[522238,542242,]
+
+  syntactic cluster:
+    semantic cluster: Other Topics:[531885,733,]
+
+
+=====================:
+=====================:
+semantic cluster: File get Save Chooser Show Save Sheet:
+  syntactic cluster:
+    semantic cluster: Labels:[188852,188843,399227,]
+    semantic cluster: APPROVE_ OPTION:[189505,206106,]
+    semantic cluster: File Chooser get Selected File:[206106,189630,]
+    semantic cluster: File Title Title File Title Unnamed File:[188852,188843,]
+    semantic cluster: Request Focus:[115258,206106,]
+
+  syntactic cluster:
+    semantic cluster: Project App:[190398,190551,190554,190764,197921,203008,]
+    semantic cluster: Old Focus Owner:[179441,181420,184202,180981,187515,]
+    semantic cluster: Show MESSAGE Sheet get Component get String:[179441,184202,190551,190764,187515,]
+    semantic cluster: File Saved And Review:[181420,184164,184202,180981,]
+    semantic cluster: Frame Frame:[190551,190554,190771,]
+    semantic cluster: Couldn t Open the File b Br:[190551,190764,]
+    semantic cluster: Destructive Option:[179441,179472,]
+    semantic cluster: Execute Construct Read Finished:[190398,192740,]
+    semantic cluster: Label Default Label Name Label Scale Factor:[406289,406295,]
+    semantic cluster: Save Changes:[179441,180981,]
+    semantic cluster: Toggle Project Property Action:[203008,203505,]
+    semantic cluster: Undoable Edit Happened:[369502,381583,]
+    semantic cluster: View Group View Figures:[373936,374054,]
+    semantic cluster: Other Topics:[203693,369805,]
+
+  syntactic cluster:
+    semantic cluster: Action Abstract Selected Action:[179512,180984,369498,374057,]
+    semantic cluster: File Chooser:[180984,189710,193118,]
+    semantic cluster: Abstract Application Action File Saved And Review:[180984,208341,]
+    semantic cluster: Old Focus Owner:[211099,208341,]
+    semantic cluster: Pane Options Pane:[179512,208341,]
+
+
+=====================:
+=====================:
+semantic cluster: DOM Output Javax DOM Output:
+  syntactic cluster:
+    semantic cluster: Current Document:[572264,579221,]
+    semantic cluster: DOM Storable:[580796,580793,]
+    semantic cluster: Enum Enum:[577204,580793,]
+    semantic cluster: Input Nano:[579221,83199,]
+    semantic cluster: New Instance New Transformer Transform:[572264,574467,]
+    semantic cluster: Objectids Objectids Objectids:[577820,582520,]
+    semantic cluster: Other Topics:[403220,580731,577880,]
+
+  syntactic cluster:
+    semantic cluster: Other Topics:[572370,]
+
+
+=====================:
+=====================:
+semantic cluster: Desktop Pane Arrange Frames:
+  syntactic cluster:
+    semantic cluster: Selection Bounds:[332875,366869,367313,368618,]
+    semantic cluster: Frames Horizontally MDI Desktop Pane:[468736,469418,]
+    semantic cluster: Other Topics:[332035,]
+
+  syntactic cluster:
+    semantic cluster: Desktop Pane Tile Frames:[468999,469012,]
+    semantic cluster: Frame Width Frame Height:[468603,469623,]
+
+
+=====================:
+=====================:
+semantic cluster: Str Read Char Process Entity:
+  syntactic cluster:
+    semantic cluster: Reader:[45251,46643,49313,50108,53680,76477,]
+    semantic cluster: Current:[76477,426868,430412,]
+    semantic cluster: Left:[568345,426868,430412,]
+    semantic cluster: Parameter Entity Resolver IXML Entity Resolver:[44829,45251,53680,]
+    semantic cluster: Section Process:[46643,49313,50108,]
+    semantic cluster: Std XML:[44829,45251,76477,]
+    semantic cluster: Process Att List:[49313,53680,]
+    semantic cluster: Set:[382350,426868,]
+
+  syntactic cluster:
+    semantic cluster: Read Char Process Entity Read Char:[51980,52028,]
+    semantic cluster: Other Topics:[579787,]
+
+
+=====================:
+=====================:
+semantic cluster: Other Topics:
+  syntactic cluster:
+    semantic cluster: Other Topics:[176823,]
+
+  syntactic cluster:
+    semantic cluster: Other Topics:[195653,]
+
+  syntactic cluster:
+    semantic cluster: Other Topics:[241174,]
+
+  syntactic cluster:
+    semantic cluster: Other Topics:[251613,471532,]
+
+  syntactic cluster:
+    semantic cluster: Other Topics:[391446,]
+
+  syntactic cluster:
+    semantic cluster: Other Topics:[392803,]
+
+  syntactic cluster:
+    semantic cluster: Minimum Layout Size:[402913,402916,]
+    semantic cluster: Other Topics:[405709,]
+
+  syntactic cluster:
+    semantic cluster: Other Topics:[445835,]
+
+  syntactic cluster:
+    semantic cluster: Default Value:[564501,564542,564497,]
+    semantic cluster: Invoke Static Getter Invoke Static Getter:[564501,564542,]
+    semantic cluster: Method Exception Invocation Target Exception Internal Error:[564078,564267,]
+    semantic cluster: Method Obj Method Name:[564267,564497,]
+    semantic cluster: Result Default Value Default Value Default Value:[564501,564497,]
+
+  syntactic cluster:
+    semantic cluster: Enm Child:[81597,81726,81984,82119,]
+    semantic cluster: Name Equals:[81726,81984,82091,]
+    semantic cluster: Namespace:[81984,82088,]
+
+
+=====================:

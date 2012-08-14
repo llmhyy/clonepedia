@@ -1,0 +1,106 @@
+package clonepedia.model.ontology;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Random;
+
+import clonepedia.model.syntactic.Path;
+import clonepedia.syntactic.util.comparator.PathComparator;
+import clonepedia.util.Settings;
+
+public class CloneSets implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8625442283785857386L;
+	private ArrayList<CloneSet> cloneList = new ArrayList<CloneSet>();
+	
+	private PathComparator pathComparator;
+	private int averagePathSequenceLength;
+	
+	public int computeMedianPathSequenceLength(){
+		int sampleNumber = (int)(Settings.selectedSampleRateToComputeAveragePathSequenceLength * cloneList.size());
+		ArrayList<Integer> lengthList = new ArrayList<Integer>();
+		
+		for(int i=0; i<sampleNumber; i++){
+			try{
+				int index = new Random().nextInt(cloneList.size());
+				CloneSet set = cloneList.get(index);
+				ArrayList<Path> pathList = set.getAllContainedPaths();
+				for(Path path: pathList){
+					lengthList.add(path.size());
+				}
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		
+		Integer[] array = lengthList.toArray(new Integer[0]);
+		Arrays.sort(array);
+		averagePathSequenceLength = 2*array[array.length/2]-1;
+		return averagePathSequenceLength;
+	}
+	
+	public int computeAveragePathSequenceLength(){
+		int totalNodeNumber = 0;;
+		int totalPathNumber = 0;
+		int sampleNumber = (int)(Settings.selectedSampleRateToComputeAveragePathSequenceLength * cloneList.size());
+		
+		for(int i=0; i<sampleNumber; i++){
+			try{
+				int index = new Random().nextInt(cloneList.size());
+				CloneSet set = cloneList.get(index);
+				ArrayList<Path> pathList = set.getAllContainedPaths();
+				for(Path path: pathList){
+					totalNodeNumber += path.size();
+					totalPathNumber ++;
+				}
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		
+		/**
+		 * because I have to compute the Levenshtein distance, in which a path sequence instead of path
+		 * is considered. The difference between path and path sequence is that path just contained all
+		 * the ontological nodes while path sequence contains both ontological nodes and ontolgical edges.
+		 */
+		int totalLength = 2*totalNodeNumber - 1;
+		averagePathSequenceLength = totalLength / totalPathNumber;
+		return averagePathSequenceLength;
+	}
+	
+	public void add(CloneSet set){
+		this.cloneList.add(set);
+	}
+	
+	public ArrayList<CloneSet> getCloneList(){
+		return this.cloneList;
+	}
+	
+	public CloneSet getCloneSet(String id){
+		for(CloneSet set: this.cloneList){
+			if(set.getId().equals(id)){
+				return set;
+			}
+		}
+		return null;
+	}
+
+	public PathComparator getPathComparator() {
+		return pathComparator;
+	}
+
+	public void setPathComparator(PathComparator pathComparator) {
+		this.pathComparator = pathComparator;
+	}
+
+	public int getAveragePathSequenceLength() {
+		return averagePathSequenceLength;
+	}
+	
+	
+}

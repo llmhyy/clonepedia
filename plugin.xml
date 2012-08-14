@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            label="Clonepedia"
+            visible="true"
+            id="Clonepedia.actionSet">
+         <menu
+               label="Clonepedia"
+               id="Clonepedia">
+            <separator
+                  name="ClonepediaGroup">
+            </separator>
+         </menu>
+         <action
+               label="&amp;Extract Program Structure"
+               icon="icons/program_structure.gif"
+               class="clonepedia.actions.ProgramStructureExtractionAction"
+               tooltip="Extract Program Structure"
+               menubarPath="Clonepedia/ClonepediaGroup"
+               toolbarPath="ClonepediaGroup"
+               id="Clonepedia.ProgramStructureExtractionAction">
+         </action>
+         <action
+               class="clonepedia.actions.CloneInformationExtractionAction"
+               icon="icons/clone_structure.gif"
+               id="Clonepedia.CloneInformationExtractionAction"
+               label="Extract Clone Information"
+               menubarPath="Clonepedia/ClonepediaGroup"
+               style="push"
+               toolbarPath="ClonepediaGroup">
+         </action>
+         <action
+               class="clonepedia.actions.OntologicalModelBuildingAction"
+               icon="icons/build_model.gif"
+               id="Clonepedia.OntologicalModelBuilding"
+               label="Build Ontological Model"
+               menubarPath="Clonepedia/ClonepediaGroup"
+               style="push"
+               toolbarPath="ClonepediaGroup">
+         </action>
+         <action
+               class="clonepedia.actions.ExportOverallDetailAction"
+               icon="icons/overview.gif"
+               id="Clonepedia.ExportOverallDetailAction"
+               label="Export Overall Detail"
+               menubarPath="Clonepedia/ClonepediaGroup"
+               style="push"
+               toolbarPath="ClonepediaGroup">
+         </action>
+      </actionSet>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="clonepedia.views.hierarchicalsemantic.HierarchicalSemanticView"
+            icon="icons/hirarchical_semantic.gif"
+            id="Clonepedia.HirarchicalSemanticView"
+            name="Hirarchical Semantic"
+            restorable="true">
+      </view>
+      <view
+            class="clonepedia.views.ClonePropertiesView"
+            icon="icons/properties.gif"
+            id="Clonepedia.ClonePropertiesView"
+            name="CloneProperties"
+            restorable="true">
+      </view>
+      <view
+            class="clonepedia.views.multiorient.PlainCloneSetView"
+            icon="icons/plain.gif"
+            id="Clonepedia.PlainCloneSetView"
+            name="Plain Clone Set"
+            restorable="true">
+      </view>
+      <view
+            class="clonepedia.views.multiorient.TopicOrientedView"
+            icon="icons/topic.gif"
+            id="Clonepedia.TopicOrientedView"
+            name="Topic Oriented Clone Sets"
+            restorable="true">
+      </view>
+      <view
+            class="clonepedia.views.multiorient.PatternOrientedView"
+            icon="icons/structure.gif"
+            id="Clonepedia.PatternOrientedView"
+            name="Pattern Oriented Clone Sets"
+            restorable="true">
+      </view>
+      <view
+            class="clonepedia.views.codesnippet.CloneCodeSnippetView"
+            icon="icons/code_snippet.gif"
+            id="Clonepedia.CloneCodeSnippetView"
+            name="Clone Code Snippet"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="clonepedia.perspective.CloneSummaryPerspective"
+            icon="icons/summary_perspective.gif"
+            id="Clonepedia.CloneSummaryPerspective"
+            name="Clone Summary Perspective">
+      </perspective>
+   </extension>
+
+</plugin>
