@@ -27,5 +27,5 @@ public class Settings {
 	
 	//======================================================================
 	public static String projectName = "JHotDraw7.0.6";
-	public static String inputCloneFile = "D:\\Test_Project\\JFreeChart\\jfreechart.xml";
+	public static String inputCloneFile = "D:\\Test_Project\\JHotDraw7.0.6\\jhotdraw.xml";
 }

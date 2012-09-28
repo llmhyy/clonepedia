@@ -3,50 +3,96 @@ package clonepedia.db;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Properties;
-import java.util.UUID;
 
+import clonepedia.db.schema.DBTable;
 import clonepedia.db.schema.Entity;
 import clonepedia.db.schema.Relation;
-import clonepedia.model.ontology.Class;
-import clonepedia.model.ontology.CloneInstance;
-import clonepedia.model.ontology.CloneSet;
-import clonepedia.model.ontology.CloneSets;
-import clonepedia.model.ontology.ComplexType;
-import clonepedia.model.ontology.Constant;
-import clonepedia.model.ontology.EnumType;
-import clonepedia.model.ontology.Field;
-import clonepedia.model.ontology.Interface;
-import clonepedia.model.ontology.Method;
-import clonepedia.model.ontology.PrimiType;
-import clonepedia.model.ontology.ProgrammingElement;
-import clonepedia.model.ontology.Project;
-import clonepedia.model.ontology.RegionalOwner;
-import clonepedia.model.ontology.TypeVariableType;
-import clonepedia.model.ontology.VarType;
-import clonepedia.model.ontology.Variable;
-import clonepedia.model.ontology.VariableUseType;
-import clonepedia.model.semantic.Word;
-import clonepedia.model.semantic.WordBag;
-import clonepedia.syntactic.pools.ClassPool;
-import clonepedia.syntactic.pools.InterfacePool;
-import clonepedia.util.MinerUtil;
+import clonepedia.model.db.DataRecord;
+
 
 public class DBOperator {
-
-	/*
-	 * private final static String SELECT = "select"; private final static
-	 * String DELETE = "delete";
-	 */
 
 	private Connection conn = DBManager.getConnection();
 	private PreparedStatement stat = null;
 
 	// private ResultSet rs = null;
 
+	
+	
+
+
+	/**
+	 * The objectName is an entity in database
+	 * 
+	 * @param objectName
+	 * @param properties
+	 * @return
+	 */
+	public boolean checkIfanObjectExist(Entity objectName,
+			Properties properties) {
+		return checkIfaRecordExistInDB(objectName, properties);
+	}
+
+	public boolean checkIfaRelationExist(Relation relationType,
+			Properties properties) {
+		return checkIfaRecordExistInDB(relationType, properties);
+	}
+
+	public boolean checkIfaRecordExistInDB(DBTable table, Properties properties) {
+		ResultSet rs = null;
+		try {
+			String sql = generateSelectFromTemplateSQL(new DBTable[]{table}, properties, null);
+			stat = conn.prepareStatement(sql);
+			rs = stat.executeQuery();
+
+			boolean flag = rs.next();
+			rs.close();
+			stat.close();
+
+			return flag;
+
+		} catch (SQLException e) {
+			closeResultSet(rs);
+			closePreparedStatement(stat);
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
+	/*public boolean checkIfaRecordExistInDB(Relation r, Properties properties) {
+		ResultSet rs = null;
+		try {
+			String sql = generateSelectfromTemplateSQL(r, properties);
+			stat = conn.prepareStatement(sql);
+			rs = stat.executeQuery();
+
+			boolean flag = rs.next();
+			rs.close();
+			stat.close();
+
+			return flag;
+
+		} catch (SQLException e) {
+			closeResultSet(rs);
+			closePreparedStatement(stat);
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}*/
+
+	// private ResultSet rs = null;
+	
 	/*
 	 * public void delete(Entity en, Properties properties) { try { String sql =
 	 * generateSelorDelfromTemplateSQL(DELETE, en, properties); stat =
@@ -57,7 +103,7 @@ public class DBOperator {
 	 * }
 	 */
 	
-	public ArrayList<String> getExtendedInterfaceIds(String interfaceId){
+	/*public ArrayList<String> getExtendedInterfaceIds(String interfaceId){
 		ResultSet rs = null;
 		Properties properties = new Properties();
 		properties.put("subInterfaceId", interfaceId);
@@ -362,7 +408,7 @@ public class DBOperator {
 		
 		return wordBag;
 	}
-
+	
 	public WordBag getWordsOfClassInCommonUseType(String cloneSetId){
 		String[] tables = { Entity.CloneSet.toString(),
 				Entity.Class.toString(), Relation.CommonPartUseType.toString() };
@@ -420,7 +466,7 @@ public class DBOperator {
 	
 	public WordBag getWordsOfMethodInCommonPartCalls(String cloneSetId) {
 		
-
+	
 		String[] tables = { Entity.CloneSet.toString(),
 				Entity.Method.toString(), Relation.CommonPartCall.toString() };
 		Properties properties = new Properties();
@@ -428,9 +474,9 @@ public class DBOperator {
 		properties.put(cloneSetId, "CloneSet.cloneSetId");
 		properties.put("CloneSet.cloneSetId", "CommonPartCall.cloneSetId");
 		properties.put("Method.methodId", "CommonPartCall.methodId");
-
+	
 		
-
+	
 		return getSpecificEntityName(tables, "methodName", properties);
 	}
 	
@@ -461,21 +507,21 @@ public class DBOperator {
 		}
 		return wordBag;
 	}
-
+	
 	public Project getProject(Properties properties) throws Exception {
 		ResultSet rs = null;
 		try {
 			String sql = generateSelectfromTemplateSQL(Entity.Project,
 					properties);
-
+	
 			stat = conn.prepareStatement(sql);
 			rs = stat.executeQuery();
-
+	
 			if (rs.next()) {
 				Project project = new Project(rs.getString("projectName"),
 						rs.getString("programmingLanguage"),
 						rs.getString("projectFilePath"));
-
+	
 				closeResultSet(rs);
 				closePreparedStatement(stat);
 				return project;
@@ -488,20 +534,20 @@ public class DBOperator {
 		}
 		return null;
 	}
-
-	/**
+	
+	*//**
 	 * Get a project according to its name.
 	 * 
 	 * @param projectName
 	 * @return
-	 */
+	 *//*
 	public Project getProject(String projectName) {
 		ResultSet rs = null;
 		Properties prop = new Properties();
 		prop.put("projectName", projectName);
 		try {
 			Project project = null;
-
+	
 			String sql = generateSelectfromTemplateSQL(Entity.Project, prop);
 			stat = conn.prepareStatement(sql);
 			rs = stat.executeQuery();
@@ -510,11 +556,11 @@ public class DBOperator {
 				String programmingLanguage = rs
 						.getString("programmingLanguage");
 				String projectFilePath = rs.getString("projectFilePath");
-
+	
 				project = new Project(pName, programmingLanguage,
 						projectFilePath);
 			}
-
+	
 			rs.close();
 			stat.close();
 			return project;
@@ -526,13 +572,13 @@ public class DBOperator {
 		}
 		return null;
 	}
-
-	/**
+	
+	*//**
 	 * Get all the clone sets contained in a project.
 	 * 
 	 * @param project
 	 * @return
-	 */
+	 *//*
 	public CloneSets getPlainCloneSets(Project project) {
 		ResultSet rs = null;
 		Properties prop = new Properties();
@@ -547,7 +593,7 @@ public class DBOperator {
 				CloneSet set = new CloneSet(cloneSetId, project);
 				sets.add(set);
 			}
-
+	
 			rs.close();
 			stat.close();
 			return sets;
@@ -559,14 +605,14 @@ public class DBOperator {
 		}
 		return null;
 	}
-
+	
 	public ArrayList<CloneInstance> getPlainCloneInstances(String cloneSetId) {
 		ResultSet rs = null;
 		Properties properties = new Properties();
 		properties.put("cloneSetId", cloneSetId);
 		try {
 			ArrayList<CloneInstance> instances = new ArrayList<CloneInstance>();
-
+	
 			String sql = generateSelectfromTemplateSQL(Entity.CloneInstance,
 					properties);
 			stat = conn.prepareStatement(sql);
@@ -577,15 +623,15 @@ public class DBOperator {
 				String fileLocation = rs.getString("fileLocation");
 				String startLineString = rs.getString("startLine");
 				String endLineString = rs.getString("endLine");
-
+	
 				CloneInstance instance = new CloneInstance(cloneInstanceId,
 						null, fileLocation, Integer.valueOf(startLineString),
 						Integer.valueOf(endLineString));
 				instance.setResidingMethod(new Method(residingMethodId));
-
+	
 				instances.add(instance);
 			}
-
+	
 			rs.close();
 			stat.close();
 			return instances;
@@ -597,15 +643,15 @@ public class DBOperator {
 		}
 		return null;
 	}
-
-	/**
+	
+	*//**
 	 * Get all the plain classes according to a project.
 	 * 
 	 * @param id
 	 * @param project
 	 * @return
 	 * @throws Exception 
-	 */
+	 *//*
 	public ClassPool getPlainClasses(Project project) throws Exception {
 		ResultSet rs = null;
 		Properties properties = new Properties();
@@ -617,7 +663,7 @@ public class DBOperator {
 			String sql = generateSelectfromTemplateSQL(Entity.Class, properties);
 			stat = conn.prepareStatement(sql);
 			rs = stat.executeQuery();
-
+	
 			while (rs.next()) {
 				String classFullName = rs.getString("classFullName");
 				String classId = rs.getString("classId");
@@ -635,7 +681,7 @@ public class DBOperator {
 				
 				classPool.add(clas);
 			}
-
+	
 			rs.close();
 			stat.close();
 			return classPool;
@@ -646,16 +692,16 @@ public class DBOperator {
 			closePreparedStatement(stat);
 		}
 		return null;
-
+	
 	}
-
-	/**
+	
+	*//**
 	 * Get all the interfaces according to a project.
 	 * 
 	 * @param id
 	 * @return
 	 * @throws Exception
-	 */
+	 *//*
 	public InterfacePool getPlainInterfaces(Project project)
 			throws Exception {
 		ResultSet rs = null;
@@ -664,7 +710,7 @@ public class DBOperator {
 		properties.put("projectName", project.getProjectName());
 		InterfacePool interfacePool = new InterfacePool();
 		try {
-
+	
 			String sql = generateSelectfromTemplateSQL(Entity.Interface,
 					properties);
 			stat = conn.prepareStatement(sql);
@@ -672,7 +718,7 @@ public class DBOperator {
 			while (rs.next()) {
 				String interfaceId = rs.getString("interfaceId");
 				String interfaceFullName = rs.getString("interfaceFullName");
-
+	
 				Interface interf = new Interface(interfaceId, project, interfaceFullName);
 				ArrayList<Method> methods = getPlainMethods(interf, project);
 				interf.setMethods(methods);
@@ -692,7 +738,7 @@ public class DBOperator {
 		}
 		return null;
 	}
-
+	
 	private ArrayList<Method> getPlainMethods(ComplexType owner, Project project)
 			throws Exception {
 		ResultSet rs = null;
@@ -704,18 +750,18 @@ public class DBOperator {
 					properties);
 			stat = conn.prepareStatement(methodSQL);
 			rs = stat.executeQuery();
-
+	
 			ArrayList<Method> methodList = new ArrayList<Method>();
-
+	
 			while (rs.next()) {
 				String methodName = rs.getString("methodName");
 				String methodId = rs.getString("methodId");
 				String returnType = rs.getString("returnType");
 				String returnTypeCategory = rs.getString("returnTypeCategory");
-
+	
 				VarType vType = transferToVarType(returnType,
 						returnTypeCategory, project);
-
+	
 				ArrayList<Variable> parameters = new ArrayList<Variable>();
 				
 				Properties paramProperties = new Properties();
@@ -731,15 +777,15 @@ public class DBOperator {
 					String parameterName = paramRs.getString("parameterName");
 					String parameterTypeCategory = paramRs
 							.getString("parameterTypeCategory");
-
+	
 					VarType paramType = transferToVarType(parameterType,
 							parameterTypeCategory, project);
 					Variable variable = new Variable(parameterName, paramType, false);
 					parameters.add(variable);
 				}
-
+	
 				// ComplexType owner = getClassorInterfacebyId(ownerId);
-
+	
 				Method method = new Method(methodId, owner, methodName, vType,
 						parameters);
 				methodList.add(method);
@@ -749,7 +795,7 @@ public class DBOperator {
 			
 			rs.close();
 			stat.close();
-
+	
 			return methodList;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -759,33 +805,33 @@ public class DBOperator {
 		}
 		return null;
 	}
-
+	
 	private ArrayList<Field> getPlainFields(ComplexType owner, Project project)
 			throws Exception {
 		ResultSet rs = null;
 		Properties properties = new Properties();
 		properties.put("ownerId", owner.getId());
-
+	
 		ArrayList<Field> fields = new ArrayList<Field>();
-
+	
 		try {
 			String sql = generateSelectfromTemplateSQL(Entity.Field, properties);
 			stat = conn.prepareStatement(sql);
 			rs = stat.executeQuery();
-
+	
 			while (rs.next()) {
 				String fieldName = rs.getString("fieldName");
 				String fieldType = rs.getString("fieldType");
 				String fieldTypeCategory = rs.getString("fieldTypeCategory");
-
+	
 				VarType fType = transferToVarType(fieldType, fieldTypeCategory,
 						project);
 				// ComplexType owner = getClassorInterfacebyId(ownerId);
-
+	
 				Field field = new Field(fieldName, owner, fType);
 				fields.add(field);
 			}
-
+	
 			rs.close();
 			stat.close();
 			return fields;
@@ -795,10 +841,10 @@ public class DBOperator {
 			closeResultSet(rs);
 			closePreparedStatement(stat);
 		}
-
+	
 		return null;
 	}
-
+	
 	public ArrayList<Variable> getVariables(CloneSet owner, Project project) throws Exception {
 		ResultSet rs = null;
 		Properties properties = new Properties();
@@ -935,26 +981,26 @@ public class DBOperator {
 		}
 		return null;
 	}
-
+	
 	private ComplexType getClassorInterfacebyId(String ownerId) {
 		ComplexType owner;
 		String inclType = ownerId.substring(0, 2);
-
+	
 		if (inclType.equals("cl"))
 			owner = new Class(ownerId);
 		else
 			owner = new Interface(ownerId);
-
+	
 		return owner;
 	}
-
+	
 	private VarType transferToVarType(String typeName, String typeCategory,
 			Project project) throws Exception {
-
+	
 		VarType vType = null;
 		if(null == typeName || null == typeCategory)
 			return null;
-
+	
 		if (typeCategory.equals("EnumType"))
 			vType = new EnumType(typeName);
 		else if (typeCategory.equals("PrimiType"))
@@ -965,33 +1011,33 @@ public class DBOperator {
 			vType = getTheExistingClassorCreateOne(typeName, project);
 		else if (typeCategory.equals("Interface"))
 			vType = getTheExistingClassorCreateOne(typeName, project);
-
+	
 		if (null == vType)
 			throw new Exception("unsupported returnTypeCategory "
 					+ typeCategory + " in method transferToVarType");
-
+	
 		return vType;
 	}
-
-	/*
+	
+	
 	 * public Class getSimpleClass(Class clas) { ResultSet rs = null;
 	 * 
 	 * try{ Properties classProperties = new Properties(); } }
-	 */
-
+	
+	
 	private void storeCloneSet(CloneSet set) {
 		Properties setProperties = new Properties();
 		setProperties.put("cloneSetId", set.getId());
 		setProperties.put("projectName", set.getProject().getProjectName());
-
+	
 		String sql = "";
-
+	
 		if (!checkIfanObjectExist(Entity.CloneSet, setProperties)) {
 			sql = generateInsertfromTemplateSQL(Entity.CloneSet, setProperties);
 			try {
 				stat = conn.prepareStatement(sql);
 				stat.executeUpdate();
-
+	
 				stat.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -1000,7 +1046,7 @@ public class DBOperator {
 			}
 		}
 	}
-
+	
 	public void storeCommonRelation(CloneSet set, ProgrammingElement element)
 			throws Exception {
 		if (element instanceof Method) {
@@ -1022,17 +1068,17 @@ public class DBOperator {
 			throw new Exception(
 					"unexpected programming element is transfered into"
 							+ " method storeCommonRelation");
-
+	
 	}
-
+	
 	public void storeDiffRelation(String counterRelationId,
 			CloneInstance instance, ProgrammingElement element)
 			throws Exception {
 		if (element instanceof Method) {
 			Method method = (Method) element;
 			
-			/*if(method.getOwner().getSimpleName().length() == 0)
-				System.out.print("");*/
+			if(method.getOwner().getSimpleName().length() == 0)
+				System.out.print("");
 			
 			storeDiffPartCallRelation(counterRelationId, instance, method);
 		} else if (element instanceof Field) {
@@ -1052,18 +1098,18 @@ public class DBOperator {
 					"unexpected programming element is transfered into"
 							+ " method storeDiffRelation");
 	}
-
+	
 	private void storeDiffPartCallRelation(String counterRelationId,
 			CloneInstance instance, Method method) throws Exception {
-
+	
 		getTheExistingMethodorCreateOne(method);
 		storeCloneInstanceWithDependency(instance);
-
+	
 		Properties relationProperties = new Properties();
 		relationProperties.put("cloneInstanceId", instance.getId());
 		relationProperties.put("methodId", method.getMethodId());
 		relationProperties.put("counterRelationId", counterRelationId);
-
+	
 		String sql = generateInsertfromTemplateSQL(Relation.DiffPartCall,
 				relationProperties);
 		try {
@@ -1076,19 +1122,19 @@ public class DBOperator {
 			closePreparedStatement(stat);
 		}
 	}
-
+	
 	private void storeDiffPartAccessRelation(String counterRelationId,
 			CloneInstance instance, Field field) throws Exception {
-
+	
 		getTheExistingFieldorCreateOne(field);
 		storeCloneInstanceWithDependency(instance);
-
+	
 		Properties relationProperties = new Properties();
 		relationProperties.put("cloneInstanceId", instance.getId());
 		relationProperties.put("fieldName", field.getFieldName());
 		relationProperties.put("ownerId", field.getOwnerType().getId());
 		relationProperties.put("counterRelationId", counterRelationId);
-
+	
 		String sql = generateInsertfromTemplateSQL(Relation.DiffPartAccess,
 				relationProperties);
 		try {
@@ -1101,7 +1147,7 @@ public class DBOperator {
 			closePreparedStatement(stat);
 		}
 	}
-
+	
 	private void storeDiffPartUseTypeRelation(String counterRelationId,
 			CloneInstance instance, ComplexType type) throws Exception {
 		if (type instanceof Class) {
@@ -1116,12 +1162,12 @@ public class DBOperator {
 			throw new Exception("unexpected complex type " + type.getFullName()
 					+ " when calling " + "the storeDiffPartUseTypeRelation");
 		storeCloneInstanceWithDependency(instance);
-
+	
 		Properties relationProperties = new Properties();
 		relationProperties.put("cloneInstanceId", instance.getId());
 		relationProperties.put("typeId", type.getId());
 		relationProperties.put("counterRelationId", counterRelationId);
-
+	
 		String sql = generateInsertfromTemplateSQL(Relation.DiffPartUseType,
 				relationProperties);
 		try {
@@ -1134,19 +1180,19 @@ public class DBOperator {
 			closePreparedStatement(stat);
 		}
 	}
-
+	
 	private void storeCommonPartCallRelation(CloneSet set, Method method)
 			throws Exception {
 		storeCloneSet(set);
 		getTheExistingMethodorCreateOne(method);
-
+	
 		Properties relationProperties = new Properties();
 		relationProperties.put("cloneSetId", set.getId());
 		relationProperties.put("methodId", method.getMethodId());
-
+	
 		String sql = generateInsertfromTemplateSQL(Relation.CommonPartCall,
 				relationProperties);
-
+	
 		try {
 			stat = conn.prepareStatement(sql);
 			stat.executeUpdate();
@@ -1157,20 +1203,20 @@ public class DBOperator {
 			closePreparedStatement(stat);
 		}
 	}
-
+	
 	private void storeCommonPartAccessRelation(CloneSet set, Field field)
 			throws Exception {
 		storeCloneSet(set);
 		getTheExistingFieldorCreateOne(field);
-
+	
 		Properties relationProperties = new Properties();
 		relationProperties.put("cloneSetId", set.getId());
 		relationProperties.put("fieldName", field.getFieldName());
 		relationProperties.put("ownerId", field.getOwnerType().getId());
-
+	
 		String sql = generateInsertfromTemplateSQL(Relation.CommonPartAccess,
 				relationProperties);
-
+	
 		try {
 			stat = conn.prepareStatement(sql);
 			stat.executeUpdate();
@@ -1181,7 +1227,7 @@ public class DBOperator {
 			closePreparedStatement(stat);
 		}
 	}
-
+	
 	private void storeVariable(RegionalOwner owner, Variable variable,
 			String counterRelationId) throws Exception {
 		if (owner instanceof CloneSet)
@@ -1189,17 +1235,17 @@ public class DBOperator {
 		else
 			// case for clone instance
 			storeCloneInstanceWithDependency((CloneInstance) owner);
-
+	
 		Properties variableProperties = new Properties();
 		variableProperties.put("variableName", variable.getVariableName());
 		variableProperties = putTypeInformation("variable", variableProperties,
 				variable.getVariableType());
 		variableProperties.put("useType", variable.getUseType().toString());
 		variableProperties.put("ownerId", owner.getId());
-
+	
 		if (owner instanceof CloneInstance)
 			variableProperties.put("counterRelationId", counterRelationId);
-
+	
 		String sql = generateInsertfromTemplateSQL(Entity.Variable,
 				variableProperties);
 		try {
@@ -1211,9 +1257,9 @@ public class DBOperator {
 		} finally {
 			closePreparedStatement(stat);
 		}
-
+	
 	}
-
+	
 	private void storeConstant(RegionalOwner owner, Constant constant,
 			String counterRelationId) throws Exception {
 		if (owner instanceof CloneSet)
@@ -1221,7 +1267,7 @@ public class DBOperator {
 		else
 			// case for clone instance
 			storeCloneInstanceWithDependency((CloneInstance) owner);
-
+	
 		Properties consProperties = new Properties();
 		if (constant.getConstantType().toString().equals("String")) {
 			constant.setConstantName(MinerUtil
@@ -1231,10 +1277,10 @@ public class DBOperator {
 		consProperties.put("constantType", constant.getConstantType()
 				.toString());
 		consProperties.put("ownerId", owner.getId());
-
+	
 		if (owner instanceof CloneInstance)
 			consProperties.put("counterRelationId", counterRelationId);
-
+	
 		String sql = generateInsertfromTemplateSQL(Entity.Constant,
 				consProperties);
 		try {
@@ -1247,7 +1293,7 @@ public class DBOperator {
 			closePreparedStatement(stat);
 		}
 	}
-
+	
 	private void storeCommonPartUseTypeRelation(CloneSet set, ComplexType type)
 			throws Exception {
 		if (type instanceof Class) {
@@ -1261,16 +1307,16 @@ public class DBOperator {
 		} else
 			throw new Exception("unexpected complex type " + type.getFullName()
 					+ " when calling " + "the storeCommonPartUseTypeRelation");
-
+	
 		storeCloneSet(set);
-
+	
 		Properties relationProperties = new Properties();
 		relationProperties.put("cloneSetId", set.getId());
 		relationProperties.put("typeId", type.getId());
-
+	
 		String sql = generateInsertfromTemplateSQL(Relation.CommonPartUseType,
 				relationProperties);
-
+	
 		try {
 			stat = conn.prepareStatement(sql);
 			stat.executeUpdate();
@@ -1281,7 +1327,7 @@ public class DBOperator {
 			closePreparedStatement(stat);
 		}
 	}
-
+	
 	private String getCloneInstanceId(Properties instanceProperties)
 			throws Exception {
 		ResultSet rs = null;
@@ -1308,13 +1354,13 @@ public class DBOperator {
 		}
 		return null;
 	}
-
+	
 	public void storeCloneInstanceWithDependency(CloneInstance instance)
 			throws Exception {
-
+	
 		storeCloneSet(instance.getCloneSet());
 		getTheExistingMethodorCreateOne(instance.getResidingMethod());
-
+	
 		Properties instanceConProperties = new Properties();
 		// instanceConProperties.put("cloneInstanceId",
 		// instance.getCloneInstanceId());
@@ -1325,23 +1371,23 @@ public class DBOperator {
 				String.valueOf(instance.getEndLine()));
 		instanceConProperties.put("fileLocation", instance.getFileLocation()
 				.replace("\\", "\\\\"));
-
+	
 		;
-
+	
 		String sql = "";
 		if (!checkIfanObjectExist(Entity.CloneInstance, instanceConProperties)) {
 			Properties instanceValProperties = new Properties();
 			String instanceId = "ci" + UUID.randomUUID();
-
+	
 			instance.setId(instanceId);
 			instanceValProperties.put("cloneInstanceId", instanceId);
 			instanceValProperties.put("residingMethodId", instance
 					.getResidingMethod().getMethodId());
-
+	
 			instanceConProperties.putAll(instanceValProperties);
 			sql = generateInsertfromTemplateSQL(Entity.CloneInstance,
 					instanceConProperties);
-
+	
 			try {
 				stat = conn.prepareStatement(sql);
 				stat.executeUpdate();
@@ -1354,27 +1400,27 @@ public class DBOperator {
 			String instanceId = getCloneInstanceId(instanceConProperties);
 			instance.setId(instanceId);
 		}
-
+	
 	}
-
-	/*
+	
+	
 	 * public Class getSimpleClass(Class clas) { ResultSet rs = null;
 	 * 
 	 * try{ Properties classProperties = new Properties(); } }
-	 */
-
+	
+	
 	public void storeProject(Project project) {
 		try {
 			Properties conProperties = new Properties();
 			conProperties.put("projectName", project.getProjectName());
-
+	
 			Properties valProperties = new Properties();
 			valProperties.put("programmingLanguage",
 					project.getProgrammingLanguage());
 			valProperties.put("projectFilePath", project.getProjectFilePath());
-
+	
 			String sql = "";
-
+	
 			if (checkIfanObjectExist(Entity.Project, conProperties))
 				sql = generateUpdatefromTemplateSQL(Entity.Project,
 						valProperties, conProperties);
@@ -1383,17 +1429,17 @@ public class DBOperator {
 				sql = generateInsertfromTemplateSQL(Entity.Project,
 						conProperties);
 			}
-
+	
 			stat = conn.prepareStatement(sql);
 			stat.executeUpdate();
 			stat.close();
-
+	
 		} catch (SQLException e) {
 			closePreparedStatement(stat);
 			e.printStackTrace();
 		}
 	}
-
+	
 	public void storeImplementRelation(clonepedia.model.ontology.Class clas,
 			clonepedia.model.ontology.Interface interf) {
 		// storeClass(clas);
@@ -1405,9 +1451,9 @@ public class DBOperator {
 			Properties relationProperties = new Properties();
 			relationProperties.put("classId", clas.getId());
 			relationProperties.put("interfaceId", interf.getId());
-
+	
 			String sql = "";
-
+	
 			if (checkIfaRelationExist(Relation.ImplementRelation,
 					relationProperties))
 				sql = generateUpdatefromTemplateSQL(Relation.ImplementRelation,
@@ -1416,37 +1462,37 @@ public class DBOperator {
 				sql = generateInsertfromTemplateSQL(Relation.ImplementRelation,
 						relationProperties);
 			}
-
+	
 			stat = conn.prepareStatement(sql);
-
+	
 			stat.executeUpdate();
 			stat.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-
+	
 		closePreparedStatement(stat);
-
+	
 	}
-
+	
 	public void storeInterfaceExtendRelation(
 			clonepedia.model.ontology.Interface subInterface,
 			clonepedia.model.ontology.Interface superInterface) {
-		/*
+		
 		 * storeInterface(subInterface); storeInterface(superInterface);
-		 */
+		 
 		getTheExistingInterfaceorCreateOne(subInterface.getFullName(),
 				subInterface.getProject());
 		getTheExistingInterfaceorCreateOne(superInterface.getFullName(),
 				superInterface.getProject());
-
+	
 		try {
 			Properties relationProperties = new Properties();
 			relationProperties.put("subInterfaceId", subInterface.getId());
 			relationProperties.put("superInterfaceId", superInterface.getId());
-
+	
 			String sql = "";
-
+	
 			if (checkIfaRelationExist(Relation.InterfaceExtendRelation,
 					relationProperties))
 				sql = generateUpdatefromTemplateSQL(
@@ -1456,24 +1502,24 @@ public class DBOperator {
 				sql = generateInsertfromTemplateSQL(
 						Relation.InterfaceExtendRelation, relationProperties);
 			}
-
+	
 			stat = conn.prepareStatement(sql);
-
+	
 			stat.executeUpdate();
 			stat.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-
+	
 		closePreparedStatement(stat);
-
+	
 	}
-
+	
 	public void storeInterfaceWithDependency(clonepedia.model.ontology.Interface interf) {
-
+	
 		getTheExistingInterfaceorCreateOne(interf.getFullName(),
 				interf.getProject());
-
+	
 		if (0 != interf.getSuperInterfaces().size()) {
 			for (clonepedia.model.ontology.Interface in : interf.getSuperInterfaces()) {
 				getTheExistingInterfaceorCreateOne(in.getFullName(),
@@ -1481,40 +1527,40 @@ public class DBOperator {
 				storeInterfaceExtendRelation(interf, in);
 			}
 		}
-
+	
 	}
-
+	
 	public void storeClasswithDependency(clonepedia.model.ontology.Class clas) {
-
+	
 		try {
 			Project project = clas.getProject();
-
+	
 			Properties conClassProperties = new Properties();
 			conClassProperties.put("classFullName", clas.getFullName());
 			conClassProperties.put("projectName", project.getProjectName());
-
+	
 			Properties valClassProperties = new Properties();
 			// valClassProperties.put("classId", clas.getId());
-
+	
 			clonepedia.model.ontology.Class superClass = clas.getSuperClass();
 			clonepedia.model.ontology.Class outerClass = clas.getOuterClass();
 			if (null != superClass)
 				valClassProperties.put("superClassId", superClass.getId());
 			if (null != outerClass)
 				valClassProperties.put("outerClassId", outerClass.getId());
-
+	
 			if (null != superClass) {
 				getTheExistingClassorCreateOne(superClass.getFullName(),
 						superClass.getProject());
 			}
-
+	
 			if (null != outerClass) {
 				getTheExistingClassorCreateOne(outerClass.getFullName(),
 						outerClass.getProject());
 			}
-
+	
 			String sql = "";
-
+	
 			if (checkIfanObjectExist(Entity.Class, conClassProperties)) {
 				valClassProperties.putAll(conClassProperties);
 				sql = generateUpdatefromTemplateSQL(Entity.Class,
@@ -1527,11 +1573,11 @@ public class DBOperator {
 				sql = generateInsertfromTemplateSQL(Entity.Class,
 						conClassProperties);
 			}
-
+	
 			stat = conn.prepareStatement(sql);
 			stat.executeUpdate();
 			stat.close();
-
+	
 			if (clas.getImplementedInterfaces().size() != 0) {
 				for (clonepedia.model.ontology.Interface interf : clas
 						.getImplementedInterfaces()) {
@@ -1540,51 +1586,51 @@ public class DBOperator {
 					storeImplementRelation(clas, in);
 				}
 			}
-
+	
 		} catch (SQLException e) {
 			closePreparedStatement(stat);
 			e.printStackTrace();
 		}
 	}
-
+	
 	public clonepedia.model.ontology.Class getTheExistingClassorCreateOne(
 			String classFullName, Project project) {
 		Properties conditionalProperties = new Properties();
 		conditionalProperties.put("projectName", project.getProjectName());
 		conditionalProperties.put("classFullName", classFullName);
-
+	
 		clonepedia.model.ontology.Class cl = getClass(conditionalProperties);
-
+	
 		if (null == cl) {
 			String classId = "cl" + UUID.randomUUID();
 			cl = new clonepedia.model.ontology.Class(classId, project, classFullName);
 			storeClass(cl);
 		}
-
+	
 		System.out.print("");
-
+	
 		return cl;
 	}
-
+	
 	public clonepedia.model.ontology.Interface getTheExistingInterfaceorCreateOne(
 			String interfaceFullName, Project project) {
 		Properties conditionalProperties = new Properties();
 		conditionalProperties.put("projectName", project.getProjectName());
 		conditionalProperties.put("interfaceFullName", interfaceFullName);
-
+	
 		clonepedia.model.ontology.Interface interf = null;
 		interf = getInterface(conditionalProperties);
-
+	
 		if (null == interf) {
 			String interfaceId = "in" + UUID.randomUUID();
 			interf = new clonepedia.model.ontology.Interface(interfaceId, project,
 					interfaceFullName);
 			storeInterface(interf);
 		}
-
+	
 		return interf;
 	}
-
+	
 	public Method getTheExistingMethodorCreateOne(Method m) throws Exception {
 		Method method = new DBOperator().getMethod(m);
 		if (null == method) {
@@ -1596,7 +1642,7 @@ public class DBOperator {
 		} else
 			return method;
 	}
-
+	
 	public Field getTheExistingFieldorCreateOne(Field f) throws Exception {
 		Field field = getField(f);
 		if (null == field) {
@@ -1604,27 +1650,27 @@ public class DBOperator {
 		}
 		return f;
 	}
-
+	
 	private clonepedia.model.ontology.Class getClass(Properties properties) {
 		ResultSet rs = null;
 		try {
 			String sql;
 			sql = generateSelectfromTemplateSQL(Entity.Class, properties);
-
+	
 			stat = conn.prepareStatement(sql);
 			rs = stat.executeQuery();
-
+	
 			if (rs.next()) {
 				String projectName = rs.getString("projectName");
 				Properties proper = new Properties();
 				proper.put("projectName", projectName);
-
+	
 				String classFullName = rs.getString("classFullName");
 				String classId = rs.getString("classId");
-
+	
 				clonepedia.model.ontology.Class cl = new clonepedia.model.ontology.Class(classId,
 						getProject(proper), classFullName);
-
+	
 				closeResultSet(rs);
 				closePreparedStatement(stat);
 				return cl;
@@ -1639,27 +1685,27 @@ public class DBOperator {
 		}
 		return null;
 	}
-
+	
 	private clonepedia.model.ontology.Interface getInterface(Properties properties) {
 		ResultSet rs = null;
 		try {
 			String sql;
 			sql = generateSelectfromTemplateSQL(Entity.Interface, properties);
-
+	
 			stat = conn.prepareStatement(sql);
 			rs = stat.executeQuery();
-
+	
 			if (rs.next()) {
 				String projectName = rs.getString("projectName");
 				Properties proper = new Properties();
 				proper.put("projectName", projectName);
-
+	
 				String interfaceFullName = rs.getString("interfaceFullName");
 				String interfaceId = rs.getString("interfaceId");
-
+	
 				clonepedia.model.ontology.Interface interf = new clonepedia.model.ontology.Interface(
 						interfaceId, getProject(proper), interfaceFullName);
-
+	
 				closeResultSet(rs);
 				closePreparedStatement(stat);
 				return interf;
@@ -1674,26 +1720,26 @@ public class DBOperator {
 		}
 		return null;
 	}
-
-	/*
+	
+	
 	 * public Class getSimpleClass(Class clas) { ResultSet rs = null;
 	 * 
 	 * try{ Properties classProperties = new Properties(); } }
-	 */
-
+	
+	
 	private Field getField(Field field) {
 		ResultSet rs = null;
-
+	
 		try {
 			Properties fieldProperties = new Properties();
 			fieldProperties.put("fieldName", field.getFieldName());
 			fieldProperties.put("ownerId", field.getOwnerType().getId());
 			String sql = generateSelectfromTemplateSQL(Entity.Field,
 					fieldProperties);
-
+	
 			stat = conn.prepareStatement(sql);
 			rs = stat.executeQuery();
-
+	
 			if (rs.next()) {
 				rs.close();
 				stat.close();
@@ -1711,35 +1757,35 @@ public class DBOperator {
 		}
 		return null;
 	}
-
+	
 	private Method getMethod(Method method) {
 		ResultSet rs = null;
 		ResultSet paramRs = null;
 		try {
-
+	
 			Properties methodProperties = new Properties();
 			methodProperties.put("ownerId", method.getOwner().getId());
 			methodProperties.put("methodName", method.getMethodName());
 			if (method.getReturnType() != null)
 				methodProperties.put("returnType", method.getReturnType()
 						.toString());
-
+	
 			String sql;
 			sql = generateSelectfromTemplateSQL(Entity.Method, methodProperties);
-
+	
 			stat = conn.prepareStatement(sql);
 			rs = stat.executeQuery();
 			// System.out.println(rs.getRow());
-
+	
 			while (rs.next()) {
-
+	
 				String methodId = rs.getString("methodId");
-
+	
 				Properties paramProperties = new Properties();
 				paramProperties.put("methodId", methodId);
 				String paramSQL = generateSelectfromTemplateSQL(
 						Entity.MethodParameter, paramProperties);
-
+	
 				stat = conn.prepareStatement(paramSQL,
 						ResultSet.TYPE_SCROLL_INSENSITIVE);
 				// System.out.println(paramSQL);
@@ -1765,8 +1811,8 @@ public class DBOperator {
 		}
 		return null;
 	}
-
-	/*
+	
+	
 	 * private String getTypeIdbyProperties(Entity e, Properties properties){
 	 * ResultSet rs = null; try { String sql =
 	 * generateSelorDelfromTemplateSQL(SELECT, e, properties); stat =
@@ -1775,8 +1821,8 @@ public class DBOperator {
 	 * rs.getString(idName); return id; } rs.close(); stat.close(); } catch
 	 * (Exception ex) { ex.printStackTrace(); } finally { closeResultSet(rs);
 	 * closePreparedStatement(stat); } return null; }
-	 */
-
+	
+	
 	private boolean hasTheCorrespondingParameters(Method method,
 			ResultSet paramRs) throws SQLException {
 		paramRs.last();
@@ -1793,7 +1839,7 @@ public class DBOperator {
 				// System.out.println(paramRs.getRow());
 				int parameterOrder = paramRs.getInt("parameterOrder");
 				String parameterType = paramRs.getString("parameterType");
-
+	
 				if (!params[parameterOrder - 1].getVariableType().toString()
 						.equals(parameterType))
 					return false;
@@ -1801,38 +1847,38 @@ public class DBOperator {
 			return true;
 		}
 	}
-
-	/**
+	
+	*//**
 	 * This method can only be called by
 	 * <code>getTheExistingFieldorCreateOne</code>. It is used to create a brand
 	 * new field.
 	 * 
 	 * @param field
 	 * @throws Exception
-	 */
+	 *//*
 	private void storeFieldwithDependency(Field field) throws Exception {
-
+	
 		if (field.getOwnerType().isClass())
 			storeClasswithDependency((clonepedia.model.ontology.Class) field
 					.getOwnerType());
 		else
 			storeInterfaceWithDependency((Interface) field.getOwnerType());
-
+	
 		Properties fieldProperties = new Properties();
 		fieldProperties.put("fieldName", field.getFieldName());
 		fieldProperties.put("ownerId", field.getOwnerType().getId());
-
+	
 		Properties typeProperties = new Properties();
 		VarType varType = field.getFieldType();
 		typeProperties = putTypeInformation("field", typeProperties, varType);
 		if (typeProperties == null)
 			return;
-
+	
 		fieldProperties.putAll(typeProperties);
-
+	
 		String sql = generateInsertfromTemplateSQL(Entity.Field,
 				fieldProperties);
-
+	
 		try {
 			stat = conn.prepareStatement(sql);
 			stat.executeUpdate();
@@ -1840,51 +1886,51 @@ public class DBOperator {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-
+	
 		closePreparedStatement(stat);
-
+	
 	}
-
-	/**
+	
+	*//**
 	 * This method can only be called by
 	 * <code>getTheExistingMethodorCreateOne</code>. It is used to create a
 	 * brand new method.
 	 * 
 	 * @param method
 	 * @throws Exception
-	 */
+	 *//*
 	private void storeMethodwithDependency(Method method) throws Exception {
-
+	
 		ComplexType type = method.getOwner();
 		
-		/*if(type.getSimpleName().length() == 0)
-			System.out.print("");*/
+		if(type.getSimpleName().length() == 0)
+			System.out.print("");
 		
 		if (type.isClass())
 			storeClasswithDependency((Class) type);
 		else
 			storeInterfaceWithDependency((Interface) type);
-
+	
 		Properties methodProperties = new Properties();
 		// conMethodProperties.put("methodId", method.getMethodId());
-
+	
 		// Properties valMethodProperties = new Properties();
 		methodProperties.put("ownerId", method.getOwner().getId());
 		methodProperties.put("methodName", method.getMethodName());
-
+	
 		if (method.getReturnType() != null) {
 			methodProperties = putTypeInformation("return", methodProperties,
 					method.getReturnType());
 			if (methodProperties == null)
 				return;
 		}
-
+	
 		methodProperties.put("methodId", method.getMethodId());
 		// conMethodProperties.putAll(valMethodProperties);
 		// System.out.print("");
 		String sql = generateInsertfromTemplateSQL(Entity.Method,
 				methodProperties);
-
+	
 		try {
 			stat = conn.prepareStatement(sql);
 			stat.executeUpdate();
@@ -1895,7 +1941,7 @@ public class DBOperator {
 		closePreparedStatement(stat);
 		storeMethodParameter(method);
 	}
-
+	
 	private void storeMethodParameter(Method method) throws Exception {
 		Integer order = 1;
 		for (Variable parameter : method.getParameters()) {
@@ -1904,24 +1950,24 @@ public class DBOperator {
 			paramProperties.put("parameterOrder", order.toString());
 			paramProperties = putTypeInformation("parameter", paramProperties,
 					parameter.getVariableType());
-
+	
 			Properties paramValProperties = new Properties();
 			paramValProperties
 					.put("parameterName", parameter.getVariableName());
-
+	
 			if (null == paramProperties)
 				return;
-
+	
 			String sql = "";
-			/**
+			*//**
 			 * There is no need to update the record if the record has already
 			 * existed.
-			 */
+			 *//*
 			if (!checkIfanObjectExist(Entity.MethodParameter, paramProperties)) {
 				paramProperties.putAll(paramValProperties);
 				sql = generateInsertfromTemplateSQL(Entity.MethodParameter,
 						paramProperties);
-
+	
 				try {
 					stat = conn.prepareStatement(sql);
 					stat.executeUpdate();
@@ -1930,79 +1976,72 @@ public class DBOperator {
 					e.printStackTrace();
 				}
 			}
-
+	
 			closePreparedStatement(stat);
 			order++;
 		}
 	}
-
-	/**
+	
+	*//**
 	 * This method can only be called by
 	 * <code>getTheExistingClassorCreateOne</code> method. It is used to insert
 	 * a brand new class.
 	 * 
 	 * @param clas
-	 */
+	 *//*
 	private void storeClass(clonepedia.model.ontology.Class clas) {
 		try {
 			Project project = clas.getProject();
-
+	
 			Properties conClassProperties = new Properties();
 			conClassProperties.put("classFullName", clas.getFullName());
 			conClassProperties.put("projectName", project.getProjectName());
 			conClassProperties.put("classId", clas.getId());
-
+	
 			String sql = generateInsertfromTemplateSQL(Entity.Class,
 					conClassProperties);
-
+	
 			stat = conn.prepareStatement(sql);
 			stat.executeUpdate();
-
+	
 			stat.close();
-
+	
 		} catch (SQLException e) {
 			closePreparedStatement(stat);
 			e.printStackTrace();
 		}
 	}
-
-	/**
-	 * This method can only be called by
-	 * <code>getTheExistingInterfaceorCreateOne</code> method. It is used to
-	 * insert a brand new interface.
-	 * 
-	 * @param interf
-	 */
+	
 	private void storeInterface(clonepedia.model.ontology.Interface interf) {
 		try {
 			Project project = interf.getProject();
-
+	
 			Properties conInterfaceProperties = new Properties();
 			conInterfaceProperties.put("interfaceFullName",
 					interf.getFullName());
 			conInterfaceProperties.put("projectName", project.getProjectName());
 			conInterfaceProperties.put("interfaceId", interf.getId());
-
+	
 			String sql = generateInsertfromTemplateSQL(Entity.Interface,
 					conInterfaceProperties);
-
+	
 			stat = conn.prepareStatement(sql);
 			stat.executeUpdate();
-
+	
 			stat.close();
-
+	
 		} catch (SQLException e) {
 			closePreparedStatement(stat);
 			e.printStackTrace();
 		}
 	}
-
+	
 	private Properties putTypeInformation(String commonString,
 			Properties originalProperties, VarType varType) throws Exception {
-
+	
 		String type = commonString + "Type";
 		String typeCategory = commonString + "TypeCategory";
-
+	
 		if (varType instanceof PrimiType) {
 			PrimiType primiType = (PrimiType) varType;
 			originalProperties.put(type, primiType.getTypeName());
@@ -2029,80 +2068,144 @@ public class DBOperator {
 			originalProperties.put(typeCategory, "TypeVariableType");
 		} else
 			throw new Exception("Unrecoginzed vartype" + varType.toString());
-
+	
 		return originalProperties;
+	}*/
+	
+	public ArrayList<DataRecord> getDataRecords(DBTable table, Properties conditionProperties){
+		return getDataRecords(new DBTable[]{table}, conditionProperties, null);
 	}
-
-	/**
-	 * The objectName is an entity in database
-	 * 
-	 * @param objectName
-	 * @param properties
-	 * @return
-	 */
-	private boolean checkIfanObjectExist(Entity objectName,
-			Properties properties) {
-		return checkIfaRecordExistInDB(objectName, properties);
+	
+	public ArrayList<DataRecord> getDataRecords(DBTable table, Properties conditionProperties, String[] orderedColumns){
+		return getDataRecords(new DBTable[]{table}, conditionProperties, orderedColumns);
 	}
-
-	private boolean checkIfaRelationExist(Relation relationType,
-			Properties properties) {
-		return checkIfaRecordExistInDB(relationType, properties);
+	
+	public ArrayList<DataRecord> getDataRecords(DBTable[] tables, Properties conditionProperties){
+		return getDataRecords(tables, conditionProperties, null);
 	}
-
-	private boolean checkIfaRecordExistInDB(Entity en, Properties properties) {
+	
+	@SuppressWarnings("unchecked")
+	public ArrayList<DataRecord> getDataRecords(DBTable[] tables, Properties conditionProperties, String[] orderedColumns){
+		ArrayList<DataRecord> records = new ArrayList<DataRecord>();
 		ResultSet rs = null;
 		try {
-			String sql = generateSelectfromTemplateSQL(en, properties);
+			String sql;
+			sql = generateSelectFromTemplateSQL(tables, conditionProperties, orderedColumns);
+	
 			stat = conn.prepareStatement(sql);
 			rs = stat.executeQuery();
-
-			boolean flag = rs.next();
-			rs.close();
-			stat.close();
-
-			return flag;
-
+			
+			while (rs.next()) {
+				DataRecord record = new DataRecord();
+				
+				ResultSetMetaData rsmd = rs.getMetaData();
+				for(int i=1; i<=rsmd.getColumnCount(); i++){
+					String columnName = rsmd.getColumnName(i);
+					String value = rs.getString(columnName);
+					
+					if(null != value){
+						record.put(columnName, value);
+					}
+					
+				}
+				
+				records.add(record);
+			}
 		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
 			closeResultSet(rs);
+			closePreparedStatement(stat);
+		}
+		
+		return records;
+	}
+	
+	public void insertDataRecord(DBTable table, Properties valueProperties){
+		try {
+			String sql = generateInsertFromTemplateSQL(table,
+					valueProperties);
+	
+			stat = conn.prepareStatement(sql);
+			stat.executeUpdate();
+			stat.close();
+	
+		} catch (SQLException e) {
+			closePreparedStatement(stat);
+			e.printStackTrace();
+		}
+	}
+	
+	public void updateDataRecord(DBTable table, Properties valueProperties, Properties conditionProperites){
+		try {
+			String sql = generateUpdateFromTemplateSQL(table, valueProperties, conditionProperites);
+	
+			stat = conn.prepareStatement(sql);
+			stat.executeUpdate();
+			stat.close();
+	
+		} catch (SQLException e) {
+			closePreparedStatement(stat);
+			e.printStackTrace();
+		}
+	}
+	
+	public void deleteDataRecord(DBTable table, Properties properties) {
+		try {
+			String sql = generateDeleteFromTemplateSQL(table, properties);
+			stat = conn.prepareStatement(sql);
+			stat.executeUpdate();
+			stat.close();
+		} catch (SQLException e) {
 			closePreparedStatement(stat);
 			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		return false;
 	}
-
-	private boolean checkIfaRecordExistInDB(Relation r, Properties properties) {
-		ResultSet rs = null;
-		try {
-			String sql = generateSelectfromTemplateSQL(r, properties);
-			stat = conn.prepareStatement(sql);
-			rs = stat.executeQuery();
-
-			boolean flag = rs.next();
-			rs.close();
-			stat.close();
-
-			return flag;
-
-		} catch (SQLException e) {
-			closeResultSet(rs);
-			closePreparedStatement(stat);
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
+	
+	@SuppressWarnings("unchecked")
+	private String generateSelectFromTemplateSQL(DBTable[] tables,
+			Properties properties, String[] orderedColumns) {
+		String sql = "select * from ";
+	
+		for (int i = 0; i < tables.length; i++) {
+			sql += tables[i].getName() + ",";
 		}
-
-		return false;
+	
+		sql = sql.substring(0, sql.length() - 1);
+		sql += " where ";
+	
+		Enumeration<String> en = (Enumeration<String>) properties.propertyNames();
+	
+		while (en.hasMoreElements()) {
+			String property = en.nextElement();
+			String value = properties.getProperty(property);
+	
+			sql += property + "='" + value + "' and ";
+		}
+	
+		sql = sql.substring(0, sql.length() - 5);
+	
+		if(null != orderedColumns){
+			sql += " order by ";
+			for(String orderedColumn: orderedColumns){
+				sql += orderedColumn + ", ";
+			}
+			sql = sql.substring(0, sql.length()-2);
+		}
+		
+		return sql;
 	}
 
 	@SuppressWarnings("unchecked")
-	private String generateSelectfromTemplateSQL(Entity e, Properties properties) {
-		String sql = "select * from ";
-
-		sql += e.toString() + " where ";
+	private String generateDeleteFromTemplateSQL(DBTable table,
+			Properties properties) {
+		String sql = "delete * from ";
+		
+		sql += table.getName() + " where ";
 		Enumeration<String> en = (Enumeration<String>) properties
 				.propertyNames();
 
@@ -2119,25 +2222,49 @@ public class DBOperator {
 	}
 
 	@SuppressWarnings("unchecked")
-	private String generateCascadeSelectfromTemplateSQL(String[] tableNames,
-			Properties properties) {
-		String sql = "select * from ";
+	private String generateInsertFromTemplateSQL(DBTable table,
+			Properties valueProperties) {
+		String sql1 = "insert into " + table.getName() + "(";
+		String sql2 = ") value(";
+		String sql3 = ")";
+		Enumeration<String> valueEn = (Enumeration<String>) valueProperties
+				.propertyNames();
+		while (valueEn.hasMoreElements()) {
+			String valueProp = valueEn.nextElement();
+			String valueVal = valueProperties.getProperty(valueProp);
 
-		for (int i = 0; i < tableNames.length; i++) {
-			sql += tableNames[i] + ",";
+			sql1 += valueProp + ", ";
+			sql2 += "'" + valueVal + "', ";
 		}
 
-		sql = sql.substring(0, sql.length() - 1);
+		sql1 = sql1.substring(0, sql1.length() - 2);
+		sql2 = sql2.substring(0, sql2.length() - 2);
+
+		return sql1 + sql2 + sql3;
+	}
+
+	@SuppressWarnings("unchecked")
+	private String generateUpdateFromTemplateSQL(DBTable table,
+			Properties valueProperties, Properties conditionalProperties) {
+		String sql = "update " + table.toString() + " set ";
+		Enumeration<String> valueEn = (Enumeration<String>) valueProperties
+				.propertyNames();
+		while (valueEn.hasMoreElements()) {
+			String valueProp = valueEn.nextElement();
+			String valueVal = valueProperties.getProperty(valueProp);
+			sql += valueProp + "='" + valueVal + "', ";
+		}
+
+		sql = sql.substring(0, sql.length() - 2);
 		sql += " where ";
 
-		Enumeration<String> en = (Enumeration<String>) properties
+		Enumeration<String> conditionalEn = (Enumeration<String>) conditionalProperties
 				.propertyNames();
-
-		while (en.hasMoreElements()) {
-			String property = en.nextElement();
-			String value = properties.getProperty(property);
-
-			sql += property + "=" + value + " and ";
+		while (conditionalEn.hasMoreElements()) {
+			String conditionalProp = conditionalEn.nextElement();
+			String conditionalVal = conditionalProperties
+					.getProperty(conditionalProp);
+			sql += conditionalProp + "='" + conditionalVal + "' and ";
 		}
 
 		sql = sql.substring(0, sql.length() - 5);
@@ -2145,7 +2272,49 @@ public class DBOperator {
 		return sql;
 	}
 
-	@SuppressWarnings("unchecked")
+	
+
+	private void closePreparedStatement(PreparedStatement stat) {
+		if (null != stat) {
+			try {
+				stat.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void closeResultSet(ResultSet rs) {
+		if (null != rs) {
+			try {
+				rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	/*@SuppressWarnings("unchecked")
+	private String generateSelectfromTemplateSQL(DBTable table, Properties properties) {
+		String sql = "select * from ";
+	
+		sql += table.toString() + " where ";
+		Enumeration<String> en = (Enumeration<String>) properties
+				.propertyNames();
+	
+		while (en.hasMoreElements()) {
+			String property = en.nextElement();
+			String value = properties.getProperty(property);
+	
+			sql += property + "='" + value + "' and ";
+		}
+	
+		sql = sql.substring(0, sql.length() - 5);
+	
+		return sql;
+	}*/
+	
+	/*@SuppressWarnings("unchecked")
 	private String generateUpdatefromTemplateSQL(Entity e,
 			Properties valueProperties, Properties conditionalProperties) {
 		String sql = "update " + e.toString() + " set ";
@@ -2172,86 +2341,33 @@ public class DBOperator {
 		sql = sql.substring(0, sql.length() - 5);
 
 		return sql;
-	}
+	}*/
 
-	@SuppressWarnings("unchecked")
-	private String generateInsertfromTemplateSQL(Entity e,
-			Properties valueProperties) {
-		String sql1 = "insert into " + e.toString() + "(";
-		String sql2 = ") value(";
-		String sql3 = ")";
-		Enumeration<String> valueEn = (Enumeration<String>) valueProperties
-				.propertyNames();
-		while (valueEn.hasMoreElements()) {
-			String valueProp = valueEn.nextElement();
-			String valueVal = valueProperties.getProperty(valueProp);
-
-			sql1 += valueProp + ", ";
-			sql2 += "'" + valueVal + "', ";
+	/*public boolean checkIfaRecordExistInDB(Relation r, Properties properties) {
+		ResultSet rs = null;
+		try {
+			String sql = generateSelectfromTemplateSQL(r, properties);
+			stat = conn.prepareStatement(sql);
+			rs = stat.executeQuery();
+	
+			boolean flag = rs.next();
+			rs.close();
+			stat.close();
+	
+			return flag;
+	
+		} catch (SQLException e) {
+			closeResultSet(rs);
+			closePreparedStatement(stat);
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-
-		sql1 = sql1.substring(0, sql1.length() - 2);
-		sql2 = sql2.substring(0, sql2.length() - 2);
-
-		return sql1 + sql2 + sql3;
-	}
-
-	@SuppressWarnings("unchecked")
-	private String generateSelectfromTemplateSQL(Relation r,
-			Properties properties) /* throws Exception */{
-		String sql = "select * from ";
-		/*
-		 * if (type.equals(SELECT)) sql = "select * from "; else if
-		 * (type.equals(DELETE)) sql = "delete from "; else throw new
-		 * Exception();
-		 */
-
-		sql += r.toString() + " where ";
-		Enumeration<String> en = (Enumeration<String>) properties
-				.propertyNames();
-
-		while (en.hasMoreElements()) {
-			String property = en.nextElement();
-			String value = properties.getProperty(property);
-
-			sql += property + "='" + value + "' and ";
-		}
-
-		sql = sql.substring(0, sql.length() - 5);
-
-		return sql;
-	}
-
-	@SuppressWarnings("unchecked")
-	private String generateUpdatefromTemplateSQL(Relation r,
-			Properties valueProperties, Properties conditionalProperties) {
-		String sql = "update " + r.toString() + " set ";
-		Enumeration<String> valueEn = (Enumeration<String>) valueProperties
-				.propertyNames();
-		while (valueEn.hasMoreElements()) {
-			String valueProp = valueEn.nextElement();
-			String valueVal = valueProperties.getProperty(valueProp);
-			sql += valueProp + "='" + valueVal + "', ";
-		}
-
-		sql = sql.substring(0, sql.length() - 2);
-		sql += " where ";
-
-		Enumeration<String> conditionalEn = (Enumeration<String>) conditionalProperties
-				.propertyNames();
-		while (conditionalEn.hasMoreElements()) {
-			String conditionalProp = conditionalEn.nextElement();
-			String conditionalVal = conditionalProperties
-					.getProperty(conditionalProp);
-			sql += conditionalProp + "='" + conditionalVal + "' and ";
-		}
-
-		sql = sql.substring(0, sql.length() - 5);
-
-		return sql;
-	}
-
-	@SuppressWarnings("unchecked")
+	
+		return false;
+	}*/
+	
+	/*@SuppressWarnings("unchecked")
 	private String generateInsertfromTemplateSQL(Relation r,
 			Properties valueProperties) {
 		String sql1 = "insert into " + r.toString() + "(";
@@ -2271,25 +2387,31 @@ public class DBOperator {
 		sql2 = sql2.substring(0, sql2.length() - 2);
 
 		return sql1 + sql2 + sql3;
-	}
+	}*/
+	
+	/*@SuppressWarnings("unchecked")
+	private String generateSelectfromTemplateSQL(Relation r,
+			Properties properties)  throws Exception {
+		String sql = "select * from ";
+		
+		 * if (type.equals(SELECT)) sql = "select * from "; else if
+		 * (type.equals(DELETE)) sql = "delete from "; else throw new
+		 * Exception();
+		 
 
-	private void closePreparedStatement(PreparedStatement stat) {
-		if (null != stat) {
-			try {
-				stat.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+		sql += r.toString() + " where ";
+		Enumeration<String> en = (Enumeration<String>) properties
+				.propertyNames();
 
-	private void closeResultSet(ResultSet rs) {
-		if (null != rs) {
-			try {
-				rs.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+		while (en.hasMoreElements()) {
+			String property = en.nextElement();
+			String value = properties.getProperty(property);
+
+			sql += property + "='" + value + "' and ";
 		}
-	}
+
+		sql = sql.substring(0, sql.length() - 5);
+
+		return sql;
+	}*/
 }

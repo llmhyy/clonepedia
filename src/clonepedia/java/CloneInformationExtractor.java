@@ -17,7 +17,7 @@ import org.eclipse.jdt.core.dom.TypeLiteral;
 
 
 import clonepedia.clonefilepraser.CloneFileParser;
-import clonepedia.db.DBOperator;
+import clonepedia.businessdata.OntologicalDataFetcher;
 import clonepedia.java.ASTComparator;
 import clonepedia.java.model.*;
 import clonepedia.java.util.MinerUtilforJava;
@@ -38,6 +38,7 @@ import clonepedia.util.MinerUtil;
 
 public class CloneInformationExtractor {
 
+	private OntologicalDataFetcher fetcher = new OntologicalDataFetcher();
 	private Project project;
 	private CloneFileParser cloneFileParser;
 	private ArrayList<CloneSetWrapper> setWrapperList = new ArrayList<CloneSetWrapper>();
@@ -50,7 +51,7 @@ public class CloneInformationExtractor {
 	}
 	
 	private void storeInformation(){
-		DBOperator op = new DBOperator();
+		
 		for(CloneSetWrapper setWrapper: setWrapperList){
 			CloneSet set = setWrapper.getCloneSet();
 			try{
@@ -60,14 +61,14 @@ public class CloneInformationExtractor {
 					CloneInstance instance = instanceWrapper.getCloneInstance();
 					Method residingMethod = MinerUtilforJava.getMethodfromASTNode(instanceWrapper.getMethodDeclaration(), project);
 					instance.setResidingMethod(residingMethod);
-					op.storeCloneInstanceWithDependency(instance);
+					fetcher.storeCloneInstanceWithDependency(instance);
 				}
 				
 				for(ASTNode node: setWrapper.getCommonASTNodeList()){
 					if(MinerUtilforJava.isConcernedType(node)){
 						ProgrammingElement element = transferASTNodesToProgrammingElement(node, set);
 						if(null != element) 
-							op.storeCommonRelation(set, element);
+							fetcher.storeCommonRelation(set, element);
 						System.out.print("");
 					}
 				}
@@ -83,7 +84,7 @@ public class CloneInformationExtractor {
 							Method residingMethod = MinerUtilforJava.getMethodfromASTNode(instanceWrapper.getMethodDeclaration(), project);
 							instance.setResidingMethod(residingMethod);
 							if(null != element)
-								op.storeDiffRelation(groupId, instance, element);
+								fetcher.storeDiffRelation(groupId, instance, element);
 							//System.out.print("");
 						}
 					}
@@ -131,7 +132,7 @@ public class CloneInformationExtractor {
 				else if(name.resolveBinding().getKind() == IBinding.METHOD){
 					IMethodBinding methodBinding = (IMethodBinding) name.resolveBinding();
 					Method m = MinerUtilforJava.getMethodfromBinding(methodBinding, project);
-					Method method = new DBOperator().getTheExistingMethodorCreateOne(m);
+					Method method = fetcher.getTheExistingMethodorCreateOne(m);
 					return method;
 				}
 				else if(name.resolveBinding().getKind() == IBinding.VARIABLE){
@@ -139,7 +140,7 @@ public class CloneInformationExtractor {
 					if(variableBinding.isField()){
 						Field f = MinerUtilforJava.getFieldfromBinding(variableBinding, project);
 						if(f.getOwnerType() != null){
-							Field field = new DBOperator().getTheExistingFieldorCreateOne(f);
+							Field field = fetcher.getTheExistingFieldorCreateOne(f);
 							return field;
 						}
 						else{

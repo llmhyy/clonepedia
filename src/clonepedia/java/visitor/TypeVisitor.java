@@ -16,7 +16,7 @@ import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
-import clonepedia.db.DBOperator;
+import clonepedia.businessdata.OntologicalDataFetcher;
 import clonepedia.java.util.MinerUtilforJava;
 import clonepedia.model.ontology.Class;
 import clonepedia.model.ontology.ComplexType;
@@ -30,7 +30,7 @@ import clonepedia.model.ontology.VarType;
 
 public class TypeVisitor extends ASTVisitor {
 	
-	private DBOperator op = new DBOperator();
+	private OntologicalDataFetcher fetcher = new OntologicalDataFetcher();
 	private Project project;
 	
 	@SuppressWarnings("rawtypes")
@@ -62,16 +62,16 @@ public class TypeVisitor extends ASTVisitor {
 				
 				classFullName = binding.getPackage().getName() + "." + 
 						/*outer.getName().getIdentifier() + "." + */simpleName.getIdentifier();
-				clas = op.getTheExistingClassorCreateOne(classFullName, project);
+				clas = fetcher.getTheExistingClassorCreateOne(classFullName, project);
 				
-				clonepedia.model.ontology.Class outerClass = op.getTheExistingClassorCreateOne(outerClassFullName, project);
+				clonepedia.model.ontology.Class outerClass = fetcher.getTheExistingClassorCreateOne(outerClassFullName, project);
 				clas.setOuterClass(outerClass);
 				
 				System.out.print("");
 			} 
 			else {
 				classFullName = binding.getPackage().getName() + "." + simpleName.getIdentifier();
-				clas = op.getTheExistingClassorCreateOne(classFullName, project);
+				clas = fetcher.getTheExistingClassorCreateOne(classFullName, project);
 			}
 			
 			
@@ -90,7 +90,7 @@ public class TypeVisitor extends ASTVisitor {
 				
 			}
 			
-			op.storeClasswithDependency(clas);
+			fetcher.storeClasswithDependency(clas);
 			
 			try {
 				parseandStoreFieldInformation(type, clas);
@@ -108,7 +108,7 @@ public class TypeVisitor extends ASTVisitor {
 		else{
 			String interfaceFullName = binding.getPackage().getName() + "." + simpleName.getIdentifier();
 			
-			clonepedia.model.ontology.Interface interf = op.getTheExistingInterfaceorCreateOne(interfaceFullName, project);
+			clonepedia.model.ontology.Interface interf = fetcher.getTheExistingInterfaceorCreateOne(interfaceFullName, project);
 			
 			List interfaceList = type.superInterfaceTypes();
 			for(int i=0; i<interfaceList.size(); i++){
@@ -117,7 +117,7 @@ public class TypeVisitor extends ASTVisitor {
 				interf.addSuperInterface(in);		
 			}
 			
-			op.storeInterfaceWithDependency(interf);
+			fetcher.storeInterfaceWithDependency(interf);
 			
 			try {
 				parseandStoreFieldInformation(type, interf);
@@ -144,7 +144,7 @@ public class TypeVisitor extends ASTVisitor {
 			/*if(method.getOwner().getSimpleName().length() == 0)
 				System.out.print("");*/
 			
-			op.getTheExistingMethodorCreateOne(method);
+			fetcher.getTheExistingMethodorCreateOne(method);
 			System.out.print("");
 		}
 	}
@@ -167,7 +167,7 @@ public class TypeVisitor extends ASTVisitor {
 					SimpleName sName = fragment.getName();
 					
 					Field field = new Field(sName.getIdentifier(), complexType, varType);
-					op.getTheExistingFieldorCreateOne(field);
+					fetcher.getTheExistingFieldorCreateOne(field);
 					//System.out.print("");
 				}
 			}

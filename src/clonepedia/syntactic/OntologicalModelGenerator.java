@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import clonepedia.db.DBOperator;
+import clonepedia.businessdata.OntologicalDataFetcher;
 import clonepedia.model.ontology.Class;
 import clonepedia.model.ontology.CloneInstance;
 import clonepedia.model.ontology.CloneSet;
@@ -35,6 +35,7 @@ public class OntologicalModelGenerator implements Serializable{
 	private Project project;
 	private CloneSets sets;
 	private HashMap<String, Long> setTimeMap = new HashMap<String, Long>();
+	private OntologicalDataFetcher fetcher = new OntologicalDataFetcher();
 
 	public void setSets(CloneSets sets) {
 		this.sets = sets;
@@ -159,7 +160,7 @@ public class OntologicalModelGenerator implements Serializable{
 
 	private void buildRelationsforInterface() {
 		for(Interface interf: interfacePool){
-			ArrayList<String> superInterfaceIds = new DBOperator().getExtendedInterfaceIds(interf.getId());
+			ArrayList<String> superInterfaceIds = fetcher.getExtendedInterfaceIds(interf.getId());
 			for(String id: superInterfaceIds){
 				Interface superInterf = interfacePool.getInterface(id);
 				interf.addSuperInterface(superInterf);
@@ -182,7 +183,7 @@ public class OntologicalModelGenerator implements Serializable{
 				clas.setSuperClass(superClass);
 				clas.setOuterClass(outerClass);
 				
-				ArrayList<String> interfaceIds = new DBOperator().getImplementedInterfaceIds(clas.getId());
+				ArrayList<String> interfaceIds = fetcher.getImplementedInterfaceIds(clas.getId());
 				for(String id: interfaceIds){
 					Interface interf = interfacePool.getInterface(id);
 					clas.getImplementedInterfaces().add(interf);
@@ -196,13 +197,12 @@ public class OntologicalModelGenerator implements Serializable{
 	}
 
 	private void buildRelationsforCommonPart() throws Exception {
-		DBOperator op = new DBOperator();
 		for(CloneSet set: sets.getCloneList()){
-			ArrayList<String> methodIds = op.getMethodIds(set.getId());
-			ArrayList<Field> fields = op.getFields(set.getId());
-			ArrayList<ComplexType> types = op.getTypes(set.getId());
-			ArrayList<Variable> variables = op.getVariables(set, set.getProject());
-			ArrayList<Constant> constants = op.getConstants(set);
+			ArrayList<String> methodIds = fetcher.getMethodIds(set.getId());
+			ArrayList<Field> fields = fetcher.getFields(set.getId());
+			ArrayList<ComplexType> types = fetcher.getTypes(set.getId());
+			ArrayList<Variable> variables = fetcher.getVariables(set, set.getProject());
+			ArrayList<Constant> constants = fetcher.getConstants(set);
 			
 			for(String methodId: methodIds){
 				Method method = methodPool.getMethod(methodId);
@@ -243,9 +243,8 @@ public class OntologicalModelGenerator implements Serializable{
 	}
 
 	private void buildRelationsforDiffPart() throws Exception {
-		DBOperator op = new DBOperator();
 		for(CloneSet set: sets.getCloneList()){
-			ArrayList<CloneInstance> instances = op.getPlainCloneInstances(set.getId());
+			ArrayList<CloneInstance> instances = fetcher.getPlainCloneInstances(set.getId());
 			for(CloneInstance instance: instances){
 				
 				String mId = instance.getResidingMethod().getMethodId();
@@ -257,7 +256,7 @@ public class OntologicalModelGenerator implements Serializable{
 				//cloneInstancePool.add(instance);
 			}
 			
-			ArrayList<String> counterRelationIds = op.getCounterRelationIds(set);
+			ArrayList<String> counterRelationIds = fetcher.getCounterRelationIds(set);
 			for(String counterRelationId: counterRelationIds){
 				CounterRelationGroup group = new CounterRelationGroup(counterRelationId);
 				set.addCounterRelationGroup(group);
@@ -265,11 +264,11 @@ public class OntologicalModelGenerator implements Serializable{
 			
 			for(CounterRelationGroup group: set.getCounterRelationGroups()){
 				for(CloneInstance instance: set){
-					String methodId = op.getMethodId(instance, group.getCounterRelationsId());
-					Field field = op.getField(instance, group.getCounterRelationsId());
-					ComplexType type = op.getType(instance, group.getCounterRelationsId());
-					Variable variable = op.getVariable(instance, group.getCounterRelationsId(), set.getProject());
-					Constant constant = op.getConstant(instance, group.getCounterRelationsId());
+					String methodId = fetcher.getMethodId(instance, group.getCounterRelationsId());
+					Field field = fetcher.getField(instance, group.getCounterRelationsId());
+					ComplexType type = fetcher.getType(instance, group.getCounterRelationsId());
+					Variable variable = fetcher.getVariable(instance, group.getCounterRelationsId(), set.getProject());
+					Constant constant = fetcher.getConstant(instance, group.getCounterRelationsId());
 					
 					if(null != methodId){
 						Method method = methodPool.getMethod(methodId);
@@ -305,14 +304,14 @@ public class OntologicalModelGenerator implements Serializable{
 	}
 
 	private void initializePools() throws Exception{
-		DBOperator op = new DBOperator();
-		sets = op.getPlainCloneSets(project);
+		
+		sets = fetcher.getPlainCloneSets(project);
 		
 		for(CloneSet set: sets.getCloneList())
 			set.setCloneSets(sets);
 		
-		classPool = op.getPlainClasses(project);
-		interfacePool = op.getPlainInterfaces(project);
+		classPool = fetcher.getPlainClasses(project);
+		interfacePool = fetcher.getPlainInterfaces(project);
 		
 		
 		methodPool = new MethodPool();

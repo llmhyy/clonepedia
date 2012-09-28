@@ -21,7 +21,7 @@ import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeLiteral;
 import org.eclipse.jdt.core.dom.BooleanLiteral;
 
-import clonepedia.db.DBOperator;
+import clonepedia.businessdata.OntologicalDataFetcher;
 import clonepedia.model.ontology.ComplexType;
 import clonepedia.model.ontology.EnumType;
 import clonepedia.model.ontology.Field;
@@ -237,17 +237,17 @@ public class MinerUtilforJava {
 	}
 
 	public static ComplexType transferTypeToComplexType(Type type, Project project) {
-		DBOperator op = new DBOperator();
+		OntologicalDataFetcher fetcher = new OntologicalDataFetcher();
 		String fullName = type.toString();
 		if (!fullName.contains("."))
 			fullName = type.resolveBinding().getPackage().getName() + "."
 					+ fullName;
 
 		if (type.resolveBinding().isClass())
-			return (ComplexType) op.getTheExistingClassorCreateOne(fullName,
+			return (ComplexType) fetcher.getTheExistingClassorCreateOne(fullName,
 					project);
 		else if (type.resolveBinding().isInterface())
-			return (ComplexType) op.getTheExistingInterfaceorCreateOne(fullName,
+			return (ComplexType) fetcher.getTheExistingInterfaceorCreateOne(fullName,
 					project);
 		else
 			return null;
@@ -257,7 +257,7 @@ public class MinerUtilforJava {
 			Project project) {
 		
 		if(null == typeBinding) return null;
-		DBOperator op = new DBOperator();
+		OntologicalDataFetcher fetcher = new OntologicalDataFetcher();
 		String fullName = typeBinding.getName();
 		ComplexType superOrInterfaceComplexType = null;
 		boolean isAnonymous = false;
@@ -280,14 +280,14 @@ public class MinerUtilforJava {
 		}
 		
 		if (typeBinding.isClass()){
-			ComplexType t = (ComplexType) op.getTheExistingClassorCreateOne(fullName, project);
+			ComplexType t = (ComplexType) fetcher.getTheExistingClassorCreateOne(fullName, project);
 			if(isAnonymous)
 				t.addSuperClassOrInterface(superOrInterfaceComplexType);
 			return t;
 		}
 			
 		else if (typeBinding.isInterface())
-			return (ComplexType) op.getTheExistingInterfaceorCreateOne(fullName,
+			return (ComplexType) fetcher.getTheExistingInterfaceorCreateOne(fullName,
 					project);
 		else
 			return null;

@@ -37,6 +37,8 @@ public class TestSyntacticClustering extends TestCase {
 			PatternComparator patternComparator = new LevenshteinPatternComparator();
 			
 			CloneSets sets = (CloneSets)MinerUtil.deserialize("ontological_model");
+			
+			System.out.println("Ontological model extracted.");
 			//PathComparator pathComparator = new VectorPathComparator();
 			
 			
