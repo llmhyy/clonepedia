@@ -1,5 +1,6 @@
 package clonepedia.businessdata;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.UUID;
@@ -33,7 +34,12 @@ import clonepedia.syntactic.pools.ClassPool;
 import clonepedia.syntactic.pools.InterfacePool;
 import clonepedia.util.MinerUtil;
 
-public class OntologicalDataFetcher {
+public class OntologicalDataFetcher implements Serializable{
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 916566187626592609L;
 	
 	private DBOperator dbOperator = new DBOperator();
 	
