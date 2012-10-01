@@ -26,6 +26,6 @@ public class Settings {
 	//======================================================================
 	
 	//======================================================================
-	public static String projectName = "JHotDraw7.0.6";
-	public static String inputCloneFile = "D:\\Test_Project\\JHotDraw7.0.6\\jhotdraw.xml";
+	public static String projectName = "Clonepedia";
+	public static String inputCloneFile = "D:\\Test_Project\\Clonepedia\\out\\clonepedia.xml";
 }

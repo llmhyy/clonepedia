@@ -15,8 +15,8 @@ public class MergeableOntologicalElementComparator extends OntologicalElementCom
 	@Override
 	protected double computeDistanceOfConcreteType(OntologicalElement e1,
 			OntologicalElement e2) throws Exception {
-		if(e1.getOntologicalType() != OntologicalElementType.Field)
-			throw new Exception("Illegal ontological type " + e1.getOntologicalType() + "in FieldComparator");
+		if(e1.getOntologicalType() != OntologicalElementType.MergeableSimpleElement)
+			throw new Exception("Illegal ontological type " + e1.getOntologicalType() + "in MergeableOntologicalElementComparator");
 		
 		MergeableSimpleOntologicalElement me1 = (MergeableSimpleOntologicalElement)e1;
 		MergeableSimpleOntologicalElement me2 = (MergeableSimpleOntologicalElement)e2;

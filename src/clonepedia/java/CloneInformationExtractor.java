@@ -297,7 +297,7 @@ public class CloneInformationExtractor {
 		finalizeEndIndexes(setWrapper);
 		generatePatternSharingASTNodes(setWrapper, false);
 
-		System.out.println();
+		//System.out.println();
 	}
 
 	private void generatePatternSharingASTNodes(CloneSetWrapper s, boolean isForThePrefixCondition) {

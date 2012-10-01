@@ -41,14 +41,14 @@ public class OntologicalDataFetcher implements Serializable{
 	 */
 	private static final long serialVersionUID = 916566187626592609L;
 	
-	private DBOperator dbOperator = new DBOperator();
+	//private DBOperator dbOperator = new DBOperator();
 	
 	public ArrayList<String> getExtendedInterfaceIds(String interfaceId){
 		Properties properties = new Properties();
 		properties.put("subInterfaceId", interfaceId);
 		ArrayList<String> idList = new ArrayList<String>();
 		
-		ArrayList<DataRecord> records = dbOperator.getDataRecords(new Relation(Relation.InterfaceExtendRelation), properties);
+		ArrayList<DataRecord> records = DBOperator.getDataRecords(new Relation(Relation.InterfaceExtendRelation), properties);
 		for(DataRecord record: records){
 			String id = record.getProperty("superInterfaceId");
 			idList.add(id);
@@ -62,7 +62,7 @@ public class OntologicalDataFetcher implements Serializable{
 		properties.put("classId", classId);
 		ArrayList<String> idList = new ArrayList<String>();
 		
-		ArrayList<DataRecord> records = dbOperator.getDataRecords(new Relation(Relation.ImplementRelation), properties);
+		ArrayList<DataRecord> records = DBOperator.getDataRecords(new Relation(Relation.ImplementRelation), properties);
 		for(DataRecord record: records){
 			String id = record.getProperty("interfaceId");
 			idList.add(id);
@@ -76,7 +76,7 @@ public class OntologicalDataFetcher implements Serializable{
 		properties.put("cloneSetId", cloneSetId);
 		ArrayList<String> idList = new ArrayList<String>();
 		
-		ArrayList<DataRecord> records = dbOperator.getDataRecords(new Relation(Relation.CommonPartCall), properties);
+		ArrayList<DataRecord> records = DBOperator.getDataRecords(new Relation(Relation.CommonPartCall), properties);
 		for(DataRecord record: records){
 			String id = record.getProperty("methodId");
 			idList.add(id);
@@ -90,7 +90,7 @@ public class OntologicalDataFetcher implements Serializable{
 		properties.put("cloneSetId", cloneSetId);
 		ArrayList<Field> fields = new ArrayList<Field>();
 		
-		ArrayList<DataRecord> records = dbOperator.getDataRecords(new Relation(Relation.CommonPartAccess), properties);
+		ArrayList<DataRecord> records = DBOperator.getDataRecords(new Relation(Relation.CommonPartAccess), properties);
 		for(DataRecord record: records){
 			String fieldName = record.getProperty("fieldName");
 			String ownerId = record.getProperty("ownerId");
@@ -109,7 +109,7 @@ public class OntologicalDataFetcher implements Serializable{
 		properties.put("cloneSetId", cloneSetId);
 		ArrayList<ComplexType> types = new ArrayList<ComplexType>();
 		
-		ArrayList<DataRecord> records = dbOperator.getDataRecords(new Relation(Relation.CommonPartUseType), properties);
+		ArrayList<DataRecord> records = DBOperator.getDataRecords(new Relation(Relation.CommonPartUseType), properties);
 		for(DataRecord record: records){
 			String typeId = record.getProperty("typeId");
 			ComplexType type = getClassorInterfacebyId(typeId);
@@ -127,7 +127,7 @@ public class OntologicalDataFetcher implements Serializable{
 		
 		String methodId = null;
 		
-		ArrayList<DataRecord> records = dbOperator.getDataRecords(new Relation(Relation.DiffPartCall), properties);
+		ArrayList<DataRecord> records = DBOperator.getDataRecords(new Relation(Relation.DiffPartCall), properties);
 		for(DataRecord record: records){
 			methodId = record.getProperty("methodId");
 			return methodId;
@@ -144,7 +144,7 @@ public class OntologicalDataFetcher implements Serializable{
 		
 		Field field = null;
 		
-		ArrayList<DataRecord> records = dbOperator.getDataRecords(new Relation(Relation.DiffPartAccess), properties);
+		ArrayList<DataRecord> records = DBOperator.getDataRecords(new Relation(Relation.DiffPartAccess), properties);
 		for(DataRecord record: records){
 			String fieldName = record.getProperty("fieldName");
 			String ownerId = record.getProperty("ownerId");
@@ -167,7 +167,7 @@ public class OntologicalDataFetcher implements Serializable{
 		
 		ComplexType type = null;
 		
-		ArrayList<DataRecord> records = dbOperator.getDataRecords(new Relation(Relation.DiffPartUseType), properties);
+		ArrayList<DataRecord> records = DBOperator.getDataRecords(new Relation(Relation.DiffPartUseType), properties);
 		for(DataRecord record: records){
 			String typeId = record.getProperty("typeId");
 			type = getClassorInterfacebyId(typeId);
@@ -209,7 +209,7 @@ public class OntologicalDataFetcher implements Serializable{
 		properties.put("cloneInstanceId", instance.getId());
 		for(int i=0; i<relations.length; i++){
 			
-			ArrayList<DataRecord> relationRecords = dbOperator.getDataRecords(relations[i], properties);
+			ArrayList<DataRecord> relationRecords = DBOperator.getDataRecords(relations[i], properties);
 			for(DataRecord relationRecord: relationRecords){
 				String id = relationRecord.getProperty("counterRelationId");
 				if(!idList.contains(id) && null != id)
@@ -221,7 +221,7 @@ public class OntologicalDataFetcher implements Serializable{
 		ownerProperties.put("ownerId", instance.getId());
 		for(int i=0; i<entities.length; i++){
 			
-			ArrayList<DataRecord> entityRecords = dbOperator.getDataRecords(entities[i], ownerProperties);
+			ArrayList<DataRecord> entityRecords = DBOperator.getDataRecords(entities[i], ownerProperties);
 			for(DataRecord entityRecord: entityRecords){
 				String id = entityRecord.getProperty("counterRelationId");
 				if(!idList.contains(id) && null != id)
@@ -313,7 +313,7 @@ public class OntologicalDataFetcher implements Serializable{
 	private WordBag getSpecificEntityName(DBTable[] tables, String columnName, Properties properties){
 		WordBag wordBag = new WordBag();
 		
-		ArrayList<DataRecord> records = dbOperator.getDataRecords(tables, properties);
+		ArrayList<DataRecord> records = DBOperator.getDataRecords(tables, properties);
 		
 		for(DataRecord record: records){
 			String name = record.getProperty(columnName);
@@ -337,7 +337,7 @@ public class OntologicalDataFetcher implements Serializable{
 		Properties properties = new Properties();
 		properties.put("projectName", projectName);
 		
-		ArrayList<DataRecord> records = dbOperator.getDataRecords(new Entity(Entity.Project), properties);
+		ArrayList<DataRecord> records = DBOperator.getDataRecords(new Entity(Entity.Project), properties);
 		for(DataRecord record: records){
 			String projName = record.getProperty("projectName");
 			String programmingLanguage = record.getProperty("programmingLanguage");
@@ -362,7 +362,7 @@ public class OntologicalDataFetcher implements Serializable{
 		
 		Properties properties = new Properties();
 		properties.put("projectName", projectName);
-		ArrayList<DataRecord> records = dbOperator.getDataRecords(new Entity(Entity.Project), properties);
+		ArrayList<DataRecord> records = DBOperator.getDataRecords(new Entity(Entity.Project), properties);
 		for(DataRecord record: records){
 			String projName = record.getProperty("projectName");
 			String programmingLanguage = record.getProperty("programmingLanguage");
@@ -389,7 +389,7 @@ public class OntologicalDataFetcher implements Serializable{
 		Properties prop = new Properties();
 		prop.put("projectName", project.getProjectName());
 		
-		ArrayList<DataRecord> records = dbOperator.getDataRecords(new Entity(Entity.CloneSet), prop);
+		ArrayList<DataRecord> records = DBOperator.getDataRecords(new Entity(Entity.CloneSet), prop);
 		for(DataRecord record: records){
 			String cloneSetId = record.getProperty("cloneSetId");
 			CloneSet set = new CloneSet(cloneSetId, project);
@@ -406,7 +406,7 @@ public class OntologicalDataFetcher implements Serializable{
 		
 		ArrayList<CloneInstance> instances = new ArrayList<CloneInstance>();
 		
-		ArrayList<DataRecord> records = dbOperator.getDataRecords(new Entity(Entity.CloneInstance), properties);
+		ArrayList<DataRecord> records = DBOperator.getDataRecords(new Entity(Entity.CloneInstance), properties);
 		for(DataRecord record: records){
 			String cloneInstanceId = record.getProperty("cloneInstanceId");
 			String residingMethodId = record.getProperty("residingMethodId");
@@ -441,7 +441,7 @@ public class OntologicalDataFetcher implements Serializable{
 		
 		ClassPool classPool = new ClassPool();
 		
-		ArrayList<DataRecord> records = dbOperator.getDataRecords(new Entity(Entity.Class), properties);
+		ArrayList<DataRecord> records = DBOperator.getDataRecords(new Entity(Entity.Class), properties);
 		for(DataRecord record: records){
 			String classFullName = record.getProperty("classFullName");
 			String classId = record.getProperty("classId");
@@ -478,7 +478,7 @@ public class OntologicalDataFetcher implements Serializable{
 		properties.put("projectName", project.getProjectName());
 		InterfacePool interfacePool = new InterfacePool();
 		
-		ArrayList<DataRecord> records = dbOperator.getDataRecords(new Entity(Entity.Interface), properties);
+		ArrayList<DataRecord> records = DBOperator.getDataRecords(new Entity(Entity.Interface), properties);
 		for(DataRecord record: records){
 			String interfaceId = record.getProperty("interfaceId");
 			String interfaceFullName = record.getProperty("interfaceFullName");
@@ -503,7 +503,7 @@ public class OntologicalDataFetcher implements Serializable{
 		
 		ArrayList<Method> methodList = new ArrayList<Method>();
 		
-		ArrayList<DataRecord> methodRecords = dbOperator.getDataRecords(new Entity(Entity.Method), properties);
+		ArrayList<DataRecord> methodRecords = DBOperator.getDataRecords(new Entity(Entity.Method), properties);
 		for(DataRecord methodRecord: methodRecords){
 			String methodName = methodRecord.getProperty("methodName");
 			String methodId = methodRecord.getProperty("methodId");
@@ -517,7 +517,7 @@ public class OntologicalDataFetcher implements Serializable{
 			Properties paramProperties = new Properties();
 			paramProperties.put("methodId", methodId);
 			
-			ArrayList<DataRecord> paramRecords = dbOperator.getDataRecords(new Entity(Entity.MethodParameter), 
+			ArrayList<DataRecord> paramRecords = DBOperator.getDataRecords(new Entity(Entity.MethodParameter), 
 					paramProperties, new String[]{"parameterOrder"});
 			
 			for(DataRecord paramRecord: paramRecords){
@@ -547,7 +547,7 @@ public class OntologicalDataFetcher implements Serializable{
 
 		ArrayList<Field> fields = new ArrayList<Field>();
 		
-		ArrayList<DataRecord> records = dbOperator.getDataRecords(new Entity(Entity.Field), properties);
+		ArrayList<DataRecord> records = DBOperator.getDataRecords(new Entity(Entity.Field), properties);
 		for(DataRecord record: records){
 			String fieldName = record.getProperty("fieldName");
 			String fieldType = record.getProperty("fieldType");
@@ -570,7 +570,7 @@ public class OntologicalDataFetcher implements Serializable{
 		properties.put("ownerId", owner.getId());
 		ArrayList<Variable> variables = new ArrayList<Variable>();
 		
-		ArrayList<DataRecord> records = dbOperator.getDataRecords(new Entity(Entity.Variable), properties);
+		ArrayList<DataRecord> records = DBOperator.getDataRecords(new Entity(Entity.Variable), properties);
 		for(DataRecord record: records){
 			String variableName = record.getProperty("variableName");
 			String variableType = record.getProperty("variableType");
@@ -594,7 +594,7 @@ public class OntologicalDataFetcher implements Serializable{
 		properties.put("counterRelationId", counterRelationId);
 		Variable variable = null;
 		
-		ArrayList<DataRecord> records = dbOperator.getDataRecords(new Entity(Entity.Variable), properties);
+		ArrayList<DataRecord> records = DBOperator.getDataRecords(new Entity(Entity.Variable), properties);
 		for(DataRecord record: records){
 			String variableName = record.getProperty("variableName");
 			String variableType = record.getProperty("variableType");
@@ -616,7 +616,7 @@ public class OntologicalDataFetcher implements Serializable{
 		properties.put("ownerId", owner.getId());
 		ArrayList<Constant> constants = new ArrayList<Constant>();
 		
-		ArrayList<DataRecord> records = dbOperator.getDataRecords(new Entity(Entity.Constant), properties);
+		ArrayList<DataRecord> records = DBOperator.getDataRecords(new Entity(Entity.Constant), properties);
 		for(DataRecord record: records){
 			String constantName = record.getProperty("constantName");
 			String constantType = record.getProperty("constantType");
@@ -635,7 +635,7 @@ public class OntologicalDataFetcher implements Serializable{
 		properties.put("counterRelationId", counterRelationId);
 		Constant constant = null;
 		
-		ArrayList<DataRecord> records = dbOperator.getDataRecords(new Entity(Entity.Constant), properties);
+		ArrayList<DataRecord> records = DBOperator.getDataRecords(new Entity(Entity.Constant), properties);
 		for(DataRecord record: records){
 			String constantName = record.getProperty("constantName");
 			String constantType = record.getProperty("constantType");
@@ -695,8 +695,8 @@ public class OntologicalDataFetcher implements Serializable{
 		setProperties.put("cloneSetId", set.getId());
 		setProperties.put("projectName", set.getProject().getProjectName());
 
-		if (!dbOperator.checkIfanObjectExist(new Entity(Entity.CloneSet), setProperties)) {
-			dbOperator.insertDataRecord(new Entity(Entity.CloneSet), setProperties);
+		if (!DBOperator.checkIfanObjectExist(new Entity(Entity.CloneSet), setProperties)) {
+			DBOperator.insertDataRecord(new Entity(Entity.CloneSet), setProperties);
 		}
 	}
 
@@ -763,7 +763,7 @@ public class OntologicalDataFetcher implements Serializable{
 		relationProperties.put("methodId", method.getMethodId());
 		relationProperties.put("counterRelationId", counterRelationId);
 
-		dbOperator.insertDataRecord(new Relation(Relation.DiffPartCall), relationProperties);
+		DBOperator.insertDataRecord(new Relation(Relation.DiffPartCall), relationProperties);
 	}
 
 	private void storeDiffPartAccessRelation(String counterRelationId,
@@ -778,7 +778,7 @@ public class OntologicalDataFetcher implements Serializable{
 		relationProperties.put("ownerId", field.getOwnerType().getId());
 		relationProperties.put("counterRelationId", counterRelationId);
 
-		dbOperator.insertDataRecord(new Relation(Relation.DiffPartAccess), relationProperties);
+		DBOperator.insertDataRecord(new Relation(Relation.DiffPartAccess), relationProperties);
 	}
 
 	private void storeDiffPartUseTypeRelation(String counterRelationId,
@@ -801,7 +801,7 @@ public class OntologicalDataFetcher implements Serializable{
 		relationProperties.put("typeId", type.getId());
 		relationProperties.put("counterRelationId", counterRelationId);
 
-		dbOperator.insertDataRecord(new Relation(Relation.DiffPartUseType), relationProperties);
+		DBOperator.insertDataRecord(new Relation(Relation.DiffPartUseType), relationProperties);
 	}
 
 	private void storeCommonPartCallRelation(CloneSet set, Method method)
@@ -813,7 +813,7 @@ public class OntologicalDataFetcher implements Serializable{
 		relationProperties.put("cloneSetId", set.getId());
 		relationProperties.put("methodId", method.getMethodId());
 
-		dbOperator.insertDataRecord(new Relation(Relation.CommonPartCall), relationProperties);
+		DBOperator.insertDataRecord(new Relation(Relation.CommonPartCall), relationProperties);
 	}
 
 	private void storeCommonPartAccessRelation(CloneSet set, Field field)
@@ -826,7 +826,7 @@ public class OntologicalDataFetcher implements Serializable{
 		relationProperties.put("fieldName", field.getFieldName());
 		relationProperties.put("ownerId", field.getOwnerType().getId());
 
-		dbOperator.insertDataRecord(new Relation(Relation.CommonPartAccess), relationProperties);
+		DBOperator.insertDataRecord(new Relation(Relation.CommonPartAccess), relationProperties);
 	}
 
 	private void storeVariable(RegionalOwner owner, Variable variable,
@@ -847,7 +847,7 @@ public class OntologicalDataFetcher implements Serializable{
 		if (owner instanceof CloneInstance)
 			variableProperties.put("counterRelationId", counterRelationId);
 		
-		dbOperator.insertDataRecord(new Entity(Entity.Variable), variableProperties);
+		DBOperator.insertDataRecord(new Entity(Entity.Variable), variableProperties);
 	}
 
 	private void storeConstant(RegionalOwner owner, Constant constant,
@@ -871,7 +871,7 @@ public class OntologicalDataFetcher implements Serializable{
 		if (owner instanceof CloneInstance)
 			consProperties.put("counterRelationId", counterRelationId);
 
-		dbOperator.insertDataRecord(new Entity(Entity.Constant), consProperties);
+		DBOperator.insertDataRecord(new Entity(Entity.Constant), consProperties);
 	}
 
 	private void storeCommonPartUseTypeRelation(CloneSet set, ComplexType type)
@@ -894,7 +894,7 @@ public class OntologicalDataFetcher implements Serializable{
 		relationProperties.put("cloneSetId", set.getId());
 		relationProperties.put("typeId", type.getId());
 
-		dbOperator.insertDataRecord(new Relation(Relation.CommonPartUseType), relationProperties);
+		DBOperator.insertDataRecord(new Relation(Relation.CommonPartUseType), relationProperties);
 	}
 
 	private String getCloneInstanceId(Properties instanceProperties)
@@ -902,7 +902,7 @@ public class OntologicalDataFetcher implements Serializable{
 		
 		String instanceId = null;
 		
-		ArrayList<DataRecord> records = dbOperator.getDataRecords(new Entity(Entity.CloneInstance), instanceProperties);
+		ArrayList<DataRecord> records = DBOperator.getDataRecords(new Entity(Entity.CloneInstance), instanceProperties);
 		for(DataRecord record: records){
 			instanceId = record.getProperty("cloneInstanceId");
 			return instanceId;
@@ -930,7 +930,7 @@ public class OntologicalDataFetcher implements Serializable{
 
 		;
 
-		if (!dbOperator.checkIfanObjectExist(new Entity(Entity.CloneInstance), instanceConProperties)) {
+		if (!DBOperator.checkIfanObjectExist(new Entity(Entity.CloneInstance), instanceConProperties)) {
 			Properties instanceValProperties = new Properties();
 			String instanceId = "ci" + UUID.randomUUID();
 
@@ -941,7 +941,7 @@ public class OntologicalDataFetcher implements Serializable{
 
 			instanceConProperties.putAll(instanceValProperties);
 			
-			dbOperator.insertDataRecord(new Entity(Entity.CloneInstance), instanceConProperties);
+			DBOperator.insertDataRecord(new Entity(Entity.CloneInstance), instanceConProperties);
 		} else {
 			String instanceId = getCloneInstanceId(instanceConProperties);
 			instance.setId(instanceId);
@@ -958,11 +958,11 @@ public class OntologicalDataFetcher implements Serializable{
 				project.getProgrammingLanguage());
 		valProperties.put("projectFilePath", project.getProjectFilePath());
 
-		if (dbOperator.checkIfanObjectExist(new Entity(Entity.Project), conProperties))
-			dbOperator.updateDataRecord(new Entity(Entity.Project), valProperties, conProperties);
+		if (DBOperator.checkIfanObjectExist(new Entity(Entity.Project), conProperties))
+			DBOperator.updateDataRecord(new Entity(Entity.Project), valProperties, conProperties);
 		else {
 			conProperties.putAll(valProperties);
-			dbOperator.insertDataRecord(new Entity(Entity.Project), conProperties);
+			DBOperator.insertDataRecord(new Entity(Entity.Project), conProperties);
 		}
 	}
 
@@ -977,11 +977,11 @@ public class OntologicalDataFetcher implements Serializable{
 		relationProperties.put("classId", clas.getId());
 		relationProperties.put("interfaceId", interf.getId());
 
-		if (dbOperator.checkIfaRelationExist(new Relation(Relation.ImplementRelation),
+		if (DBOperator.checkIfaRelationExist(new Relation(Relation.ImplementRelation),
 				relationProperties))
-			dbOperator.updateDataRecord(new Relation(Relation.ImplementRelation), relationProperties, relationProperties);
+			DBOperator.updateDataRecord(new Relation(Relation.ImplementRelation), relationProperties, relationProperties);
 		else {
-			dbOperator.insertDataRecord(new Relation(Relation.ImplementRelation), relationProperties);
+			DBOperator.insertDataRecord(new Relation(Relation.ImplementRelation), relationProperties);
 		}
 
 	}
@@ -1001,11 +1001,11 @@ public class OntologicalDataFetcher implements Serializable{
 		relationProperties.put("subInterfaceId", subInterface.getId());
 		relationProperties.put("superInterfaceId", superInterface.getId());
 
-		if (dbOperator.checkIfaRelationExist(new Relation(Relation.InterfaceExtendRelation),
+		if (DBOperator.checkIfaRelationExist(new Relation(Relation.InterfaceExtendRelation),
 				relationProperties))
-			dbOperator.updateDataRecord(new Relation(Relation.InterfaceExtendRelation), relationProperties, relationProperties);
+			DBOperator.updateDataRecord(new Relation(Relation.InterfaceExtendRelation), relationProperties, relationProperties);
 		else {
-			dbOperator.insertDataRecord(new Relation(Relation.InterfaceExtendRelation), relationProperties);
+			DBOperator.insertDataRecord(new Relation(Relation.InterfaceExtendRelation), relationProperties);
 		}
 
 	}
@@ -1052,15 +1052,15 @@ public class OntologicalDataFetcher implements Serializable{
 					outerClass.getProject());
 		}
 		
-		if (dbOperator.checkIfanObjectExist(new Entity(Entity.Class), conClassProperties)) {
+		if (DBOperator.checkIfanObjectExist(new Entity(Entity.Class), conClassProperties)) {
 			valClassProperties.putAll(conClassProperties);
-			dbOperator.updateDataRecord(new Entity(Entity.Class), valClassProperties, conClassProperties);
+			DBOperator.updateDataRecord(new Entity(Entity.Class), valClassProperties, conClassProperties);
 		} else {
 			String classId = "cl" + UUID.randomUUID();
 			valClassProperties.put("classId", classId);
 			clas.setId(classId);
 			conClassProperties.putAll(valClassProperties);
-			dbOperator.insertDataRecord(new Entity(Entity.Class), conClassProperties);
+			DBOperator.insertDataRecord(new Entity(Entity.Class), conClassProperties);
 		}
 
 		if (clas.getImplementedInterfaces().size() != 0) {
@@ -1132,7 +1132,7 @@ public class OntologicalDataFetcher implements Serializable{
 	private ArrayList<clonepedia.model.ontology.Class> getClass(Properties properties) {
 		
 		ArrayList<clonepedia.model.ontology.Class> classes = new ArrayList<clonepedia.model.ontology.Class>();
-		ArrayList<DataRecord> records = dbOperator.getDataRecords(new Entity(Entity.Class), properties);
+		ArrayList<DataRecord> records = DBOperator.getDataRecords(new Entity(Entity.Class), properties);
 		
 		for(DataRecord record: records){
 			String projectName = record.getProperty("projectName");
@@ -1152,7 +1152,7 @@ public class OntologicalDataFetcher implements Serializable{
 	private ArrayList<Interface> getInterface(Properties properties) {
 		
 		ArrayList<Interface> interfaces = new ArrayList<Interface>();
-		ArrayList<DataRecord> records = dbOperator.getDataRecords(new Entity(Entity.Interface), properties);
+		ArrayList<DataRecord> records = DBOperator.getDataRecords(new Entity(Entity.Interface), properties);
 		
 		for(DataRecord record: records){
 			String projectName = record.getProperty("projectName");
@@ -1174,7 +1174,7 @@ public class OntologicalDataFetcher implements Serializable{
 		fieldProperties.put("fieldName", field.getFieldName());
 		fieldProperties.put("ownerId", field.getOwnerType().getId());
 		
-		ArrayList<DataRecord> records = dbOperator.getDataRecords(new Entity(Entity.Field), fieldProperties);
+		ArrayList<DataRecord> records = DBOperator.getDataRecords(new Entity(Entity.Field), fieldProperties);
 		if(records.size() == 0)
 			return null;
 		else
@@ -1189,13 +1189,13 @@ public class OntologicalDataFetcher implements Serializable{
 		if (method.getReturnType() != null)
 			methodProperties.put("returnType", method.getReturnType().toString());
 
-		ArrayList<DataRecord> methodRecords = dbOperator.getDataRecords(new Entity(Entity.Method), methodProperties);
+		ArrayList<DataRecord> methodRecords = DBOperator.getDataRecords(new Entity(Entity.Method), methodProperties);
 		for(DataRecord methodRecord: methodRecords){
 			String methodId = methodRecord.getProperty("methodId");
 
 			Properties paramProperties = new Properties();
 			paramProperties.put("methodId", methodId);
-			ArrayList<DataRecord> paramRecords = dbOperator.getDataRecords(new Entity(Entity.MethodParameter), paramProperties);
+			ArrayList<DataRecord> paramRecords = DBOperator.getDataRecords(new Entity(Entity.MethodParameter), paramProperties);
 			if (hasTheCorrespondingParameters(method, paramRecords)) {
 				method.setMethodId(methodId);
 				return method;
@@ -1256,7 +1256,7 @@ public class OntologicalDataFetcher implements Serializable{
 
 		fieldProperties.putAll(typeProperties);
 
-		dbOperator.insertDataRecord(new Entity(Entity.Field), fieldProperties);
+		DBOperator.insertDataRecord(new Entity(Entity.Field), fieldProperties);
 	}
 
 	/**
@@ -1296,7 +1296,7 @@ public class OntologicalDataFetcher implements Serializable{
 		methodProperties.put("methodId", method.getMethodId());
 		// conMethodProperties.putAll(valMethodProperties);
 		// System.out.print("");
-		dbOperator.insertDataRecord(new Entity(Entity.Method), methodProperties);
+		DBOperator.insertDataRecord(new Entity(Entity.Method), methodProperties);
 		
 		storeMethodParameter(method);
 	}
@@ -1321,9 +1321,9 @@ public class OntologicalDataFetcher implements Serializable{
 			 * There is no need to update the record if the record has already
 			 * existed.
 			 */
-			if (!dbOperator.checkIfanObjectExist(new Entity(Entity.MethodParameter), paramProperties)) {
+			if (!DBOperator.checkIfanObjectExist(new Entity(Entity.MethodParameter), paramProperties)) {
 				paramProperties.putAll(paramValProperties);
-				dbOperator.insertDataRecord(new Entity(Entity.MethodParameter), paramProperties);
+				DBOperator.insertDataRecord(new Entity(Entity.MethodParameter), paramProperties);
 			}
 			
 			order++;
@@ -1345,7 +1345,7 @@ public class OntologicalDataFetcher implements Serializable{
 		conClassProperties.put("projectName", project.getProjectName());
 		conClassProperties.put("classId", clas.getId());
 
-		dbOperator.insertDataRecord(new Entity(Entity.Class), conClassProperties);
+		DBOperator.insertDataRecord(new Entity(Entity.Class), conClassProperties);
 	}
 
 	/**
@@ -1364,7 +1364,7 @@ public class OntologicalDataFetcher implements Serializable{
 		conInterfaceProperties.put("projectName", project.getProjectName());
 		conInterfaceProperties.put("interfaceId", interf.getId());
 
-		dbOperator.insertDataRecord(new Entity(Entity.Interface), conInterfaceProperties);
+		DBOperator.insertDataRecord(new Entity(Entity.Interface), conInterfaceProperties);
 	}
 
 	private Properties putTypeInformation(String commonString,
