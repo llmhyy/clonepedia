@@ -1,20 +1,13 @@
 package clonepedia.java.visitor;
 
-//import java.util.ArrayList;
-import java.util.List;
-
-
+import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.FieldDeclaration;
+import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.SimpleName;
-import org.eclipse.jdt.core.dom.SimpleType;
-//import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
-import org.eclipse.jdt.core.dom.Type;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
-import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 import clonepedia.businessdata.OntologicalDataFetcher;
 import clonepedia.java.util.MinerUtilforJava;
@@ -32,149 +25,81 @@ public class TypeVisitor extends ASTVisitor {
 	
 	private OntologicalDataFetcher fetcher = new OntologicalDataFetcher();
 	private Project project;
+	private CompilationUnit compilationUnit;
 	
-	@SuppressWarnings("rawtypes")
+	public TypeVisitor(CompilationUnit compilationUnit){
+		this.compilationUnit = compilationUnit;
+	}
+	
+	public boolean visit(AnonymousClassDeclaration acd){
+		
+		ITypeBinding binding = acd.resolveBinding();
+		
+		Class anonymousClass = MinerUtilforJava.extractAndStoreClassInformation(binding, true, 
+				fetcher, compilationUnit, project);
+		
+		try {
+			parseAndStoreFieldInformation(binding, anonymousClass);
+			parseAndStoreMethodInformation(binding, anonymousClass, this.compilationUnit);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return true;
+	}
+	
 	public boolean visit(TypeDeclaration type){
-		
-		//DBOperation op = new DBOperation();
-		
-		SimpleName simpleName = type.getName();
-		ITypeBinding binding = simpleName.resolveTypeBinding();
-		
-		/*if(simpleName.getIdentifier().length() == 0)
-			System.out.print("");*/
+		ITypeBinding binding = type.getName().resolveTypeBinding();
 		
 		/**
 		 * The type to deal with is a class
 		 */
 		if(!type.isInterface()){
-			
-			String classFullName;
-			clonepedia.model.ontology.Class clas = null;
-			/**
-			 * Deal with the case of inner class
-			 */
-			if(!(type.getParent() instanceof CompilationUnit)){
-				CompilationUnit root = (CompilationUnit)type.getRoot();
-				TypeDeclaration outer = (TypeDeclaration)root.types().get(0);
-				
-				String outerClassFullName = outer.resolveBinding().getPackage().getName() + "." + outer.getName().getIdentifier();
-				
-				classFullName = binding.getPackage().getName() + "." + 
-						/*outer.getName().getIdentifier() + "." + */simpleName.getIdentifier();
-				clas = fetcher.getTheExistingClassorCreateOne(classFullName, project);
-				
-				clonepedia.model.ontology.Class outerClass = fetcher.getTheExistingClassorCreateOne(outerClassFullName, project);
-				clas.setOuterClass(outerClass);
-				
-				System.out.print("");
-			} 
-			else {
-				classFullName = binding.getPackage().getName() + "." + simpleName.getIdentifier();
-				clas = fetcher.getTheExistingClassorCreateOne(classFullName, project);
-			}
-			
-			
-			Type superClassType = type.getSuperclassType();
-			if(null != superClassType){					
-				clonepedia.model.ontology.Class superClass = (Class) MinerUtilforJava.transferTypeToComplexType(superClassType, project);
-				clas.setSuperClass(superClass);
-			}
-			
-			List interfaceList = type.superInterfaceTypes();
-			for(int i=0; i<interfaceList.size(); i++){
-				Type interfaceType = (Type)interfaceList.get(i);
-				
-				clonepedia.model.ontology.Interface interf = (Interface) MinerUtilforJava.transferTypeToComplexType(interfaceType, project);
-				clas.addInterface(interf);
-				
-			}
-			
-			fetcher.storeClasswithDependency(clas);
-			
+			Class clas = MinerUtilforJava.extractAndStoreClassInformation(binding, false, fetcher, compilationUnit, project);
 			try {
-				parseandStoreFieldInformation(type, clas);
-				parseandStoreMethodInformation(type, clas);
+				parseAndStoreFieldInformation(binding, clas);
+				parseAndStoreMethodInformation(binding, clas, this.compilationUnit);
+				
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-			//System.out.println();
 		}
 		/**
 		 * It's an interface
 		 */
 		else{
-			String interfaceFullName = binding.getPackage().getName() + "." + simpleName.getIdentifier();
-			
-			clonepedia.model.ontology.Interface interf = fetcher.getTheExistingInterfaceorCreateOne(interfaceFullName, project);
-			
-			List interfaceList = type.superInterfaceTypes();
-			for(int i=0; i<interfaceList.size(); i++){
-				SimpleType interfaceType = (SimpleType)interfaceList.get(i);	
-				clonepedia.model.ontology.Interface in = (Interface) MinerUtilforJava.transferTypeToComplexType(interfaceType, project);
-				interf.addSuperInterface(in);		
-			}
-			
-			fetcher.storeInterfaceWithDependency(interf);
+			Interface interf = MinerUtilforJava.extractAndStoreInterfaceInformation(binding, fetcher, compilationUnit, project);
 			
 			try {
-				parseandStoreFieldInformation(type, interf);
-				parseandStoreMethodInformation(type, interf);
+				parseAndStoreFieldInformation(binding, interf);
+				parseAndStoreMethodInformation(binding, interf, this.compilationUnit);
+				
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			//System.out.println();
 		}
-		
-		//System.out.println();
 		return true;
 	}
 	
-	private void parseandStoreMethodInformation(TypeDeclaration type, ComplexType owner) throws Exception {
-		
-		//MinerUtilforJava mufj = new MinerUtilforJava();
-		
-		MethodDeclaration[] md = type.getMethods();
-		for(int i=0; i<md.length; i++){
-			Method method = MinerUtilforJava.getMethodfromASTNode(md[i], project);
-			
-			/*if(method.getOwner().getSimpleName().length() == 0)
-				System.out.print("");*/
-			
+	
+	
+	private void parseAndStoreMethodInformation(ITypeBinding binding, ComplexType owner, CompilationUnit cu) throws Exception {
+		for(IMethodBinding methodBinding: binding.getDeclaredMethods()){
+			Method method = MinerUtilforJava.getMethodfromBinding(methodBinding, project, cu);
 			fetcher.getTheExistingMethodorCreateOne(method);
-			System.out.print("");
 		}
 	}
-	
-	
 
-	@SuppressWarnings("rawtypes")
-	private void parseandStoreFieldInformation(TypeDeclaration type, ComplexType complexType) throws Exception {
-		FieldDeclaration[] fd = type.getFields();
-		for(int i=0; i<fd.length; i++){
-			Type t  = fd[i].getType();
-			
-			VarType varType = MinerUtilforJava.getVariableType(t, project);
+	private void parseAndStoreFieldInformation(ITypeBinding binding, ComplexType complexType) throws Exception {
+		for(IVariableBinding fieldBinding: binding.getDeclaredFields()){
+			VarType varType = MinerUtilforJava.getVariableType(fieldBinding.getType(), project);
 			
 			if(null != varType){
-				List fieList = fd[i].fragments();
-				
-				for(int j=0; j<fieList.size(); j++){
-					VariableDeclarationFragment fragment = (VariableDeclarationFragment)fieList.get(j);
-					SimpleName sName = fragment.getName();
-					
-					Field field = new Field(sName.getIdentifier(), complexType, varType);
-					fetcher.getTheExistingFieldorCreateOne(field);
-					//System.out.print("");
-				}
+				Field field = new Field(fieldBinding.getName(), complexType, varType);
+				fetcher.getTheExistingFieldorCreateOne(field);
 			}
 		}
 	}
-	
-	
 	
 	public void setProject(Project project){
 		this.project = project;

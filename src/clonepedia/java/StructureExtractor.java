@@ -52,7 +52,7 @@ public class StructureExtractor {
 		
 		CompilationUnit cu = (CompilationUnit) parser.createAST(null);*/
 		CompilationUnit cu = pool.getComilationUnit(unit);
-		TypeVisitor typeVisitor = new TypeVisitor();
+		TypeVisitor typeVisitor = new TypeVisitor(cu);
 		typeVisitor.setProject(project);
 		cu.accept(typeVisitor);
 	}

@@ -2,7 +2,7 @@ package clonepedia.views.multiorient;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
+
 import java.util.Iterator;
 
 import org.eclipse.jface.action.Action;
@@ -14,23 +14,18 @@ import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.custom.CTabFolder2Adapter;
-import org.eclipse.swt.custom.CTabFolderEvent;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
@@ -104,7 +99,9 @@ public class PlainCloneSetView extends SummaryView {
 	private CloneSetWrapperList cloneSets;
 	private PlainCloneSetViewComarator comparator;
 	
+	
 	private HyperlinkAdapter adapter = new HyperlinkAdapter(){
+		
 		public void linkActivated(HyperlinkEvent e) {
 			String hyperlinkType = (String)e.getHref();
 			String content = e.getLabel();
@@ -360,8 +357,6 @@ public class PlainCloneSetView extends SummaryView {
 	public void setCloneSets(CloneSetWrapperList cloneSets) {
 		this.cloneSets = cloneSets;
 	}
-
-	//private IContributionItem combox 
 	
 	private void hookActionsOnBars(){
 		IActionBars actionBars = getViewSite().getActionBars();

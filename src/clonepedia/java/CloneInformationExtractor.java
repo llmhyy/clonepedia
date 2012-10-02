@@ -116,7 +116,7 @@ public class CloneInformationExtractor {
 			else if(node.getNodeType() == ASTNode.TYPE_LITERAL){
 				TypeLiteral type = (TypeLiteral)node;
 				if(type.getType().resolveBinding().isClass() || type.getType().resolveBinding().isInterface()){
-					return MinerUtilforJava.transferTypeToComplexType(type.getType(), project);	
+					return MinerUtilforJava.transferTypeToComplexType(type.getType(), project, (CompilationUnit)node.getRoot());	
 				}
 				else return null;
 			}
@@ -125,13 +125,13 @@ public class CloneInformationExtractor {
 				if(name.resolveBinding().getKind() == IBinding.TYPE){
 					ITypeBinding typeBinding = (ITypeBinding)name.resolveBinding();
 					if(typeBinding.isClass() || typeBinding.isInterface()){
-						return MinerUtilforJava.transferTypeToComplexType(typeBinding, project);	
+						return MinerUtilforJava.transferTypeToComplexType(typeBinding, project, (CompilationUnit)node.getRoot());	
 					}
 					else return null;
 				}
 				else if(name.resolveBinding().getKind() == IBinding.METHOD){
 					IMethodBinding methodBinding = (IMethodBinding) name.resolveBinding();
-					Method m = MinerUtilforJava.getMethodfromBinding(methodBinding, project);
+					Method m = MinerUtilforJava.getMethodfromBinding(methodBinding, project, (CompilationUnit)node.getRoot());
 					Method method = fetcher.getTheExistingMethodorCreateOne(m);
 					return method;
 				}
