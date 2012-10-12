@@ -601,7 +601,7 @@ public class CloneSet extends HashSet<CloneInstance> implements RegionalOwner, I
 		}
 		else{
 			for(OntologicalElement e: element.getSuccessors()){
-				if(e instanceof ComplexType && ((ComplexType) e).getFullName().startsWith("java.")){
+				if(e instanceof ComplexType && ((ComplexType) e).isGeneralType()){
 					if(!paths.contains(formerPath) && !formerPath.isDisposable())
 						if(formerPath.size() > 2)
 							paths.add(formerPath);

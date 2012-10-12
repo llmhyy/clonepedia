@@ -172,7 +172,7 @@ public class Interface extends VarType implements ComplexType{
 	
 	@Override
 	public boolean isGeneralType() {
-		if(fullName.startsWith("java.") || fullName.startsWith("org.w3c."))
+		if(fullName.startsWith("java.lang.") || fullName.startsWith("org.w3c."))
 			return true;
 		else
 			return false;

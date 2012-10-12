@@ -26,6 +26,6 @@ public class Settings {
 	//======================================================================
 	
 	//======================================================================
-	public static String projectName = "Clonepedia";
-	public static String inputCloneFile = "D:\\Test_Project\\Clonepedia\\out\\clonepedia.xml";
+	public static String projectName = "JavaNewIO";
+	public static String inputCloneFile = "D:\\Test_Project\\JavaNewIO\\out\\javanio.xml";
 }
