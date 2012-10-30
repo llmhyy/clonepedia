@@ -91,6 +91,8 @@ public class Path extends ArrayList<OntologicalElement> {
 	public boolean isDisposable(){
 		if(this.size() == 2){
 			Object lastElement = getLastElement();
+			if(lastElement instanceof PrimiType)
+				return true;
 			if(lastElement instanceof Constant)
 				return true;
 			if(lastElement instanceof ComplexType){

@@ -73,28 +73,28 @@
             class="clonepedia.views.multiorient.PlainCloneSetView"
             icon="icons/plain.gif"
             id="Clonepedia.PlainCloneSetView"
-            name="Plain Clone Set"
+            name="Clone Set"
             restorable="true">
       </view>
       <view
             class="clonepedia.views.multiorient.TopicOrientedView"
             icon="icons/topic.gif"
             id="Clonepedia.TopicOrientedView"
-            name="Topic Oriented Clone Sets"
+            name="Clone Topic"
             restorable="true">
       </view>
       <view
             class="clonepedia.views.multiorient.PatternOrientedView"
             icon="icons/structure.gif"
             id="Clonepedia.PatternOrientedView"
-            name="Pattern Oriented Clone Sets"
+            name="Syntactic Pattern"
             restorable="true">
       </view>
       <view
             class="clonepedia.views.codesnippet.CloneCodeSnippetView"
             icon="icons/code_snippet.gif"
             id="Clonepedia.CloneCodeSnippetView"
-            name="Clone Code Snippet"
+            name="Code Snippet"
             restorable="true">
       </view>
    </extension>

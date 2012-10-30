@@ -12,6 +12,7 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
+import org.eclipse.jdt.core.dom.PrimitiveType;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.TypeLiteral;
 
@@ -77,7 +78,7 @@ public class CloneInformationExtractor {
 					String groupId = group.getId();
 					for(DiffInstanceElementRelationEmulator relation: group.getRelations()){
 						ASTNode node = relation.getNode();
-						if(MinerUtilforJava.isConcernedType(node)){
+						if(MinerUtilforJava.isConcernedType(node) || node.getNodeType() == ASTNode.PRIMITIVE_TYPE){
 							ProgrammingElement element = transferASTNodesToProgrammingElement(node, set);
 							CloneInstanceWrapper instanceWrapper = relation.getInstanceWrapper();
 							CloneInstance instance = instanceWrapper.getCloneInstance();
@@ -102,7 +103,14 @@ public class CloneInformationExtractor {
 
 	private ProgrammingElement transferASTNodesToProgrammingElement(ASTNode node, RegionalOwner owner) throws Exception{
 		
+		if(node.getNodeType() == ASTNode.PRIMITIVE_TYPE){
+			PrimitiveType primitiveType = (PrimitiveType)node;
+			PrimiType primiType = new PrimiType(primitiveType.toString());
+			return primiType;
+		}
+		
 		if(MinerUtilforJava.isConcernedType(node)){
+			
 			if(node.getNodeType() == ASTNode.STRING_LITERAL ||
 					node.getNodeType() == ASTNode.NUMBER_LITERAL ||
 					node.getNodeType() == ASTNode.CHARACTER_LITERAL ||
@@ -174,7 +182,7 @@ public class CloneInformationExtractor {
 				/**
 				 * The following code is for debugging
 				 */
-				/*if(cloneSet.getId().equals("255417")){
+				/*if(cloneSet.getId().equals("240")){
 					System.out.print("");
 				}
 				else
@@ -320,7 +328,9 @@ public class CloneInformationExtractor {
 					ArrayList<CloneInstanceWrapper> otherInstances = getOtherInstancesInSet(
 							instance, s);
 					ASTNode currentNode = instance.getAstNodeList()[instance.comparePointer];
-
+					if(currentNode instanceof PrimitiveType)
+						System.out.print("");
+					
 					patternNodeSet.add(currentNode);
 					relationGroup.addRelation(new DiffInstanceElementRelationEmulator(instance, currentNode));
 					
@@ -366,12 +376,9 @@ public class CloneInformationExtractor {
 
 		ITypeBinding referBinding = MinerUtilforJava.getBinding(referenceNode);
 		
-		/**
-		 * The fact that binding information is null means the referenceNode is
-		 * just a landmark-used keyword. 
-		 */
-		if(referBinding == null)
-			return -1;
+		
+		/*if(referBinding == null)
+			return -1;*/
 
 		ArrayList<Integer> similarNodeIndexCandidates = new ArrayList<Integer>();
 
@@ -386,7 +393,7 @@ public class CloneInformationExtractor {
 			if(!instance.isMarked(i)){
 				ITypeBinding binding = MinerUtilforJava.getBinding(node);
 				
-				if(binding != null)
+				if(binding != null){
 					/*binding.getJavaElement();
 					binding.getName();
 					binding.*/
@@ -395,6 +402,16 @@ public class CloneInformationExtractor {
 								&& MinerUtilforJava.isASTNodesofTheSameType(referenceNode, node))
 							similarNodeIndexCandidates.add(i);
 					}
+				}
+				/**
+				 * The fact that binding information is null means the referenceNode is
+				 * just a landmark-used keyword. 
+				 */
+				else if(referBinding == null && binding == null){
+					if(referenceNode.getNodeType() == node.getNodeType()){
+						similarNodeIndexCandidates.add(i);
+					}
+				}
 			}
 		}
 

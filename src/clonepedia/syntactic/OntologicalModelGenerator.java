@@ -16,6 +16,7 @@ import clonepedia.model.ontology.Field;
 import clonepedia.model.ontology.InstanceElementRelation;
 import clonepedia.model.ontology.Interface;
 import clonepedia.model.ontology.Method;
+import clonepedia.model.ontology.PrimiType;
 import clonepedia.model.ontology.Project;
 import clonepedia.model.ontology.VarType;
 import clonepedia.model.ontology.Variable;
@@ -260,7 +261,7 @@ public class OntologicalModelGenerator implements Serializable{
 			for(String counterRelationId: counterRelationIds){
 				CounterRelationGroup group = new CounterRelationGroup(counterRelationId);
 				set.addCounterRelationGroup(group);
-			}
+			}	
 			
 			for(CounterRelationGroup group: set.getCounterRelationGroups()){
 				for(CloneInstance instance: set){
@@ -269,6 +270,7 @@ public class OntologicalModelGenerator implements Serializable{
 					ComplexType type = fetcher.getType(instance, group.getCounterRelationsId());
 					Variable variable = fetcher.getVariable(instance, group.getCounterRelationsId(), set.getProject());
 					Constant constant = fetcher.getConstant(instance, group.getCounterRelationsId());
+					PrimiType primiType = fetcher.getPrimiType(instance, group.getCounterRelationsId());
 					
 					if(null != methodId){
 						Method method = methodPool.getMethod(methodId);
@@ -296,6 +298,9 @@ public class OntologicalModelGenerator implements Serializable{
 					else if(null != constant){
 						constant.setOwner(instance);
 						group.add(new InstanceElementRelation(instance, constant));
+					}
+					else if(null != primiType){
+						group.add(new InstanceElementRelation(instance, primiType));
 					}
 				}
 			}

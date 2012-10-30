@@ -768,7 +768,7 @@ public class NaturalLanguateTemplate {
 		for(CloneSetWrapper setWrapper: hs)
 			list.add(setWrapper);
 		
-		buffer.append("This clone pattern is present in ");
+		buffer.append("This topic is present in ");
 		buffer.append(String.valueOf(container.getAllContainedCloneSet().size()));
 		buffer.append(" clone sets. ");
 		buffer.append("You may be interested in the following clone sets:");

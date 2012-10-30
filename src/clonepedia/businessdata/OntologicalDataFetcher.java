@@ -178,6 +178,24 @@ public class OntologicalDataFetcher implements Serializable{
 		return type;
 	}
 	
+	public PrimiType getPrimiType(CloneInstance instance, String counterRelationId){
+		Properties properties = new Properties();
+		properties.put("cloneInstanceId", instance.getId());
+		properties.put("counterRelationId", counterRelationId);
+		
+		PrimiType primiType = null;
+		
+		ArrayList<DataRecord> records = DBOperator.getDataRecords(new Relation(Relation.DiffPartKeyword), properties);
+		for(DataRecord record: records){
+			String primiTypeName = record.getProperty("keyword");
+			primiType = new PrimiType(primiTypeName);
+			
+			return primiType;
+		}
+		
+		return primiType;
+	}
+	
 	public ArrayList<String> getCounterRelationIds(CloneSet set){
 		ArrayList<String> idList = new ArrayList<String>();
 		for(CloneInstance instance: set)
@@ -198,7 +216,8 @@ public class OntologicalDataFetcher implements Serializable{
 		Relation[] relations = {
 				new Relation(Relation.DiffPartAccess), 
 				new Relation(Relation.DiffPartCall), 
-				new Relation(Relation.DiffPartUseType)
+				new Relation(Relation.DiffPartUseType),
+				new Relation(Relation.DiffPartKeyword)
 				};
 		Entity[] entities = {
 				new Entity(Entity.Variable), 
@@ -746,10 +765,27 @@ public class OntologicalDataFetcher implements Serializable{
 		} else if (element instanceof ComplexType) {
 			ComplexType type = (ComplexType) element;
 			storeDiffPartUseTypeRelation(counterRelationId, instance, type);
+		} else if (element instanceof PrimiType) {
+			PrimiType type = (PrimiType) element;
+			storeDiffPartKeywordRelation(counterRelationId, instance, type);
 		} else
 			throw new Exception(
 					"unexpected programming element is transfered into"
 							+ " method storeDiffRelation");
+	}
+
+	private void storeDiffPartKeywordRelation(String counterRelationId,
+			CloneInstance instance, PrimiType type)  throws Exception {
+		
+		storeCloneInstanceWithDependency(instance);
+		
+		Properties relationProperties = new Properties();
+		relationProperties.put("cloneInstanceId", instance.getId());
+		relationProperties.put("keyword", type.getFullName());
+		relationProperties.put("counterRelationId", counterRelationId);
+
+		DBOperator.insertDataRecord(new Relation(Relation.DiffPartKeyword), relationProperties);
+		
 	}
 
 	private void storeDiffPartCallRelation(String counterRelationId,

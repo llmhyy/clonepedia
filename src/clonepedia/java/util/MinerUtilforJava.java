@@ -44,7 +44,8 @@ public class MinerUtilforJava {
 				|| type == ASTNode.NUMBER_LITERAL
 				|| type == ASTNode.STRING_LITERAL
 				|| type == ASTNode.TYPE_LITERAL
-				|| type == ASTNode.BOOLEAN_LITERAL)
+				|| type == ASTNode.BOOLEAN_LITERAL
+				)
 			return true;
 		else
 			return false;
