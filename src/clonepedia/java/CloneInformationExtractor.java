@@ -51,6 +51,7 @@ public class CloneInformationExtractor {
 		this.project = project;
 	}
 	
+	
 	private void storeInformation(){
 		
 		for(CloneSetWrapper setWrapper: setWrapperList){
