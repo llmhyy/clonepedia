@@ -2,6 +2,8 @@ package clonepedia.util;
 
 public class Settings {
 	
+	public static double diffComparisonThreshold = 0.7d;
+	
 	public static double thresholdDistanceForSyntacticClustering = 2.55d;
 	public static double thresholdDistanceToFormPattern = 1.2d;//3.5d
 	

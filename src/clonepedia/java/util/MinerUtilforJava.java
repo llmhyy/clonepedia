@@ -155,14 +155,18 @@ public class MinerUtilforJava {
 
 				if (name1.getParent().getNodeType() == ASTNode.SIMPLE_TYPE
 						|| name2.getParent().getNodeType() == ASTNode.SIMPLE_TYPE) {
-					return (name1.getParent().getNodeType() == ASTNode.SIMPLE_TYPE && name2
-							.getParent().getNodeType() == ASTNode.SIMPLE_TYPE);
-				} else
+					return (name1.getParent().getNodeType() == ASTNode.SIMPLE_TYPE && 
+							name2.getParent().getNodeType() == ASTNode.SIMPLE_TYPE);
+				} else{
 					return true;
-			} else
+				}	
+			} else{
 				return true;
-		} else
+			}
+		} else {
 			return false;
+		}
+			
 	}
 
 	public static VarType getVariableType(Type type, Project project) throws Exception {
