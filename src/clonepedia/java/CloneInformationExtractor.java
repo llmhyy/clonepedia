@@ -255,7 +255,7 @@ public class CloneInformationExtractor {
 
 			instanceWrapper.getMethodDeclaration().accept(visitor);
 
-			filterComplicatedASTNodeforList(astNodeList);
+			//filterComplicatedASTNodeforList(astNodeList);
 
 			instanceWrapper.setAstNodeList(astNodeList.toArray(new ASTNode[0]));
 
@@ -266,7 +266,7 @@ public class CloneInformationExtractor {
 		// System.out.println(astNodeList);
 	}
 
-	private void filterComplicatedASTNodeforList(ArrayList<ASTNode> list) {
+	/*private void filterComplicatedASTNodeforList(ArrayList<ASTNode> list) {
 		Iterator<ASTNode> iter = list.iterator();
 		while (iter.hasNext()) {
 			ASTNode node = (ASTNode) iter.next();
@@ -274,7 +274,7 @@ public class CloneInformationExtractor {
 			if (!MinerUtilforJava.isConcernedType(node) && !MinerUtilforJava.isBenchMarkType(node))
 				iter.remove();
 		}
-	}
+	}*/
 
 	private void getDiffPart(CloneSetWrapper setWrapper) {
 
@@ -308,13 +308,25 @@ public class CloneInformationExtractor {
 		//System.out.println();
 	}
 
+	/**
+	 * This method is to find the diff ast nodes with counter relation in a specific region(between 
+	 * starting node and ending node). The handling approach will be a little bit different for the
+	 * region precede the common region and other regions. (Please refer to <method>initializeEndIndexes</method>)
+	 * method in this class. Therefore, there will be a parameter <parameter>isForThePrefixCondition</parameter>
+	 * to specify the cases.
+	 * @param s
+	 * @param isForThePrefixCondition
+	 */
 	private void generatePatternSharingASTNodes(CloneSetWrapper s, boolean isForThePrefixCondition) {
 
-		for (CloneInstanceWrapper instance : s)
-			if(!isForThePrefixCondition)
+		for (CloneInstanceWrapper instance : s){
+			if(!isForThePrefixCondition){
 				instance.comparePointer = instance.startContextIndex + 1;
-			else
+			}
+			else{
 				instance.comparePointer = instance.startContextIndex;
+			}
+		}	
 
 		for (CloneInstanceWrapper instance : s) {
 			while (instance.comparePointer < instance.endContextIndex) {
