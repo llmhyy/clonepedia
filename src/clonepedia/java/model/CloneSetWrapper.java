@@ -215,7 +215,7 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 					patternNodeSet.add(currentNode);
 					relationGroup.addRelation(new DiffInstanceElementRelationEmulator(instance, currentNode));
 					
-					//instance.markIndex(instance.comparePointer);
+					instance.markIndex(instance.comparePointer);
 					for (CloneInstanceWrapper i : otherInstances) {
 						int index = findTheSimilarNodeIndexInInstance(
 								currentNode, i, isForThePrefixCondition);
@@ -255,7 +255,7 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 	private int findTheSimilarNodeIndexInInstance(ASTNode referenceNode,
 			CloneInstanceWrapper instance, boolean isForThePrefixCondition) {
 
-		ITypeBinding referBinding = MinerUtilforJava.getBinding(referenceNode);
+		//ITypeBinding referBinding = MinerUtilforJava.getBinding(referenceNode);
 		
 		
 		/*if(referBinding == null)
@@ -272,9 +272,12 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 		for ( ; i < instance.endContextIndex; i++) {
 			if(!instance.isMarked(i)){
 				ASTNode node = (ASTNode) instance.getAstNodeList()[i];
-				ITypeBinding binding = MinerUtilforJava.getBinding(node);
-				
-				if(binding != null){
+				//ITypeBinding binding = MinerUtilforJava.getBinding(node);
+				if(MinerUtilforJava.isConcernedType(referenceNode) && MinerUtilforJava.isConcernedType(node)){
+					if(MinerUtilforJava.isASTNodesofTheSameType(referenceNode, node))
+						similarNodeIndexCandidates.add(i);
+				}
+				/*if(binding != null && referBinding != null){
 					
 					if (binding.getKind() == referBinding.getKind()) {
 						if(MinerUtilforJava.isTheBindingsofTheSameType(referBinding, binding)
@@ -282,15 +285,15 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 							similarNodeIndexCandidates.add(i);
 					}
 				}
-				/**
+				*//**
 				 * The fact that binding information is null means the referenceNode is
 				 * just a landmark-used keyword. 
-				 */
+				 *//*
 				else if(referBinding == null && binding == null){
 					if(referenceNode.getNodeType() == node.getNodeType()){
 						similarNodeIndexCandidates.add(i);
 					}
-				}
+				}*/
 			}
 		}
 

@@ -58,7 +58,7 @@ public class CloneInformationExtractor {
 				/**
 				 * The following code is for debugging
 				 */
-				/*if(cloneSet.getId().equals("240")){
+				/*if(cloneSet.getId().equals("445847")){
 					System.out.print("");
 				}
 				else
@@ -238,7 +238,7 @@ public class CloneInformationExtractor {
 					String groupId = group.getId();
 					for(DiffInstanceElementRelationEmulator relation: group.getRelations()){
 						ASTNode node = relation.getNode();
-						if(MinerUtilforJava.isConcernedType(node) || node.getNodeType() == ASTNode.PRIMITIVE_TYPE){
+						if(MinerUtilforJava.isConcernedType(node) /*|| node.getNodeType() == ASTNode.PRIMITIVE_TYPE*/){
 							ProgrammingElement element = transferASTNodesToProgrammingElement(node, set);
 							CloneInstanceWrapper instanceWrapper = relation.getInstanceWrapper();
 							CloneInstance instance = instanceWrapper.getCloneInstance();
@@ -261,15 +261,13 @@ public class CloneInformationExtractor {
 
 	private ProgrammingElement transferASTNodesToProgrammingElement(ASTNode node, RegionalOwner owner) throws Exception{
 		
-		if(node.getNodeType() == ASTNode.PRIMITIVE_TYPE){
-			PrimitiveType primitiveType = (PrimitiveType)node;
-			PrimiType primiType = new PrimiType(primitiveType.toString());
-			return primiType;
-		}
-		
 		if(MinerUtilforJava.isConcernedType(node)){
-			
-			if(node.getNodeType() == ASTNode.STRING_LITERAL ||
+			if(node.getNodeType() == ASTNode.PRIMITIVE_TYPE){
+				PrimitiveType primitiveType = (PrimitiveType)node;
+				PrimiType primiType = new PrimiType(primitiveType.toString());
+				return primiType;
+			}
+			else if(node.getNodeType() == ASTNode.STRING_LITERAL ||
 					node.getNodeType() == ASTNode.NUMBER_LITERAL ||
 					node.getNodeType() == ASTNode.CHARACTER_LITERAL ||
 					node.getNodeType() == ASTNode.BOOLEAN_LITERAL){
@@ -304,7 +302,7 @@ public class CloneInformationExtractor {
 				else if(name.resolveBinding().getKind() == IBinding.VARIABLE){
 					IVariableBinding variableBinding = (IVariableBinding) name.resolveBinding();
 					if(variableBinding.isField()){
-						Field f = MinerUtilforJava.getFieldfromBinding(variableBinding, project);
+						Field f = MinerUtilforJava.getFieldfromBinding(variableBinding, project, (CompilationUnit)node.getRoot());
 						if(f.getOwnerType() != null){
 							Field field = fetcher.getTheExistingFieldorCreateOne(f);
 							return field;

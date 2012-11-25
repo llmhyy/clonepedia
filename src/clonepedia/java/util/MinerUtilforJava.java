@@ -15,6 +15,7 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.NumberLiteral;
 import org.eclipse.jdt.core.dom.ParameterizedType;
+import org.eclipse.jdt.core.dom.PrimitiveType;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.StringLiteral;
@@ -38,13 +39,21 @@ import clonepedia.model.ontology.Variable;
 import clonepedia.model.ontology.VariableUseType;
 
 public class MinerUtilforJava {
+	/**
+	 * Currently, the concerned AST node type are: simple name, literal(constants such as character, number, string, type and boolean)
+	 * and primitive type(such as float, int, double, char and so on).
+	 * @param node
+	 * @return
+	 */
 	public static boolean isConcernedType(ASTNode node) {
 		int type = node.getNodeType();
-		if (type == ASTNode.SIMPLE_NAME || type == ASTNode.CHARACTER_LITERAL
+		if (type == ASTNode.SIMPLE_NAME 
+				|| type == ASTNode.CHARACTER_LITERAL
 				|| type == ASTNode.NUMBER_LITERAL
 				|| type == ASTNode.STRING_LITERAL
 				|| type == ASTNode.TYPE_LITERAL
 				|| type == ASTNode.BOOLEAN_LITERAL
+				|| type == ASTNode.PRIMITIVE_TYPE
 				)
 			return true;
 		else
@@ -57,16 +66,18 @@ public class MinerUtilforJava {
 
 		if (node instanceof SimpleName)
 			return ((SimpleName) node).resolveTypeBinding();
-		if (node instanceof CharacterLiteral)
+		else if (node instanceof CharacterLiteral)
 			return ((CharacterLiteral) node).resolveTypeBinding();
-		if (node instanceof NumberLiteral)
+		else if (node instanceof NumberLiteral)
 			return ((NumberLiteral) node).resolveTypeBinding();
-		if (node instanceof StringLiteral)
+		else if (node instanceof StringLiteral)
 			return ((StringLiteral) node).resolveTypeBinding();
-		if (node instanceof TypeLiteral)
+		else if (node instanceof TypeLiteral)
 			return ((TypeLiteral) node).resolveTypeBinding();
-		if (node instanceof BooleanLiteral)
+		else if (node instanceof BooleanLiteral)
 			return ((BooleanLiteral) node).resolveTypeBinding();
+		else if (node instanceof PrimitiveType)
+			return ((PrimitiveType) node).resolveBinding();
 
 		return null;
 	}
@@ -77,16 +88,18 @@ public class MinerUtilforJava {
 
 		if (node instanceof SimpleName)
 			return ((SimpleName) node).getIdentifier();
-		if (node instanceof CharacterLiteral)
+		else if (node instanceof CharacterLiteral)
 			return String.valueOf(((CharacterLiteral) node).charValue());
-		if (node instanceof NumberLiteral)
+		else if (node instanceof NumberLiteral)
 			return ((NumberLiteral) node).getToken();
-		if (node instanceof StringLiteral)
+		else if (node instanceof StringLiteral)
 			return ((StringLiteral) node).getLiteralValue();
-		if (node instanceof TypeLiteral)
+		else if (node instanceof TypeLiteral)
 			return ((TypeLiteral) node).toString();
-		if (node instanceof BooleanLiteral)
+		else if (node instanceof BooleanLiteral)
 			return ((BooleanLiteral) node).toString();
+		else if (node instanceof PrimitiveType)
+			return ((PrimitiveType) node).getPrimitiveTypeCode().toString();
 
 		return null;
 	}
@@ -158,6 +171,11 @@ public class MinerUtilforJava {
 					return (name1.getParent().getNodeType() == ASTNode.SIMPLE_TYPE && 
 							name2.getParent().getNodeType() == ASTNode.SIMPLE_TYPE);
 				} else{
+					/**
+					 * The reason why the AST nodes other than SimpleName will be true is because the cases involving SimpleName
+					 * are too complicated. Therefore, a further comparison is needed to conducted to judge whether two AST nodes
+					 * are of the same type.
+					 */
 					return true;
 				}	
 			} else{
@@ -346,10 +364,10 @@ public class MinerUtilforJava {
 		return new Method(methodOwner, methodName, returnType, parameters);
 	}
 	
-	public static Field getFieldfromBinding(IVariableBinding variableBinding, Project project) throws Exception{
+	public static Field getFieldfromBinding(IVariableBinding variableBinding, Project project, CompilationUnit cu) throws Exception{
 		String fieldName = variableBinding.getName();
 		ComplexType type = transferTypeToComplexType(
-				variableBinding.getDeclaringClass(), project, null);
+				variableBinding.getDeclaringClass(), project, cu);
 		VarType fieldType = getVariableType(variableBinding.getType(), project);
 		return new Field(fieldName, type, fieldType);
 	}
@@ -372,7 +390,7 @@ public class MinerUtilforJava {
 		Interface interf = fetcher.getTheExistingInterfaceorCreateOne(interfaceFullName, project);
 		
 		for(ITypeBinding interfaceBinding: binding.getInterfaces()){
-			Interface superInterface = (Interface) MinerUtilforJava.transferTypeToComplexType(interfaceBinding, project, null);
+			Interface superInterface = (Interface) MinerUtilforJava.transferTypeToComplexType(interfaceBinding, project, compilationUnit);
 			interf.addSuperInterface(superInterface);
 		}
 		
@@ -421,12 +439,12 @@ public class MinerUtilforJava {
 		
 		ITypeBinding superClassBinding = binding.getSuperclass();
 		if(null != superClassBinding && !superClassBinding.getName().equals("Object")){
-			Class superClass = (Class) MinerUtilforJava.transferTypeToComplexType(superClassBinding, project, null);
+			Class superClass = (Class) MinerUtilforJava.transferTypeToComplexType(superClassBinding, project, compilationUnit);
 			clas.setSuperClass(superClass);
 		}
 		
 		for(ITypeBinding interfaceBinding: binding.getInterfaces()){
-			Interface interf = (Interface)MinerUtilforJava.transferTypeToComplexType(interfaceBinding, project, null);
+			Interface interf = (Interface)MinerUtilforJava.transferTypeToComplexType(interfaceBinding, project, compilationUnit);
 			clas.addInterface(interf);
 		}
 		

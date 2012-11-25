@@ -736,6 +736,10 @@ public class OntologicalDataFetcher implements Serializable{
 		} else if (element instanceof ComplexType) {
 			ComplexType type = (ComplexType) element;
 			storeCommonPartUseTypeRelation(set, type);
+		} else if (element instanceof PrimiType){
+			/**
+			 * do nothing
+			 */
 		} else
 			throw new Exception(
 					"unexpected programming element is transfered into"
