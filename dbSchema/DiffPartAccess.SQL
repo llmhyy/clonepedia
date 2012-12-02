@@ -1,6 +1,4 @@
-DROP TABLE IF EXISTS DiffPartAccess
-;
-CREATE TABLE DiffPartAccess
+CREATE TABLE IF NOT EXISTS DiffPartAccess
 (
 	cloneInstanceId VARCHAR(50) NOT NULL,
 	ownerId VARCHAR(50) NOT NULL,

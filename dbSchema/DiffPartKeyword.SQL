@@ -1,6 +1,4 @@
-DROP TABLE IF EXISTS DiffPartKeyword
-;
-CREATE TABLE DiffPartKeyword
+CREATE TABLE IF NOT EXISTS DiffPartKeyword
 (
 	cloneinstanceId VARCHAR(255) NOT NULL,
 	keyword VARCHAR(50) NOT NULL,

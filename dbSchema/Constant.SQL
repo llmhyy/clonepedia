@@ -1,6 +1,4 @@
-DROP TABLE IF EXISTS Constant
-;
-CREATE TABLE Constant
+CREATE TABLE IF NOT EXISTS Constant
 (
 	constantName VARCHAR(255) NOT NULL,
 	constantType VARCHAR(255) NOT NULL,

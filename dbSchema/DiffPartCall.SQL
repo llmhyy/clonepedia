@@ -1,6 +1,4 @@
-DROP TABLE IF EXISTS DiffPartCall
-;
-CREATE TABLE DiffPartCall
+CREATE TABLE IF NOT EXISTS DiffPartCall
 (
 	cloneInstanceId VARCHAR(255) NOT NULL,
 	methodId VARCHAR(255) NOT NULL,

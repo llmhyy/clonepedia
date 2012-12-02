@@ -1,6 +1,4 @@
-DROP TABLE IF EXISTS CommonPartAccess
-;
-CREATE TABLE CommonPartAccess
+CREATE TABLE IF NOT EXISTS CommonPartAccess
 (
 	cloneSetId VARCHAR(50) NOT NULL,
 	ownerId VARCHAR(50) NOT NULL,

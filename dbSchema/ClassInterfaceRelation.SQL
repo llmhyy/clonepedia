@@ -1,6 +1,4 @@
-DROP TABLE IF EXISTS ImplementRelation
-;
-CREATE TABLE ImplementRelation
+CREATE TABLE IF NOT EXISTS ImplementRelation
 (
 	classId VARCHAR(50) NOT NULL,
 	interfaceId VARCHAR(50) NOT NULL,

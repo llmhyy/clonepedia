@@ -59,7 +59,7 @@ public class CloneInformationExtractor {
 				/**
 				 * The following code is for debugging
 				 */
-				/*if(cloneSet.getId().equals("445847")){
+				/*if(cloneSet.getId().equals("305")){
 					System.out.print("");
 				}
 				else

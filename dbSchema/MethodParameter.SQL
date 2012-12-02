@@ -1,6 +1,4 @@
-DROP TABLE IF EXISTS MethodParameter
-;
-CREATE TABLE MethodParameter
+CREATE TABLE  IF NOT EXISTS MethodParameter
 (
 	parameterType VARCHAR(255) NOT NULL,
 	parameterName VARCHAR(255),

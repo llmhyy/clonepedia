@@ -1,6 +1,4 @@
-DROP TABLE IF EXISTS InterfaceExtendRelation
-;
-CREATE TABLE InterfaceExtendRelation
+CREATE TABLE IF NOT EXISTS InterfaceExtendRelation
 (
 	subInterfaceId VARCHAR(50) NOT NULL,
 	superInterfaceId VARCHAR(50) NOT NULL,

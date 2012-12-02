@@ -1,6 +1,4 @@
-DROP TABLE IF EXISTS CommonPartUseType
-;
-CREATE TABLE CommonPartUseType
+CREATE TABLE IF NOT EXISTS CommonPartUseType
 (
 	cloneSetId VARCHAR(50) NOT NULL,
 	typeId VARCHAR(50) NOT NULL,

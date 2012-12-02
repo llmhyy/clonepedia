@@ -1,6 +1,4 @@
-DROP TABLE IF EXISTS Variable
-;
-CREATE TABLE Variable
+CREATE TABLE IF NOT EXISTS Variable
 (
 	variableName VARCHAR(255) NOT NULL,
 	variableType VARCHAR(255) NOT NULL,

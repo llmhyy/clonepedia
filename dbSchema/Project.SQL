@@ -1,6 +1,4 @@
-DROP TABLE IF EXISTS Project
-;
-CREATE TABLE Project
+CREATE TABLE IF NOT EXISTS Project
 (
 	projectName VARCHAR(50) NOT NULL,
 	programmingLanguage VARCHAR(50),

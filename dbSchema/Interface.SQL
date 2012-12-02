@@ -1,6 +1,4 @@
-DROP TABLE IF EXISTS Interface
-;
-CREATE TABLE Interface
+CREATE TABLE IF NOT EXISTS Interface
 (
 	interfaceId VARCHAR(50) NOT NULL,
 	interfaceFullName VARCHAR(255) NOT NULL,

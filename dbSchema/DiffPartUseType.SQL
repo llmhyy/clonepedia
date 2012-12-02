@@ -1,6 +1,4 @@
-DROP TABLE IF EXISTS DiffPartUseType
-;
-CREATE TABLE DiffPartUseType
+CREATE TABLE IF NOT EXISTS DiffPartUseType
 (
 	cloneInstanceId VARCHAR(50) NOT NULL,
 	typeId VARCHAR(50) NOT NULL,

@@ -112,11 +112,8 @@ public class DBManager {
 	 */
 	private void generateDatabaseTables() throws XPathExpressionException, SQLException, FileNotFoundException, IOException, URISyntaxException{
 		FileParser parser = new FileParser(){}; 
-//		String fileAddress = System.getProperty("bin.includes");
 		Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
 		URL dbFileConfigURL = bundle.getEntry("dbSchema/gen_table.xml");
-		
-		
 		
 		File dbFileConfigFile = new File(FileLocator.resolve(dbFileConfigURL).toURI());
 		Document doc = parser.getDocument(dbFileConfigFile);
@@ -128,6 +125,9 @@ public class DBManager {
 		NodeList tableList = (NodeList)xpath.evaluate("child::table", root, XPathConstants.NODESET);
 		
 		ScriptRunner runner = new ScriptRunner(connection, false, true);
+		/*URL tablesCleaningURL = bundle.getEntry("dbSchema/clean.sql");
+		File tablesCleaningFile = new File(FileLocator.resolve(tablesCleaningURL).toURI());
+		runner.runScript(new BufferedReader(new FileReader(tablesCleaningFile)));*/
 		
 		for(int i=0; i<tableList.getLength(); i++){
 			

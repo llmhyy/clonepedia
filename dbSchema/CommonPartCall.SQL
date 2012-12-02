@@ -1,6 +1,4 @@
-DROP TABLE IF EXISTS CommonPartCall
-;
-CREATE TABLE CommonPartCall
+CREATE TABLE IF NOT EXISTS CommonPartCall
 (
 	cloneSetId VARCHAR(50) NOT NULL,
 	methodId VARCHAR(255) NOT NULL,

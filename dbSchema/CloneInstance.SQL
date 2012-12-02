@@ -1,6 +1,4 @@
-DROP TABLE IF EXISTS CloneInstance
-;
-CREATE TABLE CloneInstance
+CREATE TABLE IF NOT EXISTS CloneInstance
 (
 	cloneInstanceId VARCHAR(50) NOT NULL,
 	cloneSetId VARCHAR(50) NOT NULL,
