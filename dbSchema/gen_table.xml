@@ -1,0 +1,22 @@
+<sql-tables>
+    <table script="Project.SQL"/>
+    <table script="Class.SQL"/>
+    <table script="Interface.SQL"/>
+    <table script="InterfaceExtendRelation.SQL"/>
+    <table script="ClassInterfaceRelation.SQL"/>
+    <table script="Field.SQL"/>
+    <table script="Method.SQL"/>
+    <table script="MethodParameter.SQL"/>
+    <table script="CloneSet.SQL"/>
+    <table script="CloneInstance.SQL"/>
+    <table script="Variable.SQL"/>
+    <table script="Constant.SQL"/>
+    <table script="CommonPartAccess.SQL"/>
+    <table script="CommonPartCall.SQL"/>
+    <table script="CommonPartUseType.SQL"/>
+    <table script="DiffPartAccess.SQL"/>
+    <table script="DiffPartCall.SQL"/>
+    <table script="DiffPartUseType.SQL"/>
+    <table script="DiffPartKeyword.SQL"/>
+</sql-tables>
+    

@@ -1,4 +1,4 @@
-package clonepedia.clonefilepraser;
+package clonepedia.filepraser;
 
 import java.io.File;
 
@@ -16,10 +16,9 @@ import clonepedia.model.ontology.CloneSet;
 import clonepedia.model.ontology.CloneSets;
 import clonepedia.util.Settings;
 
-public class CloneDetectionFileParser extends CloneFileParser {
+public class CloneDetectionFileParser extends FileParser {
 	
 
-	@Override
 	public CloneSets getCloneSets(boolean debugState, String setIdInDebug) {
 		
 		CloneSets cloneSets = new CloneSets();

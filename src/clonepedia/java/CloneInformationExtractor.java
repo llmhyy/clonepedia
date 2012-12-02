@@ -14,7 +14,8 @@ import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.TypeLiteral;
 
 
-import clonepedia.clonefilepraser.CloneFileParser;
+import clonepedia.filepraser.CloneDetectionFileParser;
+import clonepedia.filepraser.FileParser;
 import clonepedia.businessdata.OntologicalDataFetcher;
 import clonepedia.java.ASTComparator;
 import clonepedia.java.model.*;
@@ -37,10 +38,10 @@ public class CloneInformationExtractor {
 
 	private OntologicalDataFetcher fetcher = new OntologicalDataFetcher();
 	private Project project;
-	private CloneFileParser cloneFileParser;
+	private CloneDetectionFileParser cloneFileParser;
 	private ArrayList<CloneSetWrapper> setWrapperList = new ArrayList<CloneSetWrapper>();
 
-	public CloneInformationExtractor(CloneFileParser cloneFileParser, Project project) {
+	public CloneInformationExtractor(CloneDetectionFileParser cloneFileParser, Project project) {
 		this.cloneFileParser = cloneFileParser;
 		this.project = project;
 	}

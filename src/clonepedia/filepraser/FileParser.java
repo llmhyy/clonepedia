@@ -1,4 +1,4 @@
-package clonepedia.clonefilepraser;
+package clonepedia.filepraser;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,10 +14,15 @@ import org.xml.sax.SAXException;
 
 import clonepedia.model.ontology.CloneSets;
 
-public abstract class CloneFileParser {
-	public abstract CloneSets getCloneSets(boolean debugState, String setIdInDebug);
+public abstract class FileParser {
+	//public abstract CloneSets getCloneSets(boolean debugState, String setIdInDebug);
 	
-	protected Document getDocument(String filePath){
+	public Document getDocument(String filePath){
+		File file = new File(filePath);
+		return getDocument(file);
+	}
+	
+	public Document getDocument(File file){
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setIgnoringElementContentWhitespace(true);
 		DocumentBuilder builder;
@@ -25,7 +30,7 @@ public abstract class CloneFileParser {
 		
 		try {
 			builder = factory.newDocumentBuilder();
-			doc = builder.parse(new File(filePath));
+			doc = builder.parse(file);
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
 		} catch (SAXException e) {
@@ -37,7 +42,7 @@ public abstract class CloneFileParser {
 		return doc;
 	}
 	
-	protected String getAttributeValue(Node node, String attributeName){
+	public String getAttributeValue(Node node, String attributeName){
 		return node.getAttributes().getNamedItem(attributeName).getNodeValue();
 	}
 }
