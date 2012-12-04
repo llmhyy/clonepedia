@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS DiffPartUseType
 ;
 
 
-ALTER TABLE DiffPartUseType ADD CONSTRAINT FK_DiffPartUseType_CloneInstance 
-	FOREIGN KEY (cloneInstanceId) REFERENCES CloneInstance (cloneInstanceId)
-;
+#ALTER TABLE DiffPartUseType ADD CONSTRAINT FK_DiffPartUseType_CloneInstance 
+#	FOREIGN KEY (cloneInstanceId) REFERENCES CloneInstance (cloneInstanceId)
+#;
 

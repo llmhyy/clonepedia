@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS CommonPartUseType
 ;
 
 
-ALTER TABLE CommonPartUseType ADD CONSTRAINT FK_CommonPartUseType_CloneSet 
-	FOREIGN KEY (cloneSetId) REFERENCES CloneSet (cloneSetId)
-;
+#ALTER TABLE CommonPartUseType ADD CONSTRAINT FK_CommonPartUseType_CloneSet 
+#	FOREIGN KEY (cloneSetId) REFERENCES CloneSet (cloneSetId)
+#;
 

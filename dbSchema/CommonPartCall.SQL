@@ -8,11 +8,11 @@ CREATE TABLE IF NOT EXISTS CommonPartCall
 ;
 
 
-ALTER TABLE CommonPartCall ADD CONSTRAINT FK_CommonCall_CloneSet 
-	FOREIGN KEY (cloneSetId) REFERENCES CloneSet (cloneSetId)
-;
+#ALTER TABLE CommonPartCall ADD CONSTRAINT FK_CommonCall_CloneSet 
+#	FOREIGN KEY (cloneSetId) REFERENCES CloneSet (cloneSetId)
+#;
 
-ALTER TABLE CommonPartCall ADD CONSTRAINT FK_CommonPartCall_Method 
-	FOREIGN KEY (methodId) REFERENCES Method (methodId)
-;
+#ALTER TABLE CommonPartCall ADD CONSTRAINT FK_CommonPartCall_Method 
+#	FOREIGN KEY (methodId) REFERENCES Method (methodId)
+#;
 

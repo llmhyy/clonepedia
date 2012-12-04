@@ -9,11 +9,11 @@ CREATE TABLE IF NOT EXISTS InterfaceExtendRelation
 ;
 
 
-ALTER TABLE InterfaceExtendRelation ADD CONSTRAINT FK_InterfaceExtendRelation_Interface1 
-	FOREIGN KEY (subInterfaceId) REFERENCES Interface (interfaceId)
-;
+#ALTER TABLE InterfaceExtendRelation ADD CONSTRAINT FK_InterfaceExtendRelation_Interface1 
+#	FOREIGN KEY (subInterfaceId) REFERENCES Interface (interfaceId)
+#;
 
-ALTER TABLE InterfaceExtendRelation ADD CONSTRAINT FK_InterfaceExtendRelation_Interface2 
-	FOREIGN KEY (superInterfaceId) REFERENCES Interface (interfaceId)
-;
+#ALTER TABLE InterfaceExtendRelation ADD CONSTRAINT FK_InterfaceExtendRelation_Interface2 
+#	FOREIGN KEY (superInterfaceId) REFERENCES Interface (interfaceId)
+#;
 

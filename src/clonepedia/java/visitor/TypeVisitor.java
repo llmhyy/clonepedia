@@ -39,7 +39,7 @@ public class TypeVisitor extends ASTVisitor {
 				fetcher, compilationUnit, project);
 		
 		try {
-			parseAndStoreFieldInformation(binding, anonymousClass);
+			parseAndStoreFieldInformation(binding, anonymousClass, this.compilationUnit);
 			parseAndStoreMethodInformation(binding, anonymousClass, this.compilationUnit);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -57,7 +57,7 @@ public class TypeVisitor extends ASTVisitor {
 		if(!type.isInterface()){
 			Class clas = MinerUtilforJava.extractAndStoreClassInformation(binding, false, fetcher, compilationUnit, project);
 			try {
-				parseAndStoreFieldInformation(binding, clas);
+				parseAndStoreFieldInformation(binding, clas, this.compilationUnit);
 				parseAndStoreMethodInformation(binding, clas, this.compilationUnit);
 				
 			} catch (Exception e) {
@@ -71,7 +71,7 @@ public class TypeVisitor extends ASTVisitor {
 			Interface interf = MinerUtilforJava.extractAndStoreInterfaceInformation(binding, fetcher, compilationUnit, project);
 			
 			try {
-				parseAndStoreFieldInformation(binding, interf);
+				parseAndStoreFieldInformation(binding, interf, this.compilationUnit);
 				parseAndStoreMethodInformation(binding, interf, this.compilationUnit);
 				
 			} catch (Exception e) {
@@ -90,9 +90,9 @@ public class TypeVisitor extends ASTVisitor {
 		}
 	}
 
-	private void parseAndStoreFieldInformation(ITypeBinding binding, ComplexType complexType) throws Exception {
+	private void parseAndStoreFieldInformation(ITypeBinding binding, ComplexType complexType, CompilationUnit cu) throws Exception {
 		for(IVariableBinding fieldBinding: binding.getDeclaredFields()){
-			VarType varType = MinerUtilforJava.getVariableType(fieldBinding.getType(), project);
+			VarType varType = MinerUtilforJava.getVariableType(fieldBinding.getType(), project, cu);
 			
 			if(null != varType){
 				Field field = new Field(fieldBinding.getName(), complexType, varType);

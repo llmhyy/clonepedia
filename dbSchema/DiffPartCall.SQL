@@ -9,11 +9,11 @@ CREATE TABLE IF NOT EXISTS DiffPartCall
 ;
 
 
-ALTER TABLE DiffPartCall ADD CONSTRAINT FK_DiffPartCall_CloneInstance 
-	FOREIGN KEY (cloneInstanceId) REFERENCES CloneInstance (cloneInstanceId)
-;
+#ALTER TABLE DiffPartCall ADD CONSTRAINT FK_DiffPartCall_CloneInstance 
+#	FOREIGN KEY (cloneInstanceId) REFERENCES CloneInstance (cloneInstanceId)
+#;
 
-ALTER TABLE DiffPartCall ADD CONSTRAINT FK_DiffPartCall_Method 
-	FOREIGN KEY (methodId) REFERENCES Method (methodId)
-;
+#ALTER TABLE DiffPartCall ADD CONSTRAINT FK_DiffPartCall_Method 
+#	FOREIGN KEY (methodId) REFERENCES Method (methodId)
+#;
 

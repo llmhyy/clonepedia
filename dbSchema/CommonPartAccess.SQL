@@ -9,11 +9,11 @@ CREATE TABLE IF NOT EXISTS CommonPartAccess
 ;
 
 
-ALTER TABLE CommonPartAccess ADD CONSTRAINT FK_CommonAccess_CloneSet 
-	FOREIGN KEY (cloneSetId) REFERENCES CloneSet (cloneSetId)
-;
+#ALTER TABLE CommonPartAccess ADD CONSTRAINT FK_CommonAccess_CloneSet 
+#	FOREIGN KEY (cloneSetId) REFERENCES CloneSet (cloneSetId)
+#;
 
-ALTER TABLE CommonPartAccess ADD CONSTRAINT FK_CommonPartAccess_Field 
-	FOREIGN KEY (fieldName, ownerId) REFERENCES Field (fieldName, ownerId)
-;
+#ALTER TABLE CommonPartAccess ADD CONSTRAINT FK_CommonPartAccess_Field 
+#	FOREIGN KEY (fieldName, ownerId) REFERENCES Field (fieldName, ownerId)
+#;
 

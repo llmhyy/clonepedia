@@ -13,15 +13,15 @@ CREATE TABLE IF NOT EXISTS Class
 ;
 
 
-ALTER TABLE Class ADD CONSTRAINT FK_Class_Extend_Class 
-	FOREIGN KEY (superClassId) REFERENCES Class (classId)
-;
+#ALTER TABLE Class ADD CONSTRAINT FK_Class_Extend_Class 
+#	FOREIGN KEY (superClassId) REFERENCES Class (classId)
+#;
 
-ALTER TABLE Class ADD CONSTRAINT FK_Class_Inner_Class 
-	FOREIGN KEY (outerClassId) REFERENCES Class (classId)
-;
+#ALTER TABLE Class ADD CONSTRAINT FK_Class_Inner_Class 
+#	FOREIGN KEY (outerClassId) REFERENCES Class (classId)
+#;
 
-ALTER TABLE Class ADD CONSTRAINT FK_Class_Project 
-	FOREIGN KEY (projectName) REFERENCES Project (projectName)
-;
+#ALTER TABLE Class ADD CONSTRAINT FK_Class_Project 
+#	FOREIGN KEY (projectName) REFERENCES Project (projectName)
+#;
 

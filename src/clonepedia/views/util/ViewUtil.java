@@ -189,7 +189,7 @@ public class ViewUtil {
 			IRegion startLineInfo = null;
 			IRegion endLineInfo = null;
 			try {
-				// line count internaly starts with 0, and not with 1 like in
+				// line count internally starts with 0, and not with 1 like in
 				// GUI
 				startLineInfo = document.getLineInformation(instance.getStartLine() - 1);
 				endLineInfo = document.getLineInformation(instance.getEndLine() - 1);

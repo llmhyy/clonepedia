@@ -11,7 +11,7 @@ CREATE TABLE  IF NOT EXISTS MethodParameter
 ;
 
 
-ALTER TABLE MethodParameter ADD CONSTRAINT FK_MethodParameter_Method 
-	FOREIGN KEY (methodId) REFERENCES Method (methodId)
-;
+#ALTER TABLE MethodParameter ADD CONSTRAINT FK_MethodParameter_Method 
+#	FOREIGN KEY (methodId) REFERENCES Method (methodId)
+#;
 

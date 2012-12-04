@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS DiffPartKeyword
 ;
 
 
-ALTER TABLE DiffPartKeyword ADD CONSTRAINT FK_DiffPartKeyword_CloneInstance 
-	FOREIGN KEY (cloneinstanceId) REFERENCES CloneInstance (cloneInstanceId)
-;
+#ALTER TABLE DiffPartKeyword ADD CONSTRAINT FK_DiffPartKeyword_CloneInstance 
+#	FOREIGN KEY (cloneinstanceId) REFERENCES CloneInstance (cloneInstanceId)
+#;
 

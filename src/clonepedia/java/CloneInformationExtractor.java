@@ -59,11 +59,11 @@ public class CloneInformationExtractor {
 				/**
 				 * The following code is for debugging
 				 */
-				/*if(cloneSet.getId().equals("305")){
+				if(cloneSet.getId().equals("5")){
 					System.out.print("");
 				}
 				else
-					continue;*/
+					continue;
 				
 				cloneSet.setProject(project);
 				/**
@@ -75,7 +75,7 @@ public class CloneInformationExtractor {
 				 */
 				setWrapper = extractCounterRelationalDifferencesOfCloneSet(setWrapper);
 				setWrapperList.add(setWrapper);
-				//System.out.print("");
+				System.out.print("");
 			}
 			catch(Exception e){
 				System.out.println(cloneSet.getId());
@@ -309,14 +309,14 @@ public class CloneInformationExtractor {
 							return field;
 						}
 						else{
-							Variable v = MinerUtilforJava.getVariablefromBinding(name, variableBinding, project);
+							Variable v = MinerUtilforJava.getVariablefromBinding(name, variableBinding, project, (CompilationUnit)node.getRoot());
 							v.setOwner(owner);
 							
 							return v;
 						}
 					}
 					else {
-						Variable v = MinerUtilforJava.getVariablefromBinding(name, variableBinding, project);
+						Variable v = MinerUtilforJava.getVariablefromBinding(name, variableBinding, project, (CompilationUnit)node.getRoot());
 						v.setOwner(owner);
 						
 						return v;

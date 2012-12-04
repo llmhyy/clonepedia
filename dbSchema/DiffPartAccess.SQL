@@ -10,11 +10,11 @@ CREATE TABLE IF NOT EXISTS DiffPartAccess
 ;
 
 
-ALTER TABLE DiffPartAccess ADD CONSTRAINT FK_DiffPartAccess_CloneInstance 
-	FOREIGN KEY (cloneInstanceId) REFERENCES CloneInstance (cloneInstanceId)
-;
+#ALTER TABLE DiffPartAccess ADD CONSTRAINT FK_DiffPartAccess_CloneInstance 
+#	FOREIGN KEY (cloneInstanceId) REFERENCES CloneInstance (cloneInstanceId)
+#;
 
-ALTER TABLE DiffPartAccess ADD CONSTRAINT FK_DiffPartAccess_Field 
-	FOREIGN KEY (fieldName, ownerId) REFERENCES Field (fieldName, ownerId)
-;
+#ALTER TABLE DiffPartAccess ADD CONSTRAINT FK_DiffPartAccess_Field 
+#	FOREIGN KEY (fieldName, ownerId) REFERENCES Field (fieldName, ownerId)
+#;
 

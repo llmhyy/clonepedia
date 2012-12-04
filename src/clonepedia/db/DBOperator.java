@@ -129,6 +129,16 @@ public class DBOperator{
 			String sql = generateInsertFromTemplateSQL(table,
 					valueProperties);
 	
+			/**
+			 * The following commented code is used to debug.
+			 */
+			/*if(table.getName().equals("Class")){
+				String fullName = valueProperties.getProperty("classFullName");
+				if(fullName.equals("org.qii.weiciyuan.ui.actionmenu.FollowTask")){
+					System.out.println("here");
+				}
+			}*/
+			
 			stat = conn.prepareStatement(sql);
 			stat.executeUpdate();
 			stat.close();

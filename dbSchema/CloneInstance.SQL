@@ -13,11 +13,11 @@ CREATE TABLE IF NOT EXISTS CloneInstance
 ;
 
 
-ALTER TABLE CloneInstance ADD CONSTRAINT FK_CloneInstance_CloneSet 
-	FOREIGN KEY (cloneSetId) REFERENCES CloneSet (cloneSetId)
-;
+#ALTER TABLE CloneInstance ADD CONSTRAINT FK_CloneInstance_CloneSet 
+#	FOREIGN KEY (cloneSetId) REFERENCES CloneSet (cloneSetId)
+#;
 
-ALTER TABLE CloneInstance ADD CONSTRAINT FK_CloneInstance_Method 
-	FOREIGN KEY (residingMethodId) REFERENCES Method (methodId)
-;
+#ALTER TABLE CloneInstance ADD CONSTRAINT FK_CloneInstance_Method 
+#	FOREIGN KEY (residingMethodId) REFERENCES Method (methodId)
+#;
 
