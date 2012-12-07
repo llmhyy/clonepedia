@@ -1,6 +1,10 @@
 package clonepedia.actions;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
@@ -27,16 +31,26 @@ public class ProgramStructureExtractionAction implements IWorkbenchWindowActionD
 	}
 
 	public void run(IAction action) {
-		Project project = new Project(Settings.projectName, "java", "");
-		StructureExtractor extractor = new StructureExtractor(project);
-		//extractor.extractProjectOutline();
-		try {
-			extractor.extractProjectContent();
-		} catch (JavaModelException e) {
-			e.printStackTrace();
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
+		
+		Job job = new Job("Program Structure Extracting"){
+
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				Project project = new Project(Settings.projectName, "java", "");
+				StructureExtractor extractor = new StructureExtractor(project);
+				//extractor.extractProjectOutline();
+				try {
+					extractor.extractProjectContent();
+				} catch (JavaModelException e) {
+					e.printStackTrace();
+				} catch (CoreException e) {
+					e.printStackTrace();
+				}
+				return Status.OK_STATUS;
+			}
+			
+		};
+		job.schedule();
 	}
 
 	/**

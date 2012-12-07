@@ -28,6 +28,6 @@ public class Settings {
 	//======================================================================
 	
 	//======================================================================
-	public static String projectName = "DummyActivity";
-	public static String inputCloneFile = "D:\\Test_Project\\DummyActivity\\out\\clones.xml";
+	public static String projectName = "JFreeChart";
+	public static String inputCloneFile = "D:\\Test_Project\\JFreeChart\\out\\clones.xml";
 }

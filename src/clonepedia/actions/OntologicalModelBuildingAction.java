@@ -1,5 +1,9 @@
 package clonepedia.actions;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -17,14 +21,24 @@ public class OntologicalModelBuildingAction implements IWorkbenchWindowActionDel
 
 	@Override
 	public void run(IAction action) {
-		Project project = new Project(Settings.projectName, "java", "");
-		OntologicalModelGenerator generator = new OntologicalModelGenerator(project);
-		try {
-			generator.reconstructOntologicalModel();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
+		Job job = new Job("Ontological Model Generating"){
+
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				Project project = new Project(Settings.projectName, "java", "");
+				OntologicalModelGenerator generator = new OntologicalModelGenerator(project);
+				try {
+					generator.reconstructOntologicalModel();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return Status.OK_STATUS;
+			}
+			
+		};
+		job.schedule();
 		
 		/*StructuralClusterer clusterer;
 		try {

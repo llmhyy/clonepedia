@@ -1,5 +1,9 @@
 package clonepedia.actions;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -15,11 +19,20 @@ public class CloneInformationExtractionAction implements
 
 	@Override
 	public void run(IAction action) {
-		Project project = new Project(Settings.projectName, "java", "");
-		CloneInformationExtractor extractor = 
-				new CloneInformationExtractor(new CloneDetectionFileParser(), project);
 		
-		extractor.extract();
+		Job job = new Job("Clone Information Extracting"){
+
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				Project project = new Project(Settings.projectName, "java", "");
+				CloneInformationExtractor extractor = 
+						new CloneInformationExtractor(new CloneDetectionFileParser(), project);
+				extractor.extract();
+				return Status.OK_STATUS;
+			}
+			
+		};
+		job.schedule();
 		//System.out.println("success");
 	}
 

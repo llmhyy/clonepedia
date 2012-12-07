@@ -35,7 +35,7 @@ public class OntologicalModelGenerator implements Serializable{
 	private static final long serialVersionUID = -4884220405975527491L;
 	private Project project;
 	private CloneSets sets;
-	private HashMap<String, Long> setTimeMap = new HashMap<String, Long>();
+	//private HashMap<String, Long> setTimeMap = new HashMap<String, Long>();
 	private OntologicalDataFetcher fetcher = new OntologicalDataFetcher();
 
 	public void setSets(CloneSets sets) {
@@ -74,19 +74,23 @@ public class OntologicalModelGenerator implements Serializable{
 	
 	
 	public void buildPatternforCloneSets() throws Exception{
-		//int processed = 0;
+		int setsNum = sets.getCloneList().size();
+		int i = 0;
 		for(CloneSet set: sets.getCloneList()){
-			long start = System.currentTimeMillis();
+			//long start = System.currentTimeMillis();
 			//if(set.getId().equals("52028"))
 				set.buildPatterns();
 			//processed++;
-			long end = System.currentTimeMillis();
+			/*long end = System.currentTimeMillis();
 			long time = end - start;
-			setTimeMap.put(set.getId(), time);
+			setTimeMap.put(set.getId(), time);*/
 			//System.out.println("Time used in buildPatterns:" + time);
-			//System.out.print("");
+			i++;
+			if(i%10 == 0){
+				System.out.println(((double)i/setsNum) + " clone sets have been computed");
+			}
 		}
-		System.out.print("");
+		//System.out.print("");
 	}
 	
 	private void buildRelationsforField() {
