@@ -87,7 +87,9 @@ public class OntologicalModelGenerator implements Serializable{
 			//System.out.println("Time used in buildPatterns:" + time);
 			i++;
 			if(i%10 == 0){
-				System.out.println(((double)i/setsNum) + " clone sets have been computed");
+				double percentage = ((double)i/setsNum)*100;
+				String percentageString = String.valueOf(percentage).substring(0, 5);
+				System.out.println(percentageString + "% clone sets have been computed");
 			}
 		}
 		//System.out.print("");
