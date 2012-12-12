@@ -59,7 +59,7 @@ public class CloneInformationExtractor {
 				/**
 				 * The following code is for debugging
 				 */
-				/*if(cloneSet.getId().equals("5")){
+				/*if(cloneSet.getId().equals("132")){
 					System.out.print("");
 				}
 				else
@@ -287,6 +287,10 @@ public class CloneInformationExtractor {
 			}
 			else {
 				SimpleName name = (SimpleName)node;
+				
+				if(name.resolveBinding() == null)
+					return null;
+				
 				if(name.resolveBinding().getKind() == IBinding.TYPE){
 					ITypeBinding typeBinding = (ITypeBinding)name.resolveBinding();
 					if(typeBinding.isClass() || typeBinding.isInterface()){
