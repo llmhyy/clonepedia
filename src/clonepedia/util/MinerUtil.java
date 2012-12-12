@@ -107,16 +107,22 @@ public class MinerUtil {
 		return string;
 	}
 
-	public static String filterSpecialCharacter(String s) {
+	public static String switchSpecialCharacterForSQL(String s) {
 		char[] chars = s.toCharArray();
+		StringBuffer buffer = new StringBuffer();
 
 		for (int i = 0; i < chars.length; i++) {
-			if (chars[i] == '\'' || chars[i] == '"') {
-				chars[i] = ' ';
+			
+			
+			if (chars[i] == '\'' || chars[i] == '"' || chars[i]=='\'') {
+				buffer.append('\\');
 			}
+			
+			buffer.append(chars[i]);
 		}
-		System.out.print("");
-		return String.valueOf(chars);
+		//System.out.print("");
+		//return String.valueOf(chars);
+		return buffer.toString();
 	}
 
 	public static Character[] convertCharacter(Object[] objectList) {

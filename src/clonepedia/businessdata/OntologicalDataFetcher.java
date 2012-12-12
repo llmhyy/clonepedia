@@ -899,10 +899,9 @@ public class OntologicalDataFetcher implements Serializable{
 			storeCloneInstanceWithDependency((CloneInstance) owner);
 
 		Properties consProperties = new Properties();
-		if (constant.getConstantType().toString().equals("String")) {
-			constant.setConstantName(MinerUtil
-					.filterSpecialCharacter(constant.getConstantName()));
-		}
+		/*if (constant.getConstantType().toString().equals("String")) {
+			constant.setConstantName(constant.getConstantName());
+		}*/
 		consProperties.put("constantName", constant.getConstantName());
 		consProperties.put("constantType", constant.getConstantType()
 				.toString());

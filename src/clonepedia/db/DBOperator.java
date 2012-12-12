@@ -13,6 +13,7 @@ import clonepedia.db.schema.DBTable;
 import clonepedia.db.schema.Entity;
 import clonepedia.db.schema.Relation;
 import clonepedia.model.db.DataRecord;
+import clonepedia.util.MinerUtil;
 
 
 public class DBOperator{
@@ -125,8 +126,9 @@ public class DBOperator{
 	}
 	
 	public static void insertDataRecord(DBTable table, Properties valueProperties){
+		String sql = "";
 		try {
-			String sql = generateInsertFromTemplateSQL(table,
+			sql = generateInsertFromTemplateSQL(table,
 					valueProperties);
 	
 			/**
@@ -145,6 +147,7 @@ public class DBOperator{
 	
 		} catch (SQLException e) {
 			closePreparedStatement(stat);
+			System.out.println(sql);
 			e.printStackTrace();
 		}
 	}
@@ -194,6 +197,8 @@ public class DBOperator{
 		while (en.hasMoreElements()) {
 			String property = en.nextElement();
 			String value = properties.getProperty(property);
+			
+			value = MinerUtil.switchSpecialCharacterForSQL(value);
 	
 			sql += property + "='" + value + "' and ";
 		}
@@ -223,6 +228,8 @@ public class DBOperator{
 		while (en.hasMoreElements()) {
 			String property = en.nextElement();
 			String value = properties.getProperty(property);
+			
+			value = MinerUtil.switchSpecialCharacterForSQL(value);
 
 			sql += property + "='" + value + "' and ";
 		}
@@ -243,6 +250,8 @@ public class DBOperator{
 		while (valueEn.hasMoreElements()) {
 			String valueProp = valueEn.nextElement();
 			String valueVal = valueProperties.getProperty(valueProp);
+			
+			valueVal = MinerUtil.switchSpecialCharacterForSQL(valueVal);
 
 			sql1 += valueProp + ", ";
 			sql2 += "'" + valueVal + "', ";
@@ -263,6 +272,9 @@ public class DBOperator{
 		while (valueEn.hasMoreElements()) {
 			String valueProp = valueEn.nextElement();
 			String valueVal = valueProperties.getProperty(valueProp);
+			
+			valueVal = MinerUtil.switchSpecialCharacterForSQL(valueVal);
+			
 			sql += valueProp + "='" + valueVal + "', ";
 		}
 
