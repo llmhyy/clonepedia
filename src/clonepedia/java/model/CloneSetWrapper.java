@@ -215,7 +215,7 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 					patternNodeSet.add(currentNode);
 					relationGroup.addRelation(new DiffInstanceElementRelationEmulator(instance, currentNode));
 					
-					instance.markIndex(instance.comparePointer);
+					//instance.markIndex(instance.comparePointer);
 					for (CloneInstanceWrapper i : otherInstances) {
 						int index = findTheSimilarNodeIndexInInstance(
 								currentNode, i, isForThePrefixCondition);
@@ -367,6 +367,27 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 		}
 
 		return false;
+	}
+	
+	public void markMatchedNodesInStartIndex(){
+		for(CloneInstanceWrapper instance: this){
+			instance.markIndex(instance.startContextIndex);
+		}
+	}
+	
+	/**
+	 * The concerned nodes which is neither exact same nodes and counter relational nodes are Unmatched AST nodes.
+	 */
+	public void collectUncounterRetionalDifferentASTNodes(){
+		for(CloneInstanceWrapper instance: this){
+			ASTNode[] list = instance.getAstNodeList();
+			for(int i=0; i<list.length; i++){
+				ASTNode node = list[i];
+				if(MinerUtilforJava.isConcernedType(node) && !instance.isMarked(i)){
+					instance.getUncounterRelationalDifferenceNodes().add(node);
+				}
+			}
+		}
 	}
 	
 	public String toString(){

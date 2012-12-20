@@ -1,5 +1,6 @@
 package clonepedia.java.model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 import org.eclipse.core.resources.IProject;
@@ -27,6 +28,7 @@ public class CloneInstanceWrapper{
 	
 	private CloneInstance cloneInstance;
 	private MethodDeclaration methodDeclaration;
+	private ArrayList<ASTNode> uncounterRelationalDifferenceNodes = new ArrayList<ASTNode>();
 	
 	private String className;
 	
@@ -146,5 +148,14 @@ public class CloneInstanceWrapper{
 
 	public boolean isMarked(int index){
 		return markedIndexes.contains(index);
+	}
+
+	public ArrayList<ASTNode> getUncounterRelationalDifferenceNodes() {
+		return uncounterRelationalDifferenceNodes;
+	}
+
+	public void setUncounterRelationalDifferenceNodes(
+			ArrayList<ASTNode> uncounterRelationalDifferenceNodes) {
+		this.uncounterRelationalDifferenceNodes = uncounterRelationalDifferenceNodes;
 	}
 }

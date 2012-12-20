@@ -59,11 +59,11 @@ public class CloneInformationExtractor {
 				/**
 				 * The following code is for debugging
 				 */
-				/*if(cloneSet.getId().equals("132")){
+				if(cloneSet.getId().equals("3")){
 					System.out.print("");
 				}
 				else
-					continue;*/
+					continue;
 				
 				cloneSet.setProject(project);
 				/**
@@ -183,7 +183,9 @@ public class CloneInformationExtractor {
 	
 	private void generateDiffPart(CloneSetWrapper setWrapper) {
 
-		//deal with the instances with extra length in the beginning
+		/**
+		 * deal with the instances with extra length in the beginning
+		 */
 		setWrapper.initiailizeEndIndexes();
 		setWrapper.generatePatternSharingASTNodes(true);
 		setWrapper.setAllTheStartIndexToEndIndex();
@@ -192,23 +194,30 @@ public class CloneInformationExtractor {
 
 			while (!setWrapper.isStartContextIndexReachTheEnd()
 					&& setWrapper.isAllTheASTNodeFollowingStartIndexMatch()) {
+				setWrapper.markMatchedNodesInStartIndex();
 				setWrapper.incrementAllTheStartIndex();
 			}
-
+			setWrapper.markMatchedNodesInStartIndex();
+			
 			if (!setWrapper.isStartContextIndexReachTheEnd()) {
 				setWrapper.setAllTheEndIndexAccordingtoStartIndex();
 
-				// do comparison
+				/**
+				 * do comparison
+				 */
 				setWrapper.generatePatternSharingASTNodes(false);
 
 				setWrapper.setAllTheStartIndexToEndIndex();
 			}
-
 		}
 
-		// deal with the instances with extra length in the end
+		/**
+		 * deal with the instances with extra length in the end
+		 */
 		setWrapper.finalizeEndIndexes();
 		setWrapper.generatePatternSharingASTNodes(false);
+		
+		setWrapper.collectUncounterRetionalDifferentASTNodes();
 		//System.out.println();
 	}
 	
