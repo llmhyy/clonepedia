@@ -2,27 +2,17 @@ package clonepedia.java.visitor;
 
 import java.util.ArrayList;
 
-import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
 
-public class CloneASTNodeVisitor extends ASTVisitor {
-
-	private int startLine;
-	private int endLine;
-	private ArrayList<ASTNode> cloneASTNodeList;
-	private CompilationUnit unit;
+public class CloneASTNodeVisitor extends CloneVisitor {
+	
+	protected ArrayList<ASTNode> cloneASTNodeList;
 	
 	public CloneASTNodeVisitor(int startLine, int endLine, ArrayList<ASTNode> list, CompilationUnit unit){
-		this.startLine = startLine;
-		this.endLine = endLine;
+		super(startLine, endLine, unit);
 		this.cloneASTNodeList = list;
-		this.unit = unit;
-	}
-	
-	public ArrayList<ASTNode> getCloneASTNodeList() {
-		return cloneASTNodeList;
 	}
 
 	public void preVisit(ASTNode node){
@@ -31,6 +21,10 @@ public class CloneASTNodeVisitor extends ASTVisitor {
 				&& startPosition < unit.getPosition(endLine+1, 0)){
 			cloneASTNodeList.add(node);
 		}
+	}
+	
+	public ArrayList<ASTNode> getCloneASTNodeList() {
+		return cloneASTNodeList;
 	}
 
 }

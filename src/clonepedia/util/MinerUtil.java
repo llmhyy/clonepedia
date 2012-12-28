@@ -9,8 +9,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 
-import clonepedia.util.IComparator;
+import org.eclipse.jdt.core.dom.ASTNode;
+
+import clonepedia.java.ASTComparator;
+import clonepedia.java.util.MinerUtilforJava;
+import clonepedia.util.BoolComparator;
 
 public class MinerUtil {
 
@@ -61,7 +66,7 @@ public class MinerUtil {
 	}
 
 	public static Object[] generateCommonNodeList(Object[] nodeList1,
-			Object[] nodeList2, IComparator comparator) {
+			Object[] nodeList2, BoolComparator comparator) {
 		int[][] commonLengthTable = new int[nodeList1.length + 1][nodeList2.length + 1];
 		for (int i = 0; i < nodeList1.length + 1; i++)
 			commonLengthTable[i][0] = 0;
@@ -97,6 +102,69 @@ public class MinerUtil {
 		}
 
 		return commonList;
+	}
+	
+	public static Object[] generateCommonNodeListFromMultiSequence(ArrayList<? extends Object>[] lists, BoolComparator comparator){
+		if(lists.length < 1){
+			return null;
+		}
+		if(lists.length == 1){
+			return lists[0].toArray(new Object[0]);
+		}
+		else if(lists.length == 2){
+			return generateCommonNodeList(lists[0].toArray(new Object[0]), lists[1].toArray(new Object[0]), comparator);
+		}
+		else{
+			Object[] commonList = MinerUtil.generateCommonNodeList(lists[0].toArray(new Object[0]),
+					lists[1].toArray(new Object[0]), comparator);
+			if (lists.length > 2) {
+				for (int k = 2; k < lists.length; k++) {
+					commonList = MinerUtil.generateCommonNodeList(commonList, lists[k].toArray(new ASTNode[0]),
+							new ASTComparator());
+				}
+			}
+			return commonList;
+		}
+	}
+	
+	public static double computeLevenshteinDistance(ArrayList<? extends Object> seq1, ArrayList<? extends Object> seq2, SimilarityComparator comparator) throws Exception{
+		
+		double matrix[][] = new double[seq1.size()+1][seq2.size()+1];
+		
+		for(int i=0; i<matrix.length; i++)
+			matrix[i][0] = i;
+		for(int j=0; j<matrix[0].length; j++)
+			matrix[0][j] = j;
+		
+		for(int i=1; i<matrix.length; i++){
+			for(int j=1; j<matrix[i].length; j++){
+				double entry1 = matrix[i-1][j] + 1;
+				double entry2 = matrix[i][j-1] + 1;
+				
+				Object obj1 = seq1.get(i-1);
+				Object obj2 = seq2.get(j-1);
+				
+				double cost = comparator.computeCost(obj1, obj2);
+				double entry3 = matrix[i-1][j-1] + cost;
+				
+				matrix[i][j] = getSmallestValue(entry1, entry2, entry3);
+			}	
+		}
+		
+		return matrix[seq1.size()][seq2.size()];
+	}
+	
+	public static double computeAdjustedLevenshteinDistance(ArrayList<? extends Object> seq1, ArrayList<? extends Object> seq2, SimilarityComparator comparator) throws Exception{
+		double value = computeLevenshteinDistance(seq1, seq2, comparator);
+		double maxLen = (seq1.size() > seq2.size())? seq1.size() : seq2.size();
+		double minLen = (seq1.size() < seq2.size())? seq1.size() : seq2.size();
+		
+		return (maxLen/minLen)*(2*value)/(maxLen + minLen);
+	}
+	
+	public static double getSmallestValue(double entry1, double entry2, double entry3){
+		double value = (entry1 < entry2)? entry1 : entry2;
+		return (value < entry3)? value : entry3;
 	}
 
 	public static Character[] convertChar(char[] charArray) {

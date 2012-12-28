@@ -2,6 +2,14 @@ package clonepedia.util;
 
 public class Settings {
 	
+	/**
+	 * Currently, we support two mode for clone instance diff comparison.
+	 * 
+	 * ASTNode_Basd
+	 * Statement_Based
+	 */
+	public static String diffComparisonMode = "Statement_Based";
+	
 	public static double diffComparisonThreshold = 0.7d;
 	
 	public static double thresholdDistanceForSyntacticClustering = 2.55d;
@@ -27,7 +35,9 @@ public class Settings {
 	public static double thresholdForSkippingPatternComparisonByLength = 1.8d;
 	//======================================================================
 	
+	public static double thresholdForStatementDifference = 0.5d;
+	
 	//======================================================================
-	public static String projectName = "JFreeChart";
-	public static String inputCloneFile = "D:\\Test_Project\\JFreeChart\\out\\clones.xml";
+	public static String projectName = "DiffAlgoTest";
+	public static String inputCloneFile = "D:\\Test_Project\\DiffAlgoTest\\out\\clones.xml";
 }

@@ -130,9 +130,9 @@ public class PathAbstractor implements Serializable{
 		//ArrayList<Object> sequence1 = su.transferPathToSequence(p1);
 		//ArrayList<Object> sequence2 = su.transferPathToSequence(p2);
 		
-		double[][] matrix = new double[pathSeq1.size()+1][pathSeq2.size()+1];
+		double[][] matrix = lmc.intializeLevenshteinMatrix(pathSeq1, pathSeq2);;
 		//long start = System.currentTimeMillis();
-		lmc.intializeLevenshteinMatrix(matrix, pathSeq1, pathSeq2);
+		
 		//long end = System.currentTimeMillis();
 		//long time = end - start;
 		//System.out.println("Time used in intializeLevenshteinMatrix:" + time);

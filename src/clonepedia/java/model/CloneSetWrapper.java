@@ -2,16 +2,24 @@ package clonepedia.java.model;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.UUID;
 
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.PrimitiveType;
+import org.eclipse.jdt.core.dom.Statement;
 
 import clonepedia.java.ASTComparator;
+import clonepedia.java.ASTStatementBoolComparator;
+import clonepedia.java.ASTStatementSimilarityComparator;
 import clonepedia.java.CloneInformationExtractor;
 import clonepedia.java.CompilationUnitPool;
 import clonepedia.java.util.MinerUtilforJava;
+import clonepedia.java.visitor.CloneASTNodeVisitor;
+import clonepedia.java.visitor.CloneASTStatementNodeVisitor;
+import clonepedia.java.visitor.CloneASTStatementVisitor;
 import clonepedia.model.ontology.CloneInstance;
 import clonepedia.model.ontology.CloneSet;
 import clonepedia.util.DefaultComparator;
@@ -29,9 +37,16 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 	public int startContextIndex = 0;
 	public int endContextIndex = 0;
 	
+	private Statement[] commonStatementList;
+	public int startStatementContextIndex = 0;
+	public int endStatementContextIndex = 0;
+	
 	private ArrayList<HashSet<ASTNode>> patternNodeSets = new ArrayList<HashSet<ASTNode>>();
-	private ArrayList<DiffCounterRelationGroupEmulator> relationGroups 
-		= new ArrayList<DiffCounterRelationGroupEmulator>();
+	private ArrayList<DiffCounterRelationGroupEmulator> relationGroups = new ArrayList<DiffCounterRelationGroupEmulator>();
+	
+	private ArrayList<HashSet<Statement>> counterStatementSets = new ArrayList<HashSet<Statement>>();
+	private ArrayList<DiffCounterRelationGroupEmulator> relationStatementGroups = new ArrayList<DiffCounterRelationGroupEmulator>();
+	
 	
 	/**
 	 * This constructor is able to extract the context information, i.e. program structural information
@@ -46,6 +61,102 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 		for(CloneInstance ci: cloneSet){
 			add(new CloneInstanceWrapper(ci, this.pool));
 		}
+	}
+	
+	public void generateCommonListforCloneSetWrapper() {
+
+		ArrayList<ASTNode>[] lists = this.generateASTListforCloneRegion();
+
+		Object[] commonList = MinerUtil.generateCommonNodeListFromMultiSequence(lists, new ASTComparator());
+		
+		/*ASTNode[] commonList = MinerUtilforJava.convertASTNode(MinerUtil.generateCommonNodeList(
+				lists[0].toArray(new ASTNode[0]),
+				lists[1].toArray(new ASTNode[0]), new ASTComparator()));
+
+		if (lists.length > 2) {
+			for (int k = 2; k < lists.length; k++) {
+				commonList = MinerUtilforJava.convertASTNode(MinerUtil.generateCommonNodeList(
+						commonList, lists[k].toArray(new ASTNode[0]),
+						new ASTComparator()));
+			}
+		}*/
+
+		this.setCommonASTNodeList(MinerUtilforJava.convertASTNode(commonList));
+		//if (commonList.length != 0) getDiffPart(setWrapper);
+		 
+	}
+	
+	@SuppressWarnings("unchecked")
+	private ArrayList<ASTNode>[] generateASTListforCloneRegion() {
+		int size = this.getCloneSet().size();
+		ArrayList<ASTNode>[] lists = new ArrayList[size];
+
+		int i = 0;
+		for (CloneInstanceWrapper instanceWrapper : this) {
+
+			ArrayList<ASTNode> astNodeList = new ArrayList<ASTNode>();
+
+			ASTNode cu = instanceWrapper.getMethodDeclaration().getRoot();
+			/*if (!(cu instanceof CompilationUnit))
+				cu = cu.getParent();*/
+
+			CloneASTNodeVisitor visitor = new CloneASTNodeVisitor(
+					instanceWrapper.getStartLine(),
+					instanceWrapper.getEndLine(), astNodeList,
+					(CompilationUnit) cu);
+
+			instanceWrapper.getMethodDeclaration().accept(visitor);
+
+			//filterComplicatedASTNodeforList(astNodeList);
+
+			instanceWrapper.setAstNodeList(astNodeList.toArray(new ASTNode[0]));
+
+			lists[i++] = astNodeList;
+		}
+
+		return lists;
+		// System.out.println(astNodeList);
+	}
+	
+	public void generateDiffPart() {
+
+		/**
+		 * deal with the instances with extra length in the beginning
+		 */
+		this.initiailizeEndIndexes();
+		this.generatePatternSharingASTNodes(true);
+		this.setAllTheStartIndexToEndIndex();
+		
+		while (!this.isStartContextIndexReachTheEnd()) {
+
+			while (!this.isStartContextIndexReachTheEnd()
+					&& this.isAllTheASTNodeFollowingStartIndexMatch()) {
+				this.markMatchedNodesInStartIndex();
+				this.incrementAllTheStartIndex();
+			}
+			this.markMatchedNodesInStartIndex();
+			
+			if (!this.isStartContextIndexReachTheEnd()) {
+				this.setAllTheEndIndexAccordingtoStartIndex();
+
+				/**
+				 * do comparison
+				 */
+				this.generatePatternSharingASTNodes(false);
+
+				this.setAllTheStartIndexToEndIndex();
+			}
+		}
+		this.markMatchedNodesInStartIndex();
+		
+		/**
+		 * deal with the instances with extra length in the end
+		 */
+		this.finalizeEndIndexes();
+		this.generatePatternSharingASTNodes(false);
+		
+		this.collectUncounterRetionalDifferentASTNodes();
+		//System.out.println();
 	}
 	
 	public boolean isStartContextIndexReachTheEnd() {
@@ -156,10 +267,16 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 	 */
 	public void finalizeEndIndexes(){
 		for(CloneInstanceWrapper instance: this){
-			instance.endContextIndex = instance.getAstNodeList().length - 1;
+			instance.endContextIndex = instance.getAstNodeList().length;
 		}
 	}
 	
+	public void markMatchedNodesInStartIndex(){
+		for(CloneInstanceWrapper instance: this){
+			instance.markIndex(instance.startContextIndex);
+		}
+	}
+
 	/**
 	 * Given a clone instance <parameter>instance</parameter>, this method return the clone instances of
 	 * the clone set except <parameter>instance</parameter>.
@@ -232,8 +349,7 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 						}
 					}
 
-					if (theNodesAreNotExactSameAndManyEnough(patternNodeSet,
-							this.size())) {
+					if (patternNodeSet.size() > 1) {
 						this.getPatternNodeSets().add(patternNodeSet);
 						relationGroup.setId("cr" + UUID.randomUUID());
 						this.addRelationGroup(relationGroup);
@@ -274,7 +390,8 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 				ASTNode node = (ASTNode) instance.getAstNodeList()[i];
 				//ITypeBinding binding = MinerUtilforJava.getBinding(node);
 				if(MinerUtilforJava.isConcernedType(referenceNode) && MinerUtilforJava.isConcernedType(node)){
-					if(MinerUtilforJava.isASTNodesofTheSameType(referenceNode, node))
+					if(MinerUtilforJava.isASTNodesofTheSameType(referenceNode, node) && 
+							MinerUtilforJava.isTheASTNodesBelongToSimilarStatement(node, referenceNode))
 						similarNodeIndexCandidates.add(i);
 				}
 				/*if(binding != null && referBinding != null){
@@ -355,7 +472,11 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 		/**
 		 * To judge whether the nodes are exactly the same
 		 */
-		boolean isExactSame = true;
+		return true;
+		/*boolean isExactSame = true;
+		if(this.size() != patternNodeSet.size()){
+			return true;
+		}
 		ASTNode[] nodeList = patternNodeSet.toArray(new ASTNode[0]);
 		ASTNode node = nodeList[0];
 		for (int i = 1; i < nodeList.length; i++) {
@@ -366,19 +487,13 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 				return true;
 		}
 
-		return false;
-	}
-	
-	public void markMatchedNodesInStartIndex(){
-		for(CloneInstanceWrapper instance: this){
-			instance.markIndex(instance.startContextIndex);
-		}
+		return false;*/
 	}
 	
 	/**
 	 * The concerned nodes which is neither exact same nodes and counter relational nodes are Unmatched AST nodes.
 	 */
-	public void collectUncounterRetionalDifferentASTNodes(){
+	private void collectUncounterRetionalDifferentASTNodes(){
 		for(CloneInstanceWrapper instance: this){
 			ASTNode[] list = instance.getAstNodeList();
 			for(int i=0; i<list.length; i++){
@@ -394,6 +509,417 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 		return cloneSet.getId();
 	}
 	
+	public void generateCommonStatementListforCloneSetWrapper() {
+		ArrayList<Statement>[] lists = this.generateStatementListforCloneRegion();
+
+		Object[] commonList = MinerUtil.generateCommonNodeListFromMultiSequence(lists, new ASTStatementBoolComparator());
+		
+		/*Statement[] commonList = (Statement[]) MinerUtilforJava.convertASTNode(MinerUtil.generateCommonNodeList(
+				lists[0].toArray(new Statement[0]),
+				lists[1].toArray(new Statement[0]), new ASTStatementComparator()));
+
+		if (lists.length > 2) {
+			for (int k = 2; k < lists.length; k++) {
+				commonList = (Statement[]) MinerUtilforJava.convertASTNode(MinerUtil.generateCommonNodeList(
+						commonList, lists[k].toArray(new Statement[0]),
+						new ASTStatementComparator()));
+			}
+		}*/
+
+		this.setCommonStatementList(MinerUtilforJava.convertStatement(commonList));
+	}
+	
+	private ArrayList<Statement>[] generateStatementListforCloneRegion() {
+		int size = this.getCloneSet().size();
+		@SuppressWarnings("unchecked")
+		ArrayList<Statement>[] lists = new ArrayList[size];
+
+		int i = 0;
+		for (CloneInstanceWrapper instanceWrapper : this) {
+
+			ArrayList<Statement> statementList = new ArrayList<Statement>();
+
+			ASTNode cu = instanceWrapper.getMethodDeclaration().getRoot();
+			/*if (!(cu instanceof CompilationUnit))
+				cu = cu.getParent();*/
+
+			CloneASTStatementVisitor visitor = new CloneASTStatementVisitor(
+					instanceWrapper.getStartLine(),
+					instanceWrapper.getEndLine(), statementList,
+					(CompilationUnit) cu);
+
+			instanceWrapper.getMethodDeclaration().accept(visitor);
+
+			//filterComplicatedASTNodeforList(astNodeList);
+
+			instanceWrapper.setStatementList(statementList.toArray(new Statement[0]));
+
+			lists[i++] = statementList;
+		}
+
+		return lists;
+	}
+
+	public void generateDiffPartWithinSyntacticBoundary(boolean isStatementFuzzyMatch) {
+		/**
+		 * deal with the instances with extra length in the beginning
+		 */
+		this.initiailizeEndStatementIndexes();
+		this.generatePatternSharingASTNodesInStatements(isStatementFuzzyMatch, true);
+		this.setAllTheStartStatementIndexToEndStatementIndex();
+		
+		while (!this.isStartStatementContextIndexReachTheEnd()) {
+
+			while (!this.isStartStatementContextIndexReachTheEnd()
+					&& this.isAllTheASTNodeFollowingStartStatementIndexMatch()) {
+				this.markMatchedNodesInStartStatementIndex();
+				this.incrementAllTheStartStatementIndex();
+			}
+			this.markMatchedNodesInStartStatementIndex();
+			
+			if (!this.isStartStatementContextIndexReachTheEnd()) {
+				this.setAllTheEndStatementIndexAccordingtoStartStatementIndex();
+
+				/**
+				 * do comparison
+				 */
+				this.generatePatternSharingASTNodesInStatements(isStatementFuzzyMatch, false);
+
+				this.setAllTheStartStatementIndexToEndStatementIndex();
+			}
+		}
+		this.markMatchedNodesInStartStatementIndex();
+		
+		/**
+		 * deal with the instances with extra length in the end
+		 */
+		this.finalizeEndStatementIndexes();
+		this.generatePatternSharingASTNodesInStatements(isStatementFuzzyMatch, false);
+		
+		if(isStatementFuzzyMatch){
+			collectUncounterRetionalDifferentASTStatements();
+			generateDiffPartInCounterRelationalStatements();
+		}
+	}
+	
+	private void generateDiffPartInCounterRelationalStatements() {
+		for(DiffCounterRelationGroupEmulator relationStatementGroup: relationStatementGroups){
+			ArrayList<CloneInstanceWrapper> instanceList = new ArrayList<CloneInstanceWrapper>();
+			for(DiffInstanceElementRelationEmulator relation: relationStatementGroup.getRelations()){
+				CloneInstanceWrapper instance = relation.getInstanceWrapper();
+				Statement stat = (Statement) relation.getNode();
+				
+				ArrayList<ASTNode> list = new ArrayList<ASTNode>();
+				CloneASTStatementNodeVisitor visitor = new CloneASTStatementNodeVisitor(0, 0, list, null, stat);
+				stat.accept(visitor);
+				
+				instance.setAstNodeList(list.toArray(new ASTNode[0]));
+				instanceList.add(instance);
+			}
+			
+			this.setEmptyForASTNodeListOfOtherInstances(instanceList);
+			this.computeCommonSubsequence();
+			if(this.commonASTNodeList.length != 0){
+				this.generateDiffPart();
+			}
+			else{
+				for(CloneInstanceWrapper instance: this){
+					instance.startContextIndex = 0;
+					instance.endContextIndex = instance.getAstNodeList().length;
+				}
+				this.generatePatternSharingASTNodes(true);
+			}
+			this.resetSequences();
+			
+		}
+		
+	}
+	
+	
+	private void setEmptyForASTNodeListOfOtherInstances(ArrayList<CloneInstanceWrapper> referList){
+		Iterator<CloneInstanceWrapper> iter = this.iterator();
+		while(iter.hasNext()){
+			CloneInstanceWrapper instance = iter.next();
+			if(!referList.contains(instance)){
+				ArrayList<ASTNode> emptyList = new ArrayList<ASTNode>();
+				instance.setAstNodeList(emptyList.toArray(new ASTNode[0]));
+			}
+		}
+	}
+	
+	/*private void addRemovedCloneInstancesBack(ArrayList<CloneInstanceWrapper> resultList){
+		if(resultList.size() > 0){
+			for(CloneInstanceWrapper instance: resultList){
+				this.add(instance);
+			}
+		}
+	}*/
+
+	private void collectUncounterRetionalDifferentASTStatements() {
+		for(CloneInstanceWrapper instance: this){
+			Statement[] list = instance.getStatementList();
+			for(int i=0; i<list.length; i++){
+				Statement stat = list[i];
+				if(!instance.isStatementMarked(i)){
+					instance.getUncounterRelationalDifferenceNodes().add(stat);
+				}
+			}
+		}
+	}
+
+	private void generatePatternSharingASTNodesInStatements(boolean isStatementFuzzyMatch, boolean isForThePrefixCondition){
+		if(isStatementFuzzyMatch){
+			this.generatePatternSharingASTNodesInStatementsWithFuzzyMatch(isForThePrefixCondition);
+		}
+		else{
+			this.generatePatternSharingASTNodesInStatementsWithNoFuzzyMatch(isForThePrefixCondition);
+		}
+	}
+	
+	public boolean isStartStatementContextIndexReachTheEnd() {
+		return this.startStatementContextIndex == this.commonStatementList.length - 1;
+	}
+	
+	/**
+	 * Find the corresponding ending statement cursor for each clone instance.
+	 */
+	public void initiailizeEndStatementIndexes(){
+		
+		Statement stat = this.commonStatementList[this.startStatementContextIndex];
+		
+		for(CloneInstanceWrapper instance: this){
+			Statement instanceStat = instance.getStatementList()[instance.endStatementContextIndex];
+			while(!new ASTStatementBoolComparator().isMatch(stat, instanceStat)){
+				instance.endStatementContextIndex++;
+				instanceStat = instance.getStatementList()[instance.endStatementContextIndex];
+			}
+		}
+	}
+	
+	public boolean isAllTheASTNodeFollowingStartStatementIndexMatch() {
+
+		for (CloneInstanceWrapper instance : this) {
+			if (!new ASTStatementBoolComparator().isMatch(
+					this.commonStatementList[this.startStatementContextIndex + 1],
+					instance.getStatementList()[instance.startStatementContextIndex + 1]))
+				return false;
+		}
+		return true;
+	}
+	
+	public void incrementAllTheStartStatementIndex() {
+		for (CloneInstanceWrapper instance : this) {
+			instance.startStatementContextIndex++;
+		}
+		this.startStatementContextIndex++;
+	}
+	
+	public void setAllTheEndStatementIndexAccordingtoStartStatementIndex() {
+
+		this.endStatementContextIndex = this.startStatementContextIndex + 1;
+		Statement stat = this.commonStatementList[this.endStatementContextIndex];
+		for (CloneInstanceWrapper instance : this) {
+			instance.endStatementContextIndex = instance.startStatementContextIndex + 1;
+			Statement instanceStat = instance.getStatementList()[instance.endStatementContextIndex];
+			while (!new ASTStatementBoolComparator().isMatch(stat, instanceStat)) {
+				instance.endStatementContextIndex++;
+				instanceStat = instance.getStatementList()[instance.endStatementContextIndex];
+			}
+		}
+	}
+	
+	public void setAllTheStartStatementIndexToEndStatementIndex() {
+		this.startStatementContextIndex = this.endStatementContextIndex;
+		for (CloneInstanceWrapper instance : this) {
+			instance.startStatementContextIndex = instance.endStatementContextIndex;
+		}
+	}
+	
+	public void finalizeEndStatementIndexes(){
+		for(CloneInstanceWrapper instance: this){
+			instance.endStatementContextIndex = instance.getStatementList().length;
+		}
+	}
+	
+	public void markMatchedNodesInStartStatementIndex(){
+		for(CloneInstanceWrapper instance: this){
+			instance.markStatementIndex(instance.startStatementContextIndex);
+		}
+	}
+	
+	private void generatePatternSharingASTNodesInStatementsWithFuzzyMatch(boolean isForThePrefixCondition){
+		for (CloneInstanceWrapper instance : this){
+			if(!isForThePrefixCondition){
+				instance.compareStatementPointer = instance.startStatementContextIndex + 1;
+			}
+			else{
+				instance.compareStatementPointer = instance.startStatementContextIndex;
+			}
+		}	
+
+		for (CloneInstanceWrapper instance : this) {
+			while (instance.compareStatementPointer < instance.endStatementContextIndex) {
+
+				if (!instance.isStatementMarked(instance.compareStatementPointer)) {
+					HashSet<Statement> counterStatementSet = new HashSet<Statement>();
+					
+					DiffCounterRelationGroupEmulator relationStatementGroup = new DiffCounterRelationGroupEmulator();
+					
+					
+					ArrayList<CloneInstanceWrapper> otherInstances = this.getOtherInstancesInSet(instance);
+					Statement currentStatement = instance.getStatementList()[instance.compareStatementPointer];
+					/*if(currentNode instanceof PrimitiveType)
+						System.out.print("");*/
+					
+					counterStatementSet.add(currentStatement);
+					relationStatementGroup.addRelation(new DiffInstanceElementRelationEmulator(instance, currentStatement));
+					
+					//instance.markIndex(instance.comparePointer);
+					for (CloneInstanceWrapper i : otherInstances) {
+						int index = -1;
+						try {
+							index = findTheSimilarStatementIndexInInstance(
+									currentStatement, i, isForThePrefixCondition);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+
+						//System.out.print("");
+						if (-1 != index) {
+							Statement similarStatement = i.getStatementList()[index];
+							
+							counterStatementSet.add(similarStatement);
+							relationStatementGroup.addRelation(new DiffInstanceElementRelationEmulator(i, similarStatement));
+							
+							i.markStatementIndex(index);
+							instance.markStatementIndex(instance.compareStatementPointer);
+						}
+					}
+					
+					if(counterStatementSet.size() > 1){
+						this.counterStatementSets.add(counterStatementSet);
+						this.relationStatementGroups.add(relationStatementGroup);
+					}
+				}
+				instance.compareStatementPointer++;
+			}
+		}
+	}
+
+	/**
+	 * Return -1 if the similar node is not found or the inputed referenceNode
+	 * is a keyword.
+	 * 
+	 * @param referenceNode
+	 * @param instance
+	 * @return
+	 * @throws Exception 
+	 */
+	private int findTheSimilarStatementIndexInInstance(Statement referenceStatement,
+			CloneInstanceWrapper instance, boolean isForThePrefixCondition) throws Exception {
+
+		int similarStatementIndex = -1;
+		
+		int i;
+		if(isForThePrefixCondition)
+			i = instance.startStatementContextIndex;
+		else 
+			i = instance.startStatementContextIndex + 1;
+		
+		for ( ; i < instance.endStatementContextIndex; i++) {
+			if(!instance.isStatementMarked(i)){
+				Statement stat = (Statement) instance.getStatementList()[i];
+				
+				double distance = new ASTStatementSimilarityComparator().computeCost(stat, referenceStatement);
+				
+				if((stat.getNodeType() == referenceStatement.getNodeType()) && 
+						(distance <= Settings.thresholdForStatementDifference)){
+					if((similarStatementIndex > distance) || (similarStatementIndex == -1)){
+						similarStatementIndex = i;
+					}
+				}
+			}
+		}
+
+		return similarStatementIndex;
+	}
+	
+	private void generatePatternSharingASTNodesInStatementsWithNoFuzzyMatch(boolean isForThePrefixCondition) {
+		this.transferStatementsToASTSequences(isForThePrefixCondition);
+		this.computeCommonSubsequence();
+		if (this.getCommonASTNodeList().length != 0) 
+			this.generateDiffPart();
+		else{
+			for(CloneInstanceWrapper instance: this){
+				instance.startContextIndex = 0;
+				instance.endContextIndex = instance.getAstNodeList().length;
+			}
+			this.generatePatternSharingASTNodes(true);
+			this.collectUncounterRetionalDifferentASTNodes();
+		}
+		this.resetSequences();
+	}
+
+	private void transferStatementsToASTSequences(boolean isForThePrefixCondition) {
+		for(CloneInstanceWrapper instance: this){
+			ArrayList<ASTNode> instanceList = new ArrayList<ASTNode>();
+			CloneASTStatementNodeVisitor visitor = new CloneASTStatementNodeVisitor(instance.getStartLine(), instance.getEndLine(), 
+					instanceList, (CompilationUnit)instance.getMethodDeclaration().getRoot(), null);
+			
+			int startIndex;
+			if(isForThePrefixCondition){
+				startIndex = instance.startStatementContextIndex;
+			}
+			else{
+				startIndex = instance.startStatementContextIndex + 1;
+			}
+			
+			for(int i=startIndex; i<instance.endStatementContextIndex; i++){
+				Statement stat = instance.getStatementList()[i];
+				visitor.setRoot(stat);
+				stat.accept(visitor);
+			}
+			
+			instance.setAstNodeList(instanceList.toArray(new ASTNode[0]));
+		}
+	}
+
+	/**
+	 * The method is used to compute the longest common sequence of the AST node lists in
+	 * clone instance.
+	 * 
+	 * Prerequisite: the astNodeList in all the clone instances contained in this clone set
+	 * should be specified.
+	 */
+	private void computeCommonSubsequence() {
+		@SuppressWarnings("unchecked")
+		ArrayList<ASTNode>[] sequenceList = new ArrayList[this.size()];
+		int i=0;
+		for(CloneInstanceWrapper instance: this){
+			ArrayList<ASTNode> sequence = new ArrayList<ASTNode>();
+			for(ASTNode node: instance.getAstNodeList()){
+				sequence.add(node);
+			}
+			sequenceList[i++] = sequence;
+		}
+		
+		Object[] commonList = MinerUtil.generateCommonNodeListFromMultiSequence(sequenceList, new ASTComparator());
+ 		this.setCommonASTNodeList(MinerUtilforJava.convertASTNode(commonList));
+	}
+
+	private void resetSequences() {
+		this.startContextIndex = 0;
+		this.endContextIndex = 0;
+		
+		for(CloneInstanceWrapper instance: this){
+			instance.startContextIndex = 0;
+			instance.endContextIndex = 0;
+			instance.comparePointer = 0;
+			instance.clearMarkedIndexes();
+		}
+		
+	}
+
 	public String getId(){
 		return this.cloneSet.getId();
 	}
@@ -437,5 +963,13 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 	
 	public void addPatternNodeSet(HashSet<ASTNode> patternNodeSet){
 		this.patternNodeSets.add(patternNodeSet);
+	}
+
+	public Statement[] getCommonStatementList() {
+		return commonStatementList;
+	}
+
+	public void setCommonStatementList(Statement[] commonStatementList) {
+		this.commonStatementList = commonStatementList;
 	}
 }

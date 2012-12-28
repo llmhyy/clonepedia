@@ -11,6 +11,7 @@ import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.PrimitiveType;
 import org.eclipse.jdt.core.dom.SimpleName;
+import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.TypeLiteral;
 
 
@@ -21,6 +22,7 @@ import clonepedia.java.ASTComparator;
 import clonepedia.java.model.*;
 import clonepedia.java.util.MinerUtilforJava;
 import clonepedia.java.visitor.CloneASTNodeVisitor;
+import clonepedia.java.visitor.CloneASTStatementVisitor;
 import clonepedia.model.ontology.CloneInstance;
 import clonepedia.model.ontology.CloneSet;
 import clonepedia.model.ontology.CloneSets;
@@ -33,6 +35,7 @@ import clonepedia.model.ontology.Project;
 import clonepedia.model.ontology.RegionalOwner;
 import clonepedia.model.ontology.Variable;
 import clonepedia.util.MinerUtil;
+import clonepedia.util.Settings;
 
 public class CloneInformationExtractor {
 
@@ -59,7 +62,7 @@ public class CloneInformationExtractor {
 				/**
 				 * The following code is for debugging
 				 */
-				if(cloneSet.getId().equals("3")){
+				if(cloneSet.getId().equals("1")){
 					System.out.print("");
 				}
 				else
@@ -73,7 +76,12 @@ public class CloneInformationExtractor {
 				/**
 				 * extract diff information
 				 */
-				setWrapper = extractCounterRelationalDifferencesOfCloneSet(setWrapper);
+				if(Settings.diffComparisonMode.equals("ASTNode_Based")){
+					setWrapper = extractCounterRelationalDifferencesOfCloneSet(setWrapper);					
+				}
+				else if(Settings.diffComparisonMode.equals("Statement_Based")){
+					setWrapper = extractCounterRelationalDifferencesWithinSyntacticBoundary(setWrapper);
+				}
 				setWrapperList.add(setWrapper);
 				System.out.print("");
 			}
@@ -106,68 +114,11 @@ public class CloneInformationExtractor {
 	 */
 	private CloneSetWrapper extractCounterRelationalDifferencesOfCloneSet(CloneSetWrapper setWrapper){
 		
-		generateCommonListforCloneSetWrapper(setWrapper);
+		setWrapper.generateCommonListforCloneSetWrapper();
 		if (setWrapper.getCommonASTNodeList().length != 0) 
-			generateDiffPart(setWrapper);
+			setWrapper.generateDiffPart();
 		
 		return setWrapper;
-	}
-
-	private void generateCommonListforCloneSetWrapper(
-			CloneSetWrapper setWrapper) {
-
-		ArrayList<ASTNode>[] lists = generateASTListforCloneRegion(setWrapper);
-
-		ASTNode[] commonList = MinerUtilforJava.convertASTNode(MinerUtil.generateCommonNodeList(
-				lists[0].toArray(new ASTNode[0]),
-				lists[1].toArray(new ASTNode[0]), new ASTComparator()));
-
-		if (lists.length > 2) {
-			for (int k = 2; k < lists.length; k++) {
-				commonList = MinerUtilforJava.convertASTNode(MinerUtil.generateCommonNodeList(
-						commonList, lists[k].toArray(new ASTNode[0]),
-						new ASTComparator()));
-			}
-		}
-
-		setWrapper.setCommonASTNodeList(commonList);
-
-		
-		//if (commonList.length != 0) getDiffPart(setWrapper);
-		 
-	}
-
-	@SuppressWarnings("unchecked")
-	private ArrayList<ASTNode>[] generateASTListforCloneRegion(
-			CloneSetWrapper setWrapper) {
-		int size = setWrapper.getCloneSet().size();
-		ArrayList<ASTNode>[] lists = new ArrayList[size];
-
-		int i = 0;
-		for (CloneInstanceWrapper instanceWrapper : setWrapper) {
-
-			ArrayList<ASTNode> astNodeList = new ArrayList<ASTNode>();
-
-			ASTNode cu = instanceWrapper.getMethodDeclaration().getRoot();
-			/*if (!(cu instanceof CompilationUnit))
-				cu = cu.getParent();*/
-
-			CloneASTNodeVisitor visitor = new CloneASTNodeVisitor(
-					instanceWrapper.getStartLine(),
-					instanceWrapper.getEndLine(), astNodeList,
-					(CompilationUnit) cu);
-
-			instanceWrapper.getMethodDeclaration().accept(visitor);
-
-			//filterComplicatedASTNodeforList(astNodeList);
-
-			instanceWrapper.setAstNodeList(astNodeList.toArray(new ASTNode[0]));
-
-			lists[i++] = astNodeList;
-		}
-
-		return lists;
-		// System.out.println(astNodeList);
 	}
 
 	/*private void filterComplicatedASTNodeforList(ArrayList<ASTNode> list) {
@@ -179,48 +130,19 @@ public class CloneInformationExtractor {
 				iter.remove();
 		}
 	}*/
-
 	
-	private void generateDiffPart(CloneSetWrapper setWrapper) {
-
-		/**
-		 * deal with the instances with extra length in the beginning
-		 */
-		setWrapper.initiailizeEndIndexes();
-		setWrapper.generatePatternSharingASTNodes(true);
-		setWrapper.setAllTheStartIndexToEndIndex();
-		
-		while (!setWrapper.isStartContextIndexReachTheEnd()) {
-
-			while (!setWrapper.isStartContextIndexReachTheEnd()
-					&& setWrapper.isAllTheASTNodeFollowingStartIndexMatch()) {
-				setWrapper.markMatchedNodesInStartIndex();
-				setWrapper.incrementAllTheStartIndex();
-			}
-			setWrapper.markMatchedNodesInStartIndex();
-			
-			if (!setWrapper.isStartContextIndexReachTheEnd()) {
-				setWrapper.setAllTheEndIndexAccordingtoStartIndex();
-
-				/**
-				 * do comparison
-				 */
-				setWrapper.generatePatternSharingASTNodes(false);
-
-				setWrapper.setAllTheStartIndexToEndIndex();
-			}
+	private CloneSetWrapper extractCounterRelationalDifferencesWithinSyntacticBoundary(CloneSetWrapper setWrapper){
+		setWrapper.generateCommonStatementListforCloneSetWrapper();
+		if (setWrapper.getCommonStatementList().length != 0) {
+			setWrapper.generateDiffPartWithinSyntacticBoundary(true);			
 		}
-
-		/**
-		 * deal with the instances with extra length in the end
-		 */
-		setWrapper.finalizeEndIndexes();
-		setWrapper.generatePatternSharingASTNodes(false);
+		else{
+			extractCounterRelationalDifferencesOfCloneSet(setWrapper);
+		}
 		
-		setWrapper.collectUncounterRetionalDifferentASTNodes();
-		//System.out.println();
+		return setWrapper;
 	}
-	
+
 	private void storeInformation(){
 		
 		for(CloneSetWrapper setWrapper: setWrapperList){

@@ -18,12 +18,14 @@ import org.eclipse.jdt.core.dom.ParameterizedType;
 import org.eclipse.jdt.core.dom.PrimitiveType;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
+import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeLiteral;
 import org.eclipse.jdt.core.dom.BooleanLiteral;
 
 import clonepedia.businessdata.OntologicalDataFetcher;
+import clonepedia.java.ASTStatementSimilarityComparator;
 import clonepedia.model.ontology.Class;
 import clonepedia.model.ontology.ComplexType;
 import clonepedia.model.ontology.EnumType;
@@ -36,6 +38,7 @@ import clonepedia.model.ontology.TypeVariableType;
 import clonepedia.model.ontology.VarType;
 import clonepedia.model.ontology.Variable;
 import clonepedia.model.ontology.VariableUseType;
+import clonepedia.util.Settings;
 
 public class MinerUtilforJava {
 	/**
@@ -184,6 +187,28 @@ public class MinerUtilforJava {
 			return false;
 		}
 			
+	}
+	
+	public static boolean isTheASTNodesBelongToSimilarStatement(ASTNode node1, ASTNode node2){
+		ASTNode stat1 = node1.getParent();
+		ASTNode stat2 = node2.getParent();
+		while(!(stat1 instanceof Statement)){
+			stat1 = stat1.getParent();
+		}
+		while(!(stat2 instanceof Statement)){
+			stat2 = stat2.getParent();
+		}
+		
+		Statement s1 = (Statement)stat1;
+		Statement s2 = (Statement)stat2;
+		ASTStatementSimilarityComparator comparator = new ASTStatementSimilarityComparator();
+		try {
+			return (s1.getNodeType() == s2.getNodeType()) && (comparator.computeCost(s1, s2)<Settings.thresholdForStatementDifference);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 	public static VarType getVariableType(Type type, Project project) throws Exception {
@@ -518,5 +543,12 @@ public class MinerUtilforJava {
 
 		return nodeList;
 	}
+	
+	public static Statement[] convertStatement(Object[] objectList){
+		Statement[] statList = new Statement[objectList.length];
+		for (int i = 0; i < objectList.length; i++)
+			statList[i] = (Statement) objectList[i];
 
+		return statList;
+	}
 }

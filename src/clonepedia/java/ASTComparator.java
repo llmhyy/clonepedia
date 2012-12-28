@@ -88,9 +88,9 @@ import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.jdt.core.dom.WhileStatement;
 import org.eclipse.jdt.core.dom.WildcardType;*/
 
-import clonepedia.util.IComparator;
+import clonepedia.util.BoolComparator;
 
-public class ASTComparator implements IComparator {
+public class ASTComparator implements BoolComparator {
 	
 	/**
 	 * As some key words(while, if, for, instanceof, return, switch, this, throw, try, catch, 

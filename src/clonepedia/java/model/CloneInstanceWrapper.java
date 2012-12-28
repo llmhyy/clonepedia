@@ -16,6 +16,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.Statement;
 
 import clonepedia.java.CompilationUnitPool;
 import clonepedia.java.visitor.MethodsDeclarationVisitor;
@@ -35,9 +36,15 @@ public class CloneInstanceWrapper{
 	private ASTNode[] astNodeList;
 	public int startContextIndex = 0;
 	public int endContextIndex = 0;
-	
 	public int comparePointer = 0;
 	private HashSet<Integer> markedIndexes = new HashSet<Integer>();
+	private HashSet<Integer> markedStatementIndexes = new HashSet<Integer>();
+	
+	private Statement[] statementList; 
+	public int startStatementContextIndex = 0;
+	public int endStatementContextIndex = 0;
+	public int compareStatementPointer = 0;
+	//private HashSet<Integer> markedStatementIndexes = new HashSet<Integer>();
 
 	public CloneInstanceWrapper(CloneInstance cloneInstance, CompilationUnitPool pool) {
 		
@@ -142,12 +149,32 @@ public class CloneInstanceWrapper{
 		this.astNodeList = astNodeList;
 	}
 	
+	public Statement[] getStatementList() {
+		return statementList;
+	}
+
+	public void setStatementList(Statement[] statementList) {
+		this.statementList = statementList;
+	}
+
 	public void markIndex(int index){
 		markedIndexes.add(index);
 	}
 
 	public boolean isMarked(int index){
 		return markedIndexes.contains(index);
+	}
+	
+	public void markStatementIndex(int index){
+		this.markedStatementIndexes.add(index);
+	}
+	
+	public boolean isStatementMarked(int index){
+		return this.markedStatementIndexes.contains(index);
+	}
+	
+	public void clearMarkedIndexes(){
+		this.markedIndexes.clear();
 	}
 
 	public ArrayList<ASTNode> getUncounterRelationalDifferenceNodes() {
