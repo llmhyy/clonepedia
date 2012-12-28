@@ -45,9 +45,9 @@ public class ASTStatementBoolComparator implements BoolComparator {
 				case ASTNode.BLOCK:
 					return true;
 				case ASTNode.BREAK_STATEMENT:
-					matcher.match((BreakStatement)stat1, stat2);
+					return matcher.match((BreakStatement)stat1, stat2);
 				case ASTNode.CONSTRUCTOR_INVOCATION:
-					matcher.match((ConstructorInvocation)stat1, stat2);
+					return matcher.match((ConstructorInvocation)stat1, stat2);
 				case ASTNode.CONTINUE_STATEMENT:
 					return matcher.match((ContinueStatement)stat1, stat2);
 				case ASTNode.DO_STATEMENT:

@@ -120,7 +120,7 @@ public class MinerUtil {
 			if (lists.length > 2) {
 				for (int k = 2; k < lists.length; k++) {
 					commonList = MinerUtil.generateCommonNodeList(commonList, lists[k].toArray(new ASTNode[0]),
-							new ASTComparator());
+							comparator);
 				}
 			}
 			return commonList;
