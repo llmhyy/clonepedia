@@ -14,8 +14,19 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.part.ViewPart;
 
+import clonepedia.java.CompilationUnitPool;
+import clonepedia.java.model.CloneInstanceWrapper;
+import clonepedia.model.ontology.CloneInstance;
+import clonepedia.model.ontology.CloneSet;
+import clonepedia.model.ontology.ComplexType;
+import clonepedia.model.ontology.Method;
+
 public class CloneDiffView extends ViewPart {
 
+	private clonepedia.java.model.CloneSetWrapper set;
+	private ScrolledComposite scrolledComposite;
+	private SashForm sashForm;
+	
 	public CloneDiffView() {
 		// TODO Auto-generated constructor stub
 	}
@@ -23,62 +34,76 @@ public class CloneDiffView extends ViewPart {
 	@Override
 	public void createPartControl(Composite parent) {
 		parent.setLayout(new FillLayout());
-		ScrolledComposite scrolledComposite = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL);
-		
+		this.scrolledComposite = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL);
+	}
+	
+	public void showCodeSnippet(CloneSet set){
+		CompilationUnitPool pool = new CompilationUnitPool();
+		this.set = new clonepedia.java.model.CloneSetWrapper(set, pool);
 		/**
 		 * If there is no these two statements, the following sash form will not present in UI.
 		 */
 		scrolledComposite.setExpandHorizontal(true);
 		scrolledComposite.setExpandVertical(true);
 		
-		SashForm sashForm = new SashForm(scrolledComposite, SWT.HORIZONTAL);
-		for(int i=0; i<5; i++){
-			generateCodeComposite(sashForm);
+		this.sashForm = new SashForm(scrolledComposite, SWT.HORIZONTAL);
+		for(CloneInstanceWrapper instanceWrapper: this.set){
+			generateCodeComposite(sashForm, instanceWrapper);
 		}
-		//textList[3].dispose();
+		
 		scrolledComposite.setContent(sashForm);
 		scrolledComposite.setMinSize(sashForm.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		scrolledComposite.layout();
 	}
 
-	private void generateCodeComposite(Composite parent){
+	private void generateCodeComposite(Composite parent, CloneInstanceWrapper instanceWrapper){
+		
+		int overallHeight = parent.getParent().getClientArea().height;
+		int overallWidth = parent.getParent().getClientArea().width;
 		
 		Composite codeComposite = new Composite(parent, SWT.BORDER);
-		RowLayout rowLayout = new RowLayout(SWT.VERTICAL);
-		rowLayout.wrap = false;
-		rowLayout.marginLeft = 0;
-		rowLayout.marginRight = 0;
-		codeComposite.setLayout(rowLayout);
+		GridLayout overGridLayout = new GridLayout();
+		overGridLayout.numColumns = 1;
+		overGridLayout.verticalSpacing = 1;
+		overGridLayout.marginLeft = 0;
+		overGridLayout.marginRight = 0;
+		codeComposite.setLayout(overGridLayout);
 		
 		Label label = new Label(codeComposite, SWT.NONE);
-		label.setText("method");
-		RowData rD = new RowData(60, 20);
-		//rD.exclude = true;
-		label.setLayoutData(rD);
+		GridData labelLayoutData = new GridData();
+		labelLayoutData.heightHint = 20;
+		labelLayoutData.grabExcessHorizontalSpace = true;
+		label.setLayoutData(labelLayoutData);
+		label.setText(instanceWrapper.getCloneInstance().getResidingMethod().getFullName());
 		
-		RowData rD1 = new RowData(300, 300);
+		GridData scrollCodeLayoutDdata = new GridData();
+		scrollCodeLayoutDdata.heightHint = overallHeight - 50;
+		if(set.size() <= 4){
+			scrollCodeLayoutDdata.widthHint = overallWidth/set.size() - 20;			
+		}
+		else{
+			scrollCodeLayoutDdata.widthHint = overallWidth/4;
+		}
 		
 		ScrolledComposite sc = new ScrolledComposite(codeComposite, SWT.H_SCROLL | SWT.V_SCROLL);
 		sc.setExpandHorizontal(true);
 		sc.setExpandVertical(true);
-		sc.setLayoutData(rD1);
-		//sc.setLayout(new FillLayout());
+		sc.setLayoutData(scrollCodeLayoutDdata);
+		
 		Composite com = new Composite(sc, SWT.BORDER);
 		GridLayout gridLayout = new GridLayout(1, true);
 		gridLayout.marginLeft = 0;
 		gridLayout.marginRight = 0;
 		com.setLayout(gridLayout);
 		Text text = new Text(com, SWT.WRAP);
-		text.setText("!ENTRY org.eclipse.osgi 2 1 2012-12-31 15:16:30.726!MESSAGE NLS missing message: " +
-				"hudsonMonitor_unknown_build_error in: com.sonatype.buildserver.eclipse.ui.messages15:16:30.807 " +
-				"[Worker-0] DEBUG o.m.i.e.a.i.AuthenticationPlugin - Starting the AuthenticationPlugin...");
-		GridData gData = new GridData(600, 400);
+		text.setText(instanceWrapper.getMethodDeclaration().toString());
+		GridData gData = new GridData();
+		gData.heightHint = 600;
+		gData.widthHint = 600;
 		text.setLayoutData(gData);
 		
 		sc.setContent(com);
-		//sc.setMinSize(10, 10);
 		sc.setMinSize(com.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-		//sc.setMinSize(com.computeSize(SWT.DEFAULT, ));
 		sc.layout();
 		codeComposite.layout();
 	}
@@ -87,6 +112,14 @@ public class CloneDiffView extends ViewPart {
 	public void setFocus() {
 		// TODO Auto-generated method stub
 
+	}
+
+	public clonepedia.java.model.CloneSetWrapper getSet() {
+		return set;
+	}
+
+	public void setSet(clonepedia.java.model.CloneSetWrapper set) {
+		this.set = set;
 	}
 
 }

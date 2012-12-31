@@ -83,12 +83,14 @@ import clonepedia.model.viewer.comparator.AverageCodeFragmentLengthDescComparato
 import clonepedia.model.viewer.comparator.CloneSetWrapperInstanceNumberAscComparator;
 import clonepedia.model.viewer.comparator.CloneSetWrapperInstanceNumberDescComparator;
 import clonepedia.model.viewer.programmingelement.ProgrammingElementWrapper;
+import clonepedia.perspective.CloneDiffPerspective;
 import clonepedia.perspective.CloneSummaryPerspective;
 import clonepedia.summary.NaturalLanguateTemplate;
 import clonepedia.summary.SummaryUtil;
 import clonepedia.util.ImageUI;
 import clonepedia.views.SummaryView;
 import clonepedia.views.codesnippet.CloneCodeSnippetView;
+import clonepedia.views.codesnippet.CloneDiffView;
 import clonepedia.views.plain.PlainContentProvider;
 import clonepedia.views.plain.PlainLabelProvider;
 import clonepedia.views.util.ViewUIUtil;
@@ -198,6 +200,8 @@ public class PlainCloneSetView extends SummaryView {
 				Object element = selection.getFirstElement();
 				if((element instanceof CloneSetWrapper)){
 					openNewTab(element);
+					CloneDiffView viewpart = (CloneDiffView)getSite().getWorkbenchWindow().getActivePage().findView(CloneDiffPerspective.CLONE_DIFF_VIEW);
+					viewpart.showCodeSnippet(((CloneSetWrapper)element).getCloneSet());
 				}
 				else if(element instanceof CloneInstance){
 					openNewTab(element);

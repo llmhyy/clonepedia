@@ -15,7 +15,6 @@ public class Method implements MergeableSimpleOntologicalElement{
 	
 	private boolean isMerged = false;
 	private ArrayList<ProgrammingElement> supportingElements = new ArrayList<ProgrammingElement>();
-	
 
 	public Method(String methodId){
 		this.methodId = methodId;
@@ -151,6 +150,11 @@ public class Method implements MergeableSimpleOntologicalElement{
 		}
 		
 		return successors;
+	}
+	
+	public String getFullName(){
+		ComplexType type = getOwner();
+		return type.getFullName() + "." + this.getMethodName();
 	}
 
 	@Override
