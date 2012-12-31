@@ -97,6 +97,20 @@
             name="Code Snippet"
             restorable="true">
       </view>
+      <view
+            class="clonepedia.views.codesnippet.CloneDiffView"
+            icon="icons/clone_diff.gif"
+            id="Clonepedia.CloneDiffView"
+            name="Clone Diff"
+            restorable="true">
+      </view>
+      <view
+            class="clonepedia.views.DiffPropertyView"
+            icon="icons/properties.gif"
+            id="Clonepedia.DiffPropertyView"
+            name="Diff Property View"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.perspectives">
@@ -105,6 +119,12 @@
             icon="icons/summary_perspective.gif"
             id="Clonepedia.CloneSummaryPerspective"
             name="Clone Summary Perspective">
+      </perspective>
+      <perspective
+            class="clonepedia.perspective.CloneDiffPerspective"
+            icon="icons/diff_perspective.gif"
+            id="Clonepedia.CloneDiffPerspective"
+            name="Clone Diff Perspective">
       </perspective>
    </extension>
 
