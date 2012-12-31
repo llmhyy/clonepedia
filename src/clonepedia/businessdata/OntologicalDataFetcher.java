@@ -964,8 +964,7 @@ public class OntologicalDataFetcher implements Serializable{
 				String.valueOf(instance.getStartLine()));
 		instanceConProperties.put("endLine",
 				String.valueOf(instance.getEndLine()));
-		instanceConProperties.put("fileLocation", instance.getFileLocation()
-				.replace("\\", "\\\\"));
+		instanceConProperties.put("fileLocation", instance.getFileLocation());
 
 		;
 
