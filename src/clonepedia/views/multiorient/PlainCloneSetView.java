@@ -127,7 +127,9 @@ public class PlainCloneSetView extends SummaryView {
 							//openNewTab(instance);
 							ViewUtil.openJavaEditorForCloneInstace(instance);
 							CloneCodeSnippetView viewpart = (CloneCodeSnippetView)getSite().getWorkbenchWindow().getActivePage().findView(CloneSummaryPerspective.CODE_SNIPPET_VIEW);
-							viewpart.createCodeSections((CloneInstance)instance);
+							if(viewpart != null){
+								viewpart.createCodeSections((CloneInstance)instance);								
+							}
 						}
 					}
 				}
@@ -135,10 +137,12 @@ public class PlainCloneSetView extends SummaryView {
 			else if(hyperlinkType.equals("Topic")){
 				TopicOrientedView viewPart = 
 						(TopicOrientedView)getSite().getWorkbenchWindow().getActivePage().findView(CloneSummaryPerspective.TOPIC_ORIENTED_VIEW);
-				TopicWrapperList topicList = viewPart.getTopics();
-				TopicWrapper topic = topicList.searchSpecificTopic(content);
-				viewPart.openNewTab(topic);
-				viewPart.getViewer().setSelection(new StructuredSelection(topic), true);
+				if(viewPart != null){
+					TopicWrapperList topicList = viewPart.getTopics();
+					TopicWrapper topic = topicList.searchSpecificTopic(content);
+					viewPart.openNewTab(topic);
+					viewPart.getViewer().setSelection(new StructuredSelection(topic), true);					
+				}
 				//viewPart.getViewer().setChecked(topic, true);
 				//viewPart.getViewer().reveal(topic);
 			}
@@ -695,9 +699,11 @@ public class PlainCloneSetView extends SummaryView {
 					ClonePatternGroupWrapper clonePattern = (ClonePatternGroupWrapper)element;
 					PatternOrientedView viewPart = (PatternOrientedView)PlatformUI.getWorkbench().
 							getActiveWorkbenchWindow().getActivePage().findView(CloneSummaryPerspective.PATTERN_ORIENTED_VIEW);
-					clonePattern = viewPart.getCategories().searchSpecificClonePattern(clonePattern.getClonePattern().getUniqueId());
-					viewPart.openNewTab(clonePattern);
-					viewPart.getViewer().setSelection(new StructuredSelection(clonePattern), true);
+					if(viewPart != null){
+						clonePattern = viewPart.getCategories().searchSpecificClonePattern(clonePattern.getClonePattern().getUniqueId());
+						viewPart.openNewTab(clonePattern);
+						viewPart.getViewer().setSelection(new StructuredSelection(clonePattern), true);						
+					}
 				}
 			}
 			
