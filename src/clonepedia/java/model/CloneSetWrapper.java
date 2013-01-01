@@ -428,22 +428,21 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 		if (candidates.size() == 1) {
 			return candidates.get(0);
 		} else {
-			
-			Character[] referString = MinerUtil.convertChar(MinerUtilforJava
-					.getConcernedASTNodeName(referenceNode).toCharArray());
 
+			String[] referString = MinerUtil.splitCamelString(MinerUtilforJava
+					.getConcernedASTNodeName(referenceNode));
+			
 			int lcs = 0;
 			int returnedIndex = candidates.get(0);
 
 			for (Integer index : candidates) {
 				ASTNode node = (ASTNode) instance.getAstNodeList()[index];
 				
-				Character[] candidateString = MinerUtil.convertChar(MinerUtilforJava
-						.getConcernedASTNodeName(node).toCharArray());
+				String[] candidateString = MinerUtil.splitCamelString(MinerUtilforJava
+						.getConcernedASTNodeName(node));
 
-				Character[] commonString = MinerUtil.convertCharacter(MinerUtil
-						.generateCommonNodeList(referString, candidateString,
-								new DefaultComparator()));
+				Object[] commonString = MinerUtil.generateCommonNodeList(referString, 
+						candidateString, new DefaultComparator());
 
 				if (commonString.length > lcs) {
 					lcs = commonString.length;
