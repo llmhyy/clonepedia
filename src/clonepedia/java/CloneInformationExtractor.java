@@ -49,6 +49,8 @@ public class CloneInformationExtractor {
 		this.project = project;
 	}
 	
+	public CloneInformationExtractor(){}
+	
 	/**
 	 * Extract the structural and diff information of clone sets
 	 */
@@ -62,11 +64,11 @@ public class CloneInformationExtractor {
 				/**
 				 * The following code is for debugging
 				 */
-				if(cloneSet.getId().equals("1")){
+				/*if(cloneSet.getId().equals("730")){
 					System.out.print("");
 				}
 				else
-					continue;
+					continue;*/
 				
 				cloneSet.setProject(project);
 				/**
@@ -112,7 +114,7 @@ public class CloneInformationExtractor {
 	 * This method is used to find all the counter-relational differences in a clone set.
 	 * @param setWrapper
 	 */
-	private CloneSetWrapper extractCounterRelationalDifferencesOfCloneSet(CloneSetWrapper setWrapper){
+	public CloneSetWrapper extractCounterRelationalDifferencesOfCloneSet(CloneSetWrapper setWrapper){
 		
 		setWrapper.generateCommonListforCloneSetWrapper();
 		if (setWrapper.getCommonASTNodeList().length != 0) 
@@ -131,7 +133,7 @@ public class CloneInformationExtractor {
 		}
 	}*/
 	
-	private CloneSetWrapper extractCounterRelationalDifferencesWithinSyntacticBoundary(CloneSetWrapper setWrapper){
+	public CloneSetWrapper extractCounterRelationalDifferencesWithinSyntacticBoundary(CloneSetWrapper setWrapper){
 		setWrapper.generateCommonStatementListforCloneSetWrapper();
 		if (setWrapper.getCommonStatementList().length != 0) {
 			setWrapper.generateDiffPartWithinSyntacticBoundary(true);			

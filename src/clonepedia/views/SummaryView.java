@@ -51,10 +51,14 @@ import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.ui.part.ViewPart;
 
+import clonepedia.java.model.DiffCounterRelationGroupEmulator;
 import clonepedia.model.ontology.CloneInstance;
 import clonepedia.model.ontology.CloneSet;
+import clonepedia.model.ontology.CounterRelationGroup;
 import clonepedia.model.syntactic.Path;
 import clonepedia.model.viewer.CloneSetWrapper;
+import clonepedia.perspective.CloneDiffPerspective;
+import clonepedia.views.codesnippet.CloneDiffView;
 import clonepedia.views.util.ViewUtil;
 
 public abstract class SummaryView extends ViewPart {
@@ -110,12 +114,12 @@ public abstract class SummaryView extends ViewPart {
 				ViewUtil.openJavaEditorForCloneInstace(instance);
 			}
 			else if(element instanceof CloneSet){
-				for(CloneInstance instance: (CloneSet)element)
-					ViewUtil.openJavaEditorForCloneInstace(instance);
+				/*for(CloneInstance instance: (CloneSet)element)
+					ViewUtil.openJavaEditorForCloneInstace(instance);*/
 			}
 			else if(element instanceof CloneSetWrapper){
-				for(CloneInstance instance: ((CloneSetWrapper)element).getCloneSet())
-					ViewUtil.openJavaEditorForCloneInstace(instance);
+				/*for(CloneInstance instance: ((CloneSetWrapper)element).getCloneSet())
+					ViewUtil.openJavaEditorForCloneInstace(instance);*/
 			}
 		}
 	};
@@ -148,7 +152,7 @@ public abstract class SummaryView extends ViewPart {
 		createDescriptionPart(sashForm, targetObject);
 		createDetailPart(sashForm, targetObject);
 		
-		sashForm.setWeights(new int[]{1,0});
+		sashForm.setWeights(new int[]{5,5});
 		
 		return sashForm;
 	}
@@ -269,7 +273,7 @@ public abstract class SummaryView extends ViewPart {
 		titleColumn.setText("Title");
 		TreeColumn contentColumn = new TreeColumn(propertyTree, SWT.NONE);
 		contentColumn.setText("Content");
-		titleColumn.setWidth(180);
+		titleColumn.setWidth(60);
 		contentColumn.setWidth(600);
 		
 		titleColumn.setResizable(true);
@@ -290,10 +294,20 @@ public abstract class SummaryView extends ViewPart {
 					CloneInstance instance = (CloneInstance)path.get(0);
 					ViewUtil.openJavaEditorForCloneInstace(instance);
 				}
+				
 			}
 
 			@Override
-			public void mouseDown(MouseEvent e) {}
+			public void mouseDown(MouseEvent e) {
+				TreeItem item = propertyTree.getItem(new Point(e.x, e.y));
+				Object domainObj = item.getData();
+				if(domainObj instanceof DiffCounterRelationGroupEmulator){
+					DiffCounterRelationGroupEmulator group = (DiffCounterRelationGroupEmulator)domainObj;
+					CloneDiffView viewpart = (CloneDiffView)getSite().getWorkbenchWindow().getActivePage().findView(CloneDiffPerspective.CLONE_DIFF_VIEW);
+					CloneSet set = group.getRelations().get(0).getInstanceWrapper().getCloneInstance().getCloneSet();
+					viewpart.showCodeSnippet(set, group);
+				}
+			}
 
 			@Override
 			public void mouseUp(MouseEvent e) {}

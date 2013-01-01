@@ -38,6 +38,6 @@ public class Settings {
 	public static double thresholdForStatementDifference = 0.5d;
 	
 	//======================================================================
-	public static String projectName = "DiffAlgoTest";
-	public static String inputCloneFile = "D:\\Test_Project\\DiffAlgoTest\\out\\clones.xml";
+	public static String projectName = "JHotDraw7";
+	public static String inputCloneFile = "D:\\Test_Project\\JHotDraw7\\out\\clones.xml";
 }

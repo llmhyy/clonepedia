@@ -201,7 +201,7 @@ public class PlainCloneSetView extends SummaryView {
 				if((element instanceof CloneSetWrapper)){
 					openNewTab(element);
 					CloneDiffView viewpart = (CloneDiffView)getSite().getWorkbenchWindow().getActivePage().findView(CloneDiffPerspective.CLONE_DIFF_VIEW);
-					viewpart.showCodeSnippet(((CloneSetWrapper)element).getCloneSet());
+					viewpart.showCodeSnippet(((CloneSetWrapper)element).getCloneSet(), null);
 				}
 				else if(element instanceof CloneInstance){
 					openNewTab(element);
@@ -643,9 +643,34 @@ public class PlainCloneSetView extends SummaryView {
 	protected void createSections(ScrolledForm form, Object targetObject) {
 		createTextDescriptionSection(form.getBody(), targetObject);
 		createCloneInstanceInformationSections(form.getBody(), targetObject);
+		//createCounterRelationalDifferenceSection(form.getBody(), targetObject);
 		createTopicDescriptionSection(form.getBody(), targetObject);
 		createClonePatternStructuralInfoSection(form.getBody(), targetObject);
 		//createClonePatternDescriptionSection(form.getBody(), targetObject);
+	}
+	
+	private void createCounterRelationalDifferenceSection(Composite parent, Object targetObject){
+		Section section = toolkit.createSection(parent, Section.TWISTIE | Section.EXPANDED | Section.TITLE_BAR );
+		CloneSetWrapper setWrapper = (CloneSetWrapper)targetObject;
+		
+		section.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+		section.setExpanded(true);
+		section.setLayout(new TableWrapLayout());
+		section.setText("Counter Relational Differences");
+		
+		Composite composite = toolkit.createComposite(section, SWT.NONE);
+		composite.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+		composite.setLayout(new TableWrapLayout());
+		
+		Button prevButton = toolkit.createButton(composite, "previous", SWT.PUSH);
+		Button nextButton = toolkit.createButton(composite, "next", SWT.PUSH);
+		
+		prevButton.setLayoutData(new TableWrapData(TableWrapData.LEFT));
+		nextButton.setLayoutData(new TableWrapData(TableWrapData.RIGHT));
+		
+		//text.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+		//createCloneInstanceDescription(text, targetObject);
+		section.setClient(composite);
 	}
 	
 	protected void createClonePatternStructuralInfoSection(Composite parent, Object targetObject){

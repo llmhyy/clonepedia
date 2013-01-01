@@ -10,11 +10,17 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
+import clonepedia.java.CloneInformationExtractor;
+import clonepedia.java.CompilationUnitPool;
+import clonepedia.java.model.DiffCounterRelationGroupEmulator;
+import clonepedia.java.model.DiffInstanceElementRelationEmulator;
+import clonepedia.java.util.MinerUtilforJava;
 import clonepedia.model.cluster.SemanticCluster;
 import clonepedia.model.ontology.CloneInstance;
 import clonepedia.model.ontology.CloneSet;
 import clonepedia.model.ontology.CounterRelationGroup;
 import clonepedia.model.ontology.InstanceElementRelation;
+import clonepedia.model.ontology.ProgrammingElement;
 import clonepedia.model.syntactic.ClonePatternGroup;
 import clonepedia.model.syntactic.Path;
 import clonepedia.model.syntactic.PathPatternGroup;
@@ -83,7 +89,7 @@ public class ViewUIUtil {
 		else
 			return;
 		
-		createSimpleTreeItem(tree, "Instance Number:", String.valueOf(set.size()), new Object());
+		/*createSimpleTreeItem(tree, "Instance Number:", String.valueOf(set.size()), new Object());
 		TreeItem patternsItem = createSimpleTreeItem(tree, "Patterns:", "", new Object());
 		
 		for(PathPatternGroup ppg: set.getPatterns()){
@@ -102,14 +108,37 @@ public class ViewUIUtil {
 			TreeItem counterItem = createSubTreeItem(countersItem, "Counter Relation:", "", group);
 			int index = 0;
 			for(InstanceElementRelation relation: group.getRelationList()){
-				String content = relation.getCloneInstance().getId() + " " + 
+				String instanceContent = relation.getCloneInstance().toString(); 
+				String content = instanceContent.substring(instanceContent.indexOf("(")+1, instanceContent.lastIndexOf("]")+1) + " " + 
 						SyntacticUtil.identifyOntologicalRelation(relation.getCloneInstance(), relation.getElement()).toString() + " " +
 						relation.getElement().toString();
 				
 				createSubTreeItem(counterItem, String.valueOf(++index), content, relation);
 			}
+		}*/
+		
+		clonepedia.java.model.CloneSetWrapper syntacticSetWrapper = 
+				new clonepedia.java.model.CloneSetWrapper(set, new CompilationUnitPool());
+		syntacticSetWrapper = new CloneInformationExtractor().extractCounterRelationalDifferencesWithinSyntacticBoundary(syntacticSetWrapper);
+		
+		for(DiffCounterRelationGroupEmulator group: syntacticSetWrapper.getRelationGroups()){
+			TreeItem counterItem = createSimpleTreeItem(tree, "CRD:", "", group);
+			int index = 0;
+			for(DiffInstanceElementRelationEmulator relation: group.getRelations()){
+				CloneInstance instance = relation.getInstanceWrapper().getCloneInstance();
+				String instanceContent =  instance.toString();
+				
+				ProgrammingElement element = MinerUtilforJava.transferASTNodesToProgrammingElementType(relation.getNode());
+				
+				String content = instanceContent.substring(instanceContent.indexOf("(")+1, instanceContent.lastIndexOf("]")+1) + " " + 
+						SyntacticUtil.identifyOntologicalRelation(instance, element).toString() + " " +
+						element.toString();
+				
+				createSubTreeItem(counterItem, String.valueOf(++index), content, relation);
+			}
 		}
 	}
+	
 	
 	private static TreeItem createSimpleTreeItem(Tree tree, String title, String content, int index, Object domainObj){
 		TreeItem item = new TreeItem(tree, SWT.NONE, index);

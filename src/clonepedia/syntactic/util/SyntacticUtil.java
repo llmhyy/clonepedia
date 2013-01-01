@@ -14,6 +14,7 @@ import clonepedia.model.ontology.MergeableSimpleConcreteElement;
 import clonepedia.model.ontology.Method;
 import clonepedia.model.ontology.OntologicalElement;
 import clonepedia.model.ontology.OntologicalRelationType;
+import clonepedia.model.ontology.PrimiType;
 import clonepedia.model.ontology.VarType;
 import clonepedia.model.ontology.Variable;
 import clonepedia.model.ontology.VariableUseType;
@@ -117,6 +118,10 @@ public class SyntacticUtil implements Serializable{
 		else if(subject instanceof CloneInstance
 				&& object instanceof Interface)
 			return OntologicalRelationType.useInterface;
+		else if(subject instanceof CloneInstance
+				&& object instanceof PrimiType){
+			return OntologicalRelationType.use;
+		}
 		//class
 		else if(subject instanceof Class 
 				&& object instanceof Class){
@@ -187,8 +192,10 @@ public class SyntacticUtil implements Serializable{
 		}
 		//variable
 		else if(subject instanceof Variable
-				&& object instanceof ComplexType)
-			return OntologicalRelationType.hasType;
+				&& object instanceof ComplexType){
+			return OntologicalRelationType.hasType;			
+		}
+		
 		else
 			throw new Exception("unrecognized subject " + subject.toString() + " and object " + object.toString() + " pair");
 	}

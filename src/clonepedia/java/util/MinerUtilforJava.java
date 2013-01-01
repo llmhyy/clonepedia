@@ -10,6 +10,7 @@ import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.jdt.core.dom.ArrayType;
 import org.eclipse.jdt.core.dom.CharacterLiteral;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
@@ -28,12 +29,15 @@ import clonepedia.businessdata.OntologicalDataFetcher;
 import clonepedia.java.ASTStatementSimilarityComparator;
 import clonepedia.model.ontology.Class;
 import clonepedia.model.ontology.ComplexType;
+import clonepedia.model.ontology.Constant;
 import clonepedia.model.ontology.EnumType;
 import clonepedia.model.ontology.Field;
 import clonepedia.model.ontology.Interface;
 import clonepedia.model.ontology.Method;
 import clonepedia.model.ontology.PrimiType;
+import clonepedia.model.ontology.ProgrammingElement;
 import clonepedia.model.ontology.Project;
+import clonepedia.model.ontology.RegionalOwner;
 import clonepedia.model.ontology.TypeVariableType;
 import clonepedia.model.ontology.VarType;
 import clonepedia.model.ontology.Variable;
@@ -550,5 +554,74 @@ public class MinerUtilforJava {
 			statList[i] = (Statement) objectList[i];
 
 		return statList;
+	}
+	
+	public static ProgrammingElement transferASTNodesToProgrammingElementType(ASTNode node) throws Exception{
+		
+		Project project = new Project(Settings.projectName, "java", "");
+		
+		if(MinerUtilforJava.isConcernedType(node)){
+			if(node.getNodeType() == ASTNode.PRIMITIVE_TYPE){
+				PrimitiveType primitiveType = (PrimitiveType)node;
+				PrimiType primiType = new PrimiType(primitiveType.toString());
+				return primiType;
+			}
+			else if(node.getNodeType() == ASTNode.STRING_LITERAL ||
+					node.getNodeType() == ASTNode.NUMBER_LITERAL ||
+					node.getNodeType() == ASTNode.CHARACTER_LITERAL ||
+					node.getNodeType() == ASTNode.BOOLEAN_LITERAL){
+				
+				String typeName = ASTNode.nodeClassForType(node.getNodeType()).getSimpleName();
+				typeName = typeName.substring(0, typeName.length()-7);
+				Constant constant = new Constant(MinerUtilforJava.getConcernedASTNodeName(node), new PrimiType(typeName), false);
+				return constant;
+			}
+			else if(node.getNodeType() == ASTNode.TYPE_LITERAL){
+				TypeLiteral type = (TypeLiteral)node;
+				if(type.getType().resolveBinding().isClass() || type.getType().resolveBinding().isInterface()){
+					return MinerUtilforJava.transferTypeToComplexType(type.getType(), project, (CompilationUnit)node.getRoot());	
+				}
+				else return null;
+			}
+			else {
+				SimpleName name = (SimpleName)node;
+				
+				if(name.resolveBinding() == null)
+					return null;
+				
+				if(name.resolveBinding().getKind() == IBinding.TYPE){
+					ITypeBinding typeBinding = (ITypeBinding)name.resolveBinding();
+					if(typeBinding.isClass() || typeBinding.isInterface()){
+						return MinerUtilforJava.transferTypeToComplexType(typeBinding, project, (CompilationUnit)node.getRoot());	
+					}
+					else return null;
+				}
+				else if(name.resolveBinding().getKind() == IBinding.METHOD){
+					IMethodBinding methodBinding = (IMethodBinding) name.resolveBinding();
+					Method m = MinerUtilforJava.getMethodfromBinding(methodBinding, project, (CompilationUnit)node.getRoot());
+					return m;
+				}
+				else if(name.resolveBinding().getKind() == IBinding.VARIABLE){
+					IVariableBinding variableBinding = (IVariableBinding) name.resolveBinding();
+					if(variableBinding.isField()){
+						Field f = MinerUtilforJava.getFieldfromBinding(variableBinding, project, (CompilationUnit)node.getRoot());
+						if(f.getOwnerType() != null){
+							return f;
+						}
+						else{
+							Variable v = MinerUtilforJava.getVariablefromBinding(name, variableBinding, project, (CompilationUnit)node.getRoot());
+							
+							return v;
+						}
+					}
+					else {
+						Variable v = MinerUtilforJava.getVariablefromBinding(name, variableBinding, project, (CompilationUnit)node.getRoot());
+						return v;
+					}
+				}
+				return null;
+			}
+		}
+		else return null;
 	}
 }
