@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.UUID;
 
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.PrimitiveType;
@@ -390,8 +391,8 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 				ASTNode node = (ASTNode) instance.getAstNodeList()[i];
 				//ITypeBinding binding = MinerUtilforJava.getBinding(node);
 				if(MinerUtilforJava.isConcernedType(referenceNode) && MinerUtilforJava.isConcernedType(node)){
-					if(MinerUtilforJava.isASTNodesofTheSameType(referenceNode, node) && 
-							MinerUtilforJava.isTheASTNodesBelongToSimilarStatement(node, referenceNode))
+					if(MinerUtilforJava.isASTNodesofTheSameType(referenceNode, node) /*&& 
+							MinerUtilforJava.isTheASTNodesBelongToSimilarStatement(node, referenceNode)*/)
 						similarNodeIndexCandidates.add(i);
 				}
 				/*if(binding != null && referBinding != null){
@@ -661,7 +662,7 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 			for(int i=0; i<list.length; i++){
 				Statement stat = list[i];
 				if(!instance.isStatementMarked(i)){
-					instance.getUncounterRelationalDifferenceNodes().add(stat);
+					instance.getUncounterRelationalDifferenceNodes().add(stat);	
 				}
 			}
 		}

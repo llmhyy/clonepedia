@@ -5,8 +5,10 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTParser;
+import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -31,6 +33,7 @@ import clonepedia.java.model.CloneInstanceWrapper;
 import clonepedia.java.model.CloneSetWrapper;
 import clonepedia.java.model.DiffCounterRelationGroupEmulator;
 import clonepedia.java.model.DiffInstanceElementRelationEmulator;
+import clonepedia.java.util.MinerUtilforJava;
 import clonepedia.model.ontology.CloneInstance;
 import clonepedia.model.ontology.CloneSet;
 import clonepedia.model.ontology.ComplexType;
@@ -96,12 +99,16 @@ public class CloneDiffView extends ViewPart {
 		GridData labelLayoutData = new GridData();
 		labelLayoutData.heightHint = 20;
 		labelLayoutData.widthHint = widgetWidth;
+		/*labelLayoutData.grabExcessHorizontalSpace = true;
+		labelLayoutData.grabExcessVerticalSpace = true;*/
 		label.setLayoutData(labelLayoutData);
 		label.setText(instanceWrapper.getCloneInstance().getResidingMethod().getFullName());
 		
 		GridData scrollCodeLayoutDdata = new GridData();
 		scrollCodeLayoutDdata.heightHint = widgetHeight; 
 		scrollCodeLayoutDdata.widthHint = widgetWidth;
+		//scrollCodeLayoutDdata.grabExcessHorizontalSpace = true;
+		//scrollCodeLayoutDdata.grabExcessVerticalSpace = true;
 		
 		ScrolledComposite sc = new ScrolledComposite(codeComposite, SWT.H_SCROLL | SWT.V_SCROLL);
 		sc.setExpandHorizontal(true);
@@ -169,11 +176,8 @@ public class CloneDiffView extends ViewPart {
 			
 			ASTNode doc = methodDeclaration.getJavadoc();
 			if(doc != null){
-				StyleRange commentStyleRange = new StyleRange();
-				commentStyleRange.start = doc.getStartPosition() - methodStartPosition;
-				commentStyleRange.length = doc.getLength();
-				commentStyleRange.foreground = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GREEN);
-				text.setStyleRange(commentStyleRange);	
+				generateStyleRangeFromASTNode(text, doc, methodStartPosition, 
+						Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GREEN), SWT.NORMAL);
 			}
 			/**
 			 * for counter relationally difference
@@ -182,16 +186,10 @@ public class CloneDiffView extends ViewPart {
 				for(DiffInstanceElementRelationEmulator relation: relationGroup.getRelations()){
 					CloneInstanceWrapper referInstance = relation.getInstanceWrapper();
 					if(referInstance.equals(instanceWrapper)){
-						ASTNode node = relation.getNode();
-						int startNodePosition = node.getStartPosition();
-						int length = node.getLength();
+						generateStyleRangeFromASTNode(text, relation.getNode(), 
+								methodStartPosition, Display.getCurrent().getSystemColor(SWT.COLOR_RED), SWT.NORMAL);
 						
-						StyleRange CRDStyleRange = new StyleRange();
-						CRDStyleRange.start = startNodePosition - methodStartPosition;
-						CRDStyleRange.length = length;
-						CRDStyleRange.foreground = Display.getCurrent().getSystemColor(SWT.COLOR_RED);
 						
-						text.setStyleRange(CRDStyleRange);
 					}
 				}
 			}
@@ -200,15 +198,9 @@ public class CloneDiffView extends ViewPart {
 			 * for uncounter relationally difference
 			 */
 			for(ASTNode node: instanceWrapper.getUncounterRelationalDifferenceNodes()){
-				int startNodePosition = node.getStartPosition();
-				int length = node.getLength();
+				generateStyleRangeFromASTNode(text, node, methodStartPosition, 
+						Display.getCurrent().getSystemColor(SWT.COLOR_BLUE), SWT.NORMAL);
 				
-				StyleRange CRDStyleRange = new StyleRange();
-				CRDStyleRange.start = startNodePosition - methodStartPosition;
-				CRDStyleRange.length = length;
-				CRDStyleRange.foreground = Display.getCurrent().getSystemColor(SWT.COLOR_BLUE);
-				
-				text.setStyleRange(CRDStyleRange);
 			}
 			
 			/**
@@ -219,11 +211,8 @@ public class CloneDiffView extends ViewPart {
 					if(relation.getInstanceWrapper().equals(instanceWrapper)){
 						ASTNode node = relation.getNode();
 						
-						StyleRange selectedStyleRange = getStyleRangeFromASTNode(node,
-								methodStartPosition, Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-						selectedStyleRange.fontStyle = SWT.BOLD;
-						
-						text.setStyleRange(selectedStyleRange);
+						generateStyleRangeFromASTNode(text, node,
+								methodStartPosition, Display.getCurrent().getSystemColor(SWT.COLOR_RED), SWT.BOLD);
 					}
 				}
 			}
@@ -240,17 +229,65 @@ public class CloneDiffView extends ViewPart {
 		text.setLayoutData(gData);*/
 	}
 	
-	private StyleRange getStyleRangeFromASTNode(ASTNode node, int methodStartPosition, Color color){
-		
+	private void generateStyleRangeFromASTNode(StyledText text, ASTNode node, 
+			int methodStartPosition, Color color, int style){
 		int startNodePosition = node.getStartPosition();
 		int length = node.getLength();
 		
-		StyleRange styleRange = new StyleRange();
-		styleRange.start = startNodePosition - methodStartPosition;
-		styleRange.length = length;
-		styleRange.foreground = color;
-		
-		return styleRange;
+		if(MinerUtilforJava.isComplexStatement(node)){
+			StyleRange styleRange1 = new StyleRange();
+			StyleRange styleRange2 = new StyleRange();
+			styleRange1.start = startNodePosition - methodStartPosition;
+			styleRange2.start = startNodePosition - methodStartPosition + length -1;
+			
+			switch(node.getNodeType()){
+			case ASTNode.BLOCK: 
+				styleRange1.length = 1;
+				break;
+			case ASTNode.IF_STATEMENT: 
+				styleRange1.length = 2;
+				break;
+			case ASTNode.FOR_STATEMENT:
+				styleRange1.length = 3;
+				break;
+			case ASTNode.ENHANCED_FOR_STATEMENT:
+				styleRange1.length = 3;
+				break;
+			case ASTNode.WHILE_STATEMENT:
+				styleRange1.length = 5;
+				break;
+			case ASTNode.DO_STATEMENT:
+				styleRange1.length = 2;
+				break;
+			case ASTNode.TRY_STATEMENT:
+				styleRange1.length = 3;
+				break;
+			case ASTNode.SYNCHRONIZED_STATEMENT:
+				styleRange1.length = 12;
+				break;
+			case ASTNode.SWITCH_STATEMENT:
+				styleRange1.length = 5;
+				break;
+			default:
+				styleRange1.length = 0;	
+			}
+			
+			styleRange2.length = 1;
+			styleRange1.foreground = styleRange2.foreground = color;
+			styleRange1.fontStyle = styleRange2.fontStyle = style;
+			
+			text.setStyleRange(styleRange1);
+			text.setStyleRange(styleRange2);
+		}
+		else{
+			StyleRange styleRange = new StyleRange();
+			styleRange.start = startNodePosition - methodStartPosition;
+			styleRange.length = length;
+			styleRange.foreground = color;
+			styleRange.fontStyle = style;	
+			
+			text.setStyleRange(styleRange);
+		}
 	}
 	
 	@Override

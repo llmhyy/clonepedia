@@ -556,6 +556,31 @@ public class MinerUtilforJava {
 		return statList;
 	}
 	
+	public static boolean isComplexStatement(ASTNode node){
+		switch(node.getNodeType()){
+		case ASTNode.BLOCK: 
+			return true;
+		case ASTNode.IF_STATEMENT: 
+			return true;
+		case ASTNode.FOR_STATEMENT:
+			return true;
+		case ASTNode.ENHANCED_FOR_STATEMENT:
+			return true;
+		case ASTNode.WHILE_STATEMENT:
+			return true;
+		case ASTNode.DO_STATEMENT:
+			return true;
+		case ASTNode.TRY_STATEMENT:
+			return true;
+		case ASTNode.SYNCHRONIZED_STATEMENT:
+			return true;
+		case ASTNode.SWITCH_STATEMENT:
+			return true;
+		}
+		
+		return false;
+	}
+	
 	public static ProgrammingElement transferASTNodesToProgrammingElementType(ASTNode node) throws Exception{
 		
 		Project project = new Project(Settings.projectName, "java", "");
