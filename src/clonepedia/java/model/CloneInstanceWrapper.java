@@ -87,6 +87,7 @@ public class CloneInstanceWrapper{
 			
 			MethodsDeclarationVisitor visitor = new MethodsDeclarationVisitor(getStartLine(), getEndLine(), cu);
 			cu.accept(visitor);
+			System.out.println();
 			this.methodDeclaration = visitor.getCloneResidingMethod();
 			
 		}

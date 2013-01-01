@@ -50,7 +50,6 @@ public class TypeVisitor extends ASTVisitor {
 	
 	public boolean visit(TypeDeclaration type){
 		ITypeBinding binding = type.getName().resolveTypeBinding();
-		
 		/**
 		 * The type to deal with is a class
 		 */

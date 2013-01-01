@@ -819,6 +819,7 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 			CloneInstanceWrapper instance, boolean isForThePrefixCondition) throws Exception {
 
 		int similarStatementIndex = -1;
+		double smallestDistance = 0;
 		
 		int i;
 		if(isForThePrefixCondition)
@@ -834,7 +835,7 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 				
 				if((stat.getNodeType() == referenceStatement.getNodeType()) && 
 						(distance <= Settings.thresholdForStatementDifference)){
-					if((similarStatementIndex > distance) || (similarStatementIndex == -1)){
+					if((smallestDistance > distance) || (similarStatementIndex == -1)){
 						similarStatementIndex = i;
 					}
 				}

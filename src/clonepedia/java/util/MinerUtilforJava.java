@@ -167,10 +167,21 @@ public class MinerUtilforJava {
 	 * @return
 	 */
 	public static boolean isASTNodesofTheSameType(ASTNode n1, ASTNode n2) {
+		
+		
 		if (n1.getNodeType() == n2.getNodeType()) {
 			if (n1.getNodeType() == ASTNode.SIMPLE_NAME) {
 				SimpleName name1 = (SimpleName) n1;
 				SimpleName name2 = (SimpleName) n2;
+				
+				/*IBinding bind1 = name1.resolveBinding();
+				IBinding bind2 = name2.resolveBinding();
+				
+				if(bind1 != null && bind2 != null){
+					if(bind1.getKind() != bind2.getKind()){
+						return false;
+					}
+				}*/
 
 				if (name1.getParent().getNodeType() == ASTNode.SIMPLE_TYPE
 						|| name2.getParent().getNodeType() == ASTNode.SIMPLE_TYPE) {
@@ -357,6 +368,7 @@ public class MinerUtilforJava {
 				.getDeclaringClass(), project, (CompilationUnit)md.getRoot());
 
 		String methodName = md.getName().getIdentifier();
+		
 		VarType returnType = getVariableType(md.getReturnType2(), project);
 		ArrayList<Variable> parameterList = new ArrayList<Variable>();
 		List paramList = md.parameters();

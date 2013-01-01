@@ -14,6 +14,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
+import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.AST;
@@ -49,7 +50,7 @@ import clonepedia.views.codesnippet.SnippetInstanceRelation;
 public class ViewUtil {
 	
 	public static ICompilationUnit getCorrespondingCompliationUnit(CloneInstance instance){
-		instance.getResidingMethod().getOwner().getFullName();
+		//instance.getResidingMethod().getOwner().getFullName();
 
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		IProject proj = root.getProject(instance.getCloneSet().getProject()
@@ -62,9 +63,9 @@ public class ViewUtil {
 				for (IPackageFragment pack : packages) {
 					if (pack.getKind() == IPackageFragmentRoot.K_SOURCE) {
 						for (ICompilationUnit unit : pack.getCompilationUnits()) {
-							String s = unit.getParent().getElementName();
-							String s1 = unit.getElementName();
-							String fullName = s + "." + s1;
+							String packageName = unit.getParent().getElementName();
+							String unitName = unit.getElementName();
+							String fullName = packageName + "." + unitName;
 							fullName = fullName.substring(0, fullName.length() - 5);
 							String instanceResidingClassFullName;
 							ComplexType type = instance.getResidingMethod().getOwner();
@@ -73,12 +74,18 @@ public class ViewUtil {
 							}
 							else{
 								Class clas = (Class)type;
-								if(clas.getOuterClass() == null)
-									instanceResidingClassFullName = clas.getFullName();
-								else
-									instanceResidingClassFullName = clas.getOuterClass().getFullName();
+								while(clas.getOuterClass() != null)
+									clas = clas.getOuterClass();
+								
+								instanceResidingClassFullName = clas.getFullName();
 							}
-							if (instanceResidingClassFullName.equals(fullName)) {
+							
+							String instanceResidingPackageName = instanceResidingClassFullName.substring(0, 
+									instanceResidingClassFullName.lastIndexOf("."));
+							String instanceResidingTypeName = instanceResidingClassFullName.substring(
+									instanceResidingClassFullName.lastIndexOf(".")+1, instanceResidingClassFullName.length());
+							if (instanceResidingPackageName.equals(packageName) &&
+									isContainedInCompilationUnit(unit, instanceResidingTypeName)) {
 								return unit;
 							}
 						}
@@ -92,6 +99,21 @@ public class ViewUtil {
 		}
 		
 		return null;
+	}
+	
+	private static boolean isContainedInCompilationUnit(ICompilationUnit unit, String typeName){
+		IType[] typeList;
+		try {
+			typeList = unit.getTypes();
+			for(IType type: typeList){
+				if(type.getElementName().equals(typeName)){
+					return true;
+				}
+			}
+		} catch (JavaModelException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 	
 	public static SnippetInstanceRelation getCodeSnippetForCloneInstance(CloneInstance instance){
