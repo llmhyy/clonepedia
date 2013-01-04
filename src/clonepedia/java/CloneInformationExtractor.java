@@ -159,12 +159,14 @@ public class CloneInformationExtractor {
 					fetcher.storeCloneInstanceWithDependency(instance);
 				}
 				
-				for(ASTNode node: setWrapper.getCommonASTNodeList()){
-					if(MinerUtilforJava.isConcernedType(node)){
-						ProgrammingElement element = transferASTNodesToProgrammingElement(node, set);
-						if(null != element) 
-							fetcher.storeCommonRelation(set, element);
-						System.out.print("");
+				if(setWrapper.getCommonASTNodeList() != null){					
+					for(ASTNode node: setWrapper.getCommonASTNodeList()){
+						if(MinerUtilforJava.isConcernedType(node)){
+							ProgrammingElement element = transferASTNodesToProgrammingElement(node, set);
+							if(null != element) 
+								fetcher.storeCommonRelation(set, element);
+							System.out.print("");
+						}
 					}
 				}
 				
