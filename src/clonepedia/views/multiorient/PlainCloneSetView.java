@@ -201,7 +201,9 @@ public class PlainCloneSetView extends SummaryView {
 				if((element instanceof CloneSetWrapper)){
 					openNewTab(element);
 					CloneDiffView viewpart = (CloneDiffView)getSite().getWorkbenchWindow().getActivePage().findView(CloneDiffPerspective.CLONE_DIFF_VIEW);
-					viewpart.showCodeSnippet(((CloneSetWrapper)element).getCloneSet(), null);
+					if(viewpart != null){						
+						viewpart.showCodeSnippet(((CloneSetWrapper)element).getCloneSet(), null);
+					}
 				}
 				else if(element instanceof CloneInstance){
 					openNewTab(element);
