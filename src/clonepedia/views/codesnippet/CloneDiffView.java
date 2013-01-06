@@ -171,8 +171,8 @@ public class CloneDiffView extends ViewPart {
 			int startCloneLineNumber = cu.getLineNumber(startClonePosition) - cu.getLineNumber(methodStartPosition);
 			int lineCount =  cu.getLineNumber(endClonePosition) - cu.getLineNumber(startClonePosition);
 			
-			text.setLineBackground(startCloneLineNumber, lineCount,
-					new Color(Display.getCurrent(), 150, 250, 250));
+			Color disposableColoar = new Color(Display.getCurrent(), 150, 250, 250);
+			text.setLineBackground(startCloneLineNumber, lineCount, disposableColoar);
 			
 			ASTNode doc = methodDeclaration.getJavadoc();
 			if(doc != null){

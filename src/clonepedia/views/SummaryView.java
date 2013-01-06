@@ -288,11 +288,13 @@ public abstract class SummaryView extends ViewPart {
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
 				TreeItem item = propertyTree.getItem(new Point(e.x, e.y));
-				Object domainObj = item.getData();
-				if(domainObj instanceof Path){
-					Path path = (Path)domainObj;
-					CloneInstance instance = (CloneInstance)path.get(0);
-					ViewUtil.openJavaEditorForCloneInstace(instance);
+				if(item != null){					
+					Object domainObj = item.getData();
+					if(domainObj instanceof Path){
+						Path path = (Path)domainObj;
+						CloneInstance instance = (CloneInstance)path.get(0);
+						ViewUtil.openJavaEditorForCloneInstace(instance);
+					}
 				}
 				
 			}
@@ -300,12 +302,18 @@ public abstract class SummaryView extends ViewPart {
 			@Override
 			public void mouseDown(MouseEvent e) {
 				TreeItem item = propertyTree.getItem(new Point(e.x, e.y));
-				Object domainObj = item.getData();
-				if(domainObj instanceof DiffCounterRelationGroupEmulator){
-					DiffCounterRelationGroupEmulator group = (DiffCounterRelationGroupEmulator)domainObj;
-					CloneDiffView viewpart = (CloneDiffView)getSite().getWorkbenchWindow().getActivePage().findView(CloneDiffPerspective.CLONE_DIFF_VIEW);
-					CloneSet set = group.getRelations().get(0).getInstanceWrapper().getCloneInstance().getCloneSet();
-					viewpart.showCodeSnippet(set, group);
+				if(item != null){					
+					Object domainObj = item.getData();
+					if(domainObj instanceof DiffCounterRelationGroupEmulator){
+						DiffCounterRelationGroupEmulator group = (DiffCounterRelationGroupEmulator)domainObj;
+						CloneDiffView diffViewPart = (CloneDiffView)getSite().getWorkbenchWindow().getActivePage().findView(CloneDiffPerspective.CLONE_DIFF_VIEW);
+						CloneSet set = group.getRelations().get(0).getInstanceWrapper().getCloneInstance().getCloneSet();
+						diffViewPart.showCodeSnippet(set, group);
+						
+						
+						DiffPropertyView propertyViewPart = (DiffPropertyView)getSite().getWorkbenchWindow().getActivePage().findView(CloneDiffPerspective.DIFF_PROPERTY_VIEW);
+						propertyViewPart.showDiffInformation(group);
+					}
 				}
 			}
 

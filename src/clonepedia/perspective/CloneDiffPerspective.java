@@ -16,7 +16,7 @@ public class CloneDiffPerspective implements IPerspectiveFactory {
 		
 		layout.addView(CLONE_DIFF_VIEW, IPageLayout.BOTTOM, 0.55f, editorArea);
 		
-		layout.addView(DIFF_PROPERTY_VIEW, IPageLayout.RIGHT, 0.65f, editorArea);
+		layout.addView(DIFF_PROPERTY_VIEW, IPageLayout.RIGHT, 0.5f, editorArea);
 
 	}
 
