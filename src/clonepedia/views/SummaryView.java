@@ -307,12 +307,16 @@ public abstract class SummaryView extends ViewPart {
 					if(domainObj instanceof DiffCounterRelationGroupEmulator){
 						DiffCounterRelationGroupEmulator group = (DiffCounterRelationGroupEmulator)domainObj;
 						CloneDiffView diffViewPart = (CloneDiffView)getSite().getWorkbenchWindow().getActivePage().findView(CloneDiffPerspective.CLONE_DIFF_VIEW);
-						CloneSet set = group.getRelations().get(0).getInstanceWrapper().getCloneInstance().getCloneSet();
-						diffViewPart.showCodeSnippet(set, group);
-						
+						if(diffViewPart != null){							
+							CloneSet set = group.getRelations().get(0).getInstanceWrapper().getCloneInstance().getCloneSet();
+							diffViewPart.showCodeSnippet(set, group);
+							
+						}
 						
 						DiffPropertyView propertyViewPart = (DiffPropertyView)getSite().getWorkbenchWindow().getActivePage().findView(CloneDiffPerspective.DIFF_PROPERTY_VIEW);
-						propertyViewPart.showDiffInformation(group);
+						if(propertyViewPart != null){
+							propertyViewPart.showDiffInformation(group);
+						}
 					}
 				}
 			}

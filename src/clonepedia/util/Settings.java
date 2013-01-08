@@ -35,7 +35,17 @@ public class Settings {
 	public static double thresholdForSkippingPatternComparisonByLength = 1.8d;
 	//======================================================================
 	
-	public static double thresholdForStatementDifference = 0.8d;
+	/**
+	 * Decide how different two statements are.
+	 */
+	public static double thresholdForStatementDifference = 1.0d;
+	
+	//======================================================================
+	/**
+	 * Decide the threshold for even, partial or slightly partial counter realtional difference.
+	 */
+	public static double thresholdForEvenDistribution = 0.0d;
+	public static double thresholdForSlightPartial = 0.5d;
 	
 	//======================================================================
 	public static String projectName = "JEdit";
