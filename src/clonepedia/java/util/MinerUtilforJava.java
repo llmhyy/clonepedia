@@ -593,9 +593,61 @@ public class MinerUtilforJava {
 		return false;
 	}
 	
+	public static ComplexType getComplexTypeWithBasicInfoByBinding(ITypeBinding typeBinding, CompilationUnit compilationUnit, Project project){
+		if(typeBinding.isClass()){
+			String classFullName = getClassFullName(typeBinding, compilationUnit);
+			return new Class(null, project, classFullName);
+			//return MinerUtilforJava.transferTypeToComplexType(type.getType(), project, (CompilationUnit)node.getRoot());	
+			
+		}
+		else if (typeBinding.isInterface()){
+			String interfaceFullName = typeBinding.getPackage().getName() + "." + typeBinding.getName();
+			return new Interface(null, project, interfaceFullName);
+			//return MinerUtilforJava.transferTypeToComplexType(type.getType(), project, (CompilationUnit)node.getRoot());	
+		}
+		else return null;
+	}
+	
+	public static VarType getVariableTypeWithBasicInfoByBinding(ITypeBinding type, Project project, CompilationUnit compilationUnit) throws Exception {
+		if (type == null) {
+			return null;
+		} else if (type.isPrimitive()) {
+			return new PrimiType(type.getName());
+		} else if (type.isClass()) {
+			return (clonepedia.model.ontology.Class) getComplexTypeWithBasicInfoByBinding(type, compilationUnit, project);
+		} else if (type.isInterface()) {
+			return (clonepedia.model.ontology.Interface) getComplexTypeWithBasicInfoByBinding(type, compilationUnit, project);
+		} else if (type.isEnum()) {
+			return new EnumType(type.getName());
+		} else if (type.isTypeVariable()){
+			return new TypeVariableType(type.getName());
+		}
+		/**
+		 * The array type is simplified as its element type because of the
+		 * following reasons 1) The coding time is limited 2) In clone code,
+		 * there should be some relationship between a type and a list of its
+		 * type.
+		 * 
+		 * I will come back to investigate or refine the problem in future work.
+		 */
+		else if (type.isArray()) {
+			return getVariableTypeWithBasicInfoByBinding(type.getElementType(), project, compilationUnit);
+		} else if (type.isParameterizedType()) {
+			return getVariableTypeWithBasicInfoByBinding(type.getTypeDeclaration(), project, compilationUnit);
+		} else if (type.isCapture()){
+			ITypeBinding b = type.getWildcard().getGenericTypeOfWildcardType();
+			
+			System.out.print("");
+			return getVariableTypeWithBasicInfoByBinding(b, project, compilationUnit);
+		} else {
+			throw new Exception("The type " + type.getName() + " cannot be handled");
+		}
+	}
+	
 	public static ProgrammingElement transferASTNodesToProgrammingElementType(ASTNode node) throws Exception{
 		
 		Project project = new Project(Settings.projectName, "java", "");
+		CompilationUnit cu = (CompilationUnit)node.getRoot();
 		
 		if(MinerUtilforJava.isConcernedType(node)){
 			if(node.getNodeType() == ASTNode.PRIMITIVE_TYPE){
@@ -615,10 +667,8 @@ public class MinerUtilforJava {
 			}
 			else if(node.getNodeType() == ASTNode.TYPE_LITERAL){
 				TypeLiteral type = (TypeLiteral)node;
-				if(type.getType().resolveBinding().isClass() || type.getType().resolveBinding().isInterface()){
-					return MinerUtilforJava.transferTypeToComplexType(type.getType(), project, (CompilationUnit)node.getRoot());	
-				}
-				else return null;
+				ITypeBinding typeBinding = type.getType().resolveBinding();
+				return getComplexTypeWithBasicInfoByBinding(typeBinding, cu, project);
 			}
 			else {
 				SimpleName name = (SimpleName)node;
@@ -628,32 +678,39 @@ public class MinerUtilforJava {
 				
 				if(name.resolveBinding().getKind() == IBinding.TYPE){
 					ITypeBinding typeBinding = (ITypeBinding)name.resolveBinding();
-					if(typeBinding.isClass() || typeBinding.isInterface()){
-						return MinerUtilforJava.transferTypeToComplexType(typeBinding, project, (CompilationUnit)node.getRoot());	
-					}
-					else return null;
+					return getComplexTypeWithBasicInfoByBinding(typeBinding, cu, project);
 				}
 				else if(name.resolveBinding().getKind() == IBinding.METHOD){
 					IMethodBinding methodBinding = (IMethodBinding) name.resolveBinding();
-					Method m = MinerUtilforJava.getMethodfromBinding(methodBinding, project, (CompilationUnit)node.getRoot());
-					return m;
+					
+					String methodName = methodBinding.getName();
+					ComplexType methodOwner = getComplexTypeWithBasicInfoByBinding(methodBinding.getDeclaringClass(), cu, project);
+					VarType returnType = getVariableTypeWithBasicInfoByBinding(methodBinding.getReturnType(), project, cu);
+					
+					ITypeBinding[] paramList = methodBinding.getParameterTypes();
+
+					ArrayList<Variable> parameters = new ArrayList<Variable>();
+					for (int i = 0; i < paramList.length; i++) {
+						VarType paramType = getVariableTypeWithBasicInfoByBinding(paramList[i], project, cu);
+						parameters.add(new Variable("", paramType, false));
+					}
+
+					return new Method(methodOwner, methodName, returnType, parameters);
 				}
 				else if(name.resolveBinding().getKind() == IBinding.VARIABLE){
 					IVariableBinding variableBinding = (IVariableBinding) name.resolveBinding();
+					String variableName = variableBinding.getName();
+					VarType variableType = getVariableTypeWithBasicInfoByBinding(variableBinding.getType(), project, cu);
 					if(variableBinding.isField()){
-						Field f = MinerUtilforJava.getFieldfromBinding(variableBinding, project, (CompilationUnit)node.getRoot());
-						if(f.getOwnerType() != null){
-							return f;
-						}
-						else{
-							Variable v = MinerUtilforJava.getVariablefromBinding(name, variableBinding, project, (CompilationUnit)node.getRoot());
-							
-							return v;
-						}
+						ComplexType type = getComplexTypeWithBasicInfoByBinding(
+								variableBinding.getDeclaringClass(), cu, project);
+						
+						return new Field(variableName, type, variableType);
 					}
 					else {
-						Variable v = MinerUtilforJava.getVariablefromBinding(name, variableBinding, project, (CompilationUnit)node.getRoot());
-						return v;
+						//Variable v = MinerUtilforJava.getVariablefromBinding(name, variableBinding, project, (CompilationUnit)node.getRoot());
+						//return v;
+						return new Variable(variableName, variableType, VariableUseType.REFER);
 					}
 				}
 				return null;
