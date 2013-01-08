@@ -215,6 +215,8 @@ public class CloneDiffView extends ViewPart {
 						
 						generateStyleRangeFromASTNode(text, node,
 								methodStartPosition, Display.getCurrent().getSystemColor(SWT.COLOR_RED), SWT.BOLD);
+						
+						text.setTopIndex(cu.getLineNumber(node.getStartPosition()) - cu.getLineNumber(methodStartPosition) - 3);
 					}
 				}
 			}
