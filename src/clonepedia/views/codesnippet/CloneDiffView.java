@@ -104,33 +104,34 @@ public class CloneDiffView extends ViewPart {
 		label.setLayoutData(labelLayoutData);
 		label.setText(instanceWrapper.getCloneInstance().getResidingMethod().getFullName());
 		
-		GridData scrollCodeLayoutDdata = new GridData();
-		scrollCodeLayoutDdata.heightHint = widgetHeight; 
-		scrollCodeLayoutDdata.widthHint = widgetWidth;
+		GridData scrollCodeLayoutData = new GridData();
+		scrollCodeLayoutData.heightHint = widgetHeight; 
+		scrollCodeLayoutData.widthHint = widgetWidth;
 		//scrollCodeLayoutDdata.grabExcessHorizontalSpace = true;
 		//scrollCodeLayoutDdata.grabExcessVerticalSpace = true;
 		
-		ScrolledComposite sc = new ScrolledComposite(codeComposite, SWT.H_SCROLL | SWT.V_SCROLL);
+		/*ScrolledComposite sc = new ScrolledComposite(codeComposite, SWT.H_SCROLL | SWT.V_SCROLL);
 		sc.setExpandHorizontal(true);
 		sc.setExpandVertical(true);
-		sc.setLayoutData(scrollCodeLayoutDdata);
+		sc.setLayoutData(scrollCodeLayoutDdata);*/
 		
-		Composite com = new Composite(sc, SWT.BORDER);
+		/*Composite com = new Composite(sc, SWT.BORDER);
 		GridLayout gridLayout = new GridLayout(1, true);
 		gridLayout.marginLeft = 0;
 		gridLayout.marginRight = 0;
-		com.setLayout(gridLayout);
+		com.setLayout(gridLayout);*/
 		
-		generateCodeText(instanceWrapper, com);
+		generateCodeText(instanceWrapper, codeComposite, scrollCodeLayoutData);
 		
-		sc.setContent(com);
-		sc.setMinSize(com.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-		sc.layout();
+		//sc.setContent(com);
+		//sc.setMinSize(com.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		//sc.layout();
 		codeComposite.layout();
 	}
 	
-	private void generateCodeText(CloneInstanceWrapper instanceWrapper, Composite parent){
-		StyledText text = new StyledText(parent, SWT.WRAP);
+	private void generateCodeText(CloneInstanceWrapper instanceWrapper, Composite parent, GridData scrollCodeLayoutData){
+		StyledText text = new StyledText(parent, SWT.V_SCROLL | SWT.H_SCROLL);
+		text.setLayoutData(scrollCodeLayoutData);
 		
 		String content = null;
 		
@@ -159,7 +160,6 @@ public class CloneDiffView extends ViewPart {
 			
 			content = content.substring(methodStartPosition, methodEndPosition);
 			text.setText(content);
-			
 			//cloneStyleRange.fontStyle = SWT.BOLD;
 			
 			/*StyleRange cloneStyleRange = new StyleRange();
@@ -170,6 +170,8 @@ public class CloneDiffView extends ViewPart {
 			
 			int startCloneLineNumber = cu.getLineNumber(startClonePosition) - cu.getLineNumber(methodStartPosition);
 			int lineCount =  cu.getLineNumber(endClonePosition) - cu.getLineNumber(startClonePosition);
+
+			text.setTopIndex(startCloneLineNumber - 3);
 			
 			Color disposableColoar = new Color(Display.getCurrent(), 150, 250, 250);
 			text.setLineBackground(startCloneLineNumber, lineCount, disposableColoar);
