@@ -65,6 +65,8 @@ import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.ui.part.ViewPart;
 
 import clonepedia.Activator;
+import clonepedia.java.CloneInformationExtractor;
+import clonepedia.java.CompilationUnitPool;
 import clonepedia.model.ontology.CloneInstance;
 import clonepedia.model.ontology.CloneSet;
 import clonepedia.model.syntactic.ClonePatternGroup;
@@ -199,10 +201,16 @@ public class PlainCloneSetView extends SummaryView {
 				IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
 				Object element = selection.getFirstElement();
 				if((element instanceof CloneSetWrapper)){
+					CloneSetWrapper cloneSetWrapper = (CloneSetWrapper)element;
+					clonepedia.java.model.CloneSetWrapper syntacticSetWrapper = 
+							new clonepedia.java.model.CloneSetWrapper(cloneSetWrapper.getCloneSet(), new CompilationUnitPool());
+					syntacticSetWrapper = new CloneInformationExtractor().extractCounterRelationalDifferencesWithinSyntacticBoundary(syntacticSetWrapper);
+					cloneSetWrapper.setSyntacticSetWrapper(syntacticSetWrapper);
+					
 					openNewTab(element);
 					CloneDiffView viewpart = (CloneDiffView)getSite().getWorkbenchWindow().getActivePage().findView(CloneDiffPerspective.CLONE_DIFF_VIEW);
 					if(viewpart != null){						
-						viewpart.showCodeSnippet(((CloneSetWrapper)element).getCloneSet(), null);
+						viewpart.showCodeSnippet(cloneSetWrapper.getSyntacticSetWrapper(), null);
 					}
 				}
 				else if(element instanceof CloneInstance){
@@ -235,6 +243,7 @@ public class PlainCloneSetView extends SummaryView {
 		
 		hookActionsOnBars();
 		
+		sashForm.setWeights(new int[]{4, 6});
 		//getSite().getPage().addSelectionListener(externalEventAwareListener);
 	}
 	

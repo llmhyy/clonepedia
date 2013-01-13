@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import clonepedia.Activator;
+import clonepedia.java.model.DiffCounterRelationGroupEmulator;
 import clonepedia.model.ontology.CloneInstance;
 import clonepedia.model.ontology.CloneSet;
 import clonepedia.model.viewer.comparator.AverageCodeFragmentLengthAscComparator;
@@ -42,6 +43,7 @@ public class CloneSetWrapper implements IContent{
 	
 	private CloneSet cloneSet;
 	private IContainer container;
+	private clonepedia.java.model.CloneSetWrapper syntacticSetWrapper;
 	
 	public String toString(){
 		return cloneSet.getId();
@@ -190,6 +192,14 @@ public class CloneSetWrapper implements IContent{
 			return ADJ_TOPIC_MEDIUM;
 		else
 			return ADJ_TOPIC_MORE;
+	}
+
+	public clonepedia.java.model.CloneSetWrapper getSyntacticSetWrapper() {
+		return syntacticSetWrapper;
+	}
+
+	public void setSyntacticSetWrapper(clonepedia.java.model.CloneSetWrapper syntacticSetWrapper) {
+		this.syntacticSetWrapper = syntacticSetWrapper;
 	}
 	
 }

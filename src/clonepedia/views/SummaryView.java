@@ -152,7 +152,7 @@ public abstract class SummaryView extends ViewPart {
 		createDescriptionPart(sashForm, targetObject);
 		createDetailPart(sashForm, targetObject);
 		
-		sashForm.setWeights(new int[]{5,5});
+		sashForm.setWeights(new int[]{65, 35});
 		
 		return sashForm;
 	}
@@ -308,9 +308,8 @@ public abstract class SummaryView extends ViewPart {
 						DiffCounterRelationGroupEmulator group = (DiffCounterRelationGroupEmulator)domainObj;
 						CloneDiffView diffViewPart = (CloneDiffView)getSite().getWorkbenchWindow().getActivePage().findView(CloneDiffPerspective.CLONE_DIFF_VIEW);
 						if(diffViewPart != null){							
-							CloneSet set = group.getRelations().get(0).getInstanceWrapper().getCloneInstance().getCloneSet();
-							diffViewPart.showCodeSnippet(set, group);
-							
+							//CloneSet set = group.getRelations().get(0).getInstanceWrapper().getCloneInstance().getCloneSet();
+							diffViewPart.showCodeSnippet(group);
 						}
 						
 						DiffPropertyView propertyViewPart = (DiffPropertyView)getSite().getWorkbenchWindow().getActivePage().findView(CloneDiffPerspective.DIFF_PROPERTY_VIEW);

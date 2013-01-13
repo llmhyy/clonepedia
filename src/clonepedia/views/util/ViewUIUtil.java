@@ -117,24 +117,23 @@ public class ViewUIUtil {
 			}
 		}*/
 		
-		clonepedia.java.model.CloneSetWrapper syntacticSetWrapper = 
-				new clonepedia.java.model.CloneSetWrapper(set, new CompilationUnitPool());
-		syntacticSetWrapper = new CloneInformationExtractor().extractCounterRelationalDifferencesWithinSyntacticBoundary(syntacticSetWrapper);
-		
-		for(DiffCounterRelationGroupEmulator group: syntacticSetWrapper.getRelationGroups()){
-			TreeItem counterItem = createSimpleTreeItem(tree, "CRD:", "", group);
-			int index = 0;
-			for(DiffInstanceElementRelationEmulator relation: group.getRelations()){
-				CloneInstance instance = relation.getInstanceWrapper().getCloneInstance();
-				String instanceContent =  instance.toString();
-				
-				ProgrammingElement element = MinerUtilforJava.transferASTNodesToProgrammingElementType(relation.getNode());
-				
-				String content = instanceContent.substring(instanceContent.indexOf("(")+1, instanceContent.lastIndexOf("]")+1) + " " + 
-						SyntacticUtil.identifyOntologicalRelation(instance, element).toString() + " " +
-						element.toString();
-				
-				createSubTreeItem(counterItem, String.valueOf(++index), content, relation);
+		if(obj instanceof CloneSetWrapper){
+			CloneSetWrapper setWrapper = (CloneSetWrapper)obj;
+			for(DiffCounterRelationGroupEmulator group: setWrapper.getSyntacticSetWrapper().getRelationGroups()){
+				TreeItem counterItem = createSimpleTreeItem(tree, "CRD:", "", group);
+				int index = 0;
+				for(DiffInstanceElementRelationEmulator relation: group.getRelations()){
+					CloneInstance instance = relation.getInstanceWrapper().getCloneInstance();
+					String instanceContent =  instance.toString();
+					
+					ProgrammingElement element = MinerUtilforJava.transferASTNodesToProgrammingElementType(relation.getNode());
+					
+					String content = instanceContent.substring(instanceContent.indexOf("(")+1, instanceContent.lastIndexOf("]")+1) + " " + 
+							SyntacticUtil.identifyOntologicalRelation(instance, element).toString() + " " +
+							element.toString();
+					
+					createSubTreeItem(counterItem, String.valueOf(++index), content, relation);
+				}
 			}
 		}
 	}

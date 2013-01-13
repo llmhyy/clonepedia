@@ -58,10 +58,17 @@ public class CloneDiffView extends ViewPart {
 		this.scrolledComposite = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL);
 	}
 	
-	public void showCodeSnippet(CloneSet set, DiffCounterRelationGroupEmulator relationGroup){
-		CompilationUnitPool pool = new CompilationUnitPool();
-		CloneSetWrapper setWrapper = new clonepedia.java.model.CloneSetWrapper(set, pool);
-		this.set = new CloneInformationExtractor().extractCounterRelationalDifferencesWithinSyntacticBoundary(setWrapper);
+	public void showCodeSnippet(DiffCounterRelationGroupEmulator relationGroup){
+		if(this.set != null){
+			showCodeSnippet(this.set, relationGroup);
+		}
+	}
+	
+	public void showCodeSnippet(clonepedia.java.model.CloneSetWrapper syntacticCloneSetWrapper, DiffCounterRelationGroupEmulator relationGroup){
+		//CompilationUnitPool pool = new CompilationUnitPool();
+		//CloneSetWrapper setWrapper = new clonepedia.java.model.CloneSetWrapper(set, pool);
+		//this.set = new CloneInformationExtractor().extractCounterRelationalDifferencesWithinSyntacticBoundary(setWrapper);
+		this.set = syntacticCloneSetWrapper;
 		this.relationGroup = relationGroup;
 		/**
 		 * If there is no these two statements, the following sash form will not present in UI.
@@ -84,8 +91,8 @@ public class CloneDiffView extends ViewPart {
 		int overallHeight = parent.getParent().getClientArea().height;
 		int overallWidth = parent.getParent().getClientArea().width;
 		
-		int widgetHeight = overallHeight - 50;
-		int widgetWidth = (set.size() <= 4)? (overallWidth/set.size() - 20) : overallWidth/4;
+		int widgetHeight = overallHeight - 20;
+		int widgetWidth = (set.size() <= 3)? (overallWidth/set.size() - 20) : overallWidth/3;
 		
 		Composite codeComposite = new Composite(parent, SWT.BORDER);
 		GridLayout overGridLayout = new GridLayout();
