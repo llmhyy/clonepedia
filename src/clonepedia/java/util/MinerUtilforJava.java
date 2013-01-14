@@ -594,6 +594,9 @@ public class MinerUtilforJava {
 	}
 	
 	public static ComplexType getComplexTypeWithBasicInfoByBinding(ITypeBinding typeBinding, CompilationUnit compilationUnit, Project project){
+		
+		if(typeBinding == null) return null;
+		
 		if(typeBinding.isClass()){
 			String classFullName = getClassFullName(typeBinding, compilationUnit);
 			return new Class(null, project, classFullName);

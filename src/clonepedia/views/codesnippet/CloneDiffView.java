@@ -103,7 +103,7 @@ public class CloneDiffView extends ViewPart {
 		codeComposite.setLayout(overGridLayout);
 		
 		Label label = new Label(codeComposite, SWT.NONE);
-		GridData labelLayoutData = new GridData();
+		GridData labelLayoutData = new GridData(GridData.FILL_BOTH);
 		labelLayoutData.heightHint = 20;
 		labelLayoutData.widthHint = widgetWidth;
 		/*labelLayoutData.grabExcessHorizontalSpace = true;
@@ -111,7 +111,7 @@ public class CloneDiffView extends ViewPart {
 		label.setLayoutData(labelLayoutData);
 		label.setText(instanceWrapper.getCloneInstance().getResidingMethod().getFullName());
 		
-		GridData scrollCodeLayoutData = new GridData();
+		GridData scrollCodeLayoutData = new GridData(GridData.FILL_BOTH);
 		scrollCodeLayoutData.heightHint = widgetHeight; 
 		scrollCodeLayoutData.widthHint = widgetWidth;
 		//scrollCodeLayoutDdata.grabExcessHorizontalSpace = true;
