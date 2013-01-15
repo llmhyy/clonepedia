@@ -119,9 +119,9 @@ public class CloneSet extends HashSet<CloneInstance> implements RegionalOwner, I
 		
 		addWordsIntoWordBag(this.locationPatterns, wordBag);
 		addWordsIntoWordBag(this.diffUsagePatterns, wordBag);
-		addWordsIntoWordBag(this.commonUsagePatterns, wordBag);
+		//addWordsIntoWordBag(this.commonUsagePatterns, wordBag);
 		
-		/*for(Method method: callingMethods){
+		for(Method method: callingMethods){
 			splitNameAndAddThemIntoWordBag(method.getSimpleElementName(), wordBag);
 		}
 		for(Field field: accessingFields){
@@ -141,7 +141,7 @@ public class CloneSet extends HashSet<CloneInstance> implements RegionalOwner, I
 		}
 		for(Interface interf: usingInterfaces){
 			splitNameAndAddThemIntoWordBag(interf.getSimpleElementName(), wordBag);
-		}*/
+		}
 		/*for(CounterRelationGroup group: getCounterRelationGroups())
 			for(InstanceElementRelation relation: group.getRelationList()){
 				String name = relation.getElement().getSimpleElementName();
