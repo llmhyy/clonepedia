@@ -34,7 +34,7 @@ public class PatternClusteringer implements Serializable{
 	
 	/**
 	 * Given a pattern path group set, return a pattern cluster set where each cluster should be correspond to
-	 * at least two clone sets. Intrinsically, a clone pattern should be formed by at least two clone sets. 
+	 * ?at least two clone sets?. ?Intrinsically, a clone pattern should be formed by at least two clone sets?. 
 	 * @param ppgList
 	 * @return
 	 * @throws Exception
@@ -68,7 +68,7 @@ public class PatternClusteringer implements Serializable{
 		}
 		
 		//if(isForLocationClustering)
-		filterThePatternClusterJustCorrespondingToOneCloneSet(clusterList);
+		//filterThePatternClusterJustCorrespondingToOneCloneSet(clusterList);
 		
 		return clusterList;
 	}
