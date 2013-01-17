@@ -44,4 +44,16 @@ public class CloneSetWrapperList extends ArrayList<CloneSetWrapper> {
 		
 		return list;
 	}
+	
+	public CloneSetWrapperList searchCloneSetWrapperListById(String cloneSetId){
+		
+		CloneSetWrapperList list = new CloneSetWrapperList();
+		for(CloneSetWrapper set: this){			
+			if(set.getCloneSet().getId().equals(cloneSetId)){
+				list.add(set);
+			}
+		}
+		
+		return list;
+	}
 }
