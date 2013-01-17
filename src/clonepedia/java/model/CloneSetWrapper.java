@@ -766,8 +766,8 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 					DiffCounterRelationGroupEmulator relationStatementGroup = new DiffCounterRelationGroupEmulator();
 					
 					
-					ArrayList<CloneInstanceWrapper> otherInstances = this.getOtherInstancesInSet(instance);
 					Statement currentStatement = instance.getStatementList()[instance.compareStatementPointer];
+					ArrayList<CloneInstanceWrapper> otherInstances = this.getOtherInstancesInSet(instance);
 					/*if(currentNode instanceof PrimitiveType)
 						System.out.print("");*/
 					
