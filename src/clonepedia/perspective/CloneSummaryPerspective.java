@@ -13,12 +13,12 @@ public class CloneSummaryPerspective implements IPerspectiveFactory {
 	@Override
 	public void createInitialLayout(IPageLayout layout) {
 		String editorArea = layout.getEditorArea();
-		layout.addView(PLAIN_CLONESET_VIEW, IPageLayout.LEFT, 0.25f, editorArea);
+		layout.addView(PLAIN_CLONESET_VIEW, IPageLayout.LEFT, 0.3f, editorArea);
 		
-		layout.addView(PATTERN_ORIENTED_VIEW, IPageLayout.BOTTOM, 0.6f, editorArea);
+		layout.addView(PATTERN_ORIENTED_VIEW, IPageLayout.BOTTOM, 0.5f, editorArea);
 		layout.addView(TOPIC_ORIENTED_VIEW, IPageLayout.RIGHT, 0.5f, PATTERN_ORIENTED_VIEW);
 		
-		layout.addView(CODE_SNIPPET_VIEW, IPageLayout.RIGHT, 0.75f, editorArea);
+		//layout.addView(CODE_SNIPPET_VIEW, IPageLayout.RIGHT, 0.7f, editorArea);
 
 	}
 
