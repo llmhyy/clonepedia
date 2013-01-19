@@ -243,13 +243,13 @@ public class PlainCloneSetView extends SummaryView {
 		
 		hookActionsOnBars();
 		
-		sashForm.setWeights(new int[]{4, 6});
+		sashForm.setWeights(new int[]{35, 65});
 		//getSite().getPage().addSelectionListener(externalEventAwareListener);
 	}
 	
 	private void createColumns(CheckboxTreeViewer viewer){
-		String[] titles = {"Name", "#Ins", "Avg LOC", "#Pattern", "#Topic", "Diff/LOC"};
-		int[] bounds = {100, 35, 35, 40, 40, 50};
+		String[] titles = {"Name", "#Ins", "Avg LOC", "Diff/LOC", "#Pattern", "#Topic"};
+		int[] bounds = {110, 50, 60, 70, 50, 50};
 		
 		/*TreeViewerColumn placeHolderCol = createTreeColumn(viewer, titles[0], bounds[0], 0);
 		placeHolderCol.setLabelProvider(new ColumnLabelProvider(){
@@ -316,7 +316,16 @@ public class PlainCloneSetView extends SummaryView {
 			}
 		});
 		
-		TreeViewerColumn patternNumCol = createTreeColumn(viewer, titles[3], bounds[3], 3);
+		TreeViewerColumn diffInLocNumCol = createTreeColumn(viewer, titles[3], bounds[3], 3);
+		diffInLocNumCol.setLabelProvider(new ColumnLabelProvider(){
+			public String getText(Object element) {
+				if(element instanceof CloneSetWrapper)
+					return String.valueOf(((CloneSetWrapper)element).differenceInCodeFragments());
+				return null;
+			}
+		});
+		
+		TreeViewerColumn patternNumCol = createTreeColumn(viewer, titles[4], bounds[4], 4);
 		patternNumCol.setLabelProvider(new ColumnLabelProvider(){
 			public String getText(Object element) {
 				if(element instanceof CloneSetWrapper)
@@ -325,7 +334,7 @@ public class PlainCloneSetView extends SummaryView {
 			}
 		});
 		
-		TreeViewerColumn topicNumCol = createTreeColumn(viewer, titles[4], bounds[4], 4);
+		TreeViewerColumn topicNumCol = createTreeColumn(viewer, titles[5], bounds[5], 5);
 		topicNumCol.setLabelProvider(new ColumnLabelProvider(){
 			public String getText(Object element) {
 				if(element instanceof CloneSetWrapper)
@@ -334,14 +343,7 @@ public class PlainCloneSetView extends SummaryView {
 			}
 		});
 		
-		TreeViewerColumn diffInLocNumCol = createTreeColumn(viewer, titles[5], bounds[5], 5);
-		diffInLocNumCol.setLabelProvider(new ColumnLabelProvider(){
-			public String getText(Object element) {
-				if(element instanceof CloneSetWrapper)
-					return String.valueOf(((CloneSetWrapper)element).differenceInCodeFragments());
-				return null;
-			}
-		});
+		
 	}
 	
 	private TreeViewerColumn createTreeColumn(CheckboxTreeViewer viewer, String title, int bound, final int columnNumber){
@@ -624,7 +626,8 @@ public class PlainCloneSetView extends SummaryView {
 				viewer.reveal(set);
 				viewer.setChecked(set, true);*/
 				
-				CloneSetWrapperList list = cloneSets.searchRelatedCloneSetWrapperList(searchText.getText());
+				//CloneSetWrapperList list = cloneSets.searchRelatedCloneSetWrapperList(searchText.getText());
+				CloneSetWrapperList list = cloneSets.searchCloneSetWrapperListById(searchText.getText());
 				viewer.setInput(list);
 				viewer.refresh();
 			}
@@ -641,7 +644,7 @@ public class PlainCloneSetView extends SummaryView {
 					/*CloneSetWrapper set = cloneSets.searchSpecificCloneSetWrapper(searchText.getText());
 					viewer.reveal(set);
 					viewer.setChecked(set, true);*/
-					CloneSetWrapperList list = cloneSets.searchRelatedCloneSetWrapperList(searchText.getText());
+					CloneSetWrapperList list = cloneSets.searchCloneSetWrapperListById(searchText.getText());
 					viewer.setInput(list);
 					viewer.refresh();
 		        }
@@ -652,11 +655,11 @@ public class PlainCloneSetView extends SummaryView {
 
 	@Override
 	protected void createSections(ScrolledForm form, Object targetObject) {
-		createTextDescriptionSection(form.getBody(), targetObject);
+		//createTextDescriptionSection(form.getBody(), targetObject);
 		createCloneInstanceInformationSections(form.getBody(), targetObject);
 		//createCounterRelationalDifferenceSection(form.getBody(), targetObject);
-		createTopicDescriptionSection(form.getBody(), targetObject);
 		createClonePatternStructuralInfoSection(form.getBody(), targetObject);
+		createTopicDescriptionSection(form.getBody(), targetObject);
 		//createClonePatternDescriptionSection(form.getBody(), targetObject);
 	}
 	
