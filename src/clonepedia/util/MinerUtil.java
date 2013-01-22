@@ -159,7 +159,8 @@ public class MinerUtil {
 		double maxLen = (seq1.size() > seq2.size())? seq1.size() : seq2.size();
 		double minLen = (seq1.size() < seq2.size())? seq1.size() : seq2.size();
 		
-		return (maxLen/minLen)*(2*value)/(maxLen + minLen);
+		//return (maxLen/minLen)*(2*value)/(maxLen + minLen);
+		return (2*value)/(maxLen + minLen);
 	}
 	
 	public static double getSmallestValue(double entry1, double entry2, double entry3){
