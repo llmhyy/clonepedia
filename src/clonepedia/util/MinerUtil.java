@@ -156,11 +156,11 @@ public class MinerUtil {
 	
 	public static double computeAdjustedLevenshteinDistance(ArrayList<? extends Object> seq1, ArrayList<? extends Object> seq2, SimilarityComparator comparator) throws Exception{
 		double value = computeLevenshteinDistance(seq1, seq2, comparator);
-		double maxLen = (seq1.size() > seq2.size())? seq1.size() : seq2.size();
-		double minLen = (seq1.size() < seq2.size())? seq1.size() : seq2.size();
+		//double maxLen = (seq1.size() > seq2.size())? seq1.size() : seq2.size();
+		//double minLen = (seq1.size() < seq2.size())? seq1.size() : seq2.size();
 		
 		//return (maxLen/minLen)*(2*value)/(maxLen + minLen);
-		return (2*value)/(maxLen + minLen);
+		return (2*value)/(seq1.size() + seq2.size());
 	}
 	
 	public static double getSmallestValue(double entry1, double entry2, double entry3){
