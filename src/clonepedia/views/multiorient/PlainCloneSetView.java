@@ -697,7 +697,7 @@ public class PlainCloneSetView extends SummaryView {
 		Section section = toolkit.createSection(parent, Section.TWISTIE | Section.EXPANDED | Section.TITLE_BAR );
 		TableWrapData wrapData = new TableWrapData(TableWrapData.FILL_GRAB);
 		wrapData.grabVertical = true;
-		wrapData.rowspan = 20;
+		//wrapData.rowspan = 20;
 		section.setLayoutData(wrapData);
 		section.setExpanded(true);
 		section.setText("Related Clone Patterns");
@@ -714,10 +714,11 @@ public class PlainCloneSetView extends SummaryView {
 		Section section = toolkit.createSection(parent, Section.TWISTIE | Section.EXPANDED | Section.TITLE_BAR );
 		TableWrapData wrapData = new TableWrapData(TableWrapData.FILL_GRAB);
 		wrapData.grabVertical = true;
-		wrapData.rowspan = 20;
+		//wrapData.rowspan = 20;
 		section.setLayoutData(wrapData);
 		section.setExpanded(true);
 		section.setText("Related Path Patterns");
+		//section.setLayout(new TableWrapLayout());
 		
 		CloneSetWrapper setWrapper = (CloneSetWrapper)targetObject;
 		
@@ -727,16 +728,20 @@ public class PlainCloneSetView extends SummaryView {
 	
 	private Composite createPathPatternStructuralInfoContent(Section section, CloneSetWrapper setWrapper){
 		Composite composite = toolkit.createComposite(section, SWT.WRAP);
+		//composite.setLayoutData(new GridData(GridData.FILL_BOTH,GridData.FILL_BOTH, true, true));
 		
-		GridLayout compositeLayout = new GridLayout();
+		TableWrapLayout compositeLayout = new TableWrapLayout();
 		composite.setLayout(compositeLayout);
 		
 		final TreeViewer relatedClonePatternViewer = new TreeViewer(composite, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
-		GridData treeLayoutData = new GridData(GridData.BEGINNING, GridData.FILL, false, true);
-		treeLayoutData.widthHint = 250;
-		treeLayoutData.heightHint = 200;
-		composite.setLayoutData(treeLayoutData);
-		relatedClonePatternViewer.getTree().setLayoutData(treeLayoutData);
+		TableWrapData twData = new TableWrapData(TableWrapData.FILL_GRAB, TableWrapData.FILL_GRAB);
+		twData.heightHint = 150;
+		//GridData treeLayoutData = new GridData(GridData.BEGINNING, GridData.FILL_BOTH, true, true);
+		//treeLayoutData.widthHint = 250;
+		//treeLayoutData.heightHint = 200;
+		//treeLayoutData.grabExcessHorizontalSpace = true;
+		//composite.setLayoutData(treeLayoutData);
+		relatedClonePatternViewer.getTree().setLayoutData(twData);
 		
 		//ArrayList<ProgrammingElementWrapper> proList = getProgrammingElementList(setWrapper);
 		PatternGroupCategoryList categoryList = setWrapper.getPathPatternCategoryList();
@@ -764,7 +769,7 @@ public class PlainCloneSetView extends SummaryView {
 	private Composite createClonePatternStructuralInfoContent(Section section, CloneSetWrapper setWrapper){
 		Composite composite = toolkit.createComposite(section, SWT.WRAP);
 		
-		GridLayout compositeLayout = new GridLayout();
+		TableWrapLayout compositeLayout = new TableWrapLayout();
 		composite.setLayout(compositeLayout);
 		
 		/*Label locationLabel = new Label(composite, SWT.NONE);
@@ -775,11 +780,14 @@ public class PlainCloneSetView extends SummaryView {
 						SWT.BOLD)));*/
 		
 		final TreeViewer relatedClonePatternViewer = new TreeViewer(composite, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
-		GridData treeLayoutData = new GridData(GridData.BEGINNING, GridData.FILL, false, true);
+		TableWrapData twData = new TableWrapData(TableWrapData.FILL_GRAB, TableWrapData.FILL_GRAB);
+		twData.heightHint = 150;
+		
+		/*GridData treeLayoutData = new GridData(GridData.BEGINNING, GridData.FILL, false, true);
 		treeLayoutData.widthHint = 250;
 		treeLayoutData.heightHint = 200;
-		composite.setLayoutData(treeLayoutData);
-		relatedClonePatternViewer.getTree().setLayoutData(treeLayoutData);
+		composite.setLayoutData(treeLayoutData);*/
+		relatedClonePatternViewer.getTree().setLayoutData(twData);
 		
 		//ArrayList<ProgrammingElementWrapper> proList = getProgrammingElementList(setWrapper);
 		PatternGroupCategoryList categoryList = setWrapper.getClonePatternCategoryList();
