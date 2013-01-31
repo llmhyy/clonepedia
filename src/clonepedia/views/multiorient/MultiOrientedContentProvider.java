@@ -10,6 +10,8 @@ import org.eclipse.jface.viewers.Viewer;
 
 import clonepedia.model.ontology.CloneInstance;
 import clonepedia.model.ontology.CloneSet;
+import clonepedia.model.syntactic.Path;
+import clonepedia.model.viewer.PathPatternGroupWrapper;
 import clonepedia.model.viewer.PatternGroupCategory;
 import clonepedia.model.viewer.ClonePatternGroupWrapper;
 import clonepedia.model.viewer.CloneSetWrapper;
@@ -54,6 +56,16 @@ public class MultiOrientedContentProvider implements ITreeContentProvider {
 			return ((TopicWrapper)parentElement).getContent().toArray(new IContent[0]);
 		else if(parentElement instanceof ClonePatternGroupWrapper)
 			return ((ClonePatternGroupWrapper)parentElement).getContent().toArray(new IContent[0]);
+		else if(parentElement instanceof PathPatternGroupWrapper){
+			PathPatternGroupWrapper ppgw = (PathPatternGroupWrapper)parentElement;
+			int size = ppgw.getPathPattern().size();
+			CloneInstance[] instances = new CloneInstance[size];
+			int i = 0;
+			for(Path path: ppgw.getPathPattern()){
+				instances[i++] = (CloneInstance)path.get(0);
+			}
+			return instances;
+		}
 		/*else if(parentElement instanceof CloneSetWrapper)
 			return ((CloneSetWrapper)parentElement).getCloneSet().toArray(new CloneInstance[0]);*/
 		else if(parentElement instanceof PatternGroupCategory){
