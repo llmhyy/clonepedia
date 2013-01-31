@@ -7,14 +7,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import clonepedia.model.ontology.ProgrammingElement;
-import clonepedia.model.viewer.ClonePatternGroupWrapperList;
+import clonepedia.model.viewer.PatternGroupWrapperList;
 
 public abstract class ProgrammingElementWrapper {
 	
 	protected ProgrammingElement element;
 	protected ProgrammingElementWrapper parent;
 	protected HashMap<String, ProgrammingElementWrapper> children = new HashMap<String, ProgrammingElementWrapper>();
-	protected ClonePatternGroupWrapperList clonePatterns = new ClonePatternGroupWrapperList(); 
+	protected PatternGroupWrapperList patterns = new PatternGroupWrapperList(); 
 	protected String name;
 	protected int containedPatternNumber = -1;
 	
@@ -63,12 +63,12 @@ public abstract class ProgrammingElementWrapper {
 			this.children.put(element.getName(), element);
 	}
 
-	public ClonePatternGroupWrapperList getClonePatterns() {
-		return clonePatterns;
+	public PatternGroupWrapperList getPatterns() {
+		return patterns;
 	}
 
-	public void setClonePatterns(ClonePatternGroupWrapperList clonePatterns) {
-		this.clonePatterns = clonePatterns;
+	public void setPatterns(PatternGroupWrapperList patterns) {
+		this.patterns = patterns;
 	}
 
 	public String getName() {
@@ -97,9 +97,9 @@ public abstract class ProgrammingElementWrapper {
 	public int getContainedClonePatternNumber(){
 		if(-1 == this.containedPatternNumber){
 			if(this.children.size() == 0)
-				return this.clonePatterns.size();
+				return this.patterns.size();
 			else{
-				int sum = this.clonePatterns.size();
+				int sum = this.patterns.size();
 				for(String key: children.keySet()){
 					ProgrammingElementWrapper element = children.get(key);
 					sum += element.getContainedClonePatternNumber();

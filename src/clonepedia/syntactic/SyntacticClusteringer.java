@@ -10,6 +10,7 @@ import clonepedia.model.ontology.CloneSet;
 import clonepedia.model.ontology.CloneSets;
 import clonepedia.model.syntactic.ClonePatternGroup;
 import clonepedia.model.syntactic.PathPatternGroup;
+import clonepedia.model.syntactic.PathSequence;
 import clonepedia.summary.PatternClusteringer;
 import clonepedia.syntactic.util.SyntacticUtil;
 import clonepedia.syntactic.util.comparator.PatternComparator;
@@ -148,19 +149,19 @@ public class SyntacticClusteringer implements Serializable{
 		ArrayList<ClonePatternGroup> list = new ArrayList<ClonePatternGroup>();
 		
 		ArrayList<PathPatternGroup> locationPatterns = getPatternsFromCloneSets(concernedSets, SyntacticClusteringer.locationPatternClustering);
-		ArrayList<ClonePatternGroup> locationP = clusterSpecificStyleOfClonePattern(locationPatterns, ClonePatternGroup.LOCATION);
+		ArrayList<ClonePatternGroup> locationP = clusterSpecificStyleOfClonePattern(locationPatterns, PathSequence.LOCATION);
 		
 		ArrayList<PathPatternGroup> mfvDiffPatterns = getPatternsFromCloneSets(concernedSets, SyntacticClusteringer.methodFieldVariableDiffPatternClustering);
-		ArrayList<ClonePatternGroup> mfvDiffP = clusterSpecificStyleOfClonePattern(mfvDiffPatterns, ClonePatternGroup.DIFF_USAGE);
+		ArrayList<ClonePatternGroup> mfvDiffP = clusterSpecificStyleOfClonePattern(mfvDiffPatterns, PathSequence.DIFF_USAGE);
 		
 		ArrayList<PathPatternGroup> ciDiffPatterns = getPatternsFromCloneSets(concernedSets, SyntacticClusteringer.complexTypeDiffPatternClustering);
-		ArrayList<ClonePatternGroup> ciDiffP = clusterSpecificStyleOfClonePattern(ciDiffPatterns, ClonePatternGroup.DIFF_USAGE);
+		ArrayList<ClonePatternGroup> ciDiffP = clusterSpecificStyleOfClonePattern(ciDiffPatterns, PathSequence.DIFF_USAGE);
 		
 		ArrayList<PathPatternGroup> mfvCommonPatterns = getPatternsFromCloneSets(concernedSets, SyntacticClusteringer.methodFieldVariableCommonPatternClustering);
-		ArrayList<ClonePatternGroup> mfvCommonP = clusterSpecificStyleOfClonePattern(mfvCommonPatterns, ClonePatternGroup.COMMON_USAGE);
+		ArrayList<ClonePatternGroup> mfvCommonP = clusterSpecificStyleOfClonePattern(mfvCommonPatterns, PathSequence.COMMON_USAGE);
 		
 		ArrayList<PathPatternGroup> ciCommonPatterns = getPatternsFromCloneSets(concernedSets, SyntacticClusteringer.complexTypeCommonPatternClustering);
-		ArrayList<ClonePatternGroup> ciCommonP = clusterSpecificStyleOfClonePattern(ciCommonPatterns, ClonePatternGroup.COMMON_USAGE);
+		ArrayList<ClonePatternGroup> ciCommonP = clusterSpecificStyleOfClonePattern(ciCommonPatterns, PathSequence.COMMON_USAGE);
 		
 		list.addAll(locationP);
 		list.addAll(mfvDiffP);
@@ -215,7 +216,7 @@ public class SyntacticClusteringer implements Serializable{
 	private void attachPatternLabels(ArrayList<SyntacticCluster> list) throws Exception{
 		PatternClusteringer pcger = new PatternClusteringer();
 		for(SyntacticCluster cluster: list){
-			ArrayList<ClonePatternGroup> clonePatterns = pcger.doClustering(cluster.getConcernedContainedPatternPathGroups(), ClonePatternGroup.LOCATION);
+			ArrayList<ClonePatternGroup> clonePatterns = pcger.doClustering(cluster.getConcernedContainedPatternPathGroups(), PathSequence.LOCATION);
 			
 			for(ClonePatternGroup clonePattern: clonePatterns){
 				for(PathPatternGroup ppg: clonePattern){

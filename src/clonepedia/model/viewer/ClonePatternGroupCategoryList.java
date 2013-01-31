@@ -1,48 +1,42 @@
 package clonepedia.model.viewer;
 
-import java.util.ArrayList;
-
-public class ClonePatternGroupCategoryList extends ArrayList<ClonePatternGroupCategory> {
+public class ClonePatternGroupCategoryList extends PatternGroupCategoryList{
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8957050834571320329L;
-	
+	private static final long serialVersionUID = 4210448337188483634L;
+
 	public ClonePatternGroupWrapper searchSpecificClonePattern(String uniqueId){
-		for(ClonePatternGroupCategory category: this){
-			ClonePatternGroupWrapper clonePatternWrapper = category.getPatterns().searchSpecificClonePattern(uniqueId);
+		for(PatternGroupCategory category: this){
+			ClonePatternGroupWrapperList list = (ClonePatternGroupWrapperList) category.getPatterns();
+			ClonePatternGroupWrapper clonePatternWrapper = list.searchSpecificClonePattern(uniqueId);
 			if(null != clonePatternWrapper)
 				return clonePatternWrapper;
 		}
 		return null;
 	}
 	
-	public ClonePatternGroupCategoryList searchContent(String content){
+	public PatternGroupCategoryList searchContent(String content){
 		
-		ClonePatternGroupCategoryList list = new ClonePatternGroupCategoryList();
+		PatternGroupCategoryList list = new PatternGroupCategoryList();
 		
 		content = content.toLowerCase();
-		for(ClonePatternGroupCategory category: this){
-			ClonePatternGroupCategory cate = new ClonePatternGroupCategory(category.getName());
-			cate.setPatterns(category.getPatterns().searchContent(content));
+		for(PatternGroupCategory category: this){
+			PatternGroupCategory cate = new PatternGroupCategory(category.getName(), new ClonePatternGroupWrapperList());
+			ClonePatternGroupWrapperList cpgwlist = (ClonePatternGroupWrapperList) category.getPatterns();
+			cate.setPatterns(cpgwlist.searchContent(content));
 			list.add(cate);
 		}
 		
 		return list;
 	}
 	
-	public ClonePatternGroupCategory searchSpecificCategory(String categoryName){
-		for(ClonePatternGroupCategory category: this)
+	public PatternGroupCategory searchSpecificCategory(String categoryName){
+		for(PatternGroupCategory category: this)
 			if(category.getName().equals(categoryName))
 				return category;
 		
 		return null;
-	}
-	
-	public void reconstructProgrammingHierarchy(){
-		for(ClonePatternGroupCategory category: this){
-			category.getPatterns().constructProgrammingElementHierarchy();
-		}
 	}
 }

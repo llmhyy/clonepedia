@@ -26,9 +26,11 @@ import clonepedia.model.semantic.WordSet;
 import clonepedia.model.syntactic.ClonePatternGroup;
 import clonepedia.model.syntactic.PathSequence;
 import clonepedia.model.viewer.ClonePatternGroupWrapper;
+import clonepedia.model.viewer.ClonePatternGroupWrapperList;
 import clonepedia.model.viewer.CloneSetWrapper;
 import clonepedia.model.viewer.IContainer;
 import clonepedia.model.viewer.IContent;
+import clonepedia.model.viewer.PatternGroupWrapper;
 import clonepedia.model.viewer.TopicWrapper;
 import clonepedia.model.viewer.comparator.AverageCodeFragmentLengthDescComparator;
 import clonepedia.model.viewer.comparator.CloneSetWrapperDiffInCodeDescComparator;
@@ -269,7 +271,12 @@ public class NaturalLanguateTemplate {
 		for(CloneSetWrapper sw: setWrappers)
 			setList.add(sw.getCloneSet());
 		
-		ArrayList<ClonePatternGroupWrapper> list = SummaryUtil.generateClonePatternOrientedSimpleTree(setList);
+		ClonePatternGroupWrapperList clist = SummaryUtil.generateClonePatternOrientedSimpleTree(setList);
+		ArrayList<ClonePatternGroupWrapper> list = new ArrayList<ClonePatternGroupWrapper>();
+		for(PatternGroupWrapper pgw: clist){
+			ClonePatternGroupWrapper cpgw = (ClonePatternGroupWrapper)pgw;
+			list.add(cpgw);
+		}
 		
 		Collections.sort(list, new DefaultValueDescComparator());
 		
@@ -483,11 +490,11 @@ public class NaturalLanguateTemplate {
 		buffer.append("<form>");
 		buffer.append("<p>");
 		String str = "";
-		if(obj.getClonePattern().getStyle().equals(ClonePatternGroup.LOCATION))
+		if(obj.getClonePattern().getStyle().equals(PathSequence.LOCATION))
 			str = "The clones appear in ";
-		else if(obj.getClonePattern().getStyle().equals(ClonePatternGroup.DIFF_USAGE))
+		else if(obj.getClonePattern().getStyle().equals(PathSequence.DIFF_USAGE))
 			str = "The differential parts of clones use ";
-		else if(obj.getClonePattern().getStyle().equals(ClonePatternGroup.COMMON_USAGE))
+		else if(obj.getClonePattern().getStyle().equals(PathSequence.COMMON_USAGE))
 			str = "The common parts of clones use ";
 		
 		buffer.append(str);
@@ -699,11 +706,12 @@ public class NaturalLanguateTemplate {
 		for(CloneSetWrapper sw: setWrappers)
 			setList.add(sw.getCloneSet());
 		
-		ArrayList<ClonePatternGroupWrapper> clonePatternList = SummaryUtil.generateClonePatternOrientedSimpleTree(setList);
+		ClonePatternGroupWrapperList patternList = SummaryUtil.generateClonePatternOrientedSimpleTree(setList);
 		
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("<p>Above all, <br/>");
-		for(ClonePatternGroupWrapper clonePattern: clonePatternList){
+		for(PatternGroupWrapper pattern: patternList){
+			ClonePatternGroupWrapper clonePattern = (ClonePatternGroupWrapper)pattern;
 			for(CloneSetWrapper set: clonePattern.getAllContainedCloneSet()){
 				buffer.append("<a href=\"CloneSet\">");
 				buffer.append(set.getCloneSet().getId());
@@ -724,7 +732,7 @@ public class NaturalLanguateTemplate {
 		ArrayList<ClonePatternGroup> usagePatterns = new ArrayList<ClonePatternGroup>();
 		
 		for(ClonePatternGroup pattern: set.getCloneSet().getPatternLabels())
-			if(pattern.getStyle().equals(ClonePatternGroup.LOCATION))
+			if(pattern.getStyle().equals(PathSequence.LOCATION))
 				locationPatterns.add(pattern);
 			else
 				usagePatterns.add(pattern);

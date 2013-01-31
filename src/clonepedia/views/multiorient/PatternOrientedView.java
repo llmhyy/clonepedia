@@ -44,8 +44,10 @@ import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import clonepedia.Activator;
 import clonepedia.model.ontology.CloneSet;
 import clonepedia.model.syntactic.ClonePatternGroup;
-import clonepedia.model.viewer.ClonePatternGroupCategory;
+import clonepedia.model.syntactic.PathSequence;
 import clonepedia.model.viewer.ClonePatternGroupCategoryList;
+import clonepedia.model.viewer.PatternGroupCategory;
+import clonepedia.model.viewer.PatternGroupCategoryList;
 import clonepedia.model.viewer.ClonePatternGroupWrapper;
 import clonepedia.model.viewer.CloneSetWrapper;
 import clonepedia.model.viewer.CloneSetWrapperList;
@@ -85,7 +87,7 @@ public class PatternOrientedView extends MultiOrientedView {
 				if(selectionObject instanceof ClonePatternGroupWrapper){
 					ClonePatternGroupWrapper clonePattern = (ClonePatternGroupWrapper)selectionObject;
 					if(viewer.getInput() != null){
-						ClonePatternGroupWrapper clonePatternWrapper = categories.searchSpecificClonePattern(clonePattern.getClonePattern().getUniqueId());
+						ClonePatternGroupWrapper clonePatternWrapper = clonePatternCategories.searchSpecificClonePattern(clonePattern.getClonePattern().getUniqueId());
 						openNewTab(clonePatternWrapper);
 						//viewer.expandToLevel(2);
 						viewer.setSelection(new StructuredSelection(clonePatternWrapper), true);
@@ -124,26 +126,27 @@ public class PatternOrientedView extends MultiOrientedView {
 			}
 			else if(hyperlinkType.equals("ClonePattern")){
 				String uniqueId = content.substring(content.indexOf("#"), content.indexOf("]"));
-				ClonePatternGroupWrapper clonePattern = categories.searchSpecificClonePattern(uniqueId);
+				ClonePatternGroupWrapper clonePattern = clonePatternCategories.searchSpecificClonePattern(uniqueId);
 				openNewTab(clonePattern);
 			}
 		}
 	};
 	
-	private ClonePatternGroupCategoryList categories;
+	private ClonePatternGroupCategoryList clonePatternCategories;
 	
 	public PatternOrientedView() {
 	}
 
+	
 	@Override
 	public void createPartControl(Composite parent) {
 		
 		super.createPartControl(parent);
 		//clonePatterns = SummaryUtil.generateClonePatternOrientedSimpleTree(Activator.sets.getCloneList());
 		try {
-			categories = SummaryUtil.generateClonePatternSimplifiedCategories(Activator.sets.getCloneList());
-			for(ClonePatternGroupCategory category: categories){
-				Collections.sort(category.getPatterns(), new DefaultValueDescComparator());
+			clonePatternCategories = (ClonePatternGroupCategoryList)SummaryUtil.generateClonePatternSimplifiedCategories(Activator.sets.getCloneList());
+			for(PatternGroupCategory category: clonePatternCategories){
+				Collections.sort(category.getPatternList(), new DefaultValueDescComparator());
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -151,7 +154,7 @@ public class PatternOrientedView extends MultiOrientedView {
 		}
 		viewer.setContentProvider(new MultiOrientedContentProvider());
 		viewer.setLabelProvider(new MultiOrientedLabelProvider());
-		viewer.setInput(categories);
+		viewer.setInput(clonePatternCategories);
 		viewer.addDoubleClickListener(new IDoubleClickListener(){
 			@Override
 			public void doubleClick(DoubleClickEvent event) {
@@ -162,8 +165,8 @@ public class PatternOrientedView extends MultiOrientedView {
 				}
 				else if(element instanceof ProgrammingElementWrapper){
 					ProgrammingElementWrapper proElement = (ProgrammingElementWrapper)element;
-					if(proElement.getClonePatterns().size() > 0){
-						openNewTab(proElement.getClonePatterns().get(0));
+					if(proElement.getPatterns().size() > 0){
+						openNewTab(proElement.getPatterns().get(0));
 					}
 				}
 			}
@@ -181,11 +184,11 @@ public class PatternOrientedView extends MultiOrientedView {
 		
 		Action switchViewAction = new Action("Show Topic", IAction.AS_CHECK_BOX){
 			public void run(){
-				ClonePatternGroupCategoryList list = new ClonePatternGroupCategoryList();
+				PatternGroupCategoryList list = new PatternGroupCategoryList();
 				if(this.isChecked())
-					list = SummaryUtil.transferPatternFromSimpleToComplexInCatetory((ClonePatternGroupCategoryList)viewer.getInput());
+					list = SummaryUtil.transferPatternFromSimpleToComplexInCatetory((PatternGroupCategoryList)viewer.getInput());
 				else
-					list = SummaryUtil.transferPatternFromComplexToSimpleInCatetory((ClonePatternGroupCategoryList)viewer.getInput());
+					list = SummaryUtil.transferPatternFromComplexToSimpleInCatetory((PatternGroupCategoryList)viewer.getInput());
 				
 				viewer.setInput(list);
 				viewer.refresh();
@@ -196,18 +199,18 @@ public class PatternOrientedView extends MultiOrientedView {
 		final Action sortBySizeAction = new Action("Sort By #CloneSet", IAction.AS_CHECK_BOX){
 			public void run(){
 				if(this.isChecked()){
-					for(ClonePatternGroupCategory category: (ClonePatternGroupCategoryList)viewer.getInput()){
+					for(PatternGroupCategory category: (PatternGroupCategoryList)viewer.getInput()){
 						comparator = new ContainedCloneSetNumberDescComparator();
-						Collections.sort(category.getPatterns(), comparator);
+						Collections.sort(category.getPatternList(), comparator);
 					}
 				}	
 				else{
-					for(ClonePatternGroupCategory category: (ClonePatternGroupCategoryList)viewer.getInput()){
+					for(PatternGroupCategory category: (PatternGroupCategoryList)viewer.getInput()){
 						comparator = new ContainedCloneSetNumberAscComparator();
-						Collections.sort(category.getPatterns(), comparator);
+						Collections.sort(category.getPatternList(), comparator);
 					}
 				}
-				viewer.setInput(categories);
+				viewer.setInput(clonePatternCategories);
 				viewer.refresh();
 			}
 		};
@@ -217,17 +220,17 @@ public class PatternOrientedView extends MultiOrientedView {
 			public void run(){
 				if(this.isChecked()){
 					comparator = new DiversityDescComparator();
-					for(ClonePatternGroupCategory category: (ClonePatternGroupCategoryList)viewer.getInput()){
-						Collections.sort(category.getPatterns(), comparator);
+					for(PatternGroupCategory category: (PatternGroupCategoryList)viewer.getInput()){
+						Collections.sort(category.getPatternList(), comparator);
 					}
 				}	
 				else{
 					comparator = new DiversityAscComparator();
-					for(ClonePatternGroupCategory category: (ClonePatternGroupCategoryList)viewer.getInput()){
-						Collections.sort(category.getPatterns(), comparator);
+					for(PatternGroupCategory category: (PatternGroupCategoryList)viewer.getInput()){
+						Collections.sort(category.getPatternList(), comparator);
 					}
 				}
-				viewer.setInput(categories);
+				viewer.setInput(clonePatternCategories);
 				viewer.refresh();
 			}
 		};
@@ -237,17 +240,17 @@ public class PatternOrientedView extends MultiOrientedView {
 			public void run(){
 				if(this.isChecked()){
 					comparator = new DefaultValueDescComparator();
-					for(ClonePatternGroupCategory category: (ClonePatternGroupCategoryList)viewer.getInput()){
-						Collections.sort(category.getPatterns(), comparator);
+					for(PatternGroupCategory category: (PatternGroupCategoryList)viewer.getInput()){
+						Collections.sort(category.getPatternList(), comparator);
 					}
 				}	
 				else{
 					comparator = new DefaultValueAscComparator();
-					for(ClonePatternGroupCategory category: (ClonePatternGroupCategoryList)viewer.getInput()){
-						Collections.sort(category.getPatterns(), comparator);
+					for(PatternGroupCategory category: (PatternGroupCategoryList)viewer.getInput()){
+						Collections.sort(category.getPatternList(), comparator);
 					}
 				}
-				viewer.setInput(categories);
+				viewer.setInput(clonePatternCategories);
 				viewer.refresh();
 			}
 		};
@@ -267,16 +270,16 @@ public class PatternOrientedView extends MultiOrientedView {
 		
 		final Action sortByAlphebetAction = new Action("Sort By Alphebet", IAction.AS_CHECK_BOX){
 			public void run(){
-				ClonePatternGroupCategoryList list = (ClonePatternGroupCategoryList)viewer.getInput();
+				PatternGroupCategoryList list = (PatternGroupCategoryList)viewer.getInput();
 				if(this.isChecked()){
 					comparator = new AlphabetAscComparator();
-					for(ClonePatternGroupCategory category: list)
-						Collections.sort(category.getPatterns(), comparator);
+					for(PatternGroupCategory category: list)
+						Collections.sort(category.getPatternList(), comparator);
 				}
 				else{
 					comparator = new AlphabetDescComparator();
-					for(ClonePatternGroupCategory category: list)
-						Collections.sort(category.getPatterns(), comparator);
+					for(PatternGroupCategory category: list)
+						Collections.sort(category.getPatternList(), comparator);
 				}
 				viewer.setInput(list);
 				viewer.refresh();
@@ -286,15 +289,15 @@ public class PatternOrientedView extends MultiOrientedView {
 		
 		final Action sortProgrammingElementsByContainedPatternAction = new Action("Sort By #Pattern", IAction.AS_CHECK_BOX){
 			public void run(){
-				ClonePatternGroupCategoryList list = (ClonePatternGroupCategoryList)viewer.getInput();
+				PatternGroupCategoryList list = (PatternGroupCategoryList)viewer.getInput();
 				if(this.isChecked()){
-					if(categories.get(0).isProgrammingHierachicalModel()){
+					if(clonePatternCategories.get(0).isProgrammingHierachicalModel()){
 						MultiOrientedContentProvider contentProvider = (MultiOrientedContentProvider) viewer.getContentProvider();
 						contentProvider.setProgrammingElementComparator(new ContainedClonePatternInProgrammingElementDescComparator() );
 					}
 				}
 				else{
-					if(categories.get(0).isProgrammingHierachicalModel()){
+					if(clonePatternCategories.get(0).isProgrammingHierachicalModel()){
 						MultiOrientedContentProvider contentProvider = (MultiOrientedContentProvider) viewer.getContentProvider();
 						contentProvider.setProgrammingElementComparator(new ContainedClonePatternInProgrammingElementAscComparator() );
 					}
@@ -307,9 +310,9 @@ public class PatternOrientedView extends MultiOrientedView {
 		
 		Action showHierarchicalModelAction = new Action("Type Hierarchy", IAction.AS_CHECK_BOX){
 			public void run(){
-				ClonePatternGroupCategoryList list = (ClonePatternGroupCategoryList)viewer.getInput();
+				PatternGroupCategoryList list = (PatternGroupCategoryList)viewer.getInput();
 				if(this.isChecked())
-					for(ClonePatternGroupCategory category: list){
+					for(PatternGroupCategory category: list){
 						category.constructProgrammingElementHierarchy();
 						category.setProgrammingHierachicalModel(true);
 						
@@ -320,7 +323,7 @@ public class PatternOrientedView extends MultiOrientedView {
 						sortProgrammingElementsByContainedPatternAction.setEnabled(true);
 					}
 				else{
-					for(ClonePatternGroupCategory category: list){
+					for(PatternGroupCategory category: list){
 						category.setProgrammingHierachicalModel(false);
 					}
 					
@@ -347,9 +350,9 @@ public class PatternOrientedView extends MultiOrientedView {
 					/*clonePatterns = SummaryUtil.filterClonePatternByNumber(clonePatterns, 
 							Integer.valueOf(filterDialog.getMinimum()), Integer.valueOf(filterDialog.getMaximum()));
 					viewer.setInput(clonePatterns);*/
-					categories = SummaryUtil.filterClonePatternByNumberInCategory(categories, 
+					clonePatternCategories = (ClonePatternGroupCategoryList)SummaryUtil.filterClonePatternByNumberInCategory(clonePatternCategories, 
 							Integer.valueOf(filterDialog.getMinimum()), Integer.valueOf(filterDialog.getMaximum()));
-					viewer.setInput(categories);
+					viewer.setInput(clonePatternCategories);
 					viewer.refresh();
 				} 
 			}
@@ -362,8 +365,8 @@ public class PatternOrientedView extends MultiOrientedView {
 				/*clonePatterns = SummaryUtil.generateClonePatternOrientedSimpleTree(Activator.sets.getCloneList());
 				viewer.setInput(clonePatterns);*/
 				try {
-					categories = SummaryUtil.generateClonePatternSimplifiedCategories(Activator.sets.getCloneList());
-					viewer.setInput(categories);
+					clonePatternCategories = (ClonePatternGroupCategoryList)SummaryUtil.generateClonePatternSimplifiedCategories(Activator.sets.getCloneList());
+					viewer.setInput(clonePatternCategories);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -451,15 +454,15 @@ public class PatternOrientedView extends MultiOrientedView {
 			@Override
 			public void mouseDown(MouseEvent e) {
 				String searchContent = searchText.getText();
-				viewer.setInput(categories.searchContent(searchContent));
+				viewer.setInput(clonePatternCategories.searchContent(searchContent));
 				viewer.refresh();
 			}
 		});
 		
 	}
 
-	public ClonePatternGroupCategoryList getCategories() {
-		return categories;
+	public PatternGroupCategoryList getCategories() {
+		return clonePatternCategories;
 	}
 
 	@Override
@@ -470,7 +473,7 @@ public class PatternOrientedView extends MultiOrientedView {
 			public void keyPressed(KeyEvent e) {
 				if(e.keyCode == 27 || e.character == SWT.CR){
 					String searchContent = searchText.getText();
-					viewer.setInput(categories.searchContent(searchContent));
+					viewer.setInput(clonePatternCategories.searchContent(searchContent));
 					viewer.refresh();
 				}
 				
@@ -498,10 +501,10 @@ public class PatternOrientedView extends MultiOrientedView {
 		String sectionTitle = "";
 		String style = clonePattern.getClonePattern().getStyle(); 
 		
-		if(style.equals(ClonePatternGroup.LOCATION)){
+		if(style.equals(PathSequence.LOCATION)){
 			sectionTitle = "Where are Clones?";			
 		}
-		else if(style.equals(ClonePatternGroup.DIFF_USAGE) || style.equals(ClonePatternGroup.COMMON_USAGE)){
+		else if(style.equals(PathSequence.DIFF_USAGE) || style.equals(PathSequence.COMMON_USAGE)){
 			sectionTitle = "What do Clones Use?";			
 		}
 		section.setText(sectionTitle);
@@ -516,6 +519,6 @@ public class PatternOrientedView extends MultiOrientedView {
 	}
 
 	public void setCategories(ClonePatternGroupCategoryList categories) {
-		this.categories = categories;
+		this.clonePatternCategories = categories;
 	}
 }

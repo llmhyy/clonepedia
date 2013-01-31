@@ -19,6 +19,12 @@ public class ClonePatternGroup extends ArrayList<PathPatternGroup>{
 	 */
 	private static final long serialVersionUID = -5768376571179989012L;
 	private PathSequence abstractPathSequence = new PathSequence();
+	
+	/**
+	 * this id is used to identify a unique clone pattern group. Currently(2013/1/31),
+	 * it is still possible to generate two clone patterns with the same name. Therefore,
+	 * we need to identify them in UI.
+	 */
 	private String uniqueId;
 	
 	/**
@@ -26,10 +32,6 @@ public class ClonePatternGroup extends ArrayList<PathPatternGroup>{
 	 * style in clone pattern.
 	 */
 	private String style;
-	
-	public static final String LOCATION = "location";
-	public static final String DIFF_USAGE = "diffUsage";
-	public static final String COMMON_USAGE = "commonUsage";
 
 	public ClonePatternGroup(PathPatternGroup ppg, String style){
 		this.add(ppg);
@@ -73,19 +75,19 @@ public class ClonePatternGroup extends ArrayList<PathPatternGroup>{
 	}
 
 	public boolean isLocationPattern() throws Exception{
-		return this.style.equals(ClonePatternGroup.LOCATION);
+		return this.style.equals(PathSequence.LOCATION);
 	}
 	
 	public boolean isUsagePattern() throws Exception{
-		return this.style.equals(ClonePatternGroup.DIFF_USAGE) || this.style.equals(ClonePatternGroup.COMMON_USAGE);
+		return this.style.equals(PathSequence.DIFF_USAGE) || this.style.equals(PathSequence.COMMON_USAGE);
 	}
 	
 	public boolean isDiffUsagePattern() throws Exception{
-		return this.style.equals(ClonePatternGroup.DIFF_USAGE);
+		return this.style.equals(PathSequence.DIFF_USAGE);
 	}
 	
 	public boolean isCommonUsagePattern() throws Exception{
-		return this.style.equals(ClonePatternGroup.COMMON_USAGE);
+		return this.style.equals(PathSequence.COMMON_USAGE);
 	}
 
 	public double getContainingOntologicalRelationNumber(

@@ -22,6 +22,7 @@ import org.eclipse.ui.PlatformUI;
 import clonepedia.Activator;
 import clonepedia.model.viewer.ClonePatternGroupWrapper;
 import clonepedia.model.viewer.ClonePatternGroupWrapperList;
+import clonepedia.model.viewer.PatternGroupWrapper;
 import clonepedia.model.viewer.TopicWrapper;
 import clonepedia.model.viewer.TopicWrapperList;
 import clonepedia.summary.SummaryUtil;
@@ -82,7 +83,8 @@ public class ExportOverallDetailAction implements
 		//TopicWrapper[] topicList = topics.toArray(new TopicWrapper[0]);
 		int count = 1;
 		
-		for(ClonePatternGroupWrapper clonePattern: clonePatterns)
+		for(PatternGroupWrapper pattern: clonePatterns){			
+			ClonePatternGroupWrapper clonePattern = (ClonePatternGroupWrapper)pattern;
 			for(TopicWrapper topic: topics){
 				Label synLabel = new Label(0, count, clonePattern.toString());
 				Label semLabel = new Label(1, count, topic.getTopic().getTopicString());
@@ -98,6 +100,7 @@ public class ExportOverallDetailAction implements
 				
 				count++;
 			}
+		}
 	}
 
 	@Override

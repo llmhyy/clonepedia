@@ -73,19 +73,7 @@ public class PathPatternGroup extends ArrayList<Path>{
 		return count;
 	}
 	
-	public boolean isOfSpecificType(OntologicalRelationType type){
-		if(abstractPathSequence != null){
-			for(int i=1 ;i<abstractPathSequence.size(); i++){
-				Object ontoType = abstractPathSequence.get(i);
-				if(ontoType instanceof OntologicalRelationType){
-					OntologicalRelationType relationType = (OntologicalRelationType)ontoType;
-					if(relationType.equals(type))
-						return true;
-				}
-			}
-		}
-		return false;
-	}
+	
 	
 	/**
 	 * The pattern containing "useConstant" relation should not be involved in
@@ -96,25 +84,25 @@ public class PathPatternGroup extends ArrayList<Path>{
 	 * @throws Exception 
 	 */
 	public boolean isClusterable() throws Exception{
-		if(isOfSpecificType(OntologicalRelationType.define))
+		if(this.abstractPathSequence.isOfSpecificType(OntologicalRelationType.define))
 			return false;
-		else if(isOfSpecificType(OntologicalRelationType.useConstant))
+		else if(this.abstractPathSequence.isOfSpecificType(OntologicalRelationType.useConstant))
 			return false;
-		else if(isOfSpecificType(OntologicalRelationType.define) ||
-				isOfSpecificType(OntologicalRelationType.refer) || 
-				isOfSpecificType(OntologicalRelationType.access)){
+		else if(this.abstractPathSequence.isOfSpecificType(OntologicalRelationType.define) ||
+				this.abstractPathSequence.isOfSpecificType(OntologicalRelationType.refer) || 
+				this.abstractPathSequence.isOfSpecificType(OntologicalRelationType.access)){
 			if(abstractPathSequence.size() <= 3)
 				return false;
 		}
-		else if(isOfSpecificType(OntologicalRelationType.hasParameterType) && isLocationPattern())
+		else if(this.abstractPathSequence.isOfSpecificType(OntologicalRelationType.hasParameterType) && isLocationPattern())
 			return false;
-		else if(isOfSpecificType(OntologicalRelationType.hasType) && isLocationPattern())
+		else if(this.abstractPathSequence.isOfSpecificType(OntologicalRelationType.hasType) && isLocationPattern())
 			return false;
 		return true;
 	}
 	
 	public boolean isLocationPattern() throws Exception{
-		if(isOfSpecificType(OntologicalRelationType.resideIn))
+		if(this.abstractPathSequence.isOfSpecificType(OntologicalRelationType.resideIn))
 			return true;
 		return false;
 	}
@@ -124,15 +112,15 @@ public class PathPatternGroup extends ArrayList<Path>{
 	}
 	
 	public boolean isMethodFieldVariableUseagePattern() throws Exception{
-		if(isOfSpecificType(OntologicalRelationType.call) 
-				|| isOfSpecificType(OntologicalRelationType.access) 
-				|| isOfSpecificType(OntologicalRelationType.refer))
+		if(this.abstractPathSequence.isOfSpecificType(OntologicalRelationType.call) 
+				|| this.abstractPathSequence.isOfSpecificType(OntologicalRelationType.access) 
+				|| this.abstractPathSequence.isOfSpecificType(OntologicalRelationType.refer))
 			return true;
 		else return false;
 	}
 	
 	public boolean isComplexTypeUseagePattern(){
-		if(isOfSpecificType(OntologicalRelationType.useClass) || isOfSpecificType(OntologicalRelationType.useInterface))
+		if(this.abstractPathSequence.isOfSpecificType(OntologicalRelationType.useClass) || this.abstractPathSequence.isOfSpecificType(OntologicalRelationType.useInterface))
 			return true;
 		return false;
 	}
@@ -153,5 +141,7 @@ public class PathPatternGroup extends ArrayList<Path>{
 		this.cloneSet = set;
 	}
 	
-	
+	public String getStyle() throws Exception{
+		return this.abstractPathSequence.getStyle();
+	}
 }

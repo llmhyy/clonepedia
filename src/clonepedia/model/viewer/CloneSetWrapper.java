@@ -10,6 +10,9 @@ import clonepedia.Activator;
 import clonepedia.java.model.DiffCounterRelationGroupEmulator;
 import clonepedia.model.ontology.CloneInstance;
 import clonepedia.model.ontology.CloneSet;
+import clonepedia.model.syntactic.ClonePatternGroup;
+import clonepedia.model.syntactic.PathPatternGroup;
+import clonepedia.model.syntactic.PathSequence;
 import clonepedia.model.viewer.comparator.AverageCodeFragmentLengthAscComparator;
 import clonepedia.model.viewer.comparator.AverageCodeFragmentLengthDescComparator;
 import clonepedia.model.viewer.comparator.CloneSetWrapperDiffInCodeAscComparator;
@@ -51,6 +54,73 @@ public class CloneSetWrapper implements IContent{
 	
 	public CloneSetWrapper(CloneSet cloneSet){
 		this.cloneSet = cloneSet;
+	}
+	
+	public PatternGroupCategoryList getPathPatternCategoryList() {
+		PatternGroupCategoryList categoryList = new PatternGroupCategoryList();
+		
+		PatternGroupCategory locationCategroy = new PatternGroupCategory(PathSequence.LOCATION, new ClonePatternGroupWrapperList());
+		PatternGroupCategory diffUsageCategory = new PatternGroupCategory(PathSequence.DIFF_USAGE, new ClonePatternGroupWrapperList());
+		PatternGroupCategory commonUsageCategory = new PatternGroupCategory(PathSequence.COMMON_USAGE, new ClonePatternGroupWrapperList());
+		
+		for(PathPatternGroup ppg: this.getCloneSet().getPatterns()){
+			try {
+				if(ppg.getStyle().equals(PathSequence.LOCATION))
+					locationCategroy.addPatternGroupWrapper(new PathPatternGroupWrapper(ppg));
+				else if(ppg.getStyle().equals(PathSequence.DIFF_USAGE))
+					diffUsageCategory.addPatternGroupWrapper(new PathPatternGroupWrapper(ppg));
+				else if(ppg.getStyle().equals(PathSequence.COMMON_USAGE))
+					commonUsageCategory.addPatternGroupWrapper(new PathPatternGroupWrapper(ppg));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+			
+		locationCategroy.setProgrammingHierachicalModel(true);
+		diffUsageCategory.setProgrammingHierachicalModel(true);
+		commonUsageCategory.setProgrammingHierachicalModel(true);
+		
+		locationCategroy.constructProgrammingElementHierarchy();
+		diffUsageCategory.constructProgrammingElementHierarchy();
+		commonUsageCategory.constructProgrammingElementHierarchy();
+		
+		categoryList.add(locationCategroy);
+		categoryList.add(diffUsageCategory);
+		categoryList.add(commonUsageCategory);
+		
+		return categoryList;
+	}
+
+	public PatternGroupCategoryList getClonePatternCategoryList(){
+		
+		PatternGroupCategoryList categoryList = new PatternGroupCategoryList();
+		
+		PatternGroupCategory locationCategroy = new PatternGroupCategory(PathSequence.LOCATION, new ClonePatternGroupWrapperList());
+		PatternGroupCategory diffUsageCategory = new PatternGroupCategory(PathSequence.DIFF_USAGE, new ClonePatternGroupWrapperList());
+		PatternGroupCategory commonUsageCategory = new PatternGroupCategory(PathSequence.COMMON_USAGE, new ClonePatternGroupWrapperList());
+		
+		for(ClonePatternGroup cpg: this.getCloneSet().getPatternLabels()){
+			if(cpg.getStyle().equals(PathSequence.LOCATION))
+				locationCategroy.addPatternGroupWrapper(new ClonePatternGroupWrapper(cpg));
+			else if(cpg.getStyle().equals(PathSequence.DIFF_USAGE))
+				diffUsageCategory.addPatternGroupWrapper(new ClonePatternGroupWrapper(cpg));
+			else if(cpg.getStyle().equals(PathSequence.COMMON_USAGE))
+				commonUsageCategory.addPatternGroupWrapper(new ClonePatternGroupWrapper(cpg));
+		}
+			
+		locationCategroy.setProgrammingHierachicalModel(true);
+		diffUsageCategory.setProgrammingHierachicalModel(true);
+		commonUsageCategory.setProgrammingHierachicalModel(true);
+		
+		locationCategroy.constructProgrammingElementHierarchy();
+		diffUsageCategory.constructProgrammingElementHierarchy();
+		commonUsageCategory.constructProgrammingElementHierarchy();
+		
+		categoryList.add(locationCategroy);
+		categoryList.add(diffUsageCategory);
+		categoryList.add(commonUsageCategory);
+		
+		return categoryList;
 	}
 
 	public CloneSet getCloneSet() {

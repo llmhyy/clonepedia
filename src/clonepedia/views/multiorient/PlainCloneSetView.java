@@ -70,14 +70,18 @@ import clonepedia.java.CompilationUnitPool;
 import clonepedia.model.ontology.CloneInstance;
 import clonepedia.model.ontology.CloneSet;
 import clonepedia.model.syntactic.ClonePatternGroup;
-import clonepedia.model.viewer.ClonePatternGroupCategory;
+import clonepedia.model.syntactic.PathPatternGroup;
+import clonepedia.model.syntactic.PathSequence;
 import clonepedia.model.viewer.ClonePatternGroupCategoryList;
+import clonepedia.model.viewer.PatternGroupCategory;
+import clonepedia.model.viewer.PatternGroupCategoryList;
 import clonepedia.model.viewer.ClonePatternGroupWrapper;
 import clonepedia.model.viewer.ClonePatternGroupWrapperList;
 import clonepedia.model.viewer.CloneSetWrapper;
 import clonepedia.model.viewer.CloneSetWrapperList;
 import clonepedia.model.viewer.IContainer;
 import clonepedia.model.viewer.IContent;
+import clonepedia.model.viewer.PathPatternGroupWrapper;
 import clonepedia.model.viewer.TopicWrapper;
 import clonepedia.model.viewer.TopicWrapperList;
 import clonepedia.model.viewer.comparator.AverageCodeFragmentLengthAscComparator;
@@ -153,7 +157,7 @@ public class PlainCloneSetView extends SummaryView {
 			else if(hyperlinkType.equals("ClonePattern")){
 				PatternOrientedView viewPart =
 						(PatternOrientedView)getSite().getWorkbenchWindow().getActivePage().findView(CloneSummaryPerspective.PATTERN_ORIENTED_VIEW);
-				ClonePatternGroupCategoryList cateList = viewPart.getCategories();
+				ClonePatternGroupCategoryList cateList = (ClonePatternGroupCategoryList)viewPart.getCategories();
 				String uniqueId = content.substring(content.indexOf("#")+1, content.lastIndexOf("]"));
 				ClonePatternGroupWrapper clonePattern = cateList.searchSpecificClonePattern(uniqueId);
 				viewPart.openNewTab(clonePattern);
@@ -291,7 +295,7 @@ public class PlainCloneSetView extends SummaryView {
 					return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FILE);
 				else if(element instanceof CloneInstance)
 					return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_ELEMENT);
-				else if(element instanceof ClonePatternGroupCategory)
+				else if(element instanceof PatternGroupCategory)
 					return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ETOOL_HOME_NAV);
 				
 				return null;
@@ -658,19 +662,20 @@ public class PlainCloneSetView extends SummaryView {
 		//createTextDescriptionSection(form.getBody(), targetObject);
 		createCloneInstanceInformationSections(form.getBody(), targetObject);
 		//createCounterRelationalDifferenceSection(form.getBody(), targetObject);
+		createPathPatternStructuralInfoSection(form.getBody(), targetObject);
 		createClonePatternStructuralInfoSection(form.getBody(), targetObject);
 		createTopicDescriptionSection(form.getBody(), targetObject);
 		//createClonePatternDescriptionSection(form.getBody(), targetObject);
 	}
-	
-	private void createCounterRelationalDifferenceSection(Composite parent, Object targetObject){
+
+	private void createCounterRelationalDifferenceSection(Composite parent, Object targetObject) {
 		Section section = toolkit.createSection(parent, Section.TWISTIE | Section.EXPANDED | Section.TITLE_BAR );
 		CloneSetWrapper setWrapper = (CloneSetWrapper)targetObject;
 		
 		section.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 		section.setExpanded(true);
 		section.setLayout(new TableWrapLayout());
-		section.setText("Counter Relational Differences");
+		section.setText("Path Pattern");
 		
 		Composite composite = toolkit.createComposite(section, SWT.NONE);
 		composite.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
@@ -682,11 +687,9 @@ public class PlainCloneSetView extends SummaryView {
 		prevButton.setLayoutData(new TableWrapData(TableWrapData.LEFT));
 		nextButton.setLayoutData(new TableWrapData(TableWrapData.RIGHT));
 		
-		//text.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
-		//createCloneInstanceDescription(text, targetObject);
 		section.setClient(composite);
 	}
-	
+
 	protected void createClonePatternStructuralInfoSection(Composite parent, Object targetObject){
 		
 		parent.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
@@ -703,6 +706,59 @@ public class PlainCloneSetView extends SummaryView {
 		
 		Composite composite = createClonePatternStructuralInfoContent(section, setWrapper);
 		section.setClient(composite);
+	}
+	
+	protected void createPathPatternStructuralInfoSection(Composite parent, Object targetObject){
+		parent.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+		
+		Section section = toolkit.createSection(parent, Section.TWISTIE | Section.EXPANDED | Section.TITLE_BAR );
+		TableWrapData wrapData = new TableWrapData(TableWrapData.FILL_GRAB);
+		wrapData.grabVertical = true;
+		wrapData.rowspan = 20;
+		section.setLayoutData(wrapData);
+		section.setExpanded(true);
+		section.setText("Related Path Patterns");
+		
+		CloneSetWrapper setWrapper = (CloneSetWrapper)targetObject;
+		
+		Composite composite = createPathPatternStructuralInfoContent(section, setWrapper);
+		section.setClient(composite);
+	}
+	
+	private Composite createPathPatternStructuralInfoContent(Section section, CloneSetWrapper setWrapper){
+		Composite composite = toolkit.createComposite(section, SWT.WRAP);
+		
+		GridLayout compositeLayout = new GridLayout();
+		composite.setLayout(compositeLayout);
+		
+		final TreeViewer relatedClonePatternViewer = new TreeViewer(composite, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
+		GridData treeLayoutData = new GridData(GridData.BEGINNING, GridData.FILL, false, true);
+		treeLayoutData.widthHint = 250;
+		treeLayoutData.heightHint = 200;
+		composite.setLayoutData(treeLayoutData);
+		relatedClonePatternViewer.getTree().setLayoutData(treeLayoutData);
+		
+		//ArrayList<ProgrammingElementWrapper> proList = getProgrammingElementList(setWrapper);
+		PatternGroupCategoryList categoryList = setWrapper.getPathPatternCategoryList();
+		
+		relatedClonePatternViewer.setContentProvider(new MultiOrientedContentProvider());
+		relatedClonePatternViewer.setLabelProvider(new MultiOrientedLabelProvider());
+		relatedClonePatternViewer.setInput(categoryList);
+		
+		relatedClonePatternViewer.addDoubleClickListener(new IDoubleClickListener(){
+
+			@Override
+			public void doubleClick(DoubleClickEvent event) {
+				IStructuredSelection selection = (IStructuredSelection) relatedClonePatternViewer.getSelection();
+				Object element = selection.getFirstElement();
+				if(element instanceof ClonePatternGroupWrapper){
+					//ready for future enhancement
+				}
+			}
+			
+		});
+		
+		return composite;
 	}
 	
 	private Composite createClonePatternStructuralInfoContent(Section section, CloneSetWrapper setWrapper){
@@ -726,7 +782,7 @@ public class PlainCloneSetView extends SummaryView {
 		relatedClonePatternViewer.getTree().setLayoutData(treeLayoutData);
 		
 		//ArrayList<ProgrammingElementWrapper> proList = getProgrammingElementList(setWrapper);
-		ClonePatternGroupCategoryList categoryList = getCategoryList(setWrapper);
+		PatternGroupCategoryList categoryList = setWrapper.getClonePatternCategoryList();
 		
 		relatedClonePatternViewer.setContentProvider(new MultiOrientedContentProvider());
 		relatedClonePatternViewer.setLabelProvider(new MultiOrientedLabelProvider());
@@ -743,7 +799,7 @@ public class PlainCloneSetView extends SummaryView {
 					PatternOrientedView viewPart = (PatternOrientedView)PlatformUI.getWorkbench().
 							getActiveWorkbenchWindow().getActivePage().findView(CloneSummaryPerspective.PATTERN_ORIENTED_VIEW);
 					if(viewPart != null){
-						clonePattern = viewPart.getCategories().searchSpecificClonePattern(clonePattern.getClonePattern().getUniqueId());
+						clonePattern = ((ClonePatternGroupCategoryList)viewPart.getCategories()).searchSpecificClonePattern(clonePattern.getClonePattern().getUniqueId());
 						viewPart.openNewTab(clonePattern);
 						viewPart.getViewer().setSelection(new StructuredSelection(clonePattern), true);						
 					}
@@ -755,37 +811,7 @@ public class PlainCloneSetView extends SummaryView {
 		return composite;
 	}
 	
-	private ClonePatternGroupCategoryList getCategoryList(CloneSetWrapper setWrapper){
-		
-		ClonePatternGroupCategoryList categoryList = new ClonePatternGroupCategoryList();
-		
-		ClonePatternGroupCategory locationCategroy = new ClonePatternGroupCategory(ClonePatternGroup.LOCATION);
-		ClonePatternGroupCategory diffUsageCategory = new ClonePatternGroupCategory(ClonePatternGroup.DIFF_USAGE);
-		ClonePatternGroupCategory commonUsageCategory = new ClonePatternGroupCategory(ClonePatternGroup.COMMON_USAGE);
-		//ClonePatternGroupWrapperList list = new ClonePatternGroupWrapperList();
-		for(ClonePatternGroup cpg: setWrapper.getCloneSet().getPatternLabels()){
-			if(cpg.getStyle().equals(ClonePatternGroup.LOCATION))
-				locationCategroy.addClonePatternGroupWrapper(new ClonePatternGroupWrapper(cpg));
-			else if(cpg.getStyle().equals(ClonePatternGroup.DIFF_USAGE))
-				diffUsageCategory.addClonePatternGroupWrapper(new ClonePatternGroupWrapper(cpg));
-			else if(cpg.getStyle().equals(ClonePatternGroup.COMMON_USAGE))
-				commonUsageCategory.addClonePatternGroupWrapper(new ClonePatternGroupWrapper(cpg));
-		}
-			
-		locationCategroy.setProgrammingHierachicalModel(true);
-		diffUsageCategory.setProgrammingHierachicalModel(true);
-		commonUsageCategory.setProgrammingHierachicalModel(true);
-		
-		locationCategroy.constructProgrammingElementHierarchy();
-		diffUsageCategory.constructProgrammingElementHierarchy();
-		commonUsageCategory.constructProgrammingElementHierarchy();
-		
-		categoryList.add(locationCategroy);
-		categoryList.add(diffUsageCategory);
-		categoryList.add(commonUsageCategory);
-		
-		return categoryList;
-	}
+	
 	
 	protected void createCloneInstanceInformationSections(Composite parent, Object targetObject){
 		Section section = toolkit.createSection(parent, Section.TWISTIE|Section.EXPANDED|Section.TITLE_BAR);

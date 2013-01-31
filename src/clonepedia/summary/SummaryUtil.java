@@ -10,13 +10,17 @@ import java.util.List;
 import clonepedia.model.ontology.CloneSet;
 import clonepedia.model.semantic.Topic;
 import clonepedia.model.syntactic.ClonePatternGroup;
-import clonepedia.model.viewer.ClonePatternGroupCategory;
+import clonepedia.model.syntactic.PathSequence;
 import clonepedia.model.viewer.ClonePatternGroupCategoryList;
+import clonepedia.model.viewer.PatternGroupCategory;
+import clonepedia.model.viewer.PatternGroupCategoryList;
 import clonepedia.model.viewer.ClonePatternGroupWrapper;
 import clonepedia.model.viewer.ClonePatternGroupWrapperList;
 import clonepedia.model.viewer.CloneSetWrapper;
 import clonepedia.model.viewer.CloneSetWrapperList;
 import clonepedia.model.viewer.IContent;
+import clonepedia.model.viewer.PatternGroupWrapper;
+import clonepedia.model.viewer.PatternGroupWrapperList;
 import clonepedia.model.viewer.TopicWrapper;
 import clonepedia.model.viewer.TopicWrapperList;
 import clonepedia.model.viewer.comparator.ContainedCloneSetNumberAscComparator;
@@ -212,20 +216,21 @@ public class SummaryUtil {
 		return generateClonePatternOrientedComplexTree(list);
 	}
 	
-	public static ArrayList reduceTopClonePatternFromLayer(ArrayList<ClonePatternGroupWrapper> clonePatterns){
+	public static ArrayList reduceTopClonePatternFromLayer(ClonePatternGroupWrapperList clonePatterns){
 		HashSet<CloneSetWrapper> contentSet = new HashSet<CloneSetWrapper>();
 		ArrayList<CloneSetWrapper> list = new ArrayList<CloneSetWrapper>();
 		
-		Object obj = clonePatterns.get(0).getContent().get(0);
+		ClonePatternGroupWrapper cpw = (ClonePatternGroupWrapper)clonePatterns.get(0);
+		Object obj = cpw.getContent().get(0);
 		if(obj instanceof CloneSetWrapper){
-			for(ClonePatternGroupWrapper clonePattern: clonePatterns)
-				contentSet.addAll(clonePattern.getAllContainedCloneSet());
+			for(PatternGroupWrapper pattern: clonePatterns)
+				contentSet.addAll(((ClonePatternGroupWrapper)pattern).getAllContainedCloneSet());
 			list.addAll(contentSet);
 			return list;
 		}
 		else if(obj instanceof TopicWrapper){
-			for(ClonePatternGroupWrapper clonePattern: clonePatterns)
-				for(IContent content: clonePattern.getContent()){
+			for(PatternGroupWrapper clonePattern: clonePatterns)
+				for(IContent content: ((ClonePatternGroupWrapper)clonePattern).getContent()){
 					TopicWrapper topic = (TopicWrapper)content;
 					contentSet.addAll(topic.getAllContainedCloneSet());
 				}
@@ -272,8 +277,10 @@ public class SummaryUtil {
 
 			ClonePatternGroupWrapperList cpgwList = generateClonePatternOrientedSimpleTree(setList);
 			wrapper.getContent().clear();
-			for (ClonePatternGroupWrapper clonePattern : cpgwList)
-				wrapper.getContent().add(clonePattern);
+			for (PatternGroupWrapper clonePattern : cpgwList){
+				wrapper.getContent().add((ClonePatternGroupWrapper)clonePattern);
+			}
+				
 		}
 		
 		return topicList;
@@ -293,8 +300,9 @@ public class SummaryUtil {
 	}
 
 	public static ClonePatternGroupWrapperList transferPatternFromSimpleToComplex(
-			ClonePatternGroupWrapperList wrappers) {
-		for (ClonePatternGroupWrapper wrapper : wrappers) {
+			PatternGroupWrapperList wrappers) {
+		for (PatternGroupWrapper pWrapper : wrappers) {
+			ClonePatternGroupWrapper wrapper = (ClonePatternGroupWrapper)pWrapper;
 			HashSet<CloneSetWrapper> setWrappers = wrapper
 					.getAllContainedCloneSet();
 			ArrayList<CloneSet> setList = new ArrayList<CloneSet>();
@@ -307,12 +315,13 @@ public class SummaryUtil {
 				wrapper.getContent().add(topic);
 		}
 
-		return wrappers;
+		return (ClonePatternGroupWrapperList)wrappers;
 	}
 
 	public static ClonePatternGroupWrapperList transferPatternFromComplexToSimple(
-			ClonePatternGroupWrapperList wrappers) {
-		for (ClonePatternGroupWrapper wrapper : wrappers) {
+			PatternGroupWrapperList wrappers) {
+		for (PatternGroupWrapper pWrapper : wrappers) {
+			ClonePatternGroupWrapper wrapper = (ClonePatternGroupWrapper)pWrapper;
 			HashSet<CloneSetWrapper> setWrappers = wrapper
 					.getAllContainedCloneSet();
 			wrapper.getContent().clear();
@@ -320,14 +329,14 @@ public class SummaryUtil {
 				wrapper.getContent().add(setWrapper);
 		}
 
-		return wrappers;
+		return (ClonePatternGroupWrapperList)wrappers;
 	}
 
-	public static ClonePatternGroupCategoryList generateClonePatternSimplifiedCategories(
+	public static PatternGroupCategoryList generateClonePatternSimplifiedCategories(
 			ArrayList<CloneSet> sets) throws Exception {
-		ClonePatternGroupCategory locationCategory = new ClonePatternGroupCategory(ClonePatternGroup.LOCATION);
-		ClonePatternGroupCategory diffUsageCategory = new ClonePatternGroupCategory(ClonePatternGroup.DIFF_USAGE);
-		ClonePatternGroupCategory commonUsageCategory = new ClonePatternGroupCategory(ClonePatternGroup.COMMON_USAGE);
+		PatternGroupCategory locationCategory = new PatternGroupCategory(PathSequence.LOCATION, new ClonePatternGroupWrapperList());
+		PatternGroupCategory diffUsageCategory = new PatternGroupCategory(PathSequence.DIFF_USAGE, new ClonePatternGroupWrapperList());
+		PatternGroupCategory commonUsageCategory = new PatternGroupCategory(PathSequence.COMMON_USAGE, new ClonePatternGroupWrapperList());
 
 		HashMap<ClonePatternGroup, ArrayList<CloneSet>> pmap = getClonePatternCloneRelationsFromCloneSets(sets);
 		for (ClonePatternGroup clonePattern : pmap.keySet()) {
@@ -342,11 +351,11 @@ public class SummaryUtil {
 			cpw.setCloneSetSize(cpw.getContent().size());
 
 			if (cpw.getClonePattern().isLocationPattern())
-				locationCategory.addClonePatternGroupWrapper(cpw);
+				locationCategory.addPatternGroupWrapper(cpw);
 			else if (cpw.getClonePattern().isDiffUsagePattern())
-				diffUsageCategory.addClonePatternGroupWrapper(cpw);
+				diffUsageCategory.addPatternGroupWrapper(cpw);
 			else if(cpw.getClonePattern().isCommonUsagePattern())
-				commonUsageCategory.addClonePatternGroupWrapper(cpw);
+				commonUsageCategory.addPatternGroupWrapper(cpw);
 			 
 		}
 
@@ -365,11 +374,11 @@ public class SummaryUtil {
 		return categories;
 	}
 
-	public static ClonePatternGroupCategoryList generateClonePatternComplexCategories(
+	public static PatternGroupCategoryList generateClonePatternComplexCategories(
 			ArrayList<CloneSet> sets) throws Exception {
-		ClonePatternGroupCategory locationCategory = new ClonePatternGroupCategory(ClonePatternGroup.LOCATION);
-		ClonePatternGroupCategory diffUsageCategory = new ClonePatternGroupCategory(ClonePatternGroup.DIFF_USAGE);
-		ClonePatternGroupCategory commonUsageCategory = new ClonePatternGroupCategory(ClonePatternGroup.COMMON_USAGE);
+		PatternGroupCategory locationCategory = new PatternGroupCategory(PathSequence.LOCATION, new ClonePatternGroupWrapperList());
+		PatternGroupCategory diffUsageCategory = new PatternGroupCategory(PathSequence.DIFF_USAGE, new ClonePatternGroupWrapperList());
+		PatternGroupCategory commonUsageCategory = new PatternGroupCategory(PathSequence.COMMON_USAGE, new ClonePatternGroupWrapperList());
 
 		HashMap<ClonePatternGroup, ArrayList<CloneSet>> pmap = getClonePatternCloneRelationsFromCloneSets(sets);
 		for (ClonePatternGroup clonePattern : pmap.keySet()) {
@@ -391,15 +400,15 @@ public class SummaryUtil {
 			}
 
 			if (cpw.getClonePattern().isLocationPattern())
-				locationCategory.addClonePatternGroupWrapper(cpw);
+				locationCategory.addPatternGroupWrapper(cpw);
 			else if (cpw.getClonePattern().isDiffUsagePattern())
-				diffUsageCategory.addClonePatternGroupWrapper(cpw);
+				diffUsageCategory.addPatternGroupWrapper(cpw);
 			else if(cpw.getClonePattern().isCommonUsagePattern())
-				commonUsageCategory.addClonePatternGroupWrapper(cpw);
+				commonUsageCategory.addPatternGroupWrapper(cpw);
 			 
 		}
 
-		ClonePatternGroupCategoryList categories = new ClonePatternGroupCategoryList();
+		PatternGroupCategoryList categories = new PatternGroupCategoryList();
 		categories.add(locationCategory);
 		categories.add(diffUsageCategory);
 		categories.add(commonUsageCategory);
@@ -407,27 +416,27 @@ public class SummaryUtil {
 		return categories;
 	}
 
-	public static ClonePatternGroupCategoryList transferPatternFromSimpleToComplexInCatetory(
-			ClonePatternGroupCategoryList categories) {
+	public static PatternGroupCategoryList transferPatternFromSimpleToComplexInCatetory(
+			PatternGroupCategoryList categories) {
 
-		for (ClonePatternGroupCategory category : categories)
+		for (PatternGroupCategory category : categories)
 			transferPatternFromSimpleToComplex(category.getPatterns());
 
 		return categories;
 	}
 
-	public static ClonePatternGroupCategoryList transferPatternFromComplexToSimpleInCatetory(
-			ClonePatternGroupCategoryList categories) {
+	public static PatternGroupCategoryList transferPatternFromComplexToSimpleInCatetory(
+			PatternGroupCategoryList categories) {
 
-		for (ClonePatternGroupCategory category : categories)
+		for (PatternGroupCategory category : categories)
 			transferPatternFromComplexToSimple(category.getPatterns());
 
 		return categories;
 	}
 
-	public static ClonePatternGroupCategoryList filterClonePatternByNumberInCategory(
-			ClonePatternGroupCategoryList categories, int minimum, int maximum) {
-		for (ClonePatternGroupCategory category : categories) {
+	public static PatternGroupCategoryList filterClonePatternByNumberInCategory(
+			PatternGroupCategoryList categories, int minimum, int maximum) {
+		for (PatternGroupCategory category : categories) {
 			ClonePatternGroupWrapperList list = filterClonePatternByNumber(
 					category.getPatterns(), minimum, maximum);
 			category.setPatterns(list);
@@ -437,9 +446,10 @@ public class SummaryUtil {
 	}
 
 	public static ClonePatternGroupWrapperList filterClonePatternByNumber(
-			ClonePatternGroupWrapperList clonePatterns, int minimum, int maximum) {
+			PatternGroupWrapperList clonePatterns, int minimum, int maximum) {
 		ClonePatternGroupWrapperList list = new ClonePatternGroupWrapperList();
-		for (ClonePatternGroupWrapper wrapper : clonePatterns) {
+		for (PatternGroupWrapper pWrapper : clonePatterns) {
+			ClonePatternGroupWrapper wrapper = (ClonePatternGroupWrapper)pWrapper;
 			int size = wrapper.getAllContainedCloneSet().size();
 			if (size >= minimum && size <= maximum)
 				list.add(wrapper);

@@ -299,20 +299,20 @@ public class SyntacticUtil implements Serializable{
 	public static boolean isOverGeneral(String clonePatternStyle, PathSequence pathSeq){
 		
 		boolean isOverGen = false;
-		if(clonePatternStyle.equals(ClonePatternGroup.LOCATION) || clonePatternStyle.equals(ClonePatternGroup.DIFF_USAGE))
+		if(clonePatternStyle.equals(PathSequence.LOCATION) || clonePatternStyle.equals(PathSequence.DIFF_USAGE))
 			isOverGen = true;
-		else if(clonePatternStyle.equals(ClonePatternGroup.COMMON_USAGE))
+		else if(clonePatternStyle.equals(PathSequence.COMMON_USAGE))
 			isOverGen = false;
 		
 		for(int i=2; i< pathSeq.size(); i++){
 			Object obj = pathSeq.get(i);
 			if(obj instanceof OntologicalElement){
 				String name = ((OntologicalElement)obj).getSimpleElementName();
-				if(clonePatternStyle.equals(ClonePatternGroup.LOCATION) || clonePatternStyle.equals(ClonePatternGroup.DIFF_USAGE)){
+				if(clonePatternStyle.equals(PathSequence.LOCATION) || clonePatternStyle.equals(PathSequence.DIFF_USAGE)){
 					if(!name.equals("*"))
 						return false;
 				}
-				else if(clonePatternStyle.equals(ClonePatternGroup.COMMON_USAGE))
+				else if(clonePatternStyle.equals(PathSequence.COMMON_USAGE))
 					if(name.equals("*"))
 						return true;
 			}

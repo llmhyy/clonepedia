@@ -2,36 +2,22 @@ package clonepedia.model.viewer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-import clonepedia.model.ontology.Class;
-import clonepedia.model.ontology.Field;
-import clonepedia.model.ontology.Interface;
-import clonepedia.model.ontology.MergeableSimpleConcreteElement;
-import clonepedia.model.ontology.Method;
-import clonepedia.model.ontology.OntologicalRelationType;
-import clonepedia.model.ontology.ProgrammingElement;
-import clonepedia.model.ontology.Variable;
-import clonepedia.model.syntactic.PathSequence;
-import clonepedia.model.viewer.programmingelement.ClassWrapper;
-import clonepedia.model.viewer.programmingelement.FieldWrapper;
-import clonepedia.model.viewer.programmingelement.InterfaceWrapper;
-import clonepedia.model.viewer.programmingelement.MergeableSimpleElementWrapper;
-import clonepedia.model.viewer.programmingelement.MethodWrapper;
 import clonepedia.model.viewer.programmingelement.ProgrammingElementWrapper;
-import clonepedia.model.viewer.programmingelement.ProgrammingElementWrapperPool;
-import clonepedia.model.viewer.programmingelement.VariableWrapper;
 
 
-public class ClonePatternGroupCategory {
+public class PatternGroupCategory {
 	
 	private boolean programmingHierachicalModel = false;
 	
 	private String name;
-	private ClonePatternGroupWrapperList patterns = new ClonePatternGroupWrapperList();
+	private PatternGroupWrapperList patterns;
 	
-	public ClonePatternGroupCategory(String name) {
+	public PatternGroupCategory(String name, PatternGroupWrapperList patterns) {
 		super();
 		this.name = name;
+		this.patterns = patterns;
 	}
 	
 	public String getName() {
@@ -40,15 +26,25 @@ public class ClonePatternGroupCategory {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public ClonePatternGroupWrapperList getPatterns() {
+	public PatternGroupWrapperList getPatterns() {
 		return patterns;
 	}
-	public void setPatterns(ClonePatternGroupWrapperList patterns) {
+	
+	public List getPatternList(){
+		ArrayList<PatternGroupWrapper> list =
+				new ArrayList<PatternGroupWrapper>();
+		for(PatternGroupWrapper pgw: patterns){
+			list.add(pgw);
+		}
+		return list;
+	}
+	
+	public void setPatterns(PatternGroupWrapperList patterns) {
 		this.patterns = patterns;
 	}
 	
-	public void addClonePatternGroupWrapper(ClonePatternGroupWrapper clonePatternWrapper){
-		patterns.add(clonePatternWrapper);
+	public void addPatternGroupWrapper(PatternGroupWrapper patternWrapper){
+		patterns.add(patternWrapper);
 	}
 	
 	

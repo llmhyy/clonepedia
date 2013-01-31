@@ -10,9 +10,11 @@ import org.eclipse.ui.PlatformUI;
 import clonepedia.model.ontology.CloneInstance;
 import clonepedia.model.ontology.CloneSet;
 import clonepedia.model.syntactic.ClonePatternGroup;
-import clonepedia.model.viewer.ClonePatternGroupCategory;
+import clonepedia.model.viewer.PathPatternGroupWrapper;
+import clonepedia.model.viewer.PatternGroupCategory;
 import clonepedia.model.viewer.ClonePatternGroupWrapper;
 import clonepedia.model.viewer.CloneSetWrapper;
+import clonepedia.model.viewer.PatternGroupWrapper;
 import clonepedia.model.viewer.TopicWrapper;
 import clonepedia.model.viewer.programmingelement.ClassWrapper;
 import clonepedia.model.viewer.programmingelement.FieldWrapper;
@@ -56,11 +58,13 @@ public class MultiOrientedLabelProvider implements ILabelProvider {
 			return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_PROJECT);
 		else if(element instanceof ClonePatternGroupWrapper)
 			return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_INFO_TSK);
+		else if(element instanceof PathPatternGroupWrapper)
+			return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_INFO_TSK);
 		else if(element instanceof CloneSetWrapper)
 			return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FILE);
 		else if(element instanceof CloneInstance)
 			return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_ELEMENT);
-		else if(element instanceof ClonePatternGroupCategory)
+		else if(element instanceof PatternGroupCategory)
 			return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ETOOL_HOME_NAV);
 		else if(element instanceof MethodWrapper)
 			return JavaPluginImages.get(JavaPluginImages.IMG_OBJS_ENV_VAR);
@@ -84,12 +88,13 @@ public class MultiOrientedLabelProvider implements ILabelProvider {
 	public String getText(Object element) {
 		if(element instanceof TopicWrapper)
 			return ((TopicWrapper)element).getTopic().getTopicString();
-		else if(element instanceof ClonePatternGroupWrapper)
+		else if(element instanceof PatternGroupWrapper){
 			try {
-				return ((ClonePatternGroupWrapper)element).getEpitomise3();
+				return ((PatternGroupWrapper)element).getEpitomise3();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		}
 		else if(element instanceof CloneSetWrapper){
 			CloneSetWrapper set = (CloneSetWrapper)element;
 			return set.getCloneSet().getId() + "<ins: " + set.getCloneSet().size()+ ", frag: " + set.computeAverageCodeFragmentLength() + ">";
@@ -98,8 +103,8 @@ public class MultiOrientedLabelProvider implements ILabelProvider {
 			CloneInstance instance = (CloneInstance)element;
 			return instance.toString();
 		}
-		else if(element instanceof ClonePatternGroupCategory)
-			return ((ClonePatternGroupCategory)element).getName();
+		else if(element instanceof PatternGroupCategory)
+			return ((PatternGroupCategory)element).getName();
 		else if(element instanceof ProgrammingElementWrapper)
 			return ((ProgrammingElementWrapper) element).getName() + 
 					NaturalLanguateTemplate.getSupportingElementDescription(((ProgrammingElementWrapper) element).getElement()) + 

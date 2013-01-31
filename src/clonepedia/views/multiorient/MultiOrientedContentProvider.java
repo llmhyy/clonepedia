@@ -10,7 +10,7 @@ import org.eclipse.jface.viewers.Viewer;
 
 import clonepedia.model.ontology.CloneInstance;
 import clonepedia.model.ontology.CloneSet;
-import clonepedia.model.viewer.ClonePatternGroupCategory;
+import clonepedia.model.viewer.PatternGroupCategory;
 import clonepedia.model.viewer.ClonePatternGroupWrapper;
 import clonepedia.model.viewer.CloneSetWrapper;
 import clonepedia.model.viewer.IContainer;
@@ -56,8 +56,8 @@ public class MultiOrientedContentProvider implements ITreeContentProvider {
 			return ((ClonePatternGroupWrapper)parentElement).getContent().toArray(new IContent[0]);
 		/*else if(parentElement instanceof CloneSetWrapper)
 			return ((CloneSetWrapper)parentElement).getCloneSet().toArray(new CloneInstance[0]);*/
-		else if(parentElement instanceof ClonePatternGroupCategory){
-			ClonePatternGroupCategory category = (ClonePatternGroupCategory)parentElement;
+		else if(parentElement instanceof PatternGroupCategory){
+			PatternGroupCategory category = (PatternGroupCategory)parentElement;
 			if(!category.isProgrammingHierachicalModel())
 				return category.getPatterns().toArray(new ClonePatternGroupWrapper[0]);
 			else{
@@ -68,7 +68,7 @@ public class MultiOrientedContentProvider implements ITreeContentProvider {
 					return list.toArray(new ProgrammingElementWrapper[0]);
 				}
 				else{
-					return ((ClonePatternGroupCategory)parentElement).
+					return ((PatternGroupCategory)parentElement).
 							getPatterns().getSortedRootProgrammingElements(programmingElementComparator).
 							toArray(new ProgrammingElementWrapper[0]);
 				}
@@ -82,11 +82,11 @@ public class MultiOrientedContentProvider implements ITreeContentProvider {
 			if(null == programmingElementComparator){
 				for(String key: wrapper.getChildren().keySet())
 					list.add(wrapper.getChildren().get(key));
-				list.addAll(wrapper.getClonePatterns());
+				list.addAll(wrapper.getPatterns());
 			}
 			else{
 				list.addAll(((ProgrammingElementWrapper)parentElement).getChildren(programmingElementComparator));
-				list.addAll(((ProgrammingElementWrapper)parentElement).getClonePatterns());
+				list.addAll(((ProgrammingElementWrapper)parentElement).getPatterns());
 			}
 			
 			return list.toArray(new Object[0]);

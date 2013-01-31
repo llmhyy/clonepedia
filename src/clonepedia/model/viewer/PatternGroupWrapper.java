@@ -1,9 +1,5 @@
 package clonepedia.model.viewer;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-
-import clonepedia.model.ontology.CloneSet;
 import clonepedia.model.ontology.ComplexType;
 import clonepedia.model.ontology.Constant;
 import clonepedia.model.ontology.Field;
@@ -11,24 +7,18 @@ import clonepedia.model.ontology.Method;
 import clonepedia.model.ontology.OntologicalElement;
 import clonepedia.model.ontology.OntologicalRelationType;
 import clonepedia.model.ontology.Variable;
-import clonepedia.model.syntactic.ClonePatternGroup;
 import clonepedia.model.syntactic.PathSequence;
-import clonepedia.summary.SummaryUtil;
-import clonepedia.syntactic.util.SyntacticUtil;
 import clonepedia.util.MinerUtil;
 import clonepedia.views.util.ViewUtil;
 
-public class ClonePatternGroupWrapper extends PatternGroupWrapper implements IContent, IContainer{
-	private ClonePatternGroup clonePattern;
-	private ArrayList<IContent> content = new ArrayList<IContent>();
-	private IContainer container;
-	private int cloneSetSize = 0;
-	private int diversity = 0;
+/**
+ * The subclasses of PatternWrapper are {@link PathPatternGroupWrapper} and
+ * {@link ClonePatternGroupWrapper}, both of its subclasses should initialize
+ * {@link PatternGroupWrapper#pathSequence} field.
+ */
+public class PatternGroupWrapper{
 	
-	public ClonePatternGroupWrapper(ClonePatternGroup pc){
-		this.clonePattern = pc;
-		this.pathSequence = pc.getAbstractPathSequence();
-	}
+	protected PathSequence pathSequence;
 	
 	public String toString(){
 		try {
@@ -41,28 +31,28 @@ public class ClonePatternGroupWrapper extends PatternGroupWrapper implements ICo
 	}
 	
 	public String getEpitomise3() throws Exception {
-		PathSequence sequence = this.getClonePattern().getAbstractPathSequence();
-		if(this.getClonePattern().isLocationPattern())
-			return getFullyQulifiedFormStartByIndex(2, sequence);
+		//PathSequence sequence = this.getClonePattern().getAbstractPathSequence();
+		if(this.pathSequence.isLocationPath())
+			return getFullyQulifiedFormStartByIndex(2, this.pathSequence);
 		else{
-			if(sequence.size() > 3){
+			if(this.pathSequence.size() > 3){
 				
-				if(sequence.get(2) instanceof ComplexType)
-					return getFullyQulifiedFormStartByIndex(2, sequence);
+				if(this.pathSequence.get(2) instanceof ComplexType)
+					return getFullyQulifiedFormStartByIndex(2, this.pathSequence);
 				else{
-					OntologicalRelationType relation = (OntologicalRelationType) sequence.get(3);
+					OntologicalRelationType relation = (OntologicalRelationType) this.pathSequence.get(3);
 					if(relation.equals(OntologicalRelationType.declaredIn))
-						return getFullyQulifiedFormStartByIndex(2, sequence);
+						return getFullyQulifiedFormStartByIndex(2, this.pathSequence);
 					else{
 						StringBuffer buffer = new StringBuffer();
 						
-						OntologicalElement element = (OntologicalElement) sequence.get(2);
+						OntologicalElement element = (OntologicalElement) this.pathSequence.get(2);
 						buffer.append(getElementString(element));
 						if(relation.equals(OntologicalRelationType.hasType))
 							buffer.append(":");
 						else if(relation.equals(OntologicalRelationType.hasParameterType))
 							buffer.append("(");
-						buffer.append(getFullyQulifiedFormStartByIndex(4, sequence));
+						buffer.append(getFullyQulifiedFormStartByIndex(4, this.pathSequence));
 						
 						if(relation.equals(OntologicalRelationType.hasParameterType))
 							buffer.append(")");
@@ -73,7 +63,7 @@ public class ClonePatternGroupWrapper extends PatternGroupWrapper implements ICo
 				
 			}
 			else
-				return ((OntologicalElement)sequence.get(2)).getSimpleElementName();
+				return ((OntologicalElement)this.pathSequence.get(2)).getSimpleElementName();
 		}
 	}
 	
@@ -132,13 +122,12 @@ public class ClonePatternGroupWrapper extends PatternGroupWrapper implements ICo
 	public String getEpitomise2(int epitomizingNumber) throws Exception{
 		StringBuffer buffer = new StringBuffer();
 		int index = 1;
-		PathSequence abSeq = clonePattern.getAbstractPathSequence();
-		buffer.append(ViewUtil.getSimplifiedNote((OntologicalRelationType)abSeq.get(index)));
+		buffer.append(ViewUtil.getSimplifiedNote((OntologicalRelationType)this.pathSequence.get(index)));
 		index++;
-		OntologicalElement element = (OntologicalElement)abSeq.get(index);
+		OntologicalElement element = (OntologicalElement)this.pathSequence.get(index);
 		index++;
 		
-		if(index >= abSeq.size()){
+		if(index >= this.pathSequence.size()){
 			if(element instanceof Constant)
 				buffer.append("\"" + element.getSimpleElementName() + "\"");
 			else 
@@ -147,23 +136,23 @@ public class ClonePatternGroupWrapper extends PatternGroupWrapper implements ICo
 		}
 			
 		
-		OntologicalRelationType relation = (OntologicalRelationType)abSeq.get(index);
+		OntologicalRelationType relation = (OntologicalRelationType)this.pathSequence.get(index);
 		index++;
 		
 		boolean isNonComplexType = false;
 		if(element instanceof Method){
 			isNonComplexType = true;
 			if(relation.equals(OntologicalRelationType.declaredIn)){
-				OntologicalElement complexType = (OntologicalElement)abSeq.get(index);
+				OntologicalElement complexType = (OntologicalElement)this.pathSequence.get(index);
 				buffer.append(complexType.getSimpleElementName() + "." + element.getSimpleElementName()
 						+ "()");
 			}
 			else if(relation.equals(OntologicalRelationType.hasType)){
-				OntologicalElement returnType = (OntologicalElement)abSeq.get(index);
+				OntologicalElement returnType = (OntologicalElement)this.pathSequence.get(index);
 				buffer.append(element.getSimpleElementName() + "()<" + returnType.getSimpleElementName() + ">");
 			}
 			else if(relation.equals(OntologicalRelationType.hasParameterType)){
-				OntologicalElement paramType = (OntologicalElement)abSeq.get(index);
+				OntologicalElement paramType = (OntologicalElement)this.pathSequence.get(index);
 				buffer.append(element.getSimpleElementName() + "(" + paramType.getSimpleElementName() + ", *)");
 				return buffer.toString();
 			}
@@ -171,18 +160,18 @@ public class ClonePatternGroupWrapper extends PatternGroupWrapper implements ICo
 		else if(element instanceof Field){
 			isNonComplexType = true;
 			if(relation.equals(OntologicalRelationType.declaredIn)){
-				OntologicalElement complexType = (OntologicalElement)abSeq.get(index);
+				OntologicalElement complexType = (OntologicalElement)this.pathSequence.get(index);
 				buffer.append(complexType.getSimpleElementName() + "." + element.getSimpleElementName());
 			}
 			else if(relation.equals(OntologicalRelationType.hasType)){
-				OntologicalElement returnType = (OntologicalElement)abSeq.get(index);
+				OntologicalElement returnType = (OntologicalElement)this.pathSequence.get(index);
 				buffer.append(element.getSimpleElementName() + "<" + returnType.getSimpleElementName() + ">");
 			}
 		}
 		else if(element instanceof Variable){
 			isNonComplexType = true;
 			if(relation.equals(OntologicalRelationType.hasType)){
-				OntologicalElement returnType = (OntologicalElement)abSeq.get(index);
+				OntologicalElement returnType = (OntologicalElement)this.pathSequence.get(index);
 				buffer.append(element.getSimpleElementName() + "<" + returnType.getSimpleElementName() + ">");
 			}
 		}
@@ -197,8 +186,8 @@ public class ClonePatternGroupWrapper extends PatternGroupWrapper implements ICo
 		if(!isNonComplexType)
 			i -= 3;
 		
-		for(; i<abSeq.size() && i<(index + epitomizingNumber - 1); i++){
-			Object obj = abSeq.get(i);
+		for(; i<this.pathSequence.size() && i<(index + epitomizingNumber - 1); i++){
+			Object obj = this.pathSequence.get(i);
 			if(obj instanceof OntologicalElement){
 				OntologicalElement ontoEle = (OntologicalElement)obj; 
 				buffer.append(ontoEle.getSimpleElementName());
@@ -213,15 +202,15 @@ public class ClonePatternGroupWrapper extends PatternGroupWrapper implements ICo
 	}
 	
 	public String getEpitomise(/*int epitomizingNumber*/) throws Exception{
-		PathSequence abSeq = clonePattern.getAbstractPathSequence();
+		//PathSequence abSeq = clonePattern.getAbstractPathSequence();
 		String epitomise = "";
 		
 		int index = 1;
 		/*if(clonePattern.isLocationPattern() && !showRelationForLocation)
 			index++;*/
 		
-		for(int i=index; i<abSeq.size() /*&& i<(index + epitomizingNumber - 1)*/; i++){
-			Object element = abSeq.get(i);
+		for(int i=index; i<this.pathSequence.size() /*&& i<(index + epitomizingNumber - 1)*/; i++){
+			Object element = this.pathSequence.get(i);
 			if(element instanceof OntologicalElement){
 				OntologicalElement ontoEle = (OntologicalElement)element; 
 				String type = ontoEle.getOntologicalType().toString();
@@ -242,13 +231,13 @@ public class ClonePatternGroupWrapper extends PatternGroupWrapper implements ICo
 	}
 	
 	public String getReverseEpitomise() throws Exception{
-		PathSequence abSeq = clonePattern.getAbstractPathSequence();
+		//PathSequence abSeq = clonePattern.getAbstractPathSequence();
 		String epitomise = "";
 		
-		int index = abSeq.size() - 1;
+		int index = this.pathSequence.size() - 1;
 		
 		for(int i=index; i>1; i--){
-			Object element = abSeq.get(i);
+			Object element = this.pathSequence.get(i);
 			if(element instanceof OntologicalElement){
 				OntologicalElement ontoEle = (OntologicalElement)element; 
 				String type = ontoEle.getOntologicalType().toString();
@@ -263,107 +252,5 @@ public class ClonePatternGroupWrapper extends PatternGroupWrapper implements ICo
 		
 		epitomise = MinerUtil.xmlStringProcess(epitomise);
 		return epitomise;
-	}
-
-	public ClonePatternGroup getClonePattern() {
-		return clonePattern;
-	}
-
-	public void setClonePattern(ClonePatternGroup clonePattern) {
-		this.clonePattern = clonePattern;
-	}
-
-	public ArrayList<IContent> getContent() {
-		return content;
-	}
-
-	public void setContent(ArrayList<IContent> content) {
-		this.content = content;
-	}
-
-	public IContainer getContainer() {
-		return container;
-	}
-
-	public void setContainer(IContainer container) {
-		this.container = container;
-	}
-
-	@Override
-	public HashSet<CloneSetWrapper> getAllContainedCloneSet() {
-		HashSet<CloneSetWrapper> set = new HashSet<CloneSetWrapper>();
-		recursivelyFindCloneSets(set, this);
-		
-		return set;
-	}
-	
-	private void recursivelyFindCloneSets(HashSet<CloneSetWrapper> basicWrapperSet, IContainer root) {
-		for(IContent content: root.getContent())
-			if(content instanceof IContainer)
-				recursivelyFindCloneSets(basicWrapperSet, (IContainer)content);
-			else if(content instanceof CloneSetWrapper)
-				basicWrapperSet.add((CloneSetWrapper)content);
-	}
-
-	@Override
-	public HashSet<CloneSetWrapper> getIntersectionWith(IContainer container) {
-		HashSet<CloneSetWrapper> intersectionSet = new HashSet<CloneSetWrapper>();
-		for(CloneSetWrapper cloneSetWrapper1: this.getAllContainedCloneSet())
-			for(CloneSetWrapper cloneSetWrapper2: container.getAllContainedCloneSet())
-				if(cloneSetWrapper1.equals(cloneSetWrapper2))
-					intersectionSet.add(cloneSetWrapper1);
-		return intersectionSet;
-	}
-	
-	public double value(){
-		double value = 0d;
-		for(Object obj: clonePattern.getAbstractPathSequence()){
-			if(obj instanceof OntologicalElement){
-				OntologicalElement element = (OntologicalElement)obj;
-				if(!element.getSimpleElementName().equals("*"))
-					value++;
-			}
-			else if(obj instanceof OntologicalRelationType){
-				OntologicalRelationType relationType = (OntologicalRelationType)obj;
-				if(!(relationType.equals(OntologicalRelationType.declaredIn) || relationType.equals(OntologicalRelationType.resideIn)))
-					value++;
-			}
-		}
-		
-		return value*size()/diversity();
-	}
-	
-	public int size(){
-		if(this.cloneSetSize == 0)
-			this.cloneSetSize = getAllContainedCloneSet().size();
-		
-		return this.cloneSetSize;
-	}
-	
-	public int diversity(){
-		if(this.diversity == 0){
-			ArrayList<CloneSet> sets = new ArrayList<CloneSet>();
-			for(CloneSetWrapper setWrapper: getAllContainedCloneSet())
-				sets.add(setWrapper.getCloneSet());
-			
-			this.diversity = SummaryUtil.generateTopicOrientedSimpleTree(sets).size();
-		}
-		return this.diversity;
-	}
-
-	public int getCloneSetSize() {
-		return cloneSetSize;
-	}
-
-	public void setCloneSetSize(int cloneSetSize) {
-		this.cloneSetSize = cloneSetSize;
-	}
-
-	public int getDiversity() {
-		return diversity;
-	}
-
-	public void setDiversity(int diversity) {
-		this.diversity = diversity;
 	}
 }
