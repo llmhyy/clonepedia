@@ -3,6 +3,7 @@ package clonepedia.java;
 import org.eclipse.jdt.core.dom.ASTMatcher;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Block;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.PrimitiveType;
 /*import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration;
@@ -110,8 +111,12 @@ public class ASTComparator implements BoolComparator {
 			return false;
 
 		switch (node1.getNodeType()){
-		case ASTNode.SIMPLE_NAME:
-			return matcher.match((SimpleName) node1, node2);
+		case ASTNode.SIMPLE_NAME:{
+			SimpleName name1 = (SimpleName) node1;
+			SimpleName name2 = (SimpleName) node2;
+			return /*(name1.resolveTypeBinding() == name2.resolveTypeBinding()) 
+					&&*/ matcher.match((SimpleName) node1, node2);
+		}
 		case ASTNode.CHARACTER_LITERAL:
 			return matcher.match((CharacterLiteral) node1, node2);
 		case ASTNode.NULL_LITERAL:
