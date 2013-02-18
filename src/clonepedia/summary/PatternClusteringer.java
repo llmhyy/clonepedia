@@ -68,7 +68,7 @@ public class PatternClusteringer implements Serializable{
 		}
 		
 		//if(isForLocationClustering)
-		//filterThePatternClusterJustCorrespondingToOneCloneSet(clusterList);
+		filterThePatternClusterJustCorrespondingToOneCloneSet(clusterList);
 		
 		return clusterList;
 	}
