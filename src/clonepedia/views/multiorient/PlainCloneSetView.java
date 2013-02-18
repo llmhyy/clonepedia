@@ -700,7 +700,7 @@ public class PlainCloneSetView extends SummaryView {
 		//wrapData.rowspan = 20;
 		section.setLayoutData(wrapData);
 		section.setExpanded(true);
-		section.setText("Related Clone Patterns");
+		section.setText("Related Inter Clone Set Patterns");
 		
 		CloneSetWrapper setWrapper = (CloneSetWrapper)targetObject;
 		
@@ -717,7 +717,7 @@ public class PlainCloneSetView extends SummaryView {
 		//wrapData.rowspan = 20;
 		section.setLayoutData(wrapData);
 		section.setExpanded(true);
-		section.setText("Related Path Patterns");
+		section.setText("Related Intra Clone Set Patterns");
 		//section.setLayout(new TableWrapLayout());
 		
 		CloneSetWrapper setWrapper = (CloneSetWrapper)targetObject;
