@@ -33,8 +33,24 @@ public class SyntacticUtil implements Serializable{
 	 */
 	private static final long serialVersionUID = 4834940993843368824L;
 	
+	/**
+	 * The result of the method should be in a range from 0 to 1.
+	 * if maxNumber = minNumber, the result should be sum/maxNumber
+	 * or sum/minNumber;
+	 * if maxNumber >> minNumber, the result should be near 1;
+	 * in normal case, the result should be greater than sum/minNumber;
+	 * we can think the elements in two groups are cakes, if the distance of
+	 * two cakes are 0.8, then their differential parts will be 1.6. That's
+	 * why smallestDistanceSum should be multiplied with 2.
+	 * 
+	 * @author linyun (email: llmhyy@gmail.com)
+	 * @param maxNumber
+	 * @param minNumber
+	 * @param smallestDistanceSum
+	 * @return
+	 */
 	public static double calculateAverageDistanceOfTwoGroups(double maxNumber, double minNumber, double smallestDistanceSum){
-		return (maxNumber - minNumber + 2*smallestDistanceSum)/(maxNumber + smallestDistanceSum);
+		return (maxNumber - minNumber + 2*smallestDistanceSum)/(maxNumber + minNumber);
 	}
 
 	/*public static PathSequence transferPathToSequence(Path path) throws Exception {
