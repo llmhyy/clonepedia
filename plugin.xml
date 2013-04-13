@@ -127,5 +127,13 @@
             name="Clone Diff Perspective">
       </perspective>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="clonepedia.preference.ClonepediaPreferencePage"
+            id="Clonepedia.preferencePage"
+            name="Clonepedia">
+      </page>
+   </extension>
 
 </plugin>

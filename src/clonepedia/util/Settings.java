@@ -1,6 +1,17 @@
 package clonepedia.util;
 
+import org.eclipse.core.runtime.preferences.ConfigurationScope;
+import org.osgi.service.prefs.Preferences;
+
+import clonepedia.preference.ClonepediaPreferencePage;
+
 public class Settings {
+	
+	static{
+		Preferences preferences = ConfigurationScope.INSTANCE.getNode("Clonepedia");
+		projectName = preferences.get(ClonepediaPreferencePage.TARGET_PORJECT, "");
+		inputCloneFile = preferences.get(ClonepediaPreferencePage.CLONE_PATH, "");
+	}
 	
 	/**
 	 * Currently, we support two mode for clone instance diff comparison.
@@ -38,7 +49,7 @@ public class Settings {
 	/**
 	 * Decide how different two statements are.
 	 */
-	public static double thresholdForStatementDifference = 1.0d;
+	public static double thresholdForStatementDifference = 0.5d;
 	
 	//======================================================================
 	/**
@@ -48,6 +59,6 @@ public class Settings {
 	public static double thresholdForSlightPartial = 0.5d;
 	
 	//======================================================================
-	public static String projectName = "JEdit";
-	public static String inputCloneFile = "D:\\Test_Project\\JEdit\\out\\clones.xml";
+	public static String projectName = "JavaNewIO";
+	public static String inputCloneFile = "D:\\Test_Project\\JavaNewIO\\out\\clones.xml";
 }
