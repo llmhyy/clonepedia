@@ -59,6 +59,6 @@ public class Settings {
 	public static double thresholdForSlightPartial = 0.5d;
 	
 	//======================================================================
-	public static String projectName = "JavaNewIO";
-	public static String inputCloneFile = "D:\\Test_Project\\JavaNewIO\\out\\clones.xml";
+	public static String projectName;
+	public static String inputCloneFile;
 }
