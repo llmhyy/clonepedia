@@ -25,7 +25,9 @@ import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeLiteral;
 import org.eclipse.jdt.core.dom.BooleanLiteral;
 
+import clonepedia.businessdata.OntologicalDBDataFetcher;
 import clonepedia.businessdata.OntologicalDataFetcher;
+import clonepedia.businessdata.OntologicalModelDataFetcher;
 import clonepedia.java.ASTStatementSimilarityComparator;
 import clonepedia.model.ontology.Class;
 import clonepedia.model.ontology.ComplexType;
@@ -226,7 +228,7 @@ public class MinerUtilforJava {
 		return false;
 	}
 
-	public static VarType getVariableType(Type type, Project project) throws Exception {
+	public static VarType getVariableType(Type type, Project project, OntologicalDataFetcher fetcher) throws Exception {
 		if (type == null) {
 			return null;
 		} else if (type.isPrimitiveType()) {
@@ -234,10 +236,10 @@ public class MinerUtilforJava {
 		} else if (type.isSimpleType() || type.isQualifiedType()) {
 			if (type.resolveBinding().isClass()) {
 				return (clonepedia.model.ontology.Class) transferTypeToComplexType(type,
-						project, (CompilationUnit)type.getRoot());
+						project, (CompilationUnit)type.getRoot(), fetcher);
 			} else if (type.resolveBinding().isInterface()) {
 				return (clonepedia.model.ontology.Interface) transferTypeToComplexType(
-						type, project, (CompilationUnit)type.getRoot());
+						type, project, (CompilationUnit)type.getRoot(), fetcher);
 			} else if (type.resolveBinding().isEnum()){
 				return new EnumType(type.toString());
 			} else if (type.resolveBinding().isTypeVariable()){
@@ -255,24 +257,24 @@ public class MinerUtilforJava {
 		 */
 		else if (type.isArrayType()) {
 			ArrayType arrayType = (ArrayType) type;
-			return getVariableType(arrayType.getElementType(), project);
+			return getVariableType(arrayType.getElementType(), project, fetcher);
 		} else if (type.isParameterizedType()) {
 			ParameterizedType paramType = (ParameterizedType) type;
-			return getVariableType(paramType.getType(), project);
+			return getVariableType(paramType.getType(), project, fetcher);
 		} else {
 			throw new Exception("The type " + type.toString() + " cannot be handled");
 		}
 	}
 
-	public static VarType getVariableType(ITypeBinding type, Project project, CompilationUnit compilationUnit) throws Exception {
+	public static VarType getVariableType(ITypeBinding type, Project project, CompilationUnit compilationUnit, OntologicalDataFetcher fetcher) throws Exception {
 		if (type == null) {
 			return null;
 		} else if (type.isPrimitive()) {
 			return new PrimiType(type.getName());
 		} else if (type.isClass()) {
-			return (clonepedia.model.ontology.Class) transferTypeToComplexType(type, project, compilationUnit);
+			return (clonepedia.model.ontology.Class) transferTypeToComplexType(type, project, compilationUnit, fetcher);
 		} else if (type.isInterface()) {
-			return (clonepedia.model.ontology.Interface) transferTypeToComplexType(type, project, compilationUnit);
+			return (clonepedia.model.ontology.Interface) transferTypeToComplexType(type, project, compilationUnit, fetcher);
 		} else if (type.isEnum()) {
 			return new EnumType(type.getName());
 		} else if (type.isTypeVariable()){
@@ -287,22 +289,22 @@ public class MinerUtilforJava {
 		 * I will come back to investigate or refine the problem in future work.
 		 */
 		else if (type.isArray()) {
-			return getVariableType(type.getElementType(), project, compilationUnit);
+			return getVariableType(type.getElementType(), project, compilationUnit, fetcher);
 		} else if (type.isParameterizedType()) {
-			return getVariableType(type.getTypeDeclaration(), project, compilationUnit);
+			return getVariableType(type.getTypeDeclaration(), project, compilationUnit, fetcher);
 		} else if (type.isCapture()){
 			ITypeBinding b = type.getWildcard().getGenericTypeOfWildcardType();
 			
 			System.out.print("");
-			return getVariableType(b, project, compilationUnit);
+			return getVariableType(b, project, compilationUnit, fetcher);
 		} else {
 			throw new Exception("The type " + type.getName() + " cannot be handled");
 		}
 	}
 
-	public static ComplexType transferTypeToComplexType(Type type, Project project, CompilationUnit cu) {
+	public static ComplexType transferTypeToComplexType(Type type, Project project, CompilationUnit cu, OntologicalDataFetcher fetcher) {
 		
-		return transferTypeToComplexType(type.resolveBinding(), project, cu);
+		return transferTypeToComplexType(type.resolveBinding(), project, cu, fetcher);
 		
 		/*OntologicalDataFetcher fetcher = new OntologicalDataFetcher();
 		String fullName = type.toString();
@@ -330,10 +332,9 @@ public class MinerUtilforJava {
 	 * @return
 	 */
 	public static ComplexType transferTypeToComplexType(ITypeBinding typeBinding,
-			Project project, CompilationUnit cu) {
+			Project project, CompilationUnit cu, OntologicalDataFetcher fetcher) {
 		
 		if(null == typeBinding) return null;
-		OntologicalDataFetcher fetcher = new OntologicalDataFetcher();
 		//String fullName = getSimpleClassNameFromTypeBinding(typeBinding, cu);
 		
 		/**
@@ -362,14 +363,14 @@ public class MinerUtilforJava {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static Method getMethodfromASTNode(MethodDeclaration md, Project project) throws Exception {
+	public static Method getMethodfromASTNode(MethodDeclaration md, Project project, OntologicalDataFetcher fetcher) throws Exception {
 		
 		ComplexType owner = transferTypeToComplexType(md.resolveBinding()
-				.getDeclaringClass(), project, (CompilationUnit)md.getRoot());
+				.getDeclaringClass(), project, (CompilationUnit)md.getRoot(), fetcher);
 
 		String methodName = md.getName().getIdentifier();
 		
-		VarType returnType = getVariableType(md.getReturnType2(), project);
+		VarType returnType = getVariableType(md.getReturnType2(), project, fetcher);
 		ArrayList<Variable> parameterList = new ArrayList<Variable>();
 		List paramList = md.parameters();
 
@@ -378,7 +379,7 @@ public class MinerUtilforJava {
 					.get(j);
 
 			String paramName = svd.getName().getIdentifier();
-			VarType paramType = getVariableType(svd.getType(), project);
+			VarType paramType = getVariableType(svd.getType(), project, fetcher);
 
 			Variable variable = new Variable(paramName, paramType, false);
 			parameterList.add(variable);
@@ -388,34 +389,34 @@ public class MinerUtilforJava {
 	}
 
 	public static Method getMethodfromBinding(IMethodBinding methodBinding,
-			Project project, CompilationUnit cu) throws Exception {
+			Project project, CompilationUnit cu, OntologicalDataFetcher fetcher) throws Exception {
 
 		String methodName = methodBinding.getName();
-		ComplexType methodOwner = transferTypeToComplexType(methodBinding.getDeclaringClass(), project, cu);
-		VarType returnType = getVariableType(methodBinding.getReturnType(), project, cu);
+		ComplexType methodOwner = transferTypeToComplexType(methodBinding.getDeclaringClass(), project, cu, fetcher);
+		VarType returnType = getVariableType(methodBinding.getReturnType(), project, cu, fetcher);
 		System.out.print("");
 		ITypeBinding[] paramList = methodBinding.getParameterTypes();
 
 		ArrayList<Variable> parameters = new ArrayList<Variable>();
 		for (int i = 0; i < paramList.length; i++) {
-			VarType paramType = getVariableType(paramList[i], project, cu);
+			VarType paramType = getVariableType(paramList[i], project, cu, fetcher);
 			parameters.add(new Variable("", paramType, false));
 		}
 
 		return new Method(methodOwner, methodName, returnType, parameters);
 	}
 	
-	public static Field getFieldfromBinding(IVariableBinding variableBinding, Project project, CompilationUnit cu) throws Exception{
+	public static Field getFieldfromBinding(IVariableBinding variableBinding, Project project, CompilationUnit cu, OntologicalDataFetcher fetcher) throws Exception{
 		String fieldName = variableBinding.getName();
 		ComplexType type = transferTypeToComplexType(
-				variableBinding.getDeclaringClass(), project, cu);
-		VarType fieldType = getVariableType(variableBinding.getType(), project, cu);
+				variableBinding.getDeclaringClass(), project, cu, fetcher);
+		VarType fieldType = getVariableType(variableBinding.getType(), project, cu, fetcher);
 		return new Field(fieldName, type, fieldType);
 	}
 	
-	public static Variable getVariablefromBinding(SimpleName name, IVariableBinding variableBinding, Project project, CompilationUnit cu) throws Exception{
+	public static Variable getVariablefromBinding(SimpleName name, IVariableBinding variableBinding, Project project, CompilationUnit cu, OntologicalDataFetcher fetcher) throws Exception{
 		String variableName = variableBinding.getName();
-		VarType variableType = getVariableType(variableBinding.getType(), project, cu);
+		VarType variableType = getVariableType(variableBinding.getType(), project, cu, fetcher);
 		VariableUseType useType;
 		if(name.isDeclaration())
 			useType = VariableUseType.DEFINE;
@@ -431,7 +432,7 @@ public class MinerUtilforJava {
 		Interface interf = fetcher.getTheExistingInterfaceorCreateOne(interfaceFullName, project);
 		
 		for(ITypeBinding interfaceBinding: binding.getInterfaces()){
-			Interface superInterface = (Interface) MinerUtilforJava.transferTypeToComplexType(interfaceBinding, project, compilationUnit);
+			Interface superInterface = (Interface) MinerUtilforJava.transferTypeToComplexType(interfaceBinding, project, compilationUnit, fetcher);
 			interf.addSuperInterface(superInterface);
 		}
 		
@@ -523,12 +524,12 @@ public class MinerUtilforJava {
 		
 		ITypeBinding superClassBinding = binding.getSuperclass();
 		if(null != superClassBinding && !superClassBinding.getName().equals("Object")){
-			Class superClass = (Class) MinerUtilforJava.transferTypeToComplexType(superClassBinding, project, compilationUnit);
+			Class superClass = (Class) MinerUtilforJava.transferTypeToComplexType(superClassBinding, project, compilationUnit, fetcher);
 			clas.setSuperClass(superClass);
 		}
 		
 		for(ITypeBinding interfaceBinding: binding.getInterfaces()){
-			Interface interf = (Interface)MinerUtilforJava.transferTypeToComplexType(interfaceBinding, project, compilationUnit);
+			Interface interf = (Interface)MinerUtilforJava.transferTypeToComplexType(interfaceBinding, project, compilationUnit, fetcher);
 			clas.addInterface(interf);
 		}
 		

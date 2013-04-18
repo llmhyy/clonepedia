@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import clonepedia.businessdata.OntologicalDataFetcher;
+import clonepedia.businessdata.OntologicalDBDataFetcher;
 import clonepedia.model.ontology.Class;
 import clonepedia.model.ontology.CloneInstance;
 import clonepedia.model.ontology.CloneSet;
@@ -36,7 +36,7 @@ public class OntologicalModelGenerator implements Serializable{
 	private Project project;
 	private CloneSets sets;
 	//private HashMap<String, Long> setTimeMap = new HashMap<String, Long>();
-	private OntologicalDataFetcher fetcher = new OntologicalDataFetcher();
+	private OntologicalDBDataFetcher fetcher = new OntologicalDBDataFetcher();
 
 	public void setSets(CloneSets sets) {
 		this.sets = sets;
@@ -78,7 +78,7 @@ public class OntologicalModelGenerator implements Serializable{
 		int i = 0;
 		for(CloneSet set: sets.getCloneList()){
 			//long start = System.currentTimeMillis();
-			//if(set.getId().equals("52028"))
+			//if(set.getId().equals("321280"))
 				set.buildPatterns();
 			//processed++;
 			/*long end = System.currentTimeMillis();

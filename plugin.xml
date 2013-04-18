@@ -9,47 +9,76 @@
             visible="true"
             id="Clonepedia.actionSet">
          <menu
-               label="Clonepedia"
-               id="Clonepedia">
+               id="Clonepedia"
+               label="Clonepedia">
+            <groupMarker
+                  name="run">
+            </groupMarker>
             <separator
-                  name="ClonepediaGroup">
+                  name="seperator1">
             </separator>
+            <groupMarker
+                  name="debug">
+            </groupMarker>
+            <separator
+                  name="separator2">
+            </separator>
+            <groupMarker
+                  name="output">
+            </groupMarker>
          </menu>
          <action
-               label="&amp;Extract Program Structure"
-               icon="icons/program_structure.gif"
+               class="clonepedia.actions.DirectOntologicalModelGeneration"
+               icon="icons/action/genmodel.gif"
+               id="Clonepedia.DirectGenModel"
+               label="Directly Generate Ontology Model"
+               menubarPath="Clonepedia/run"
+               style="push"
+               toolbarPath="run">
+         </action>
+         <action
+               icon="icons/action/data_gen.gif"
+               id="Clonepedia.GeneratePatternAndTopic"
+               label="Generate Pattern and Topic"
+               menubarPath="Clonepedia/run"
+               style="push"
+               toolbarPath="run">
+         </action>
+         <action
                class="clonepedia.actions.ProgramStructureExtractionAction"
-               tooltip="Extract Program Structure"
-               menubarPath="Clonepedia/ClonepediaGroup"
-               toolbarPath="ClonepediaGroup"
-               id="Clonepedia.ProgramStructureExtractionAction">
+               icon="icons/action/program_structure.gif"
+               id="Clonepedia.ProgramStructureExtractionAction"
+               label="&amp;Extract Program Structure"
+               menubarPath="Clonepedia/debug"
+               toolbarPath="debug"
+               tooltip="Extract Program Structure">
          </action>
          <action
                class="clonepedia.actions.CloneInformationExtractionAction"
-               icon="icons/clone_structure.gif"
+               icon="icons/action/clone_structure.gif"
                id="Clonepedia.CloneInformationExtractionAction"
                label="Extract Clone Information"
-               menubarPath="Clonepedia/ClonepediaGroup"
+               menubarPath="Clonepedia/debug"
                style="push"
-               toolbarPath="ClonepediaGroup">
+               toolbarPath="debug">
          </action>
          <action
                class="clonepedia.actions.OntologicalModelBuildingAction"
-               icon="icons/build_model.gif"
+               icon="icons/action/build_model.gif"
                id="Clonepedia.OntologicalModelBuilding"
                label="Build Ontological Model"
-               menubarPath="Clonepedia/ClonepediaGroup"
+               menubarPath="Clonepedia/debug"
                style="push"
-               toolbarPath="ClonepediaGroup">
+               toolbarPath="debug">
          </action>
          <action
                class="clonepedia.actions.ExportOverallDetailAction"
-               icon="icons/overview.gif"
+               icon="icons/action/overview.gif"
                id="Clonepedia.ExportOverallDetailAction"
                label="Export Overall Detail"
-               menubarPath="Clonepedia/ClonepediaGroup"
+               menubarPath="Clonepedia/output"
                style="push"
-               toolbarPath="ClonepediaGroup">
+               toolbarPath="output">
          </action>
       </actionSet>
    </extension>
@@ -57,56 +86,56 @@
          point="org.eclipse.ui.views">
       <view
             class="clonepedia.views.hierarchicalsemantic.HierarchicalSemanticView"
-            icon="icons/hirarchical_semantic.gif"
+            icon="icons/view/hirarchical_semantic.gif"
             id="Clonepedia.HirarchicalSemanticView"
             name="Hirarchical Semantic"
             restorable="true">
       </view>
       <view
             class="clonepedia.views.ClonePropertiesView"
-            icon="icons/properties.gif"
+            icon="icons/view/properties.gif"
             id="Clonepedia.ClonePropertiesView"
             name="CloneProperties"
             restorable="true">
       </view>
       <view
             class="clonepedia.views.multiorient.PlainCloneSetView"
-            icon="icons/plain.gif"
+            icon="icons/view/plain.gif"
             id="Clonepedia.PlainCloneSetView"
             name="Clone Set"
             restorable="true">
       </view>
       <view
             class="clonepedia.views.multiorient.TopicOrientedView"
-            icon="icons/topic.gif"
+            icon="icons/view/topic.gif"
             id="Clonepedia.TopicOrientedView"
             name="Clone Topic"
             restorable="true">
       </view>
       <view
             class="clonepedia.views.multiorient.PatternOrientedView"
-            icon="icons/structure.gif"
+            icon="icons/view/structure.gif"
             id="Clonepedia.PatternOrientedView"
             name="Syntactic Pattern"
             restorable="true">
       </view>
       <view
             class="clonepedia.views.codesnippet.CloneCodeSnippetView"
-            icon="icons/code_snippet.gif"
+            icon="icons/view/code_snippet.gif"
             id="Clonepedia.CloneCodeSnippetView"
             name="Code Snippet"
             restorable="true">
       </view>
       <view
             class="clonepedia.views.codesnippet.CloneDiffView"
-            icon="icons/clone_diff.gif"
+            icon="icons/view/clone_diff.gif"
             id="Clonepedia.CloneDiffView"
             name="Clone Diff"
             restorable="true">
       </view>
       <view
             class="clonepedia.views.DiffPropertyView"
-            icon="icons/properties.gif"
+            icon="icons/view/properties.gif"
             id="Clonepedia.DiffPropertyView"
             name="Diff Property View"
             restorable="true">
@@ -116,13 +145,13 @@
          point="org.eclipse.ui.perspectives">
       <perspective
             class="clonepedia.perspective.CloneSummaryPerspective"
-            icon="icons/summary_perspective.gif"
+            icon="icons/perspective/summary_perspective.gif"
             id="Clonepedia.CloneSummaryPerspective"
             name="Clone Summary Perspective">
       </perspective>
       <perspective
             class="clonepedia.perspective.CloneDiffPerspective"
-            icon="icons/diff_perspective.gif"
+            icon="icons/perspective/diff_perspective.gif"
             id="Clonepedia.CloneDiffPerspective"
             name="Clone Diff Perspective">
       </perspective>

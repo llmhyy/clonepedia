@@ -15,8 +15,8 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
-import clonepedia.businessdata.OntologicalDataFetcher;
-import clonepedia.java.visitor.TypeVisitor;
+import clonepedia.businessdata.OntologicalDBDataFetcher;
+import clonepedia.java.visitor.GlobalTypeIntoDBVisitor;
 import clonepedia.model.ontology.Project;
 import clonepedia.util.MinerProperties;
 
@@ -52,14 +52,14 @@ public class StructureExtractor {
 		
 		CompilationUnit cu = (CompilationUnit) parser.createAST(null);*/
 		CompilationUnit cu = pool.getComilationUnit(unit);
-		TypeVisitor typeVisitor = new TypeVisitor(cu);
+		GlobalTypeIntoDBVisitor typeVisitor = new GlobalTypeIntoDBVisitor(cu);
 		typeVisitor.setProject(project);
 		cu.accept(typeVisitor);
 	}
 	
 	public void extractProjectContent() throws JavaModelException, CoreException{
 		
-		new OntologicalDataFetcher().storeProject(project);
+		new OntologicalDBDataFetcher().storeProject(project);
 		
 		CompilationUnitPool pool = new CompilationUnitPool();
 		

@@ -1,6 +1,7 @@
 package clonepedia.java.visitor;
 
-import org.eclipse.jdt.core.dom.ASTNode;
+import java.util.HashSet;
+
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.jdt.core.dom.CompilationUnit;
@@ -9,9 +10,10 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
-import clonepedia.businessdata.OntologicalDataFetcher;
+import clonepedia.businessdata.OntologicalModelDataFetcher;
 import clonepedia.java.util.MinerUtilforJava;
 import clonepedia.model.ontology.Class;
+import clonepedia.model.ontology.CloneSets;
 import clonepedia.model.ontology.ComplexType;
 import clonepedia.model.ontology.Field;
 import clonepedia.model.ontology.Interface;
@@ -19,16 +21,24 @@ import clonepedia.model.ontology.Method;
 import clonepedia.model.ontology.Project;
 import clonepedia.model.ontology.VarType;
 
-
-
-public class TypeVisitor extends ASTVisitor {
-	
-	private OntologicalDataFetcher fetcher = new OntologicalDataFetcher();
+/**
+ * This class extract the program directly into model, which takes much less time
+ * than debugging mode. 
+ * @author linyun
+ *
+ */
+public class GlobalTypeIntoModelVisitor extends ASTVisitor{
 	private Project project;
 	private CompilationUnit compilationUnit;
+	private OntologicalModelDataFetcher fetcher;
 	
-	public TypeVisitor(CompilationUnit compilationUnit){
+	public GlobalTypeIntoModelVisitor(CompilationUnit compilationUnit){
 		this.compilationUnit = compilationUnit;
+	}
+	
+	public GlobalTypeIntoModelVisitor(CompilationUnit compilationUnit, Project project){
+		this.compilationUnit = compilationUnit;
+		this.project = project;
 	}
 	
 	public boolean visit(AnonymousClassDeclaration acd){
@@ -84,14 +94,14 @@ public class TypeVisitor extends ASTVisitor {
 	
 	private void parseAndStoreMethodInformation(ITypeBinding binding, ComplexType owner, CompilationUnit cu) throws Exception {
 		for(IMethodBinding methodBinding: binding.getDeclaredMethods()){
-			Method method = MinerUtilforJava.getMethodfromBinding(methodBinding, project, cu);
+			Method method = MinerUtilforJava.getMethodfromBinding(methodBinding, project, cu, fetcher);
 			fetcher.getTheExistingMethodorCreateOne(method);
 		}
 	}
 
 	private void parseAndStoreFieldInformation(ITypeBinding binding, ComplexType complexType, CompilationUnit cu) throws Exception {
 		for(IVariableBinding fieldBinding: binding.getDeclaredFields()){
-			VarType varType = MinerUtilforJava.getVariableType(fieldBinding.getType(), project, cu);
+			VarType varType = MinerUtilforJava.getVariableType(fieldBinding.getType(), project, cu, fetcher);
 			
 			if(null != varType){
 				Field field = new Field(fieldBinding.getName(), complexType, varType);

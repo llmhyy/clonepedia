@@ -2,12 +2,12 @@ package clonepedia.test.db;
 
 import java.util.Properties;
 
-import clonepedia.businessdata.OntologicalDataFetcher;
+import clonepedia.businessdata.OntologicalDBDataFetcher;
 import clonepedia.model.ontology.Project;
 import junit.framework.TestCase;
 
 public class TestDB extends TestCase {
-	private OntologicalDataFetcher fetcher = new OntologicalDataFetcher();
+	private OntologicalDBDataFetcher fetcher = new OntologicalDBDataFetcher();
 	
 	/*public void testDBConnection(){
 		Connection conn = DBManager.getConnection();

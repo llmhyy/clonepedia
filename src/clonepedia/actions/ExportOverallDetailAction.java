@@ -2,6 +2,8 @@ package clonepedia.actions;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 import jxl.write.Number;
 import jxl.Workbook;
@@ -20,6 +22,11 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
 
 import clonepedia.Activator;
+import clonepedia.model.ontology.Class;
+import clonepedia.model.ontology.CloneInstance;
+import clonepedia.model.ontology.CloneSet;
+import clonepedia.model.ontology.CloneSets;
+import clonepedia.model.ontology.Method;
 import clonepedia.model.viewer.ClonePatternGroupWrapper;
 import clonepedia.model.viewer.ClonePatternGroupWrapperList;
 import clonepedia.model.viewer.PatternGroupWrapper;
@@ -32,7 +39,43 @@ public class ExportOverallDetailAction implements
 
 	@Override
 	public void run(IAction action) {
-		FileDialog dialog = new FileDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SWT.SAVE);
+		
+		CloneSets sets = Activator.sets;
+		HashSet<Method> methodSet = new HashSet<Method>();
+		HashSet<clonepedia.model.ontology.Class> classSet = new HashSet<clonepedia.model.ontology.Class>();
+		
+		int sum = 0;
+		int numOfTwoInstances = 0;
+		int numOfMajorInstances = 0;
+		
+		for(CloneSet set: sets.getCloneList()){
+			for(CloneInstance instance: set){
+				Method method = instance.getResidingMethod();
+				Class clazz = (Class)method.getOwner();
+				methodSet.add(method);
+				classSet.add(clazz);
+				
+				if(set.size() <= 2){
+					sum += instance.getEndLine() - instance.getStartLine() + 1;
+				}
+			}
+			
+			if(set.size() == 2){
+				numOfTwoInstances ++;
+			}
+			
+			if(set.size() >= 2 && set.size() <= 6){
+				numOfMajorInstances++;
+			}
+		}
+		
+		System.out.println("methods: " + methodSet.size() + "\n"
+				+ "classes: " + classSet.size() + "\n"
+				+ "LOC clones: " + sum + "\n"
+				+ "2 instances: " + numOfTwoInstances + "\n"
+				+ "2~6 instances: " + numOfMajorInstances);
+		
+		/*FileDialog dialog = new FileDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SWT.SAVE);
 		dialog.setText("Save");
 		dialog.setFilterPath("C:/");
 		dialog.setFilterExtensions(new String[]{"*.xls", "*.*"});
@@ -50,8 +93,57 @@ public class ExportOverallDetailAction implements
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-        }
+        }*/
 
+	}
+	
+	class CloneFile{
+		public String fileName;
+		public ArrayList<CloneRange> rangeList = new ArrayList<CloneRange>();
+		
+		public void update(int start, int end){
+			for(CloneRange range: rangeList){
+				
+			}
+		}
+		
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + getOuterType().hashCode();
+			result = prime * result
+					+ ((fileName == null) ? 0 : fileName.hashCode());
+			return result;
+		}
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			CloneFile other = (CloneFile) obj;
+			if (!getOuterType().equals(other.getOuterType()))
+				return false;
+			if (fileName == null) {
+				if (other.fileName != null)
+					return false;
+			} else if (!fileName.equals(other.fileName))
+				return false;
+			return true;
+		}
+		private ExportOverallDetailAction getOuterType() {
+			return ExportOverallDetailAction.this;
+		}
+		
+		
+	}
+	
+	class CloneRange{
+		public int start;
+		public int end;
 	}
 	
 	private void createExcelFile(String path) throws IOException, RowsExceededException, WriteException{

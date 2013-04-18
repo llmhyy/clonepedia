@@ -17,7 +17,7 @@ import org.eclipse.jdt.core.dom.TypeLiteral;
 
 import clonepedia.filepraser.CloneDetectionFileParser;
 import clonepedia.filepraser.FileParser;
-import clonepedia.businessdata.OntologicalDataFetcher;
+import clonepedia.businessdata.OntologicalDBDataFetcher;
 import clonepedia.java.ASTComparator;
 import clonepedia.java.model.*;
 import clonepedia.java.util.MinerUtilforJava;
@@ -39,7 +39,7 @@ import clonepedia.util.Settings;
 
 public class CloneInformationExtractor {
 
-	private OntologicalDataFetcher fetcher = new OntologicalDataFetcher();
+	private OntologicalDBDataFetcher fetcher = new OntologicalDBDataFetcher();
 	private Project project;
 	private CloneDetectionFileParser cloneFileParser;
 	private ArrayList<CloneSetWrapper> setWrapperList = new ArrayList<CloneSetWrapper>();
@@ -154,7 +154,7 @@ public class CloneInformationExtractor {
 				
 				for(CloneInstanceWrapper instanceWrapper: setWrapper){
 					CloneInstance instance = instanceWrapper.getCloneInstance();
-					Method residingMethod = MinerUtilforJava.getMethodfromASTNode(instanceWrapper.getMethodDeclaration(), project);
+					Method residingMethod = MinerUtilforJava.getMethodfromASTNode(instanceWrapper.getMethodDeclaration(), project, fetcher);
 					instance.setResidingMethod(residingMethod);
 					fetcher.storeCloneInstanceWithDependency(instance);
 				}
@@ -178,7 +178,7 @@ public class CloneInformationExtractor {
 							ProgrammingElement element = transferASTNodesToProgrammingElement(node, set);
 							CloneInstanceWrapper instanceWrapper = relation.getInstanceWrapper();
 							CloneInstance instance = instanceWrapper.getCloneInstance();
-							Method residingMethod = MinerUtilforJava.getMethodfromASTNode(instanceWrapper.getMethodDeclaration(), project);
+							Method residingMethod = MinerUtilforJava.getMethodfromASTNode(instanceWrapper.getMethodDeclaration(), project, fetcher);
 							instance.setResidingMethod(residingMethod);
 							if(null != element)
 								fetcher.storeDiffRelation(groupId, instance, element);
@@ -216,7 +216,7 @@ public class CloneInformationExtractor {
 			else if(node.getNodeType() == ASTNode.TYPE_LITERAL){
 				TypeLiteral type = (TypeLiteral)node;
 				if(type.getType().resolveBinding().isClass() || type.getType().resolveBinding().isInterface()){
-					return MinerUtilforJava.transferTypeToComplexType(type.getType(), project, (CompilationUnit)node.getRoot());	
+					return MinerUtilforJava.transferTypeToComplexType(type.getType(), project, (CompilationUnit)node.getRoot(), fetcher);	
 				}
 				else return null;
 			}
@@ -229,33 +229,33 @@ public class CloneInformationExtractor {
 				if(name.resolveBinding().getKind() == IBinding.TYPE){
 					ITypeBinding typeBinding = (ITypeBinding)name.resolveBinding();
 					if(typeBinding.isClass() || typeBinding.isInterface()){
-						return MinerUtilforJava.transferTypeToComplexType(typeBinding, project, (CompilationUnit)node.getRoot());	
+						return MinerUtilforJava.transferTypeToComplexType(typeBinding, project, (CompilationUnit)node.getRoot(), fetcher);	
 					}
 					else return null;
 				}
 				else if(name.resolveBinding().getKind() == IBinding.METHOD){
 					IMethodBinding methodBinding = (IMethodBinding) name.resolveBinding();
-					Method m = MinerUtilforJava.getMethodfromBinding(methodBinding, project, (CompilationUnit)node.getRoot());
+					Method m = MinerUtilforJava.getMethodfromBinding(methodBinding, project, (CompilationUnit)node.getRoot(), fetcher);
 					Method method = fetcher.getTheExistingMethodorCreateOne(m);
 					return method;
 				}
 				else if(name.resolveBinding().getKind() == IBinding.VARIABLE){
 					IVariableBinding variableBinding = (IVariableBinding) name.resolveBinding();
 					if(variableBinding.isField()){
-						Field f = MinerUtilforJava.getFieldfromBinding(variableBinding, project, (CompilationUnit)node.getRoot());
+						Field f = MinerUtilforJava.getFieldfromBinding(variableBinding, project, (CompilationUnit)node.getRoot(), fetcher);
 						if(f.getOwnerType() != null){
 							Field field = fetcher.getTheExistingFieldorCreateOne(f);
 							return field;
 						}
 						else{
-							Variable v = MinerUtilforJava.getVariablefromBinding(name, variableBinding, project, (CompilationUnit)node.getRoot());
+							Variable v = MinerUtilforJava.getVariablefromBinding(name, variableBinding, project, (CompilationUnit)node.getRoot(), fetcher);
 							v.setOwner(owner);
 							
 							return v;
 						}
 					}
 					else {
-						Variable v = MinerUtilforJava.getVariablefromBinding(name, variableBinding, project, (CompilationUnit)node.getRoot());
+						Variable v = MinerUtilforJava.getVariablefromBinding(name, variableBinding, project, (CompilationUnit)node.getRoot(), fetcher);
 						v.setOwner(owner);
 						
 						return v;
