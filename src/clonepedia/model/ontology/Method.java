@@ -112,6 +112,9 @@ public class Method implements MergeableSimpleOntologicalElement{
 	}
 
 	public String getMethodId() {
+		if(methodId == null){
+			methodId = getFullName();
+		}
 		return methodId;
 	}
 

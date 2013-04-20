@@ -58,7 +58,7 @@ public class CloneInstance implements RegionalOwner{
 			return this.fullName;
 		}
 		catch(NullPointerException e){
-			e.printStackTrace();
+			//e.printStackTrace();
 			return "instance";
 		}
 		catch(StringIndexOutOfBoundsException e){

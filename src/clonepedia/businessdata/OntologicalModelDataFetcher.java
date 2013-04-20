@@ -177,9 +177,11 @@ public class OntologicalModelDataFetcher extends OntologicalDataFetcher{
 			else{
 				cloneSet.addDistinctReferingVariable(variable);
 			}
+			variable.setOwner(cloneSet);
 		} else if (element instanceof Constant) {
 			Constant constant = (Constant) element;
 			cloneSet.addDistinctUsingConstant(constant);
+			constant.setOwner(cloneSet);
 		} else if (element instanceof ComplexType) {
 			ComplexType type = (ComplexType) element;
 			if(type.isClass()){

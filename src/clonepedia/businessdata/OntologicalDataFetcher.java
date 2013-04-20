@@ -42,6 +42,11 @@ import clonepedia.model.ontology.Variable;
 public abstract class OntologicalDataFetcher implements Serializable{
 	
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8187961528385695524L;
+
+	/**
 	 * Find a existent class in ontology, if there is no such class, this method will create a new corresponding
 	 * one in ontology.
 	 * @param classFullName

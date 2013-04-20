@@ -45,6 +45,7 @@ public class DirectOntologicalModelGeneration implements
 					CloneSets sets = new CloneSets();
 					for(CloneSet set: modelFetcher.getCloneSetMap().values()){
 						sets.add(set);
+						set.setCloneSets(sets);
 					}
 					
 					MinerUtil.serialize(sets, "ontological_model");
