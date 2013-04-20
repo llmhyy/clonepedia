@@ -99,6 +99,7 @@
             restorable="true">
       </view>
       <view
+            category="Clonepedia.view_category"
             class="clonepedia.views.multiorient.PlainCloneSetView"
             icon="icons/view/plain.gif"
             id="Clonepedia.PlainCloneSetView"
@@ -106,6 +107,7 @@
             restorable="true">
       </view>
       <view
+            category="Clonepedia.view_category"
             class="clonepedia.views.multiorient.TopicOrientedView"
             icon="icons/view/topic.gif"
             id="Clonepedia.TopicOrientedView"
@@ -113,6 +115,7 @@
             restorable="true">
       </view>
       <view
+            category="Clonepedia.view_category"
             class="clonepedia.views.multiorient.PatternOrientedView"
             icon="icons/view/structure.gif"
             id="Clonepedia.PatternOrientedView"
@@ -120,6 +123,7 @@
             restorable="true">
       </view>
       <view
+            category="Clonepedia.view_category"
             class="clonepedia.views.codesnippet.CloneCodeSnippetView"
             icon="icons/view/code_snippet.gif"
             id="Clonepedia.CloneCodeSnippetView"
@@ -127,6 +131,7 @@
             restorable="true">
       </view>
       <view
+            category="Clonepedia.view_category"
             class="clonepedia.views.codesnippet.CloneDiffView"
             icon="icons/view/clone_diff.gif"
             id="Clonepedia.CloneDiffView"
@@ -134,12 +139,17 @@
             restorable="true">
       </view>
       <view
+            category="Clonepedia.view_category"
             class="clonepedia.views.DiffPropertyView"
             icon="icons/view/properties.gif"
             id="Clonepedia.DiffPropertyView"
             name="Diff Property View"
             restorable="true">
       </view>
+      <category
+            id="Clonepedia.view_category"
+            name="Clonepedia">
+      </category>
    </extension>
    <extension
          point="org.eclipse.ui.perspectives">
@@ -147,13 +157,13 @@
             class="clonepedia.perspective.CloneSummaryPerspective"
             icon="icons/perspective/summary_perspective.gif"
             id="Clonepedia.CloneSummaryPerspective"
-            name="Clone Summary Perspective">
+            name="Clone Summary">
       </perspective>
       <perspective
             class="clonepedia.perspective.CloneDiffPerspective"
             icon="icons/perspective/diff_perspective.gif"
             id="Clonepedia.CloneDiffPerspective"
-            name="Clone Diff Perspective">
+            name="Clone Diff">
       </perspective>
    </extension>
    <extension
