@@ -92,7 +92,7 @@ public class CloneDiffView extends ViewPart {
 		int overallWidth = parent.getParent().getClientArea().width;
 		
 		int widgetHeight = overallHeight - 20;
-		int widgetWidth = (set.size() <= 3)? (overallWidth/set.size() - 20) : overallWidth/3;
+		int widgetWidth = (set.size() <= 4)? (overallWidth/set.size() - 20) : overallWidth/4;
 		
 		Composite codeComposite = new Composite(parent, SWT.BORDER);
 		GridLayout overGridLayout = new GridLayout();

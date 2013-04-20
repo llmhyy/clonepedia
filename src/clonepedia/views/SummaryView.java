@@ -152,7 +152,7 @@ public abstract class SummaryView extends ViewPart {
 		createDescriptionPart(sashForm, targetObject);
 		createDetailPart(sashForm, targetObject);
 		
-		sashForm.setWeights(new int[]{65, 35});
+		sashForm.setWeights(new int[]{1, 0});
 		
 		return sashForm;
 	}

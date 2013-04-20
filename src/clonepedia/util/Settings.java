@@ -11,6 +11,7 @@ public class Settings {
 		Preferences preferences = ConfigurationScope.INSTANCE.getNode("Clonepedia");
 		projectName = preferences.get(ClonepediaPreferencePage.TARGET_PORJECT, "");
 		inputCloneFile = preferences.get(ClonepediaPreferencePage.CLONE_PATH, "");
+		diffComparisonMode = preferences.get(ClonepediaPreferencePage.DIFF_LEVEL, "");
 	}
 	
 	/**
@@ -19,7 +20,7 @@ public class Settings {
 	 * ASTNode_Basd
 	 * Statement_Based
 	 */
-	public static String diffComparisonMode = "ASTNode_Basd";
+	public static String diffComparisonMode = "Statement_Based";
 	
 	public static double diffComparisonThreshold = 0.7d;
 	

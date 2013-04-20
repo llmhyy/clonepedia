@@ -94,6 +94,7 @@ import clonepedia.perspective.CloneSummaryPerspective;
 import clonepedia.summary.NaturalLanguateTemplate;
 import clonepedia.summary.SummaryUtil;
 import clonepedia.util.ImageUI;
+import clonepedia.util.Settings;
 import clonepedia.views.SummaryView;
 import clonepedia.views.codesnippet.CloneCodeSnippetView;
 import clonepedia.views.codesnippet.CloneDiffView;
@@ -208,7 +209,14 @@ public class PlainCloneSetView extends SummaryView {
 					CloneSetWrapper cloneSetWrapper = (CloneSetWrapper)element;
 					clonepedia.java.model.CloneSetWrapper syntacticSetWrapper = 
 							new clonepedia.java.model.CloneSetWrapper(cloneSetWrapper.getCloneSet(), new CompilationUnitPool());
-					syntacticSetWrapper = new CloneInformationExtractor().extractCounterRelationalDifferencesWithinSyntacticBoundary(syntacticSetWrapper);
+					
+					if(Settings.diffComparisonMode.equals("ASTNode_Based")){
+						syntacticSetWrapper = new CloneInformationExtractor().extractCounterRelationalDifferencesOfCloneSet(syntacticSetWrapper);					
+					}
+					else if(Settings.diffComparisonMode.equals("Statement_Based")){
+						syntacticSetWrapper = new CloneInformationExtractor().extractCounterRelationalDifferencesWithinSyntacticBoundary(syntacticSetWrapper);
+					}
+					
 					cloneSetWrapper.setSyntacticSetWrapper(syntacticSetWrapper);
 					
 					openNewTab(element);

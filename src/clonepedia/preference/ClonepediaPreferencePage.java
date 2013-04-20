@@ -37,11 +37,15 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 	private Combo projectCombo;
 	private Text cloneFileText;
 	
+	private Combo levelCombo;
+	
 	private String defaultTargetProject;
 	private String defaultCloneFilePath;
+	private String defaultDiffLevel;
 	
 	public static final String TARGET_PORJECT = "targetProjectName";
 	public static final String CLONE_PATH = "cloneFilePath";
+	public static final String DIFF_LEVEL = "diffLevel";
 	
 	public ClonepediaPreferencePage() {
 		// TODO Auto-generated constructor stub
@@ -53,7 +57,7 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 		
 		this.defaultTargetProject = Activator.getDefault().getPreferenceStore().getString(TARGET_PORJECT);
 		this.defaultCloneFilePath = Activator.getDefault().getPreferenceStore().getString(CLONE_PATH);
-		
+		this.defaultDiffLevel = Activator.getDefault().getPreferenceStore().getString(DIFF_LEVEL);
 		//this.defaultTargetProject = preferences.get(TARGET_PORJECT, "");
 		//this.defaultCloneFilePath = preferences.get(CLONE_PATH, "");
 
@@ -124,16 +128,43 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 		cloneGroupData.horizontalSpan = 3;
 		cloneGroup.setLayoutData(cloneGroupData);
 		
+		createDiffGroup(composite);
+		
 		return composite;
+	}
+	
+	private void createDiffGroup(Composite parent){
+		Group diffGroup = new Group(parent, SWT.NONE);
+		diffGroup.setText("parameters for clone diff");
+		GridData diffGroupData = new GridData(SWT.FILL, SWT.FILL, true, true);
+		diffGroupData.horizontalSpan = 3;
+		diffGroup.setLayoutData(diffGroupData);
+		
+		GridLayout layout = new GridLayout();
+		layout.numColumns = 3;
+		
+		diffGroup.setLayout(layout);
+		
+		Label levelLabel = new Label(diffGroup, SWT.NONE);
+		levelLabel.setText("level");
+		
+		levelCombo = new Combo(diffGroup, SWT.BORDER);
+		levelCombo.setItems(new String[]{"ASTNode_Based", "Statement_Based"});
+		levelCombo.setText(this.defaultDiffLevel);
+		GridData comboData = new GridData(SWT.FILL, SWT.FILL, true, false);
+		comboData.horizontalSpan = 2;
+		levelCombo.setLayoutData(comboData);
 	}
 	
 	public boolean performOk(){
 		Preferences preferences = ConfigurationScope.INSTANCE.getNode("Clonepedia");
 		preferences.put(TARGET_PORJECT, this.projectCombo.getText());
 		preferences.put(CLONE_PATH, this.cloneFileText.getText());
+		preferences.put(DIFF_LEVEL, this.levelCombo.getText());
 		
 		Activator.getDefault().getPreferenceStore().putValue(TARGET_PORJECT, this.projectCombo.getText());
 		Activator.getDefault().getPreferenceStore().putValue(CLONE_PATH, this.cloneFileText.getText());
+		Activator.getDefault().getPreferenceStore().putValue(DIFF_LEVEL, this.levelCombo.getText());
 		
 		confirmChanges();
 		
@@ -144,6 +175,7 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 	private void confirmChanges(){
 		Settings.projectName = this.projectCombo.getText();
 		Settings.inputCloneFile = this.cloneFileText.getText();
+		Settings.diffComparisonMode = this.levelCombo.getText();
 	}
 	
 	public ClonepediaPreferencePage(String title) {
