@@ -14,6 +14,8 @@ public class CloneInstance implements RegionalOwner{
 	private int startLine;
 	private int endLine;
 	
+	private String fullName;
+	
 	/*private ArrayList<Method> callingMethods = new ArrayList<Method>();
 	private ArrayList<Field> accessingFields = new ArrayList<Field>();
 	private ArrayList<Variable> definingVariables = new ArrayList<Variable>();
@@ -31,34 +33,42 @@ public class CloneInstance implements RegionalOwner{
 		this.endLine = endLine;
 	}
 	
-	public String toString(){
+	public String getFullName(){
 		try{
-			if(fileLocation.length() == 0)
-				return "instance";
-			
-			ComplexType residingType = residingMethod.getOwner();
-			if(residingType.isClass()){
-				Class residingClass = (Class)residingType;
-				String residingPath = residingClass.getSimpleElementName() + "." + residingMethod.getSimpleElementName() + "(...)[" + startLine + "," + endLine + "]";
-				Class outerClass = residingClass.getOuterClass();
-				while(null != outerClass){
-					residingPath = outerClass.getSimpleElementName() + "." + residingPath;
-					outerClass = outerClass.getOuterClass();
+			if(this.fullName == null){
+				if(fileLocation.length() == 0)
+					return "instance";
+				
+				ComplexType residingType = residingMethod.getOwner();
+				if(residingType.isClass()){
+					Class residingClass = (Class)residingType;
+					String residingPath = residingClass.getSimpleElementName() + "." + residingMethod.getSimpleElementName() + "(...)[" + startLine + "," + endLine + "]";
+					Class outerClass = residingClass.getOuterClass();
+					while(null != outerClass){
+						residingPath = outerClass.getSimpleElementName() + "." + residingPath;
+						outerClass = outerClass.getOuterClass();
+					}
+					return "@" + cloneSet.getId() + "(" + residingPath + ")";
 				}
-				return "@" + cloneSet.getId() + "(" + residingPath + ")";
+				else{				
+					String fileName = fileLocation.substring(fileLocation.lastIndexOf("\\")+1, fileLocation.lastIndexOf("."));
+					return "@" + cloneSet.getId()+ "(" + fileName + "." + residingMethod.getSimpleElementName() + "(...)[" + startLine + "," + endLine + "])";
+				}
 			}
-			else{				
-				String fileName = fileLocation.substring(fileLocation.lastIndexOf("\\")+1, fileLocation.lastIndexOf("."));
-				return "@" + cloneSet.getId()+ "(" + fileName + "." + residingMethod.getSimpleElementName() + "(...)[" + startLine + "," + endLine + "])";
-			}
+			return this.fullName;
 		}
 		catch(NullPointerException e){
+			e.printStackTrace();
 			return "instance";
 		}
 		catch(StringIndexOutOfBoundsException e){
 			e.printStackTrace();
 			return "instance";
 		}
+	}
+	
+	public String toString(){
+		return getFullName();
 	}
 
 	public CloneInstance(String cloneInstanceId, CloneSet cloneSet,

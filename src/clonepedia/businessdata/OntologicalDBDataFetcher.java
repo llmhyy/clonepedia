@@ -4,10 +4,25 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.UUID;
 
+import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.IBinding;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
+import org.eclipse.jdt.core.dom.PrimitiveType;
+import org.eclipse.jdt.core.dom.SimpleName;
+import org.eclipse.jdt.core.dom.TypeLiteral;
+
 import clonepedia.db.DBOperator;
 import clonepedia.db.schema.DBTable;
 import clonepedia.db.schema.Entity;
 import clonepedia.db.schema.Relation;
+import clonepedia.java.model.CloneInstanceWrapper;
+import clonepedia.java.model.CloneSetWrapper;
+import clonepedia.java.model.DiffCounterRelationGroupEmulator;
+import clonepedia.java.model.DiffInstanceElementRelationEmulator;
+import clonepedia.java.util.MinerUtilforJava;
 import clonepedia.model.db.DataRecord;
 import clonepedia.model.ontology.Class;
 import clonepedia.model.ontology.CloneInstance;
@@ -33,7 +48,7 @@ import clonepedia.syntactic.pools.ClassPool;
 import clonepedia.syntactic.pools.InterfacePool;
 import clonepedia.util.MinerUtil;
 
-public class OntologicalDBDataFetcher implements OntologicalDataFetcher{
+public class OntologicalDBDataFetcher extends OntologicalDataFetcher{
 	
 	/**
 	 * 
@@ -746,7 +761,30 @@ public class OntologicalDBDataFetcher implements OntologicalDataFetcher{
 
 	}
 
-	public void storeDiffRelation(String counterRelationId,
+	public void storeDiffRelation(CloneSetWrapper setWrapper) throws Exception{
+		
+		CloneSet set = setWrapper.getCloneSet();
+		
+		for(DiffCounterRelationGroupEmulator group: setWrapper.getRelationGroups()){
+			String groupId = group.getId();
+			for(DiffInstanceElementRelationEmulator relation: group.getRelations()){
+				ASTNode node = relation.getNode();
+				if(MinerUtilforJava.isConcernedType(node) /*|| node.getNodeType() == ASTNode.PRIMITIVE_TYPE*/){
+					ProgrammingElement element = transferASTNodesToProgrammingElement(node, set, set.getProject());
+					CloneInstanceWrapper instanceWrapper = relation.getInstanceWrapper();
+					CloneInstance instance = instanceWrapper.getCloneInstance();
+					Method residingMethod = MinerUtilforJava.getMethodfromASTNode(instanceWrapper.getMethodDeclaration(), set.getProject(), this);
+					instance.setResidingMethod(residingMethod);
+					if(null != element){
+						storeInstanceDiffRelation(groupId, instance, element);								
+					}
+					//System.out.print("");
+				}
+			}
+		}
+	}
+	
+	public void storeInstanceDiffRelation(String counterRelationId,
 			CloneInstance instance, ProgrammingElement element)
 			throws Exception {
 		if (element instanceof Method) {

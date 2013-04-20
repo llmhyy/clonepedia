@@ -9,6 +9,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
+import clonepedia.businessdata.OntologicalDBDataFetcher;
 import clonepedia.filepraser.CloneDetectionFileParser;
 import clonepedia.java.CloneInformationExtractor;
 import clonepedia.model.ontology.Project;
@@ -26,7 +27,8 @@ public class CloneInformationExtractionAction implements
 			protected IStatus run(IProgressMonitor monitor) {
 				Project project = new Project(Settings.projectName, "java", "");
 				CloneInformationExtractor extractor = 
-						new CloneInformationExtractor(new CloneDetectionFileParser(), project);
+						new CloneInformationExtractor(new CloneDetectionFileParser(), 
+								project, new OntologicalDBDataFetcher());
 				extractor.extract();
 				return Status.OK_STATUS;
 			}

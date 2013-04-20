@@ -635,6 +635,49 @@ public class CloneSet extends HashSet<CloneInstance> implements RegionalOwner, I
 		this.cloneSetId = id;
 	}
 
+	public void addDistinctCallingMethod(Method method){
+		if(!this.callingMethods.contains(method)){			
+			this.callingMethods.add(method);
+		}
+	}
+	
+	public void addDistinctAccessingField(Field field){
+		if(!this.accessingFields.contains(field)){
+			this.accessingFields.add(field);
+		}
+	}
+	
+	public void addDistinctDefiningVariable(Variable variable){
+		if(!this.definingVariables.contains(variable)){
+			this.definingVariables.add(variable);
+		}
+	}
+	
+	public void addDistinctReferingVariable(Variable variable){
+		if(!this.referingVariables.contains(variable)){
+			this.referingVariables.add(variable);
+		}
+	}
+	
+	public void addDistinctUsingConstant(Constant constant){
+		if(!this.usingConstants.contains(constant)){
+			this.usingConstants.add(constant);
+		}
+	}
+	
+	public void addDistinctUsingClass(Class clazz){
+		if(!this.usingClasses.contains(clazz)){
+			this.usingClasses.add(clazz);
+		}
+	}
+	
+	public void addDistinctUsingInterface(Interface interf){
+		if(!this.usingInterfaces.contains(interf)){
+			this.usingInterfaces.add(interf);
+		}
+	}
+	
+	
 	public ArrayList<Method> getCallingMethods() {
 		return callingMethods;
 	}

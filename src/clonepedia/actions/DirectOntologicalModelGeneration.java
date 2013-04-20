@@ -11,9 +11,15 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
+import clonepedia.businessdata.OntologicalDBDataFetcher;
 import clonepedia.businessdata.OntologicalModelDataFetcher;
+import clonepedia.filepraser.CloneDetectionFileParser;
+import clonepedia.java.CloneInformationExtractor;
 import clonepedia.java.StructureExtractor;
+import clonepedia.model.ontology.CloneSet;
+import clonepedia.model.ontology.CloneSets;
 import clonepedia.model.ontology.Project;
+import clonepedia.util.MinerUtil;
 import clonepedia.util.Settings;
 
 public class DirectOntologicalModelGeneration implements
@@ -33,11 +39,21 @@ public class DirectOntologicalModelGeneration implements
 					OntologicalModelDataFetcher modelFetcher = 
 							(OntologicalModelDataFetcher)extractor.extractProjectContent();
 					
-					System.out.println();
+					modelFetcher = (OntologicalModelDataFetcher) new CloneInformationExtractor(
+							new CloneDetectionFileParser(), project, modelFetcher).extract();
+					
+					CloneSets sets = new CloneSets();
+					for(CloneSet set: modelFetcher.getCloneSetMap().values()){
+						sets.add(set);
+					}
+					
+					MinerUtil.serialize(sets, "ontological_model");
 					
 				} catch (JavaModelException e) {
 					e.printStackTrace();
 				} catch (CoreException e) {
+					e.printStackTrace();
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 				return Status.OK_STATUS;

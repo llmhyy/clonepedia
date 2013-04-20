@@ -19,7 +19,7 @@ public class Settings {
 	 * ASTNode_Basd
 	 * Statement_Based
 	 */
-	public static String diffComparisonMode = "Statement_Based";
+	public static String diffComparisonMode = "ASTNode_Basd";
 	
 	public static double diffComparisonThreshold = 0.7d;
 	
