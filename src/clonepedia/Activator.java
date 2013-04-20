@@ -11,6 +11,8 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 
+import clonepedia.model.ontology.CloneInstance;
+import clonepedia.model.ontology.CloneSet;
 import clonepedia.model.ontology.CloneSets;
 import clonepedia.util.ImageUI;
 import clonepedia.util.MinerUtil;
@@ -43,6 +45,15 @@ public class Activator extends AbstractUIPlugin {
 		plugin = this;
 		
 		sets = (CloneSets) MinerUtil.deserialize("sets");
+		
+		/*int sum = 0;
+		for(CloneSet set: sets.getCloneList()){
+			if(set.size() <= 3){				
+				for(CloneInstance instance: set){
+					sum += instance.getEndLine() - instance.getStartLine() + 1;
+				}
+			}
+		}*/
 		
 		ImageRegistry imgReg = getImageRegistry();
 		imgReg.put(ImageUI.TOPIC, getImageDescriptor(ImageUI.TOPIC));
