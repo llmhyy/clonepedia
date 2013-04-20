@@ -34,18 +34,9 @@ public class GlobalTypeVisitor extends ASTVisitor {
 	private Project project;
 	private CompilationUnit compilationUnit;
 	
-	public GlobalTypeVisitor(CompilationUnit compilationUnit, boolean isDebug){
+	public GlobalTypeVisitor(CompilationUnit compilationUnit, OntologicalDataFetcher fetcher){
 		this.compilationUnit = compilationUnit;
-		/**
-		 * Debug model store the ontology into database
-		 * Non-debug model generate the onotlogy in memory directly
-		 */
-		if(isDebug){
-			this.fetcher = new OntologicalDBDataFetcher();
-		}
-		else{
-			this.fetcher = new OntologicalModelDataFetcher();
-		}
+		this.fetcher = fetcher;
 	}
 	
 	public boolean visit(AnonymousClassDeclaration acd){

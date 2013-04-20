@@ -17,6 +17,7 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 
 import clonepedia.businessdata.OntologicalDBDataFetcher;
 import clonepedia.businessdata.OntologicalDataFetcher;
+import clonepedia.businessdata.OntologicalModelDataFetcher;
 import clonepedia.java.visitor.GlobalTypeVisitor;
 import clonepedia.model.ontology.Project;
 import clonepedia.util.MinerProperties;
@@ -27,9 +28,20 @@ public class StructureExtractor {
 	private Project project;
 	private OntologicalDataFetcher fetcher;
 	
-	public StructureExtractor(Project project) {
+	public StructureExtractor(Project project, boolean isDebug) {
 		super();
 		this.project = project;
+		
+		/**
+		 * Debug model store the ontology into database
+		 * Non-debug model generate the onotlogy in memory directly
+		 */
+		if(isDebug){
+			this.fetcher = new OntologicalDBDataFetcher();
+		}
+		else{
+			this.fetcher = new OntologicalModelDataFetcher();
+		}
 	}
 
 	/*public void extractProjectOutline(){
@@ -45,7 +57,7 @@ public class StructureExtractor {
 	 * @param unit
 	 * @throws Exception 
 	 */
-	private void parseCompilationUnit(ICompilationUnit unit, CompilationUnitPool pool, boolean isDebug) throws Exception{
+	private void parseCompilationUnit(ICompilationUnit unit, CompilationUnitPool pool) throws Exception{
 		/*ASTParser parser = ASTParser.newParser(AST.JLS3);
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
 		parser.setSource(unit);
@@ -54,16 +66,16 @@ public class StructureExtractor {
 		
 		CompilationUnit cu = (CompilationUnit) parser.createAST(null);*/
 		CompilationUnit cu = pool.getComilationUnit(unit);
-		GlobalTypeVisitor typeVisitor = new GlobalTypeVisitor(cu, isDebug);
+		GlobalTypeVisitor typeVisitor = new GlobalTypeVisitor(cu, this.fetcher);
 		typeVisitor.setProject(project);
 		cu.accept(typeVisitor);
 		
 		this.fetcher = typeVisitor.getFetcher();
 	}
 	
-	public OntologicalDataFetcher extractProjectContent(boolean isDebug) throws JavaModelException, CoreException{
+	public OntologicalDataFetcher extractProjectContent() throws JavaModelException, CoreException{
 		
-		if(isDebug){
+		if(this.fetcher instanceof OntologicalDBDataFetcher){
 			new OntologicalDBDataFetcher().storeProject(project);			
 		}
 		
@@ -80,7 +92,7 @@ public class StructureExtractor {
 					for(ICompilationUnit unit: pack.getCompilationUnits()){
 						
 						try {
-							parseCompilationUnit(unit, pool, isDebug);
+							parseCompilationUnit(unit, pool);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}	

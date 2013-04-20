@@ -27,11 +27,11 @@ public class DirectOntologicalModelGeneration implements
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				Project project = new Project(Settings.projectName, "java", "");
-				StructureExtractor extractor = new StructureExtractor(project);
+				StructureExtractor extractor = new StructureExtractor(project, false);
 				//extractor.extractProjectOutline();
 				try {
 					OntologicalModelDataFetcher modelFetcher = 
-							(OntologicalModelDataFetcher)extractor.extractProjectContent(false);
+							(OntologicalModelDataFetcher)extractor.extractProjectContent();
 					
 					System.out.println();
 					
