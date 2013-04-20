@@ -26,5 +26,9 @@ public interface ComplexType extends StructuralProgrammingElement{
 	public abstract boolean isGeneralType();
 	
 	public abstract boolean isCompatibleWith(ComplexType complextType);
+	
+	public abstract void addDistinctField(Field field);
+	
+	public abstract void addDistinctMethod(Method method);
 
 }

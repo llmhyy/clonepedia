@@ -326,6 +326,9 @@ public class MinerUtilforJava {
 	 * Given a type binding, the method return a complexType(class or interface).
 	 * The parameter cu is used only when the type binding is correspond to an
 	 * anonymous class.
+	 * 
+	 * Whenever a class/interface is transferred, the transferred type will also
+	 * be stored in ontology. 
 	 * @param typeBinding
 	 * @param project
 	 * @param cu
@@ -425,23 +428,9 @@ public class MinerUtilforJava {
 		return new Variable(variableName, variableType, useType);
 	}
 	
-	public static Interface extractAndStoreInterfaceInformation(ITypeBinding binding, OntologicalDataFetcher fetcher, 
-			CompilationUnit compilationUnit, Project project){
-		String interfaceFullName = binding.getPackage().getName() + "." + binding.getName();
-		
-		Interface interf = fetcher.getTheExistingInterfaceorCreateOne(interfaceFullName, project);
-		
-		for(ITypeBinding interfaceBinding: binding.getInterfaces()){
-			Interface superInterface = (Interface) MinerUtilforJava.transferTypeToComplexType(interfaceBinding, project, compilationUnit, fetcher);
-			interf.addSuperInterface(superInterface);
-		}
-		
-		fetcher.storeInterfaceWithDependency(interf);
-		
-		return interf;
-	}
 	
-	private static String getSimpleClassNameFromTypeBinding(ITypeBinding binding, CompilationUnit compilationUnit){
+
+	public static String getSimpleClassNameFromTypeBinding(ITypeBinding binding, CompilationUnit compilationUnit){
 		String className;
 		ASTNode node = compilationUnit.findDeclaringNode(binding);
 		/**
@@ -471,7 +460,7 @@ public class MinerUtilforJava {
 	 * @param compilationUnit
 	 * @return
 	 */
-	private static String getTheLongestPrefixOfFullName(ITypeBinding binding, CompilationUnit compilationUnit){
+	public static String getTheLongestPrefixOfFullName(ITypeBinding binding, CompilationUnit compilationUnit){
 		ITypeBinding declaringClassBinding = binding.getDeclaringClass();
 		if(declaringClassBinding != null){
 			String outerClassFullName = getSimpleClassNameFromTypeBinding(declaringClassBinding, compilationUnit);
@@ -493,48 +482,6 @@ public class MinerUtilforJava {
 		else{
 			return binding.getPackage().getName();
 		}
-	}
-	 
-	public static Class extractAndStoreClassInformation(ITypeBinding binding, boolean isAnonymous, 
-			OntologicalDataFetcher fetcher, CompilationUnit compilationUnit, Project project){
-		
-		String classFullName;
-		clonepedia.model.ontology.Class clas = null;
-			
-		ITypeBinding declaringClassBinding = binding.getDeclaringClass();
-		/**
-		 * Deal with the case of inner class
-		 */
-		if(declaringClassBinding != null){
-			//String outerClassFullName = declaringClassBinding.getPackage().getName() + "." + declaringClassBinding.getName();
-			String outerClassFullName = getTheLongestPrefixOfFullName(binding, compilationUnit);
-			
-			classFullName = outerClassFullName + "." + getSimpleClassNameFromTypeBinding(binding, compilationUnit);
-			
-			clas = fetcher.getTheExistingClassorCreateOne(classFullName, project);
-			
-			clonepedia.model.ontology.Class outerClass = fetcher.getTheExistingClassorCreateOne(outerClassFullName, project);
-			clas.setOuterClass(outerClass);
-			
-		} 
-		else {
-			classFullName = binding.getPackage().getName() + "." + binding.getName()/*simpleName.getIdentifier()*/;
-			clas = fetcher.getTheExistingClassorCreateOne(classFullName, project);
-		}
-		
-		ITypeBinding superClassBinding = binding.getSuperclass();
-		if(null != superClassBinding && !superClassBinding.getName().equals("Object")){
-			Class superClass = (Class) MinerUtilforJava.transferTypeToComplexType(superClassBinding, project, compilationUnit, fetcher);
-			clas.setSuperClass(superClass);
-		}
-		
-		for(ITypeBinding interfaceBinding: binding.getInterfaces()){
-			Interface interf = (Interface)MinerUtilforJava.transferTypeToComplexType(interfaceBinding, project, compilationUnit, fetcher);
-			clas.addInterface(interf);
-		}
-		
-		fetcher.storeClasswithDependency(clas);
-		return clas;
 	}
 
 	/*

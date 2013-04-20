@@ -32,6 +32,10 @@ public class Field implements MergeableSimpleOntologicalElement{
 		return ownerType + "." + fieldName + "(" + fieldType + ")";
 	}
 	
+	public String getFullName(){
+		return toString();
+	}
+	
 	public String getFieldName() {
 		return fieldName;
 	}
@@ -124,4 +128,6 @@ public class Field implements MergeableSimpleOntologicalElement{
 	public ArrayList<ProgrammingElement> getSupportingElements(){
 		return this.supportingElements;
 	}
+	
+	
 }

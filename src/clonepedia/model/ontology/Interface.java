@@ -43,7 +43,7 @@ public class Interface extends VarType implements ComplexType{
 
 	public int hashCode(){
 		try{
-			return toString().hashCode();
+			return this.fullName.hashCode();
 		}
 		catch(NullPointerException e){
 			return "nullInterface".hashCode();
@@ -192,5 +192,25 @@ public class Interface extends VarType implements ComplexType{
 	@Override
 	public ArrayList<ProgrammingElement> getSupportingElements(){
 		return this.supportingElements;
+	}
+	
+	@Override
+	public void addDistinctField(Field field) {
+		for(Field f: this.fields){
+			if(f.equals(field)){
+				return;
+			}
+		}
+		this.fields.add(field);
+	}
+
+	@Override
+	public void addDistinctMethod(Method method) {
+		for(Method m: this.methods){
+			if(m.equals(method)){
+				return;
+			}
+		}
+		this.methods.add(method);
 	}
 }

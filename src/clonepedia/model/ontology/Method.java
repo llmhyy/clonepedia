@@ -13,6 +13,8 @@ public class Method implements MergeableSimpleOntologicalElement{
 	private VarType returnType;
 	private ArrayList<Variable> parameters = new ArrayList<Variable>();
 	
+	private String fullName;
+	
 	private boolean isMerged = false;
 	private ArrayList<ProgrammingElement> supportingElements = new ArrayList<ProgrammingElement>();
 
@@ -153,8 +155,16 @@ public class Method implements MergeableSimpleOntologicalElement{
 	}
 	
 	public String getFullName(){
-		ComplexType type = getOwner();
-		return type.getFullName() + "." + this.getMethodName();
+		if(this.fullName == null){
+			ComplexType type = getOwner();
+			this.fullName = type.getFullName() + "." + this.getMethodName() + "(";
+			for(Variable v: this.getParameters()){
+				this.fullName += v.getVarType().getFullName() + " ";
+			}
+			this.fullName += ")";
+		}
+		
+		return this.fullName;
 	}
 
 	@Override

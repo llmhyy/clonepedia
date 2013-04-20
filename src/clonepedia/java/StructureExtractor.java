@@ -16,7 +16,8 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
 import clonepedia.businessdata.OntologicalDBDataFetcher;
-import clonepedia.java.visitor.GlobalTypeIntoDBVisitor;
+import clonepedia.businessdata.OntologicalDataFetcher;
+import clonepedia.java.visitor.GlobalTypeVisitor;
 import clonepedia.model.ontology.Project;
 import clonepedia.util.MinerProperties;
 
@@ -24,6 +25,7 @@ import clonepedia.util.MinerProperties;
 public class StructureExtractor {
 	
 	private Project project;
+	private OntologicalDataFetcher fetcher;
 	
 	public StructureExtractor(Project project) {
 		super();
@@ -43,7 +45,7 @@ public class StructureExtractor {
 	 * @param unit
 	 * @throws Exception 
 	 */
-	private void parseCompilationUnit(ICompilationUnit unit, CompilationUnitPool pool) throws Exception{
+	private void parseCompilationUnit(ICompilationUnit unit, CompilationUnitPool pool, boolean isDebug) throws Exception{
 		/*ASTParser parser = ASTParser.newParser(AST.JLS3);
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
 		parser.setSource(unit);
@@ -52,14 +54,18 @@ public class StructureExtractor {
 		
 		CompilationUnit cu = (CompilationUnit) parser.createAST(null);*/
 		CompilationUnit cu = pool.getComilationUnit(unit);
-		GlobalTypeIntoDBVisitor typeVisitor = new GlobalTypeIntoDBVisitor(cu);
+		GlobalTypeVisitor typeVisitor = new GlobalTypeVisitor(cu, isDebug);
 		typeVisitor.setProject(project);
 		cu.accept(typeVisitor);
+		
+		this.fetcher = typeVisitor.getFetcher();
 	}
 	
-	public void extractProjectContent() throws JavaModelException, CoreException{
+	public OntologicalDataFetcher extractProjectContent(boolean isDebug) throws JavaModelException, CoreException{
 		
-		new OntologicalDBDataFetcher().storeProject(project);
+		if(isDebug){
+			new OntologicalDBDataFetcher().storeProject(project);			
+		}
 		
 		CompilationUnitPool pool = new CompilationUnitPool();
 		
@@ -74,7 +80,7 @@ public class StructureExtractor {
 					for(ICompilationUnit unit: pack.getCompilationUnits()){
 						
 						try {
-							parseCompilationUnit(unit, pool);
+							parseCompilationUnit(unit, pool, isDebug);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}	
@@ -83,22 +89,9 @@ public class StructureExtractor {
 				}
 			}
 			
-			/*IPath filePath = Path.fromPortableString(className);
-			IJavaElement element = javaProject.findElement(filePath);
-
-			ICompilationUnit unit = (ICompilationUnit) element;
-
-			//Document doc = new Document(unit.getSource());
-			ASTParser parser = ASTParser.newParser(AST.JLS3);
-			parser.setKind(ASTParser.K_COMPILATION_UNIT);
-			//parser.setSource(doc.get().toCharArray());
-			parser.setSource(unit);
-			parser.setResolveBindings(true);
-			
-			
-			CompilationUnit cu = (CompilationUnit) parser.createAST(null);*/
-			
 		}
+		
+		return this.fetcher;
 	}
 	
 	
