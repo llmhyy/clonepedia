@@ -73,30 +73,7 @@ public class OntologicalModelGenerator implements Serializable{
 	}
 	
 	
-	public void buildPatternforCloneSets() throws Exception{
-		int setsNum = sets.getCloneList().size();
-		int i = 0;
-		for(CloneSet set: sets.getCloneList()){
-			//long start = System.currentTimeMillis();
-			//if(set.getId().equals("321280"))
-			if(set == null)
-				continue;
-			
-			set.buildPatterns();
-			//processed++;
-			/*long end = System.currentTimeMillis();
-			long time = end - start;
-			setTimeMap.put(set.getId(), time);*/
-			//System.out.println("Time used in buildPatterns:" + time);
-			i++;
-			if(i%10 == 0){
-				double percentage = ((double)i/setsNum)*100;
-				String percentageString = String.valueOf(percentage).substring(0, 5);
-				System.out.println(percentageString + "% clone sets have been computed");
-			}
-		}
-		//System.out.print("");
-	}
+	
 	
 	private void buildRelationsforField() {
 		for(Field field: fieldPool){

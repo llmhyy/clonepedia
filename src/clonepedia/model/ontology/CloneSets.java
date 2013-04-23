@@ -19,6 +19,31 @@ public class CloneSets implements Serializable{
 	private PathComparator pathComparator;
 	private int averagePathSequenceLength;
 	
+	public void buildPatternforCloneSets() throws Exception{
+		int setsNum = this.getCloneList().size();
+		int i = 0;
+		for(CloneSet set: this.getCloneList()){
+			//long start = System.currentTimeMillis();
+			//if(set.getId().equals("321280"))
+			if(set == null)
+				continue;
+			
+			set.buildPatterns();
+			//processed++;
+			/*long end = System.currentTimeMillis();
+			long time = end - start;
+			setTimeMap.put(set.getId(), time);*/
+			//System.out.println("Time used in buildPatterns:" + time);
+			i++;
+			if(i%10 == 0){
+				double percentage = ((double)i/setsNum)*100;
+				String percentageString = String.valueOf(percentage).substring(0, 5);
+				System.out.println(percentageString + "% clone sets have been computed");
+			}
+		}
+		//System.out.print("");
+	}
+	
 	public int computeMedianPathSequenceLength(){
 		int sampleNumber = (int)(Settings.selectedSampleRateToComputeAveragePathSequenceLength * cloneList.size());
 		ArrayList<Integer> lengthList = new ArrayList<Integer>();

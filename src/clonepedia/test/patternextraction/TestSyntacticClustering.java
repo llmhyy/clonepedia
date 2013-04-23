@@ -25,8 +25,6 @@ import junit.framework.TestCase;
 
 public class TestSyntacticClustering extends TestCase {
 	public void testSyntacticClustering(){
-		Project project = new Project(Settings.projectName, "java", "");
-		OntologicalModelGenerator generator = new OntologicalModelGenerator(project);
 		
 		long startTime = 0;
 		long endTime = 0;
@@ -51,9 +49,8 @@ public class TestSyntacticClustering extends TestCase {
 			sets.computeMedianPathSequenceLength();
 			//sets.computeAveragePathSequenceLength();
 			
-			generator.setSets(sets);
 			startTime = System.currentTimeMillis();
-			generator.buildPatternforCloneSets();
+			sets.buildPatternforCloneSets();
 			endTime = System.currentTimeMillis();
 			System.out.println("The time spended on buildPatternForCloneSets is: " + (endTime-startTime));
 			//MinerUtil.serialize(generator, "generator");
@@ -61,44 +58,44 @@ public class TestSyntacticClustering extends TestCase {
 			//generator = (OntologicalModelGenerator)MinerUtil.deserialize("generator");
 			
 			int count = 0;
-			for(CloneSet set: generator.getSets().getCloneList()){
+			for(CloneSet set: sets.getCloneList()){
 				count += set.getClusterableLocationPatterns().size();
 			}
 			System.out.println("The total number of location patterns is: " + count);
 			
 			count = 0;
-			for(CloneSet set: generator.getSets().getCloneList()){
+			for(CloneSet set: sets.getCloneList()){
 				count += set.getClusterableDiffUsagePatterns().size();
 			}
 			System.out.println("The total number of diff usage patterns is: " + count);
 			
 			count = 0;
-			for(CloneSet set: generator.getSets().getCloneList()){
+			for(CloneSet set: sets.getCloneList()){
 				count += set.getClusterableMethodFieldVariableDiffUsagePatterns().size();
 			}
 			System.out.println("The total number of diff method/field/variable usage patterns is: " + count);
 			
 			count = 0;
-			for(CloneSet set: generator.getSets().getCloneList()){
+			for(CloneSet set: sets.getCloneList()){
 				count += set.getClusterableComplexTypeDiffUsagePatterns().size();
 			}
 			System.out.println("The total number of diff class/interface usage patterns is: " + count);
 			
 			
 			count = 0;
-			for(CloneSet set: generator.getSets().getCloneList()){
+			for(CloneSet set: sets.getCloneList()){
 				count += set.getClusterableMethodFieldVariableCommonUsagePatterns().size();
 			}
 			System.out.println("The total number of common method/field/variable usage patterns is: " + count);
 			
 			count = 0;
-			for(CloneSet set: generator.getSets().getCloneList()){
+			for(CloneSet set: sets.getCloneList()){
 				count += set.getClusterableComplexTypeCommonUsagePatterns().size();
 			}
 			System.out.println("The total number of common class/interface usage patterns is: " + count);
 			SyntacticClusteringer0 clusteringer = null;
 			try {
-				clusteringer = new SyntacticClusteringer0(generator.getSets().getCloneList());
+				clusteringer = new SyntacticClusteringer0(sets.getCloneList());
 				clusteringer.doClustering();
 				/*clusteringer = new SyntacticClusteringer(generator.getSets().getCloneList(), patternComparator, SyntacticClusteringer.locationPatternClustering);
 				clusteringer.doClustering0();
@@ -114,7 +111,7 @@ public class TestSyntacticClustering extends TestCase {
 				System.out.println("The time spended on all doClustering is: " + (endTime-startTime));
 				MinerUtil.serialize(clusters, "all_cluster");*/
 				//MinerUtil.serialize(clonePatterns, "clone_patterns");
-				MinerUtil.serialize(generator, "syntactic_generator");
+				MinerUtil.serialize(sets, "syntactic_sets");
 				/*startTime = System.currentTimeMillis();
 				clusterer = new StructuralClusterer(generator.getSets(), patternComparator, StructuralClusterer.usagePatternClustering);
 				endTime = System.currentTimeMillis();
@@ -167,4 +164,6 @@ public class TestSyntacticClustering extends TestCase {
 				iterator.remove();
 		}
 	}
+	
+	
 }

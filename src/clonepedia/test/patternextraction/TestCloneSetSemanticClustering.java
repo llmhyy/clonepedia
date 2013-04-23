@@ -1,5 +1,6 @@
 package clonepedia.test.patternextraction;
 
+import clonepedia.model.ontology.CloneSets;
 import clonepedia.semantic.SemanticClusteringer;
 import clonepedia.syntactic.OntologicalModelGenerator;
 import clonepedia.util.MinerUtil;
@@ -12,9 +13,13 @@ public class TestCloneSetSemanticClustering {
 	 */
 	public static void main(String[] args) throws Exception {
 		SemanticClusteringer clusteringer = new SemanticClusteringer();
-		OntologicalModelGenerator generator = (OntologicalModelGenerator)MinerUtil.deserialize("syntactic_generator");
+		/*OntologicalModelGenerator generator = (OntologicalModelGenerator)MinerUtil.deserialize("syntactic_generator");
 		clusteringer.doClustering(generator.getSets().getCloneList());
-		MinerUtil.serialize(generator.getSets(), "sets");
+		MinerUtil.serialize(generator.getSets(), "sets");*/
+		
+		CloneSets sets = (CloneSets)MinerUtil.deserialize("syntactic_generator");
+		clusteringer.doClustering(sets.getCloneList());
+		MinerUtil.serialize(sets, "sets");
 	}
 
 }
