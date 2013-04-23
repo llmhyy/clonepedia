@@ -476,12 +476,12 @@ public class SyntacticClusteringer implements Serializable{
 		int nullifiedDistancePairNumber = 0;
 		
 		for(PathPatternGroup ppg1: ppgs1){
-			int averageLength = ppg1.getCloneSet().getCloneSets().getAveragePathSequenceLength();
-			double smallestDistance = patternComparator.computePatternDistance(ppg1, ppgs2.get(0), averageLength);
+			//int averageLength = ppg1.getCloneSet().getCloneSets().getAveragePathSequenceLength();
+			double smallestDistance = patternComparator.computePatternDistance(ppg1, ppgs2.get(0));
 			PatternDistance pd = new PatternDistance(ppg1, ppgs2.get(0), smallestDistance);
 			for(PathPatternGroup ppg2: ppgs2){
 				//long start = System.currentTimeMillis();
-				double distance = patternComparator.computePatternDistance(ppg1, ppg2, averageLength);
+				double distance = patternComparator.computePatternDistance(ppg1, ppg2);
 				//long end = System.currentTimeMillis();
 				//long time = end - start;
 				//System.out.println("Time used in computePatternDistance:" + time);

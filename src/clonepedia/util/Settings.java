@@ -40,8 +40,19 @@ public class Settings {
 	
 	//======================================================================
 	public static double selectedSampleRateToComputeAveragePathSequenceLength = 0.2d;
-	public static double lowerAlphaForLengthOfPath = 0.5d;
+	/**
+	 * In order to compute the distance between two paths, except for the inherent Levenshtein
+	 * distance, one factor is also very important: the length of two paths. It is not difficult
+	 * to imagine that the differences of two pair of paths with the same levenshtein distance 
+	 * are not the same. For example, two pair of paths P<p1, p2> and P<p3, p4> could have the 
+	 * same levenshtein distance, say 2.0. However both the length of p1 and p2 is 9 while that
+	 * of p3 and p4 is 5. Therefore, a penalty/bonus is imposed on the distance based on the path
+	 * length. 
+	 */
 	public static double upperAlphaForLengthOfPath = 0.8d;
+	public static double lowerAlphaForLengthOfPath = 0.5d;
+	public static double standardLength = 7d;
+	
 	public static double alphaForInstanceNumberPattern = 1d;
 	
 	public static double thresholdForSkippingPatternComparisonByLength = 1.8d;

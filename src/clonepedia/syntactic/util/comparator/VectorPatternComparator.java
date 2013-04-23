@@ -11,7 +11,7 @@ import clonepedia.util.Settings;
 
 public class VectorPatternComparator extends PatternComparator {
 
-	public double computePatternDistance(PathPatternGroup pattern1, PathPatternGroup pattern2, double averageLength) throws Exception{
+	public double computePatternDistance(PathPatternGroup pattern1, PathPatternGroup pattern2) throws Exception{
 		ArrayList<OntologicalElement> nodes = new ArrayList<OntologicalElement>();
 		ArrayList<OntologicalRelationType> edges = new ArrayList<OntologicalRelationType>();
 		

@@ -15,7 +15,7 @@ public class VectorPathComparator extends PathComparator {
 	 */
 	private static final long serialVersionUID = 1532082521662919597L;
 
-	public double computePathDistance(Path p1, Path p2, String cloneSetId, double averageLength) throws Exception{
+	public double computePathDistance(Path p1, Path p2, String cloneSetId) throws Exception{
 		ArrayList<OntologicalElement> nodes = new ArrayList<OntologicalElement>();
 		ArrayList<OntologicalRelationType> edges = new ArrayList<OntologicalRelationType>();
 		

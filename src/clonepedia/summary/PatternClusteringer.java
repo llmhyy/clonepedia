@@ -125,8 +125,8 @@ public class PatternClusteringer implements Serializable{
 	private double getDistanceBetweenPatternAndCluster(ClonePatternGroup pc,
 			PathPatternGroup ppg) throws Exception {
 		LevenshteinPatternComparator comparator = new LevenshteinPatternComparator();
-		int averageLength = ppg.getCloneSet().getCloneSets().getAveragePathSequenceLength();
-		return new LevenshteinPathComparator().computePathDistance(ppg.getAbstractPathSequence(), pc.getAbstractPathSequence(), averageLength);
+		//int averageLength = ppg.getCloneSet().getCloneSets().getAveragePathSequenceLength();
+		return new LevenshteinPathComparator().computePathDistance(ppg.getAbstractPathSequence(), pc.getAbstractPathSequence());
 		/*double distance = comparator.computePatternDistance(pc.get(0), ppg, averageLength);
 		for(PathPatternGroup group: pc){
 			double comparingDis = comparator.computePatternDistance(ppg, group, averageLength);

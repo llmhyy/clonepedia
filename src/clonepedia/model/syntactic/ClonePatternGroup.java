@@ -33,9 +33,16 @@ public class ClonePatternGroup extends ArrayList<PathPatternGroup>{
 	 */
 	private String style;
 
+	/**
+	 * ppg is the first path pattern group (intra clone set pattern) added into the clone pattern group
+	 * (inter clone set pattern).
+	 * @param ppg
+	 * @param style
+	 */
 	public ClonePatternGroup(PathPatternGroup ppg, String style){
 		this.add(ppg);
 		this.setStyle(style);
+		this.setAbstractPathSequence(this.get(0).getAbstractPathSequence());
 	}
 	
 	public void updateAbstractPathSequence() throws Exception{

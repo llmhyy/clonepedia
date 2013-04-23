@@ -486,7 +486,7 @@ public class CloneSet extends HashSet<CloneInstance> implements RegionalOwner, I
 		double longestDistance = 0d;
 		for(Path path: ppg){
 			//long start = System.currentTimeMillis();
-			double s = this.sets.getPathComparator().computePathDistance(path, p, this.cloneSetId, this.sets.getAveragePathSequenceLength());
+			double s = this.sets.getPathComparator().computePathDistance(path, p, this.cloneSetId);
 			//long end = System.currentTimeMillis();
 			//long time = end - start;
 			//System.out.println("Time used in computePathDistance:" + time);

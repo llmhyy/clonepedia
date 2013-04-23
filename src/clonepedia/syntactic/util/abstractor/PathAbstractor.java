@@ -55,8 +55,8 @@ public class PathAbstractor implements Serializable{
 						
 						int averageLength = ppg.getCloneSet().getCloneSets().getAveragePathSequenceLength();
 						
-						double distance1 = comparator.computePathDistance(abstractPathSeq, surveyorSeq, averageLength);
-						double distance2 = comparator.computePathDistance(newPathSeq, surveyorSeq, averageLength);
+						double distance1 = comparator.computePathDistance(abstractPathSeq, surveyorSeq);
+						double distance2 = comparator.computePathDistance(newPathSeq, surveyorSeq);
 						
 						if(distance1 > distance2)
 							abstractPathSeq = newPathSeq;
@@ -85,8 +85,8 @@ public class PathAbstractor implements Serializable{
 						LevenshteinPathComparator comparator = new LevenshteinPathComparator();
 						PathSequence surveyorSeq = sequences[index];
 
-						double distance1 = comparator.computePathDistance(abstractPathSeq, surveyorSeq, averageLength);
-						double distance2 = comparator.computePathDistance(newPathSeq, surveyorSeq, averageLength);
+						double distance1 = comparator.computePathDistance(abstractPathSeq, surveyorSeq);
+						double distance2 = comparator.computePathDistance(newPathSeq, surveyorSeq);
 
 						if (distance1 > distance2)
 							abstractPathSeq = newPathSeq;

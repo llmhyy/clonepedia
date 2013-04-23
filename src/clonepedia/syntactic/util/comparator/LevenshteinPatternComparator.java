@@ -18,7 +18,7 @@ public class LevenshteinPatternComparator extends PatternComparator {
 
 	@Override
 	public double computePatternDistance(PathPatternGroup pattern1,
-			PathPatternGroup pattern2, double averageLength) throws Exception {
+			PathPatternGroup pattern2) throws Exception {
 		
 		/*
 		PathAbstractor abstractor = new PathAbstractor();
@@ -44,7 +44,7 @@ public class LevenshteinPatternComparator extends PatternComparator {
 		
 		LevenshteinPathComparator pathComparator = new LevenshteinPathComparator();
 		//new ClassComparator().compute((Class)sequencePath1.get(8), (Class)sequencePath2.get(8));
-		double distance = pathComparator.computePathDistance(sequencePath1, sequencePath2, averageLength);
+		double distance = pathComparator.computePathDistance(sequencePath1, sequencePath2);
 		
 		distance *= Math.pow(coefficientFactor, Settings.alphaForInstanceNumberPattern);
 		
