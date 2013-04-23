@@ -275,7 +275,13 @@ public class CloneSet extends HashSet<CloneInstance> implements RegionalOwner, I
 
 	public void buildPatterns() throws Exception{
 		buildPatternforResidingInRelation();
-		buildPatternforElementsInCounterRelations();
+		
+		try{
+			buildPatternforElementsInCounterRelations();			
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
 		//buildPatternForCommonPart();
 	}
 	

@@ -79,7 +79,10 @@ public class OntologicalModelGenerator implements Serializable{
 		for(CloneSet set: sets.getCloneList()){
 			//long start = System.currentTimeMillis();
 			//if(set.getId().equals("321280"))
-				set.buildPatterns();
+			if(set == null)
+				continue;
+			
+			set.buildPatterns();
 			//processed++;
 			/*long end = System.currentTimeMillis();
 			long time = end - start;
