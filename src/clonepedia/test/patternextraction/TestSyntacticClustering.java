@@ -23,8 +23,10 @@ import clonepedia.util.MinerUtil;
 import clonepedia.util.Settings;
 import junit.framework.TestCase;
 
-public class TestSyntacticClustering extends TestCase {
-	public void testSyntacticClustering(){
+public class TestSyntacticClustering {
+	
+	
+	public static void main(String[] args){
 		
 		long startTime = 0;
 		long endTime = 0;
@@ -46,7 +48,7 @@ public class TestSyntacticClustering extends TestCase {
 			//filterSetsById(idList, sets);
 			//filterSetsByInstanceNumber(4, sets);
 			sets.setPathComparator(pathComparator);
-			sets.computeMedianPathSequenceLength();
+			//sets.computeMedianPathSequenceLength();
 			//sets.computeAveragePathSequenceLength();
 			
 			startTime = System.currentTimeMillis();
