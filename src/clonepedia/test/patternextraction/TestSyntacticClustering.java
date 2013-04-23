@@ -28,6 +28,117 @@ public class TestSyntacticClustering {
 	
 	public static void main(String[] args){
 		
+		runPatternClustering();
+	}
+	
+	public static void runPatternGeneration(){
+		long startTime = 0;
+		long endTime = 0;
+		
+		try{
+			PathComparator pathComparator = new LevenshteinPathComparator();
+			PatternComparator patternComparator = new LevenshteinPatternComparator();
+			
+			CloneSets sets = (CloneSets)MinerUtil.deserialize("ontological_model");
+			
+			System.out.println("Ontological model extracted.");
+			//PathComparator pathComparator = new VectorPathComparator();
+			
+			
+			//String[] idList = {"473017", "479138", "491370", "479926", "480012", "142742", "473243", "472843", "478591", "473101", "483621", "481653", "472616"};
+			//String[] idList = {"473017", "479138", "491370", "142742", "473243", "472843", "483621", "481653"};
+			//String[] idList = {"176823", "577880"};
+			//filterSetsById(idList, sets);
+			//filterSetsByInstanceNumber(4, sets);
+			sets.setPathComparator(pathComparator);
+			//sets.computeMedianPathSequenceLength();
+			//sets.computeAveragePathSequenceLength();
+			
+			startTime = System.currentTimeMillis();
+			sets.buildPatternforCloneSets();
+			endTime = System.currentTimeMillis();
+			System.out.println("The time spended on buildPatternForCloneSets is: " + (endTime-startTime));
+			MinerUtil.serialize(sets, "intra_pattern_sets");
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	public static CloneSets getCloneSetsWithPatterns() throws Exception{
+		CloneSets sets = (CloneSets)MinerUtil.deserialize("intra_pattern_sets");
+		
+		//generator = (OntologicalModelGenerator)MinerUtil.deserialize("generator");
+		
+		int count = 0;
+		for(CloneSet set: sets.getCloneList()){
+			count += set.getClusterableLocationPatterns().size();
+		}
+		System.out.println("The total number of location patterns is: " + count);
+		
+		count = 0;
+		for(CloneSet set: sets.getCloneList()){
+			count += set.getClusterableDiffUsagePatterns().size();
+		}
+		System.out.println("The total number of diff usage patterns is: " + count);
+		
+		count = 0;
+		for(CloneSet set: sets.getCloneList()){
+			count += set.getClusterableMethodFieldVariableDiffUsagePatterns().size();
+		}
+		System.out.println("The total number of diff method/field/variable usage patterns is: " + count);
+		
+		count = 0;
+		for(CloneSet set: sets.getCloneList()){
+			count += set.getClusterableComplexTypeDiffUsagePatterns().size();
+		}
+		System.out.println("The total number of diff class/interface usage patterns is: " + count);
+		
+		
+		count = 0;
+		for(CloneSet set: sets.getCloneList()){
+			count += set.getClusterableMethodFieldVariableCommonUsagePatterns().size();
+		}
+		System.out.println("The total number of common method/field/variable usage patterns is: " + count);
+		
+		count = 0;
+		for(CloneSet set: sets.getCloneList()){
+			count += set.getClusterableComplexTypeCommonUsagePatterns().size();
+		}
+		System.out.println("The total number of common class/interface usage patterns is: " + count);
+		
+		return sets;
+	}
+	
+	public static void runPatternClustering(){
+		try{
+			CloneSets sets = getCloneSetsWithPatterns();
+			
+			SyntacticClusteringer0 clusteringer = null;
+			try {
+				clusteringer = new SyntacticClusteringer0(sets.getCloneList());
+				clusteringer.doClustering();
+				
+				MinerUtil.serialize(sets, "inter_pattern_sets");
+				
+				//clusterer.doClustering();
+			} catch (Exception e) {
+				
+				e.printStackTrace();
+			}
+			
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	public static void runTheWhole(){
+		runPatternGeneration();
+		runPatternClustering();
+	}
+	
+	public static void runTheWhole0(){
 		long startTime = 0;
 		long endTime = 0;
 		
@@ -55,7 +166,7 @@ public class TestSyntacticClustering {
 			sets.buildPatternforCloneSets();
 			endTime = System.currentTimeMillis();
 			System.out.println("The time spended on buildPatternForCloneSets is: " + (endTime-startTime));
-			//MinerUtil.serialize(generator, "generator");
+			MinerUtil.serialize(sets, "intra_pattern_sets");
 			
 			//generator = (OntologicalModelGenerator)MinerUtil.deserialize("generator");
 			

@@ -33,18 +33,26 @@ public class MinerUtil {
 	}
 
 	public static void serialize(Object obj, String fileName) throws Exception {
-		FileOutputStream fos = new FileOutputStream(fileName);
+		
+		String targetDir = "configurations" + File.separator + Settings.projectName;
+		File dir = new File(targetDir);
+		if(!dir.exists()){
+			dir.mkdir();
+		}
+		
+		FileOutputStream fos = new FileOutputStream(targetDir + File.separator + fileName);
 		ObjectOutputStream oos = new ObjectOutputStream(fos);
 		oos.writeObject(obj);
 		oos.flush();
 		oos.close();
 	}
 
-	public static Object deserialize(String location) {
+	public static Object deserialize(String fileName) {
+		
 		FileInputStream fis;
 		try {
 			fis = new FileInputStream("configurations" + File.separator
-					+ location);
+					+ Settings.projectName + File.separator + fileName);
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			Object object = ois.readObject();
 			ois.close();

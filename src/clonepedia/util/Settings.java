@@ -25,7 +25,7 @@ public class Settings {
 	public static double diffComparisonThreshold = 0.7d;
 	
 	public static double thresholdDistanceForSyntacticClustering = 2.55d;
-	public static double thresholdDistanceToFormPattern = 1.2d;//3.5d
+	public static double thresholdDistanceToFormPattern = 1.5d;//3.5d
 	
 	public static double thresholdDistanceForPatternClustering = 1.5d;
 	
@@ -60,6 +60,6 @@ public class Settings {
 	public static double thresholdForSlightPartial = 0.5d;
 	
 	//======================================================================
-	public static String projectName;
+	public static String projectName = "tmp";
 	public static String inputCloneFile;
 }

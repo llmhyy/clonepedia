@@ -37,6 +37,7 @@
                toolbarPath="run">
          </action>
          <action
+               class="clonepedia.actions.PatternAndTopicGeneration"
                icon="icons/action/data_gen.gif"
                id="Clonepedia.GeneratePatternAndTopic"
                label="Generate Pattern and Topic"

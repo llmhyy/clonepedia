@@ -58,6 +58,7 @@ public class SyntacticClusteringer0  implements Serializable{
 		ArrayList<PathPatternGroup> ciCommonPatterns = getPatternsFromCloneSets(concernedSets, SyntacticClusteringer0.complexTypeCommonPatternClustering);
 		ArrayList<ClonePatternGroup> ciCommonP = clusterSpecificStyleOfClonePattern(ciCommonPatterns, PathSequence.COMMON_USAGE);
 		
+		
 		list.addAll(locationP);
 		list.addAll(mfvDiffP);
 		list.addAll(ciDiffP);
@@ -67,7 +68,7 @@ public class SyntacticClusteringer0  implements Serializable{
 		return list;
 	}
 	
-	private ArrayList<ClonePatternGroup> clusterSpecificStyleOfClonePattern(ArrayList<PathPatternGroup> ppgs, 
+	public ArrayList<ClonePatternGroup> clusterSpecificStyleOfClonePattern(ArrayList<PathPatternGroup> ppgs, 
 			String clonePatternStyle)throws Exception{
 		
 		long start = System.currentTimeMillis();
@@ -88,7 +89,7 @@ public class SyntacticClusteringer0  implements Serializable{
 		return clonePatterns;
 	}
 	
-	private ArrayList<PathPatternGroup> getPatternsFromCloneSets(ArrayList<CloneSet> sets, String clusteringStyle) throws Exception{
+	public ArrayList<PathPatternGroup> getPatternsFromCloneSets(ArrayList<CloneSet> sets, String clusteringStyle) throws Exception{
 		ArrayList<PathPatternGroup> ppgs = new ArrayList<PathPatternGroup>();
 		for(CloneSet set: sets)
 			if(clusteringStyle.equals(SyntacticClusteringer0.allPatternClustering))

@@ -1,5 +1,7 @@
 package clonepedia.actions;
 
+import java.io.File;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -28,7 +30,7 @@ public class DirectOntologicalModelGeneration implements
 	@Override
 	public void run(IAction action) {
 		
-		Job job = new Job("Program Structure Extracting"){
+		Job job = new Job("Model Extracting"){
 
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
