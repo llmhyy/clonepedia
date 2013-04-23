@@ -3,15 +3,17 @@ package clonepedia.util;
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.osgi.service.prefs.Preferences;
 
+import clonepedia.Activator;
 import clonepedia.preference.ClonepediaPreferencePage;
 
 public class Settings {
 	
 	static{
-		Preferences preferences = ConfigurationScope.INSTANCE.getNode("Clonepedia");
-		projectName = preferences.get(ClonepediaPreferencePage.TARGET_PORJECT, "");
-		inputCloneFile = preferences.get(ClonepediaPreferencePage.CLONE_PATH, "");
-		diffComparisonMode = preferences.get(ClonepediaPreferencePage.DIFF_LEVEL, "");
+		//Preferences preferences = ConfigurationScope.INSTANCE.getNode("Clonepedia");
+		
+		projectName = Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.TARGET_PORJECT);
+		inputCloneFile = Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.CLONE_PATH);
+		diffComparisonMode = Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.DIFF_LEVEL);
 	}
 	
 	/**
@@ -20,7 +22,7 @@ public class Settings {
 	 * ASTNode_Basd
 	 * Statement_Based
 	 */
-	public static String diffComparisonMode = "Statement_Based";
+	public static String diffComparisonMode;
 	
 	public static double diffComparisonThreshold = 0.7d;
 	
