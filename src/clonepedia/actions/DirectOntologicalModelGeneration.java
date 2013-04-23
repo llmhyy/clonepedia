@@ -34,13 +34,20 @@ public class DirectOntologicalModelGeneration implements
 			protected IStatus run(IProgressMonitor monitor) {
 				Project project = new Project(Settings.projectName, "java", "");
 				StructureExtractor extractor = new StructureExtractor(project, false);
+				
+				monitor.beginTask("Generating Model", 100);
+				
 				//extractor.extractProjectOutline();
 				try {
 					OntologicalModelDataFetcher modelFetcher = 
 							(OntologicalModelDataFetcher)extractor.extractProjectContent();
 					
+					monitor.worked(50);
+					
 					modelFetcher = (OntologicalModelDataFetcher) new CloneInformationExtractor(
 							new CloneDetectionFileParser(), project, modelFetcher).extract();
+					
+					monitor.worked(50);
 					
 					CloneSets sets = new CloneSets();
 					for(CloneSet set: modelFetcher.getCloneSetMap().values()){
