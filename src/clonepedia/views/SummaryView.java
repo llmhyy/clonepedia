@@ -102,6 +102,11 @@ public abstract class SummaryView extends ViewPart {
 		addSearchButtonListener(searchButton);
 	}
 	
+	public void restoreInput(Object obj){
+		this.viewer.setInput(obj);
+		this.viewer.refresh();
+	}
+	
 	protected IDoubleClickListener cloneInstanceDoubleClickListener = new IDoubleClickListener() {
 	
 		@Override

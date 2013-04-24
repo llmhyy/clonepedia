@@ -134,6 +134,17 @@ public class PatternOrientedView extends MultiOrientedView {
 	
 	private ClonePatternGroupCategoryList clonePatternCategories;
 	
+	public ClonePatternGroupCategoryList getClonePatternCategories() {
+		return clonePatternCategories;
+	}
+
+
+	public void setClonePatternCategories(
+			ClonePatternGroupCategoryList clonePatternCategories) {
+		this.clonePatternCategories = clonePatternCategories;
+	}
+
+
 	public PatternOrientedView() {
 	}
 

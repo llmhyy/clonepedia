@@ -37,11 +37,15 @@ public class Activator extends AbstractUIPlugin {
 	}
 
 	public static CloneSets getCloneSets(){
-		/*if(sets == null){
+		if(sets == null){
 			sets = (CloneSets) MinerUtil.deserialize("sets");
-		}*/
+		}
 		
 		return sets;
+	}
+	
+	public static void setCloneSets(CloneSets setList){
+		sets = setList;
 	}
 	
 	/*

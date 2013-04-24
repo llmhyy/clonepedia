@@ -280,6 +280,7 @@ public class CloneSet extends HashSet<CloneInstance> implements RegionalOwner, I
 			buildPatternforElementsInCounterRelations();			
 		}
 		catch(Exception e){
+			System.out.println(this.cloneSetId);
 			e.printStackTrace();
 		}
 		//buildPatternForCommonPart();
@@ -600,6 +601,10 @@ public class CloneSet extends HashSet<CloneInstance> implements RegionalOwner, I
 
 	private InstanceDerivedPaths generatePaths(Path formerPath, InstanceDerivedPaths paths) {
 		OntologicalElement element = formerPath.getLastElement();
+		
+		if(element == null){
+			System.out.println();
+		}
 		
 		if(element.getSuccessors().size() == 0){
 			if(!formerPath.isDisposable())

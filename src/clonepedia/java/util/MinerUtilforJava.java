@@ -22,6 +22,7 @@ import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jdt.core.dom.Type;
+import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.TypeLiteral;
 import org.eclipse.jdt.core.dom.BooleanLiteral;
 
@@ -368,8 +369,13 @@ public class MinerUtilforJava {
 	@SuppressWarnings("rawtypes")
 	public static Method getMethodfromASTNode(MethodDeclaration md, Project project, OntologicalDataFetcher fetcher) throws Exception {
 		
-		ComplexType owner = transferTypeToComplexType(md.resolveBinding()
-				.getDeclaringClass(), project, (CompilationUnit)md.getRoot(), fetcher);
+		ASTNode node = md.getParent();
+		while(!(node instanceof TypeDeclaration)){
+			node = node.getParent();
+		}
+		TypeDeclaration declaringType = (TypeDeclaration)node;
+		
+		ComplexType owner = transferTypeToComplexType(declaringType.resolveBinding(), project, (CompilationUnit)md.getRoot(), fetcher);
 
 		String methodName = md.getName().getIdentifier();
 		
