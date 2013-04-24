@@ -40,7 +40,7 @@ public class ExportOverallDetailAction implements
 	@Override
 	public void run(IAction action) {
 		
-		CloneSets sets = Activator.sets;
+		CloneSets sets = Activator.getCloneSets();
 		HashSet<Method> methodSet = new HashSet<Method>();
 		HashSet<clonepedia.model.ontology.Class> classSet = new HashSet<clonepedia.model.ontology.Class>();
 		
@@ -168,10 +168,10 @@ public class ExportOverallDetailAction implements
 		sheet.addCell(semNumLablel);
 		sheet.addCell(numTitleLabel);
 		
-		ClonePatternGroupWrapperList clonePatterns = SummaryUtil.generateClonePatternOrientedComplexTree(Activator.sets.getCloneList());
+		ClonePatternGroupWrapperList clonePatterns = SummaryUtil.generateClonePatternOrientedComplexTree(Activator.getCloneSets().getCloneList());
 		//ClonePatternGroupWrapper[] clonePatternList = clonePatterns.toArray(new ClonePatternGroupWrapper[0]);
 		
-		TopicWrapperList topics = SummaryUtil.generateTopicOrientedSimpleTree(Activator.sets.getCloneList());
+		TopicWrapperList topics = SummaryUtil.generateTopicOrientedSimpleTree(Activator.getCloneSets().getCloneList());
 		//TopicWrapper[] topicList = topics.toArray(new TopicWrapper[0]);
 		int count = 1;
 		

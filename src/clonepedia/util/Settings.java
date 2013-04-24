@@ -20,7 +20,7 @@ public class Settings {
 	 * ASTNode_Basd
 	 * Statement_Based
 	 */
-	public static String diffComparisonMode = "ASTNode_Basd";
+	public static String diffComparisonMode;
 	
 	public static double diffComparisonThreshold = 0.7d;
 	
@@ -71,6 +71,6 @@ public class Settings {
 	public static double thresholdForSlightPartial = 0.5d;
 	
 	//======================================================================
-	public static String projectName = "tmp";
+	public static String projectName;
 	public static String inputCloneFile;
 }

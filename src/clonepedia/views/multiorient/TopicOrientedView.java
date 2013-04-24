@@ -129,7 +129,7 @@ public class TopicOrientedView extends MultiOrientedView {
 	@Override
 	public void createPartControl(Composite parent) {
 		super.createPartControl(parent);
-		topics = SummaryUtil.generateTopicOrientedSimpleTree(Activator.sets.getCloneList());
+		topics = SummaryUtil.generateTopicOrientedSimpleTree(Activator.getCloneSets().getCloneList());
 		Collections.sort(topics, new DefaultValueAscComparator());
 		
 		viewer.setContentProvider(new MultiOrientedContentProvider());

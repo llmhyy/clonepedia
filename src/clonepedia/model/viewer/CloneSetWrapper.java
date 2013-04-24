@@ -174,7 +174,7 @@ public class CloneSetWrapper implements IContent{
 	
 	
 	public String getAdjectiveAccordingToSize(){
-		ArrayList<CloneSetWrapper> list = SummaryUtil.getCloneSetWrapperList(Activator.sets.getCloneList());
+		ArrayList<CloneSetWrapper> list = SummaryUtil.getCloneSetWrapperList(Activator.getCloneSets().getCloneList());
 		Collections.sort(list, new CloneSetWrapperInstanceNumberAscComparator());
 		
 		int delimit1 = list.get((int)(list.size()*0.25)).getCloneSet().size();
@@ -191,7 +191,7 @@ public class CloneSetWrapper implements IContent{
 	
 	
 	public String getAdjectiveAccordingToLength(){
-		ArrayList<CloneSetWrapper> list = SummaryUtil.getCloneSetWrapperList(Activator.sets.getCloneList());
+		ArrayList<CloneSetWrapper> list = SummaryUtil.getCloneSetWrapperList(Activator.getCloneSets().getCloneList());
 		Collections.sort(list, new AverageCodeFragmentLengthAscComparator());
 		
 		int delimit1 = list.get((int)(list.size()*0.25)).computeAverageCodeFragmentLength();
@@ -206,7 +206,7 @@ public class CloneSetWrapper implements IContent{
 	}
 	
 	public String getAdjectiveAccordingToDiffRatio(){
-		ArrayList<CloneSetWrapper> list = SummaryUtil.getCloneSetWrapperList(Activator.sets.getCloneList());
+		ArrayList<CloneSetWrapper> list = SummaryUtil.getCloneSetWrapperList(Activator.getCloneSets().getCloneList());
 		Collections.sort(list, new CloneSetWrapperDiffInCodeAscComparator());
 		
 		double delimit1 = list.get((int)(list.size()*0.25)).differenceInCodeFragments();
@@ -235,7 +235,7 @@ public class CloneSetWrapper implements IContent{
 	}
 	
 	public String getAdjectiveAccordingToClonePattern(){
-		ArrayList<CloneSetWrapper> list = SummaryUtil.getCloneSetWrapperList(Activator.sets.getCloneList());
+		ArrayList<CloneSetWrapper> list = SummaryUtil.getCloneSetWrapperList(Activator.getCloneSets().getCloneList());
 		Collections.sort(list, new ContainedClonePatternNumberAscComparator());
 		
 		int delimit1 = list.get((int)(list.size()*0.25)).getCloneSet().getPatternLabels().size();
@@ -250,7 +250,7 @@ public class CloneSetWrapper implements IContent{
 	}
 	
 	public String getAdjectiveAccordingToTopic(){
-		ArrayList<CloneSetWrapper> list = SummaryUtil.getCloneSetWrapperList(Activator.sets.getCloneList());
+		ArrayList<CloneSetWrapper> list = SummaryUtil.getCloneSetWrapperList(Activator.getCloneSets().getCloneList());
 		Collections.sort(list, new ContainedTopicNumberAscComparator());
 		
 		int delimit1 = list.get((int)(list.size()*0.25)).getCloneSet().getTopicLabels().size();

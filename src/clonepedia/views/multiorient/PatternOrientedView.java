@@ -144,7 +144,7 @@ public class PatternOrientedView extends MultiOrientedView {
 		super.createPartControl(parent);
 		//clonePatterns = SummaryUtil.generateClonePatternOrientedSimpleTree(Activator.sets.getCloneList());
 		try {
-			clonePatternCategories = (ClonePatternGroupCategoryList)SummaryUtil.generateClonePatternSimplifiedCategories(Activator.sets.getCloneList());
+			clonePatternCategories = (ClonePatternGroupCategoryList)SummaryUtil.generateClonePatternSimplifiedCategories(Activator.getCloneSets().getCloneList());
 			for(PatternGroupCategory category: clonePatternCategories){
 				Collections.sort(category.getPatternList(), new DefaultValueDescComparator());
 			}
@@ -365,7 +365,7 @@ public class PatternOrientedView extends MultiOrientedView {
 				/*clonePatterns = SummaryUtil.generateClonePatternOrientedSimpleTree(Activator.sets.getCloneList());
 				viewer.setInput(clonePatterns);*/
 				try {
-					clonePatternCategories = (ClonePatternGroupCategoryList)SummaryUtil.generateClonePatternSimplifiedCategories(Activator.sets.getCloneList());
+					clonePatternCategories = (ClonePatternGroupCategoryList)SummaryUtil.generateClonePatternSimplifiedCategories(Activator.getCloneSets().getCloneList());
 					viewer.setInput(clonePatternCategories);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block

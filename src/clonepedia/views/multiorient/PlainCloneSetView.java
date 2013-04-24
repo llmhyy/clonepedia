@@ -197,7 +197,7 @@ public class PlainCloneSetView extends SummaryView {
 		
 		createColumns(viewer);
 		
-		cloneSets = SummaryUtil.wrapCloneSets(Activator.sets.getCloneList());
+		cloneSets = SummaryUtil.wrapCloneSets(Activator.getCloneSets().getCloneList());
 		viewer.setInput(cloneSets);
 		viewer.addDoubleClickListener(cloneInstanceDoubleClickListener);
 		viewer.addDoubleClickListener(new IDoubleClickListener(){
@@ -540,7 +540,7 @@ public class PlainCloneSetView extends SummaryView {
 				reorgnizeByClonePattern.setChecked(false);
 				reorgnizeByTopic.setChecked(false);
 				
-				viewer.setInput(SummaryUtil.wrapCloneSets(Activator.sets.getCloneList()));
+				viewer.setInput(SummaryUtil.wrapCloneSets(Activator.getCloneSets().getCloneList()));
 				viewer.refresh();
 			}
 		};
