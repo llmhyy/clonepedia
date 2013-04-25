@@ -181,7 +181,9 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 		Activator.getDefault().getPreferenceStore().putValue(CLONE_PATH, this.cloneFileText.getText());
 		Activator.getDefault().getPreferenceStore().putValue(DIFF_LEVEL, this.levelCombo.getText());
 		
-		UIRefresh();
+		if(Settings.projectName == this.projectCombo.getText()){
+			UIRefresh();			
+		}
 		
 		confirmChanges();
 		
