@@ -5,11 +5,15 @@ import java.util.ArrayList;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.eclipse.ui.PlatformUI;
 
 import clonepedia.model.ontology.CloneSet;
 import clonepedia.model.ontology.CloneSets;
@@ -28,14 +32,13 @@ public class PatternAndTopicGeneration implements
 	private double interCloneSetPatternProgress = 0.4;
 	private double topicProgress = 0.1;
 	
-	
 	@Override
 	public void run(IAction action) {
 		
 		Job job = new Job("Pattern and Topic Extracting"){
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				monitor.beginTask("Pattern Generation", 100);
+				monitor.beginTask("Pattern Generation", 1000);
 				
 				try{
 					
@@ -53,6 +56,9 @@ public class PatternAndTopicGeneration implements
 					
 					topicGeneration(monitor, sets);
 					
+					if(monitor.isCanceled()){
+						return Status.CANCEL_STATUS;
+					}
 				}
 				catch(InterruptedException e){
 					e.printStackTrace();
@@ -66,12 +72,26 @@ public class PatternAndTopicGeneration implements
 			}
 			
 		};
+		
+		job.addJobChangeListener(new JobChangeAdapter(){
+			public void done(IJobChangeEvent e){
+				if(e.getResult().isOK()){
+					MessageDialog.openConfirm(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "progress", "pattern generation sucess");
+				}
+				else{
+					
+				}
+			}
+		});
+		
 		job.schedule();
 		
 
 	}
 	
 	private void intraCloneSetPatternGeneration(IProgressMonitor monitor, CloneSets sets) throws Exception{
+		
+		monitor.subTask("generating intra clone set pattern");
 		
 		long startTime = 0;
 		long endTime = 0;
@@ -86,10 +106,14 @@ public class PatternAndTopicGeneration implements
 			if(set == null)
 				continue;
 			
+			if(monitor.isCanceled()){
+				return;
+			}
+			
 			set.buildPatterns();
 			
 			if(i%10 == 0){
-				monitor.worked((int)(10*100/setsNum*this.intraCloneSetPatternProgress));
+				monitor.worked((int)(10*1000/setsNum*this.intraCloneSetPatternProgress));
 				
 				double percentage = ((double)i/setsNum)*100;
 				String percentageString = String.valueOf(percentage).substring(0, 5);
@@ -106,6 +130,11 @@ public class PatternAndTopicGeneration implements
 	
 	private void interCloneSetPatternGeneration(IProgressMonitor monitor, CloneSets sets) throws Exception{
 		
+		if(monitor.isCanceled()){
+			return;
+		}
+		
+		monitor.subTask("generating inter clone set pattern");
 		
 		SyntacticClusteringer0 clusteringer  = new SyntacticClusteringer0(sets.getCloneList());
 
@@ -122,8 +151,16 @@ public class PatternAndTopicGeneration implements
 		clusteringer.clusterSpecificStyleOfClonePattern(locationPatterns, PathSequence.LOCATION);
 		monitor.worked((int)(locationNum/totalNum*100*this.interCloneSetPatternProgress));
 		
+		if(monitor.isCanceled()){
+			return;
+		}
+		
 		clusteringer.clusterSpecificStyleOfClonePattern(mfvDiffPatterns, PathSequence.DIFF_USAGE);
 		monitor.worked((int)(mfvNum/totalNum*100*this.interCloneSetPatternProgress));
+		
+		if(monitor.isCanceled()){
+			return;
+		}
 		
 		clusteringer.clusterSpecificStyleOfClonePattern(ciDiffPatterns, PathSequence.DIFF_USAGE);
 		monitor.worked((int)(ciNum/totalNum*100*this.interCloneSetPatternProgress));
@@ -132,6 +169,13 @@ public class PatternAndTopicGeneration implements
 	}
 	
 	private void topicGeneration(IProgressMonitor monitor, CloneSets sets) throws Exception{
+		
+		if(monitor.isCanceled()){
+			return;
+		}
+		
+		monitor.subTask("generating topic of clone sets");
+		
 		SemanticClusteringer clusteringer = new SemanticClusteringer();
 		
 		//CloneSets sets = (CloneSets)MinerUtil.deserialize("syntactic_sets");
