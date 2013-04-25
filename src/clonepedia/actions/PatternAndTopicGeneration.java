@@ -32,13 +32,15 @@ public class PatternAndTopicGeneration implements
 	private double interCloneSetPatternProgress = 0.4;
 	private double topicProgress = 0.1;
 	
+	private int totalUnit = 1000;
+	
 	@Override
 	public void run(IAction action) {
 		
 		Job job = new Job("Pattern and Topic Extracting"){
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				monitor.beginTask("Pattern Generation", 1000);
+				monitor.beginTask("Pattern Generation", totalUnit);
 				
 				try{
 					
@@ -113,7 +115,7 @@ public class PatternAndTopicGeneration implements
 			set.buildPatterns();
 			
 			if(i%10 == 0){
-				monitor.worked((int)(10*1000/setsNum*this.intraCloneSetPatternProgress));
+				monitor.worked((int)(10*totalUnit/setsNum*this.intraCloneSetPatternProgress));
 				
 				double percentage = ((double)i/setsNum)*100;
 				String percentageString = String.valueOf(percentage).substring(0, 5);
@@ -149,21 +151,21 @@ public class PatternAndTopicGeneration implements
 		double totalNum = locationNum + mfvNum + ciNum;
 		
 		clusteringer.clusterSpecificStyleOfClonePattern(locationPatterns, PathSequence.LOCATION);
-		monitor.worked((int)(locationNum/totalNum*100*this.interCloneSetPatternProgress));
+		monitor.worked((int)(locationNum/totalNum*totalUnit*this.interCloneSetPatternProgress));
 		
 		if(monitor.isCanceled()){
 			return;
 		}
 		
 		clusteringer.clusterSpecificStyleOfClonePattern(mfvDiffPatterns, PathSequence.DIFF_USAGE);
-		monitor.worked((int)(mfvNum/totalNum*100*this.interCloneSetPatternProgress));
+		monitor.worked((int)(mfvNum/totalNum*totalUnit*this.interCloneSetPatternProgress));
 		
 		if(monitor.isCanceled()){
 			return;
 		}
 		
 		clusteringer.clusterSpecificStyleOfClonePattern(ciDiffPatterns, PathSequence.DIFF_USAGE);
-		monitor.worked((int)(ciNum/totalNum*100*this.interCloneSetPatternProgress));
+		monitor.worked((int)(ciNum/totalNum*totalUnit*this.interCloneSetPatternProgress));
 		
 		MinerUtil.serialize(sets, "inter_sets");
 	}
@@ -180,7 +182,7 @@ public class PatternAndTopicGeneration implements
 		
 		//CloneSets sets = (CloneSets)MinerUtil.deserialize("syntactic_sets");
 		clusteringer.doClustering(sets.getCloneList());
-		monitor.worked((int)(100*this.topicProgress));
+		monitor.worked((int)(totalUnit*this.topicProgress));
 		
 		MinerUtil.serialize(sets, "sets");
 	}
