@@ -11,4 +11,6 @@ public class ImageUI {
 	public static String PATTERN_HIERARCHY = "icons/view/pattern_hierarchy.gif";
 	public static String SHOW_DETAILS = "icons/show_details.gif";
 	public static String FILTER = "icons/filter.gif";
+	public static String UP_ARROW = "icons/up_arrow.gif";
+	public static String DOWN_ARROW = "icons/down_arrow.gif";
 }

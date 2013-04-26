@@ -1,5 +1,7 @@
 package clonepedia.views.codesnippet;
 
+import java.util.ArrayList;
+
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.AST;
@@ -9,6 +11,8 @@ import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -25,8 +29,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.part.ViewPart;
 
+import clonepedia.Activator;
 import clonepedia.java.CloneInformationExtractor;
 import clonepedia.java.CompilationUnitPool;
 import clonepedia.java.model.CloneInstanceWrapper;
@@ -39,6 +45,7 @@ import clonepedia.model.ontology.CloneSet;
 import clonepedia.model.ontology.ComplexType;
 import clonepedia.model.ontology.CounterRelationGroup;
 import clonepedia.model.ontology.Method;
+import clonepedia.util.ImageUI;
 import clonepedia.views.util.ViewUtil;
 
 public class CloneDiffView extends ViewPart {
@@ -48,6 +55,11 @@ public class CloneDiffView extends ViewPart {
 	private SashForm sashForm;
 	private DiffCounterRelationGroupEmulator relationGroup;
 	
+	/**
+	 * Show which diff to highlight
+	 */
+	private int diffIndex = -1;
+	
 	public CloneDiffView() {
 		// TODO Auto-generated constructor stub
 	}
@@ -56,6 +68,55 @@ public class CloneDiffView extends ViewPart {
 	public void createPartControl(Composite parent) {
 		parent.setLayout(new FillLayout());
 		this.scrolledComposite = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL);
+		
+		hookActionsOnToolBar();
+	}
+	
+	private void hookActionsOnToolBar(){
+		IActionBars actionBars = getViewSite().getActionBars();
+		IToolBarManager toolBar = actionBars.getToolBarManager();
+		
+		Action nextDiffAction = new Action("Check Next Diff"){
+			public void run(){
+				
+				if(set == null) return;
+				
+				ArrayList<DiffCounterRelationGroupEmulator> list = set.getRelationGroups();
+				if(diffIndex < list.size()-1){
+					diffIndex++;
+				}
+				
+				if(diffIndex >= 0){					
+					relationGroup = list.get(diffIndex);
+				}
+				
+				showCodeSnippet(relationGroup);
+			}
+		};
+		nextDiffAction.setImageDescriptor(Activator.getDefault().getImageRegistry().getDescriptor(ImageUI.DOWN_ARROW));
+		
+		Action prevDiffAction = new Action("Check Previous Diff"){
+			public void run(){
+				
+				if(set == null) return;
+				
+				ArrayList<DiffCounterRelationGroupEmulator> list = set.getRelationGroups();
+				if(diffIndex > 0){
+					diffIndex--;
+				}
+				
+				if(diffIndex >= 0){					
+					relationGroup = list.get(diffIndex);
+				}
+				
+				showCodeSnippet(relationGroup);
+			}
+		};
+		prevDiffAction.setImageDescriptor(Activator.getDefault().getImageRegistry().getDescriptor(ImageUI.UP_ARROW));
+		
+		
+		toolBar.add(nextDiffAction);
+		toolBar.add(prevDiffAction);
 	}
 	
 	public void showCodeSnippet(DiffCounterRelationGroupEmulator relationGroup){
