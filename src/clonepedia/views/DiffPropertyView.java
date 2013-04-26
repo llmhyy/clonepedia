@@ -2,14 +2,32 @@ package clonepedia.views;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.IBinding;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
+import org.eclipse.jdt.core.dom.SimpleName;
+import org.eclipse.jdt.internal.ui.JavaPluginImages;
+import org.eclipse.jface.viewers.CheckboxTreeViewer;
+import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.TreeViewerColumn;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
@@ -24,6 +42,10 @@ import clonepedia.java.model.DiffInstanceElementRelationEmulator;
 import clonepedia.java.util.MinerUtilforJava;
 import clonepedia.model.ontology.CloneInstance;
 import clonepedia.model.ontology.ProgrammingElement;
+import clonepedia.model.viewer.ClonePatternGroupWrapper;
+import clonepedia.model.viewer.CloneSetWrapper;
+import clonepedia.model.viewer.PatternGroupCategory;
+import clonepedia.model.viewer.TopicWrapper;
 import clonepedia.syntactic.util.SyntacticUtil;
 import clonepedia.util.Settings;
 
@@ -33,6 +55,9 @@ public class DiffPropertyView extends ViewPart {
 	private ScrolledForm form;
 	
 	private DiffCounterRelationGroupEmulator diff;
+	
+	private TreeViewer viewer;
+	private HashMap<TypeNode, ArrayList<DiffInstanceElementRelationEmulator>> relationMap;
 	
 	public DiffPropertyView() {
 		// TODO Auto-generated constructor stub
@@ -58,15 +83,169 @@ public class DiffPropertyView extends ViewPart {
 				control.dispose();
 			}
 		}
-		createDiffSections(this.form);
+		if(this.diff != null){
+			createDiffSections(this.form);			
+		}
 		this.form.getBody().pack();
+		this.form.redraw();
+		
 	}
 
 	private void createDiffSections(Composite parent) {
 		createDiffTypeSection(form.getBody());
 		createDiffSyntacticSection(form.getBody());
 	}
+	
+	public class StructureLabelProvider extends ColumnLabelProvider{
 
+		public String getText(Object element) {
+			if(element instanceof TypeNode){
+				TypeNode node = (TypeNode)element;
+				if(node.binding.isClass() || node.binding.isInterface() || node.binding.isPrimitive()){
+					return node.binding.getName();
+				}
+			}
+			else if(element instanceof DiffInstanceElementRelationEmulator){
+				DiffInstanceElementRelationEmulator relation = (DiffInstanceElementRelationEmulator)element;
+				return MinerUtilforJava.getConcernedASTNodeName(relation.getNode());
+			}
+			return null;
+		}
+		
+		@SuppressWarnings("restriction")
+		@Override
+		public Image getImage(Object element) {
+			
+			if(element instanceof TypeNode){
+				TypeNode node = (TypeNode)element;
+				if(node.binding.isClass()){
+					return JavaPluginImages.get(JavaPluginImages.IMG_OBJS_CLASS);
+				}
+				else if(node.binding.isInterface()){
+					return JavaPluginImages.get(JavaPluginImages.IMG_OBJS_INTERFACE);
+				}
+				else if(node.binding.isPrimitive()){
+					return JavaPluginImages.get(JavaPluginImages.IMG_OBJS_CUNIT);
+				}
+				else{
+					return JavaPluginImages.get(JavaPluginImages.IMG_OBJS_BREAKPOINT_INSTALLED);
+				}
+			}
+			else if(element instanceof DiffInstanceElementRelationEmulator){
+				ASTNode node = ((DiffInstanceElementRelationEmulator)element).getNode();
+				SimpleName name = (SimpleName)node;
+				IBinding binding = name.resolveBinding(); 
+				if(binding instanceof ITypeBinding){
+					ITypeBinding tBinding = (ITypeBinding)binding;
+					if(tBinding.isClass()){
+						return JavaPluginImages.get(JavaPluginImages.IMG_OBJS_CLASS_DEFAULT);						
+					}
+					else if(tBinding.isInterface()){
+						return JavaPluginImages.get(JavaPluginImages.IMG_OBJS_INTERFACE_DEFAULT);						
+					}
+					else if(tBinding.isPrimitive()){
+						return JavaPluginImages.get(JavaPluginImages.IMG_OBJS_CUNIT);						
+					}
+					else{
+						return JavaPluginImages.get(JavaPluginImages.IMG_OBJS_BREAKPOINT_INSTALLED);						
+					}
+				}
+				else if(binding instanceof IMethodBinding){
+					return JavaPluginImages.get(JavaPluginImages.IMG_OBJS_ENV_VAR);	
+				}
+				else if(binding instanceof IVariableBinding){
+					return JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_LOCAL);	
+				}
+				else{
+					return JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_CAST);	
+				}
+			}
+			return null;
+		}
+		
+	}
+
+	public class ColumnContentProvider implements ITreeContentProvider{
+
+		@Override
+		public void dispose() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public Object[] getElements(Object inputElement) {
+			if(inputElement instanceof HashMap){
+				HashMap<ITypeBinding, TypeNode> nodes = (HashMap<ITypeBinding, TypeNode>)inputElement;
+				
+				ArrayList<TypeNode> nodeList = new ArrayList<DiffPropertyView.TypeNode>();
+				for(TypeNode node: nodes.values()){
+					if(node.parents.size() == 0){
+						nodeList.add(node);
+					}
+				}
+				
+				return nodeList.toArray(new Object[0]);
+			}
+			return null;
+		}
+
+		@Override
+		public Object[] getChildren(Object parentElement) {
+			if(parentElement instanceof TypeNode){
+				TypeNode node = (TypeNode)parentElement;
+				
+				ArrayList<DiffInstanceElementRelationEmulator> relations = relationMap.get(node); 
+				if(node.children.size() > 0 || relations != null){
+					
+					if(relations != null){
+						System.out.println();
+					}
+					
+					int increment = (relations == null) ? 0 : relations.size();
+					int size = node.children.size() + increment;
+					Object[] list = new Object[size];
+					
+					int i=0;
+					for(TypeNode tn: node.children){
+						list[i++] = tn;
+					}
+					
+					if(relations != null){
+						for(DiffInstanceElementRelationEmulator relation: relations){
+							list[i++] = relation;
+						}
+					}
+					
+					return list;
+				}
+				
+			}
+			return null;
+		}
+
+		@Override
+		public Object getParent(Object element) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public boolean hasChildren(Object element) {
+			if(element instanceof DiffInstanceElementRelationEmulator){
+				return false;
+			}
+			return true;
+		}
+		
+	}
+	
 	private void createDiffSyntacticSection(Composite parent) {
 		Section section = toolkit.createSection(parent, Section.TWISTIE|Section.EXPANDED|Section.TITLE_BAR);
 		section.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
@@ -78,8 +257,14 @@ public class DiffPropertyView extends ViewPart {
 		Tree tree = toolkit.createTree(section, SWT.FULL_SELECTION | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
 		tree.setHeaderVisible(true);
 		tree.setLinesVisible(true);
+		tree.setSize(800, 800);
+		this.viewer = new TreeViewer(tree);
+		this.viewer.setContentProvider(new ColumnContentProvider());
+		this.viewer.setLabelProvider(new StructureLabelProvider());
+		this.viewer.setInput(constructHierarchicalTree());
 		
-		TreeColumn instanceColumn = new TreeColumn(tree, SWT.NONE);
+		
+		/*TreeColumn instanceColumn = new TreeColumn(tree, SWT.NONE);
 		instanceColumn.setText("Clone Instance");
 		TreeColumn operationColumn = new TreeColumn(tree, SWT.NONE);
 		operationColumn.setText("Operation");
@@ -92,15 +277,58 @@ public class DiffPropertyView extends ViewPart {
 		
 		instanceColumn.setResizable(true);
 		operationColumn.setResizable(true);
-		elementColumn.setResizable(true);
+		elementColumn.setResizable(true);*/
 		
 		if(diff != null){
-			createTreeItemsForSingleDiff(tree, diff);			
+			createColumns(viewer);
+			//createTreeItemsForSingleDiff(tree, diff);			
 		}
 		
 		tree.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 		section.setClient(tree);
 		
+	}
+	
+	private void createColumns(TreeViewer viewer){
+		String[] titles = {"Type", "Element", "Instance"};
+		int[] bounds = {300, 200, 300};
+		
+		TreeViewerColumn typeCol = createTreeColumn(viewer, titles[0], bounds[0], 0);
+		typeCol.setLabelProvider(new StructureLabelProvider());
+		
+		TreeViewerColumn elementCol = createTreeColumn(viewer, titles[1], bounds[1], 1);
+		elementCol.setLabelProvider(new ColumnLabelProvider(){
+			public String getText(Object element) {
+				if(element instanceof DiffInstanceElementRelationEmulator){
+					DiffInstanceElementRelationEmulator relation = (DiffInstanceElementRelationEmulator)element;
+					return MinerUtilforJava.getConcernedASTNodeName(relation.getNode());
+				}
+					
+				return null;
+			}
+		});
+		
+		TreeViewerColumn instanceCol = createTreeColumn(viewer, titles[2], bounds[2], 2);
+		instanceCol.setLabelProvider(new ColumnLabelProvider(){
+			public String getText(Object element) {
+				if(element instanceof DiffInstanceElementRelationEmulator){
+					DiffInstanceElementRelationEmulator relation = (DiffInstanceElementRelationEmulator)element;
+					return relation.getInstanceWrapper().getCloneInstance().toString();
+				}
+				return null;
+			}
+		});
+		
+	}
+	
+	private TreeViewerColumn createTreeColumn(TreeViewer viewer, String title, int bound, final int columnNumber){
+		TreeViewerColumn viewerCol = new TreeViewerColumn(viewer, SWT.NONE);
+		TreeColumn col = viewerCol.getColumn();
+		col.setText(title);
+		col.setWidth(bound);
+		col.setResizable(true);
+		col.setMoveable(true);
+		return viewerCol;
 	}
 
 	private void createTreeItemsForSingleDiff(Tree tree, DiffCounterRelationGroupEmulator diff){
@@ -139,6 +367,7 @@ public class DiffPropertyView extends ViewPart {
 	}
 	
 	private String generateDescription(){
+		
 		HashMap<String, ArrayList<CloneInstance>> bucketSet = reorgnizeCRD();
 		ArrayList<Integer> list = new ArrayList<Integer>();
 		
@@ -263,6 +492,112 @@ public class DiffPropertyView extends ViewPart {
 			}
 		}
 		return bucketSet;
+	}
+	
+	public class TypeNode{
+		public ITypeBinding binding;
+		public HashSet<TypeNode> children = new HashSet<TypeNode>();
+		public HashSet<TypeNode> parents = new HashSet<TypeNode>();
+		
+		public TypeNode(ITypeBinding binding){
+			this.binding = binding;
+		}
+		
+		public int hashCode(){
+			return binding.getQualifiedName().hashCode();
+		}
+		
+		public boolean equals(Object obj){
+			if(obj instanceof TypeNode){
+				TypeNode tn = (TypeNode)obj;
+				return this.binding.getQualifiedName().equals(tn.binding.getQualifiedName());
+			}
+			return false;
+		}
+		
+		public String toString(){
+			return this.binding.getQualifiedName();
+		}
+	}
+	
+	private HashMap<String, TypeNode> constructHierarchicalTree(){
+		
+		HashMap<String, TypeNode> nodes = new HashMap<String, TypeNode>();
+		
+		this.relationMap = new HashMap<TypeNode, ArrayList<DiffInstanceElementRelationEmulator>>();
+		
+		HashSet<TypeNode> tmpSet = new HashSet<TypeNode>();
+		for(DiffInstanceElementRelationEmulator relation: diff.getRelations()){
+			ASTNode node = relation.getNode();
+			ITypeBinding binding = MinerUtilforJava.getBinding(node);
+			
+			TypeNode typeNode = new TypeNode(binding);
+			
+			tmpSet.add(typeNode);
+			
+			ArrayList<DiffInstanceElementRelationEmulator> relationList = relationMap.get(typeNode);
+			if(relationList == null){
+				relationList = new ArrayList<DiffInstanceElementRelationEmulator>();
+				relationMap.put(typeNode, relationList);
+			}
+			relationList.add(relation);
+			
+			nodes.put(binding.getQualifiedName(), typeNode);
+		}
+		
+		while(tmpSet.size() != 0){
+			tmpSet = buildParentSets(tmpSet, nodes);
+			
+			/*for(TypeNode tn: tmpSet){
+				if(!nodes.containsKey(tn.binding)){
+					nodes.put(tn.binding, tn);
+				}
+			}*/
+			System.out.println();
+		}
+		
+		return nodes;
+	}
+	
+	private HashSet<TypeNode> buildParentSets(HashSet<TypeNode> tmpSet, 
+			HashMap<String, TypeNode> nodes){
+		
+		HashSet<TypeNode> parentSet = new HashSet<TypeNode>();
+		for(TypeNode node: tmpSet){
+			
+			node = nodes.get(node.binding.getQualifiedName());
+			ITypeBinding binding = node.binding;
+			
+			ITypeBinding superClassBinding = binding.getSuperclass();
+			ITypeBinding[] interfaceBindingList = binding.getInterfaces();
+			
+			if(superClassBinding != null){
+				TypeNode parentNode = nodes.get(superClassBinding.getQualifiedName());
+				if(parentNode == null){
+					parentNode = new TypeNode(superClassBinding);
+				}
+				
+				parentNode.children.add(node);
+				node.parents.add(parentNode);
+				parentSet.add(parentNode);
+				nodes.put(parentNode.binding.getQualifiedName(), parentNode);
+			}
+			
+			
+			for(ITypeBinding interfaceBinding: interfaceBindingList){
+				TypeNode parentNode = nodes.get(interfaceBinding.getQualifiedName());
+				if(parentNode == null){
+					parentNode = new TypeNode(interfaceBinding);
+				}
+				
+				parentNode.children.add(node);
+				node.parents.add(parentNode);
+				parentSet.add(parentNode);
+				nodes.put(parentNode.binding.getQualifiedName(), parentNode);
+			}
+		}
+		
+		return parentSet;
 	}
 	
 	@Override

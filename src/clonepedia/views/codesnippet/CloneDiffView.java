@@ -45,7 +45,9 @@ import clonepedia.model.ontology.CloneSet;
 import clonepedia.model.ontology.ComplexType;
 import clonepedia.model.ontology.CounterRelationGroup;
 import clonepedia.model.ontology.Method;
+import clonepedia.perspective.CloneDiffPerspective;
 import clonepedia.util.ImageUI;
+import clonepedia.views.DiffPropertyView;
 import clonepedia.views.util.ViewUtil;
 
 public class CloneDiffView extends ViewPart {
@@ -60,6 +62,10 @@ public class CloneDiffView extends ViewPart {
 	 */
 	private int diffIndex = -1;
 	
+	public void setDiffIndex(int diffIndex) {
+		this.diffIndex = diffIndex;
+	}
+
 	public CloneDiffView() {
 		// TODO Auto-generated constructor stub
 	}
@@ -91,6 +97,11 @@ public class CloneDiffView extends ViewPart {
 				}
 				
 				showCodeSnippet(relationGroup);
+				
+				DiffPropertyView propertyViewPart = (DiffPropertyView)getSite().getWorkbenchWindow().getActivePage().findView(CloneDiffPerspective.DIFF_PROPERTY_VIEW);
+				if(propertyViewPart != null){
+					propertyViewPart.showDiffInformation(relationGroup);
+				}
 			}
 		};
 		nextDiffAction.setImageDescriptor(Activator.getDefault().getImageRegistry().getDescriptor(ImageUI.DOWN_ARROW));
@@ -110,6 +121,11 @@ public class CloneDiffView extends ViewPart {
 				}
 				
 				showCodeSnippet(relationGroup);
+				
+				DiffPropertyView propertyViewPart = (DiffPropertyView)getSite().getWorkbenchWindow().getActivePage().findView(CloneDiffPerspective.DIFF_PROPERTY_VIEW);
+				if(propertyViewPart != null){
+					propertyViewPart.showDiffInformation(relationGroup);
+				}
 			}
 		};
 		prevDiffAction.setImageDescriptor(Activator.getDefault().getImageRegistry().getDescriptor(ImageUI.UP_ARROW));

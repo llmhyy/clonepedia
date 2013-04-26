@@ -95,6 +95,7 @@ import clonepedia.summary.NaturalLanguateTemplate;
 import clonepedia.summary.SummaryUtil;
 import clonepedia.util.ImageUI;
 import clonepedia.util.Settings;
+import clonepedia.views.DiffPropertyView;
 import clonepedia.views.SummaryView;
 import clonepedia.views.codesnippet.CloneCodeSnippetView;
 import clonepedia.views.codesnippet.CloneDiffView;
@@ -221,8 +222,14 @@ public class PlainCloneSetView extends SummaryView {
 					
 					openNewTab(element);
 					CloneDiffView viewpart = (CloneDiffView)getSite().getWorkbenchWindow().getActivePage().findView(CloneDiffPerspective.CLONE_DIFF_VIEW);
-					if(viewpart != null){						
+					if(viewpart != null){	
+						viewpart.setDiffIndex(-1);
 						viewpart.showCodeSnippet(cloneSetWrapper.getSyntacticSetWrapper(), null);
+					}
+					
+					DiffPropertyView propertyViewPart = (DiffPropertyView)getSite().getWorkbenchWindow().getActivePage().findView(CloneDiffPerspective.DIFF_PROPERTY_VIEW);
+					if(propertyViewPart != null){
+						propertyViewPart.showDiffInformation(null);
 					}
 				}
 				else if(element instanceof CloneInstance){
