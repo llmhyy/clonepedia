@@ -257,12 +257,17 @@ public class DiffPropertyView extends ViewPart {
 		Tree tree = toolkit.createTree(section, SWT.FULL_SELECTION | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
 		tree.setHeaderVisible(true);
 		tree.setLinesVisible(true);
-		tree.setSize(800, 800);
+		
 		this.viewer = new TreeViewer(tree);
 		this.viewer.setContentProvider(new ColumnContentProvider());
 		this.viewer.setLabelProvider(new StructureLabelProvider());
 		this.viewer.setInput(constructHierarchicalTree());
-		
+		this.viewer.setAutoExpandLevel(5);
+		/*ArrayList<DiffInstanceElementRelationEmulator> relList = new ArrayList<DiffInstanceElementRelationEmulator>();
+		for(ArrayList<DiffInstanceElementRelationEmulator> list: this.relationMap.values()){
+			relList.addAll(list);
+		}
+		this.viewer.setExpandedElements(relList.toArray(new Object[0]));*/
 		
 		/*TreeColumn instanceColumn = new TreeColumn(tree, SWT.NONE);
 		instanceColumn.setText("Clone Instance");
@@ -290,13 +295,13 @@ public class DiffPropertyView extends ViewPart {
 	}
 	
 	private void createColumns(TreeViewer viewer){
-		String[] titles = {"Type", "Element", "Instance"};
-		int[] bounds = {300, 200, 300};
+		String[] titles = {"Type", "Instance"};
+		int[] bounds = {300, 500};
 		
 		TreeViewerColumn typeCol = createTreeColumn(viewer, titles[0], bounds[0], 0);
 		typeCol.setLabelProvider(new StructureLabelProvider());
 		
-		TreeViewerColumn elementCol = createTreeColumn(viewer, titles[1], bounds[1], 1);
+		/*TreeViewerColumn elementCol = createTreeColumn(viewer, titles[1], bounds[1], 1);
 		elementCol.setLabelProvider(new ColumnLabelProvider(){
 			public String getText(Object element) {
 				if(element instanceof DiffInstanceElementRelationEmulator){
@@ -306,9 +311,9 @@ public class DiffPropertyView extends ViewPart {
 					
 				return null;
 			}
-		});
+		});*/
 		
-		TreeViewerColumn instanceCol = createTreeColumn(viewer, titles[2], bounds[2], 2);
+		TreeViewerColumn instanceCol = createTreeColumn(viewer, titles[1], bounds[1], 1);
 		instanceCol.setLabelProvider(new ColumnLabelProvider(){
 			public String getText(Object element) {
 				if(element instanceof DiffInstanceElementRelationEmulator){
@@ -553,7 +558,7 @@ public class DiffPropertyView extends ViewPart {
 					nodes.put(tn.binding, tn);
 				}
 			}*/
-			System.out.println();
+			//System.out.println();
 		}
 		
 		return nodes;
