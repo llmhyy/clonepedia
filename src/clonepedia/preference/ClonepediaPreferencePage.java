@@ -74,7 +74,7 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 		this.defaultDiffLevel = Activator.getDefault().getPreferenceStore().getString(DIFF_LEVEL);
 		//this.defaultTargetProject = preferences.get(TARGET_PORJECT, "");
 		//this.defaultCloneFilePath = preferences.get(CLONE_PATH, "");
-		Activator.setCloneSets((CloneSets) MinerUtil.deserialize("sets"));
+		//Activator.setCloneSets((CloneSets) MinerUtil.deserialize("sets"));
 
 	}
 
@@ -181,7 +181,7 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 		Activator.getDefault().getPreferenceStore().putValue(CLONE_PATH, this.cloneFileText.getText());
 		Activator.getDefault().getPreferenceStore().putValue(DIFF_LEVEL, this.levelCombo.getText());
 		
-		if(Settings.projectName != this.projectCombo.getText()){
+		if(!Settings.projectName.equals(this.projectCombo.getText()) ){
 			UIRefresh();			
 		}
 		
@@ -193,9 +193,11 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 	
 	@SuppressWarnings("unchecked")
 	private void UIRefresh(){
-		String targetDir = "configurations" + File.separator + Settings.projectName;
+		String targetDir = "configurations" + File.separator + this.projectCombo.getText();
 		File dir = new File(targetDir);
 		if(dir.exists()){
+			
+			Settings.projectName = this.projectCombo.getText();
 			Activator.setCloneSets((CloneSets) MinerUtil.deserialize("sets"));
 			
 			CloneSetWrapperList cloneSets = SummaryUtil.wrapCloneSets(Activator.getCloneSets().getCloneList());
@@ -203,31 +205,44 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 			PlainCloneSetView cloneSetView = (PlainCloneSetView)PlatformUI.getWorkbench().
 					getActiveWorkbenchWindow().getActivePage().findView(CloneSummaryPerspective.PLAIN_CLONESET_VIEW);
 			//cloneSetView.restoreInput(Activator.getCloneSets());
-			cloneSetView.setCloneSets(cloneSets);
-			cloneSetView.restoreInput(cloneSets);
+			
 			
 			PatternOrientedView patternView = (PatternOrientedView)PlatformUI.getWorkbench().
 					getActiveWorkbenchWindow().getActivePage().findView(CloneSummaryPerspective.PATTERN_ORIENTED_VIEW);
+			TopicOrientedView topicView = (TopicOrientedView)PlatformUI.getWorkbench().
+					getActiveWorkbenchWindow().getActivePage().findView(CloneSummaryPerspective.TOPIC_ORIENTED_VIEW);
+			
 			try {
-				ClonePatternGroupCategoryList clonePatternCategories = (ClonePatternGroupCategoryList)SummaryUtil.generateClonePatternSimplifiedCategories(Activator.getCloneSets().getCloneList());
-				for(PatternGroupCategory category: clonePatternCategories){
-					Collections.sort(category.getPatternList(), new DefaultValueDescComparator());
+				if(cloneSetView != null){
+					cloneSetView.setCloneSets(cloneSets);
+					cloneSetView.restoreInput(cloneSets);
 				}
 				
-				patternView.setCategories(clonePatternCategories);
-				patternView.restoreInput(clonePatternCategories);
+				if(patternView != null){
+					ClonePatternGroupCategoryList clonePatternCategories = (ClonePatternGroupCategoryList)SummaryUtil.generateClonePatternSimplifiedCategories(Activator.getCloneSets().getCloneList());
+					for(PatternGroupCategory category: clonePatternCategories){
+						Collections.sort(category.getPatternList(), new DefaultValueDescComparator());
+					}
+					
+					patternView.setCategories(clonePatternCategories);
+					patternView.restoreInput(clonePatternCategories);
+					
+				}
+
+				if(topicView != null){
+					TopicWrapperList topics = SummaryUtil.generateTopicOrientedSimpleTree(Activator.getCloneSets().getCloneList());
+					Collections.sort(topics, new DefaultValueAscComparator());
+					
+					topicView.restoreInput(topics);
+					topicView.setTopics(topics);
+					
+				}
+				
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
-			TopicOrientedView topicView = (TopicOrientedView)PlatformUI.getWorkbench().
-					getActiveWorkbenchWindow().getActivePage().findView(CloneSummaryPerspective.TOPIC_ORIENTED_VIEW);
-			TopicWrapperList topics = SummaryUtil.generateTopicOrientedSimpleTree(Activator.getCloneSets().getCloneList());
-			Collections.sort(topics, new DefaultValueAscComparator());
-			
-			topicView.restoreInput(topics);
-			topicView.setTopics(topics);
 		}
 	}
 	
