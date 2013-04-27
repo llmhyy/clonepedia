@@ -83,11 +83,12 @@ public class DiffPropertyView extends ViewPart {
 				control.dispose();
 			}
 		}
+		this.form.getBody().update();
+		
 		if(this.diff != null){
 			createDiffSections(this.form);			
 		}
 		this.form.getBody().pack();
-		this.form.redraw();
 		
 	}
 
