@@ -133,28 +133,34 @@ public class DiffPropertyView extends ViewPart {
 			}
 			else if(element instanceof DiffInstanceElementRelationEmulator){
 				ASTNode node = ((DiffInstanceElementRelationEmulator)element).getNode();
-				SimpleName name = (SimpleName)node;
-				IBinding binding = name.resolveBinding(); 
-				if(binding instanceof ITypeBinding){
-					ITypeBinding tBinding = (ITypeBinding)binding;
-					if(tBinding.isClass()){
-						return JavaPluginImages.get(JavaPluginImages.IMG_OBJS_CLASS_DEFAULT);						
+				
+				if(node instanceof SimpleName){
+					SimpleName name = (SimpleName)node;
+					IBinding binding = name.resolveBinding(); 
+					if(binding instanceof ITypeBinding){
+						ITypeBinding tBinding = (ITypeBinding)binding;
+						if(tBinding.isClass()){
+							return JavaPluginImages.get(JavaPluginImages.IMG_OBJS_CLASS_DEFAULT);						
+						}
+						else if(tBinding.isInterface()){
+							return JavaPluginImages.get(JavaPluginImages.IMG_OBJS_INTERFACE_DEFAULT);						
+						}
+						else if(tBinding.isPrimitive()){
+							return JavaPluginImages.get(JavaPluginImages.IMG_OBJS_CUNIT);						
+						}
+						else{
+							return JavaPluginImages.get(JavaPluginImages.IMG_OBJS_BREAKPOINT_INSTALLED);						
+						}
 					}
-					else if(tBinding.isInterface()){
-						return JavaPluginImages.get(JavaPluginImages.IMG_OBJS_INTERFACE_DEFAULT);						
+					else if(binding instanceof IMethodBinding){
+						return JavaPluginImages.get(JavaPluginImages.IMG_OBJS_ENV_VAR);	
 					}
-					else if(tBinding.isPrimitive()){
-						return JavaPluginImages.get(JavaPluginImages.IMG_OBJS_CUNIT);						
+					else if(binding instanceof IVariableBinding){
+						return JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_LOCAL);	
 					}
 					else{
-						return JavaPluginImages.get(JavaPluginImages.IMG_OBJS_BREAKPOINT_INSTALLED);						
+						return JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_CAST);	
 					}
-				}
-				else if(binding instanceof IMethodBinding){
-					return JavaPluginImages.get(JavaPluginImages.IMG_OBJS_ENV_VAR);	
-				}
-				else if(binding instanceof IVariableBinding){
-					return JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_LOCAL);	
 				}
 				else{
 					return JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_CAST);	
@@ -262,7 +268,6 @@ public class DiffPropertyView extends ViewPart {
 		this.viewer.setContentProvider(new ColumnContentProvider());
 		this.viewer.setLabelProvider(new StructureLabelProvider());
 		this.viewer.setInput(constructHierarchicalTree());
-		this.viewer.setAutoExpandLevel(5);
 		/*ArrayList<DiffInstanceElementRelationEmulator> relList = new ArrayList<DiffInstanceElementRelationEmulator>();
 		for(ArrayList<DiffInstanceElementRelationEmulator> list: this.relationMap.values()){
 			relList.addAll(list);
@@ -289,6 +294,7 @@ public class DiffPropertyView extends ViewPart {
 			//createTreeItemsForSingleDiff(tree, diff);			
 		}
 		
+		this.viewer.expandAll();
 		tree.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 		section.setClient(tree);
 		
