@@ -263,7 +263,7 @@ public class CloneDiffView extends ViewPart {
 			ASTNode doc = methodDeclaration.getJavadoc();
 			if(doc != null){
 				generateStyleRangeFromASTNode(text, doc, methodStartPosition, 
-						Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GREEN), SWT.NORMAL);
+						CloneDiffView.DOC_STYLE, 0, false);
 			}
 			/**
 			 * for counter relationally difference
@@ -273,7 +273,7 @@ public class CloneDiffView extends ViewPart {
 					CloneInstanceWrapper referInstance = relation.getInstanceWrapper();
 					if(referInstance.equals(instanceWrapper)){
 						generateStyleRangeFromASTNode(text, relation.getNode(), 
-								methodStartPosition, Display.getCurrent().getSystemColor(SWT.COLOR_RED), SWT.NORMAL);
+								methodStartPosition, CloneDiffView.COUNTER_DIFF_STYLE, relationGroup.getRelations().size(), false);
 						
 						
 					}
@@ -285,7 +285,7 @@ public class CloneDiffView extends ViewPart {
 			 */
 			for(ASTNode node: instanceWrapper.getUncounterRelationalDifferenceNodes()){
 				generateStyleRangeFromASTNode(text, node, methodStartPosition, 
-						Display.getCurrent().getSystemColor(SWT.COLOR_BLUE), SWT.NORMAL);
+						CloneDiffView.GAP_DIFF_STYLE, 1, false);
 				
 			}
 			
@@ -298,7 +298,7 @@ public class CloneDiffView extends ViewPart {
 						ASTNode node = relation.getNode();
 						
 						generateStyleRangeFromASTNode(text, node,
-								methodStartPosition, Display.getCurrent().getSystemColor(SWT.COLOR_RED), SWT.BOLD);
+								methodStartPosition, CloneDiffView.COUNTER_DIFF_STYLE, relationGroup.getRelations().size(), true);
 						
 						text.setTopIndex(cu.getLineNumber(node.getStartPosition()) - cu.getLineNumber(methodStartPosition) - 3);
 						text.setHorizontalIndex(cu.getColumnNumber(node.getStartPosition()) - 20);
@@ -318,8 +318,34 @@ public class CloneDiffView extends ViewPart {
 		text.setLayoutData(gData);*/
 	}
 	
+	private final static int DOC_STYLE = 1;
+	private final static int GAP_DIFF_STYLE = 2;
+	private final static int COUNTER_DIFF_STYLE = 3;
+	
 	private void generateStyleRangeFromASTNode(StyledText text, ASTNode node, 
-			int methodStartPosition, Color color, int style){
+			int methodStartPosition, int codeTextStyle, int relationGroupSize, boolean highlight){
+		
+		Color color = Display.getCurrent().getSystemColor(SWT.COLOR_GRAY);
+		int style = SWT.NORMAL;
+		
+		switch(codeTextStyle){
+		case DOC_STYLE:
+			color = Display.getCurrent().getSystemColor(SWT.COLOR_GRAY);
+			break;
+		case GAP_DIFF_STYLE:
+			color = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_BLUE);
+			break;
+		case COUNTER_DIFF_STYLE:
+			int s = (relationGroupSize < set.size())? SWT.COLOR_MAGENTA : SWT.COLOR_RED;
+			color = Display.getCurrent().getSystemColor(s);
+			break;
+		}
+		
+		if(highlight){
+			style = SWT.BOLD;
+		}
+		
+		
 		int startNodePosition = node.getStartPosition();
 		int length = node.getLength();
 		
