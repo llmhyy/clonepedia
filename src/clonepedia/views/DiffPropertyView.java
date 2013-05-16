@@ -55,6 +55,7 @@ public class DiffPropertyView extends ViewPart {
 	private ScrolledForm form;
 	
 	private DiffCounterRelationGroupEmulator diff;
+	private clonepedia.java.model.CloneSetWrapper syntacticSetWrapper;
 	
 	private TreeViewer viewer;
 	private HashMap<TypeNode, ArrayList<DiffInstanceElementRelationEmulator>> relationMap;
@@ -85,16 +86,24 @@ public class DiffPropertyView extends ViewPart {
 		}
 		this.form.getBody().update();
 		
-		if(this.diff != null){
-			createDiffSections(this.form);			
-		}
+		
+		createDiffSections(this.form);			
+		
 		this.form.getBody().pack();
 		
 	}
+	
+	public void showDiffInformation(DiffCounterRelationGroupEmulator diff, clonepedia.java.model.CloneSetWrapper syntacticSetWrapper){
+		this.syntacticSetWrapper = syntacticSetWrapper;
+		showDiffInformation(diff);
+	}
 
 	private void createDiffSections(Composite parent) {
-		createDiffTypeSection(form.getBody());
-		createDiffSyntacticSection(form.getBody());
+		createCloneSetDiffSummary(form.getBody());
+		if(this.diff != null){
+			createDiffTypeSection(form.getBody());
+			createDiffSyntacticSection(form.getBody());
+		}
 	}
 	
 	public class StructureLabelProvider extends ColumnLabelProvider{
@@ -364,6 +373,28 @@ public class DiffPropertyView extends ViewPart {
 
 		}
 	}
+	
+	private void createCloneSetDiffSummary(Composite parent){
+		Section section = toolkit.createSection(parent, Section.TWISTIE|Section.EXPANDED|Section.TITLE_BAR);
+		section.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+		section.setExpanded(true);
+		section.setLayout(new TableWrapLayout());
+		
+		section.setText("Overal Summary for Diffs");
+		
+		FormText text = this.toolkit.createFormText(section, true);
+		text.setText(generateOverallDiffDescription(), true, false);
+		section.setClient(text);
+	}
+	
+	private String generateOverallDiffDescription(){
+		String word1 = "<form>There are "; 
+		String word2 = " counter difference in this clone set.";
+		String word3 = "The differences are ";; 
+		String word4 = "generally regular</form>";
+		
+		return word1 + this.syntacticSetWrapper.getPatternNodeSets().size() + word2 + word3 + word4;
+	}
 
 	private void createDiffTypeSection(Composite parent) {
 		Section section = toolkit.createSection(parent, Section.TWISTIE|Section.EXPANDED|Section.TITLE_BAR);
@@ -374,11 +405,11 @@ public class DiffPropertyView extends ViewPart {
 		section.setText("Distribution");
 		
 		FormText text = this.toolkit.createFormText(section, true);
-		text.setText(generateDescription(), true, false);
+		text.setText(generateSingleDiffDescription(), true, false);
 		section.setClient(text);
 	}
 	
-	private String generateDescription(){
+	private String generateSingleDiffDescription(){
 		
 		HashMap<String, ArrayList<CloneInstance>> bucketSet = reorgnizeCRD();
 		ArrayList<Integer> list = new ArrayList<Integer>();
@@ -408,6 +439,12 @@ public class DiffPropertyView extends ViewPart {
 			}
 		}
 		
+		int totalSize = diff.getRelations().get(0).getInstanceWrapper().getCloneInstance().getCloneSet().size();
+		int differSize = totalSize - diff.getRelations().size(); 
+		if(differSize > 0){
+			list.add(differSize);
+		}
+		
 		String type = getDistributionType(list);
 		StringBuffer content = new StringBuffer();
 		content.append("<form><p>");
@@ -416,7 +453,7 @@ public class DiffPropertyView extends ViewPart {
 		content.append(" diff.");
 		content.append("</p>");
 		
-		String totalNumString = String.valueOf(diff.getRelations().size());
+		String totalNumString = String.valueOf(totalSize);
 		if(type.equals("even")){	
 			int average = diff.getRelations().size()/bucketSet.size();
 			content.append("Each ");
@@ -424,6 +461,9 @@ public class DiffPropertyView extends ViewPart {
 			content.append(" of ");
 			content.append(totalNumString);
 			content.append(" clone instances use different element");
+			if(differSize > 0){
+				content.append(", and " + differSize + " instance(s) missed in such a counter difference");
+			}
 			content.append("<br/>");
 		}
 		else{
@@ -436,6 +476,11 @@ public class DiffPropertyView extends ViewPart {
 				content.append(totalNumString);
 				content.append(" clone instances in diff use ");
 				content.append(elementKey);
+				
+				if(differSize > 0){
+					content.append(", and " + differSize + " instance(s) missed in such a counter difference");
+				}
+				
 				content.append("<br/>");
 			}
 			
@@ -476,6 +521,11 @@ public class DiffPropertyView extends ViewPart {
 		
 	}
 
+	/**
+	 * return a map like token-instanceList. Noted that several clone instances may share same
+	 * tokens in a counter difference.
+	 * @return
+	 */
 	private HashMap<String, ArrayList<CloneInstance>> reorgnizeCRD(){
 		HashMap<String, ArrayList<CloneInstance>> bucketSet = new HashMap<String, ArrayList<CloneInstance>>();
 		if(this.diff != null){

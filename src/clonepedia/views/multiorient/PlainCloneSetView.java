@@ -229,7 +229,7 @@ public class PlainCloneSetView extends SummaryView {
 					
 					DiffPropertyView propertyViewPart = (DiffPropertyView)getSite().getWorkbenchWindow().getActivePage().findView(CloneDiffPerspective.DIFF_PROPERTY_VIEW);
 					if(propertyViewPart != null){
-						propertyViewPart.showDiffInformation(null);
+						propertyViewPart.showDiffInformation(null, cloneSetWrapper.getSyntacticSetWrapper());
 					}
 				}
 				else if(element instanceof CloneInstance){

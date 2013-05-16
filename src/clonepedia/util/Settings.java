@@ -11,6 +11,7 @@ public class Settings {
 			projectName = Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.TARGET_PORJECT);
 			inputCloneFile = Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.CLONE_PATH);
 			diffComparisonMode = Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.DIFF_LEVEL);
+			skipPattern = Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.SKIP_PATTERN);
 		}
 	}
 	
@@ -21,6 +22,11 @@ public class Settings {
 	 * Statement_Based
 	 */
 	public static String diffComparisonMode;
+	
+	/**
+	 * Currently, support two options: "Yes" or "No"
+	 */
+	public static String skipPattern;
 	
 	public static double diffComparisonThreshold = 0.7d;
 	

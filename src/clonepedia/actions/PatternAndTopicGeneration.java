@@ -24,6 +24,7 @@ import clonepedia.syntactic.SyntacticClusteringer0;
 import clonepedia.syntactic.util.comparator.LevenshteinPathComparator;
 import clonepedia.syntactic.util.comparator.PathComparator;
 import clonepedia.util.MinerUtil;
+import clonepedia.util.Settings;
 
 public class PatternAndTopicGeneration implements
 		IWorkbenchWindowActionDelegate {
@@ -50,12 +51,15 @@ public class PatternAndTopicGeneration implements
 					System.out.println("Ontological model extracted.");
 					sets.setPathComparator(pathComparator);
 					
-					intraCloneSetPatternGeneration(monitor, sets);
-					
-					printPatternNumber(sets);
-					
-					interCloneSetPatternGeneration(monitor, sets);
-					
+					if(Settings.skipPattern.equals("No")){
+						
+						intraCloneSetPatternGeneration(monitor, sets);
+						
+						printPatternNumber(sets);
+						
+						interCloneSetPatternGeneration(monitor, sets);
+						
+					}
 					topicGeneration(monitor, sets);
 					
 					if(monitor.isCanceled()){

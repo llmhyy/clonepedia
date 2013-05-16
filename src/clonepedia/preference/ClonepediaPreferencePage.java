@@ -52,14 +52,17 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 	private Text cloneFileText;
 	
 	private Combo levelCombo;
+	private Combo skipPatternCombo;
 	
 	private String defaultTargetProject;
 	private String defaultCloneFilePath;
 	private String defaultDiffLevel;
+	private String defaultSkipPattern;
 	
 	public static final String TARGET_PORJECT = "targetProjectName";
 	public static final String CLONE_PATH = "cloneFilePath";
 	public static final String DIFF_LEVEL = "diffLevel";
+	public static final String SKIP_PATTERN = "skipPattern";
 	
 	public ClonepediaPreferencePage() {
 		// TODO Auto-generated constructor stub
@@ -72,6 +75,7 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 		this.defaultTargetProject = Activator.getDefault().getPreferenceStore().getString(TARGET_PORJECT);
 		this.defaultCloneFilePath = Activator.getDefault().getPreferenceStore().getString(CLONE_PATH);
 		this.defaultDiffLevel = Activator.getDefault().getPreferenceStore().getString(DIFF_LEVEL);
+		this.defaultSkipPattern = Activator.getDefault().getPreferenceStore().getString(SKIP_PATTERN);
 		//this.defaultTargetProject = preferences.get(TARGET_PORJECT, "");
 		//this.defaultCloneFilePath = preferences.get(CLONE_PATH, "");
 		//Activator.setCloneSets((CloneSets) MinerUtil.deserialize("sets"));
@@ -137,15 +141,34 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 			}
 		});
 		
-		Group cloneGroup = new Group(composite, SWT.NONE);
-		cloneGroup.setText("parameters for pattern generation");
-		GridData cloneGroupData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		cloneGroupData.horizontalSpan = 3;
-		cloneGroup.setLayoutData(cloneGroupData);
+		createPatternGroup(composite);
 		
 		createDiffGroup(composite);
 		
 		return composite;
+	}
+	
+	private void createPatternGroup(Composite parent){
+		Group patternGroup = new Group(parent, SWT.NONE);
+		patternGroup.setText("parameters for pattern generation");
+		GridData patternGroupData = new GridData(SWT.FILL, SWT.FILL, true, true);
+		patternGroupData.horizontalSpan = 3;
+		patternGroup.setLayoutData(patternGroupData);
+		
+		GridLayout layout = new GridLayout();
+		layout.numColumns = 3;
+		
+		patternGroup.setLayout(layout);
+		
+		Label skipLabel = new Label(patternGroup, SWT.NONE);
+		skipLabel.setText("skip pattern or not");
+		
+		skipPatternCombo = new Combo(patternGroup, SWT.BORDER);
+		skipPatternCombo.setItems(new String[]{"Yes", "No"});
+		skipPatternCombo.setText(this.defaultSkipPattern);
+		GridData comboData = new GridData(SWT.FILL, SWT.FILL, true, false);
+		comboData.horizontalSpan = 2;
+		skipPatternCombo.setLayoutData(comboData);
 	}
 	
 	private void createDiffGroup(Composite parent){
@@ -176,10 +199,12 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 		preferences.put(TARGET_PORJECT, this.projectCombo.getText());
 		preferences.put(CLONE_PATH, this.cloneFileText.getText());
 		preferences.put(DIFF_LEVEL, this.levelCombo.getText());
+		preferences.put(SKIP_PATTERN, this.skipPatternCombo.getText());
 		
 		Activator.getDefault().getPreferenceStore().putValue(TARGET_PORJECT, this.projectCombo.getText());
 		Activator.getDefault().getPreferenceStore().putValue(CLONE_PATH, this.cloneFileText.getText());
 		Activator.getDefault().getPreferenceStore().putValue(DIFF_LEVEL, this.levelCombo.getText());
+		Activator.getDefault().getPreferenceStore().putValue(SKIP_PATTERN, this.skipPatternCombo.getText());
 		
 		if(!Settings.projectName.equals(this.projectCombo.getText()) ){
 			UIRefresh();			
@@ -250,6 +275,7 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 		Settings.projectName = this.projectCombo.getText();
 		Settings.inputCloneFile = this.cloneFileText.getText();
 		Settings.diffComparisonMode = this.levelCombo.getText();
+		Settings.skipPattern = this.skipPatternCombo.getText();
 	}
 	
 	public ClonepediaPreferencePage(String title) {
