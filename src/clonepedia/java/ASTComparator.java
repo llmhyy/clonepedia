@@ -114,8 +114,20 @@ public class ASTComparator implements BoolComparator {
 		case ASTNode.SIMPLE_NAME:{
 			SimpleName name1 = (SimpleName) node1;
 			SimpleName name2 = (SimpleName) node2;
-			return /*(name1.resolveTypeBinding() == name2.resolveTypeBinding()) 
-					&&*/ matcher.match((SimpleName) node1, node2);
+			boolean isName1Null = name1.resolveTypeBinding() == null;
+			boolean isName2Null = name2.resolveTypeBinding() == null;
+			
+			if(isName1Null ^ isName2Null){
+				return false;
+			}
+			else if(isName1Null && isName2Null){
+				return /*(name1.resolveTypeBinding().getBinaryName().equals(name2.resolveTypeBinding().getBinaryName())) && */
+						matcher.match((SimpleName) node1, node2);
+			}
+			else{
+				return (name1.resolveTypeBinding().getBinaryName().equals(name2.resolveTypeBinding().getBinaryName())) && 
+						matcher.match((SimpleName) node1, node2);				
+			}
 		}
 		case ASTNode.CHARACTER_LITERAL:
 			return matcher.match((CharacterLiteral) node1, node2);

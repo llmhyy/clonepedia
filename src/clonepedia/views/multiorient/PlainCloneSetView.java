@@ -750,7 +750,7 @@ public class PlainCloneSetView extends SummaryView {
 		
 		final TreeViewer relatedClonePatternViewer = new TreeViewer(composite, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
 		TableWrapData twData = new TableWrapData(TableWrapData.FILL_GRAB, TableWrapData.FILL_GRAB);
-		twData.heightHint = 150;
+		twData.heightHint = 300;
 		//GridData treeLayoutData = new GridData(GridData.BEGINNING, GridData.FILL_BOTH, true, true);
 		//treeLayoutData.widthHint = 250;
 		//treeLayoutData.heightHint = 200;
