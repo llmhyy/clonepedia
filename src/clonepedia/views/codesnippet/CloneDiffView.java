@@ -101,6 +101,7 @@ public class CloneDiffView extends ViewPart {
 				DiffPropertyView propertyViewPart = (DiffPropertyView)getSite().getWorkbenchWindow().getActivePage().findView(CloneDiffPerspective.DIFF_PROPERTY_VIEW);
 				if(propertyViewPart != null){
 					propertyViewPart.showDiffInformation(relationGroup);
+					propertyViewPart.setFocus();
 				}
 			}
 		};

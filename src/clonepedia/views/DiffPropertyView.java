@@ -21,8 +21,12 @@ import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
@@ -53,6 +57,7 @@ public class DiffPropertyView extends ViewPart {
 
 	private FormToolkit toolkit;
 	private ScrolledForm form;
+	private Composite parentComposite;
 	
 	private DiffCounterRelationGroupEmulator diff;
 	private clonepedia.java.model.CloneSetWrapper syntacticSetWrapper;
@@ -66,15 +71,20 @@ public class DiffPropertyView extends ViewPart {
 
 	@Override
 	public void createPartControl(Composite parent) {
+		
 		this.toolkit = new FormToolkit(parent.getDisplay());
 		this.form = toolkit.createScrolledForm(parent);
 		this.form.setText("Diff Property");
+		
+		this.parentComposite = parent;
 		
 		TableWrapLayout tableLayout = new TableWrapLayout();
 		tableLayout.numColumns = 1;
 		tableLayout.verticalSpacing = 10;
 		
+		//this.form.getBody().setRedraw(true);
 		this.form.getBody().setLayout(tableLayout);
+		
 	}
 	
 	public void showDiffInformation(DiffCounterRelationGroupEmulator diff){
@@ -84,13 +94,12 @@ public class DiffPropertyView extends ViewPart {
 				control.dispose();
 			}
 		}
-		this.form.getBody().update();
 		
 		
 		createDiffSections(this.form);			
 		
-		this.form.getBody().pack();
-		
+		this.form.getBody().redraw();
+		this.form.getBody().update();
 	}
 	
 	public void showDiffInformation(DiffCounterRelationGroupEmulator diff, clonepedia.java.model.CloneSetWrapper syntacticSetWrapper){
@@ -104,6 +113,9 @@ public class DiffPropertyView extends ViewPart {
 			createDiffTypeSection(form.getBody());
 			createDiffSyntacticSection(form.getBody());
 		}
+		
+		createEmptySection(parent);
+		
 	}
 	
 	public class StructureLabelProvider extends ColumnLabelProvider{
@@ -262,6 +274,12 @@ public class DiffPropertyView extends ViewPart {
 		
 	}
 	
+	private void createEmptySection(Composite parent) {
+		Section section = toolkit.createSection(parent, Section.TWISTIE|Section.EXPANDED|Section.TITLE_BAR);
+		section.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+		section.setExpanded(true);
+	}
+	
 	private void createDiffSyntacticSection(Composite parent) {
 		Section section = toolkit.createSection(parent, Section.TWISTIE|Section.EXPANDED|Section.TITLE_BAR);
 		section.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
@@ -307,7 +325,6 @@ public class DiffPropertyView extends ViewPart {
 		this.viewer.expandAll();
 		tree.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 		section.setClient(tree);
-		
 	}
 	
 	private void createColumns(TreeViewer viewer){
