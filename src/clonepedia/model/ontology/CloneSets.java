@@ -102,6 +102,10 @@ public class CloneSets implements Serializable{
 		this.cloneList.add(set);
 	}
 	
+	public void remove(CloneSet set){
+		this.cloneList.remove(set);
+	}
+	
 	public ArrayList<CloneSet> getCloneList(){
 		return this.cloneList;
 	}
