@@ -10,6 +10,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
@@ -187,6 +188,18 @@ public class PatternOrientedView extends MultiOrientedView {
 		//viewer.setInput(clonePatterns);
 		
 		hookActionsOnToolBar();
+		
+		hookMenu(viewer);
+	}
+	
+	private void hookMenu(CheckboxTreeViewer viewer){
+		 MenuManager menuManager = new MenuManager();
+		 Menu menu = menuManager.createContextMenu(viewer.getTree());
+		 
+		 viewer.getTree().setMenu(menu);
+		 
+		 getSite().registerContextMenu(menuManager, viewer);
+		 getSite().setSelectionProvider(viewer);
 	}
 
 	private void hookActionsOnToolBar(){
