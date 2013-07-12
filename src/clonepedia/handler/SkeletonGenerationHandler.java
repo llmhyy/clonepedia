@@ -7,7 +7,10 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
+
+import clonepedia.dialog.SkeletonGenerationDialog;
 
 public class SkeletonGenerationHandler extends AbstractHandler {
 
@@ -21,6 +24,12 @@ public class SkeletonGenerationHandler extends AbstractHandler {
 			while(iterator.hasNext()) {
 				Object element = iterator.next();
 				System.out.println(element.toString());
+				
+				SkeletonGenerationDialog dialog = new SkeletonGenerationDialog(
+						PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
+				
+				dialog.open();
+				
 			}
 		}
 		return null;
