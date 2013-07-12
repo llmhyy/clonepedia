@@ -175,5 +175,35 @@
             name="Clonepedia">
       </page>
    </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="clonepedia.handler.SkeletonGenerationHandler"
+            id="Clonepedia.skeletonGenerationCommand"
+            name="Skeleton Generation">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="clonepedia.handler.SkeletonGenerationHandler"
+            commandId="Clonepedia.skeletonGenerationCommand">
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:Clonepedia.PatternOrientedView">
+         <command
+               commandId="Clonepedia.skeletonGenerationCommand"
+               icon="icons/action/skeleton_generation.gif"
+               id="generate_skeleton"
+               label="Generate Skeleton"
+               style="push"
+               tooltip="Generate skeleton based on inter clone set pattern">
+         </command>
+      </menuContribution>
+   </extension>
 
 </plugin>
