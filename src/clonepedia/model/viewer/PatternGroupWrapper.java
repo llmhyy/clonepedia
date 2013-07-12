@@ -30,41 +30,47 @@ public class PatternGroupWrapper{
 		return super.toString();
 	}
 	
-	public String getEpitomise3() throws Exception {
+	public String getEpitomise3() {
 		//PathSequence sequence = this.getClonePattern().getAbstractPathSequence();
-		if(this.pathSequence.isLocationPath())
-			return getFullyQulifiedFormStartByIndex(2, this.pathSequence);
-		else{
-			if(this.pathSequence.size() > 3){
-				
-				if(this.pathSequence.get(2) instanceof ComplexType)
-					return getFullyQulifiedFormStartByIndex(2, this.pathSequence);
-				else{
-					OntologicalRelationType relation = (OntologicalRelationType) this.pathSequence.get(3);
-					if(relation.equals(OntologicalRelationType.declaredIn))
+		try {
+			if(this.pathSequence.isLocationPath())
+				return getFullyQulifiedFormStartByIndex(2, this.pathSequence);
+			else{
+				if(this.pathSequence.size() > 3){
+					
+					if(this.pathSequence.get(2) instanceof ComplexType)
 						return getFullyQulifiedFormStartByIndex(2, this.pathSequence);
 					else{
-						StringBuffer buffer = new StringBuffer();
-						
-						OntologicalElement element = (OntologicalElement) this.pathSequence.get(2);
-						buffer.append(getElementString(element));
-						if(relation.equals(OntologicalRelationType.hasType))
-							buffer.append(":");
-						else if(relation.equals(OntologicalRelationType.hasParameterType))
-							buffer.append("(");
-						buffer.append(getFullyQulifiedFormStartByIndex(4, this.pathSequence));
-						
-						if(relation.equals(OntologicalRelationType.hasParameterType))
-							buffer.append(")");
-						
-						return buffer.toString();
+						OntologicalRelationType relation = (OntologicalRelationType) this.pathSequence.get(3);
+						if(relation.equals(OntologicalRelationType.declaredIn))
+							return getFullyQulifiedFormStartByIndex(2, this.pathSequence);
+						else{
+							StringBuffer buffer = new StringBuffer();
+							
+							OntologicalElement element = (OntologicalElement) this.pathSequence.get(2);
+							buffer.append(getElementString(element));
+							if(relation.equals(OntologicalRelationType.hasType))
+								buffer.append(":");
+							else if(relation.equals(OntologicalRelationType.hasParameterType))
+								buffer.append("(");
+							buffer.append(getFullyQulifiedFormStartByIndex(4, this.pathSequence));
+							
+							if(relation.equals(OntologicalRelationType.hasParameterType))
+								buffer.append(")");
+							
+							return buffer.toString();
+						}
 					}
+					
 				}
-				
+				else
+					return ((OntologicalElement)this.pathSequence.get(2)).getSimpleElementName();
 			}
-			else
-				return ((OntologicalElement)this.pathSequence.get(2)).getSimpleElementName();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		return "";
 	}
 	
 	private String getFullyQulifiedFormStartByIndex(int index, PathSequence sequence){

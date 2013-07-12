@@ -11,6 +11,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import clonepedia.dialog.SkeletonGenerationDialog;
+import clonepedia.model.syntactic.ClonePatternGroup;
+import clonepedia.model.viewer.ClonePatternGroupWrapper;
 
 public class SkeletonGenerationHandler extends AbstractHandler {
 
@@ -23,12 +25,15 @@ public class SkeletonGenerationHandler extends AbstractHandler {
 			Iterator<Object> iterator = strucSelection.iterator();
 			while(iterator.hasNext()) {
 				Object element = iterator.next();
-				System.out.println(element.toString());
+				if(element instanceof ClonePatternGroupWrapper){
+					ClonePatternGroupWrapper cpgWrapper = (ClonePatternGroupWrapper)element;
+					SkeletonGenerationDialog dialog = new SkeletonGenerationDialog(
+							PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), cpgWrapper);
+					
+					dialog.open();
+				}
 				
-				SkeletonGenerationDialog dialog = new SkeletonGenerationDialog(
-						PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
 				
-				dialog.open();
 				
 			}
 		}

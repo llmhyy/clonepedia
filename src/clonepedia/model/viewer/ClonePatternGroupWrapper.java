@@ -40,7 +40,7 @@ public class ClonePatternGroupWrapper extends PatternGroupWrapper implements ICo
 		return super.toString();
 	}
 	
-	public String getEpitomise3() throws Exception {
+	/*public String getEpitomise3() {
 		PathSequence sequence = this.getClonePattern().getAbstractPathSequence();
 		if(this.getClonePattern().isLocationPattern())
 			return getFullyQulifiedFormStartByIndex(2, sequence);
@@ -75,7 +75,7 @@ public class ClonePatternGroupWrapper extends PatternGroupWrapper implements ICo
 			else
 				return ((OntologicalElement)sequence.get(2)).getSimpleElementName();
 		}
-	}
+	}*/
 	
 	private String getFullyQulifiedFormStartByIndex(int index, PathSequence sequence){
 		

@@ -108,9 +108,9 @@ public class CloneSetWrapper implements IContent{
 				commonUsageCategory.addPatternGroupWrapper(new ClonePatternGroupWrapper(cpg));
 		}
 			
-		locationCategroy.setProgrammingHierachicalModel(true);
+		/*locationCategroy.setProgrammingHierachicalModel(true);
 		diffUsageCategory.setProgrammingHierachicalModel(true);
-		commonUsageCategory.setProgrammingHierachicalModel(true);
+		commonUsageCategory.setProgrammingHierachicalModel(true);*/
 		
 		locationCategroy.constructProgrammingElementHierarchy();
 		diffUsageCategory.constructProgrammingElementHierarchy();
