@@ -113,7 +113,7 @@ public abstract class MultiOrientedView extends SummaryView {
 		
 		Menu menu = new Menu(folder);
 		MenuItem item = new MenuItem(menu, SWT.NONE);
-		item.setText("Clone All");
+		item.setText("Close All");
 		item.addSelectionListener(new SelectionAdapter(){
 
 			@Override

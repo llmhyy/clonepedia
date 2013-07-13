@@ -340,7 +340,7 @@ public abstract class SummaryView extends ViewPart {
 				
 			}
 		};
-		refresh.setText("Clone All");
+		refresh.setText("Close All");
 		menuMgr.add(refresh);
 	}
 	//abstract protected void createSummaryDescription(FormText text, Object targetObject);
