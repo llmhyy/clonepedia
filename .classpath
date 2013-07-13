@@ -7,23 +7,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="lib/mysql-connector-java.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="lib/optional/attributes-processor-1.0.1.jar"/>
-	<classpathentry kind="lib" path="lib/optional/commons-codec-1.4.jar"/>
-	<classpathentry kind="lib" path="lib/optional/httpclient-4.1.jar"/>
-	<classpathentry kind="lib" path="lib/optional/httpcore-4.1.jar"/>
-	<classpathentry kind="lib" path="lib/optional/httpmime-4.1.jar"/>
-	<classpathentry kind="lib" path="lib/optional/jcl-over-slf4j-1.6.1.jar"/>
-	<classpathentry kind="lib" path="lib/optional/jdom-1.1.jar"/>
-	<classpathentry kind="lib" path="lib/optional/lucene-core-3.6.0.jar"/>
-	<classpathentry kind="lib" path="lib/optional/lucene-highlighter-3.6.0.jar"/>
-	<classpathentry kind="lib" path="lib/optional/lucene-memory-3.6.0.jar"/>
-	<classpathentry kind="lib" path="lib/optional/lucene-smartcn-3.6.0.jar"/>
-	<classpathentry kind="lib" path="lib/optional/morfologik-fsa-1.5.3.jar"/>
-	<classpathentry kind="lib" path="lib/optional/morfologik-polish-1.5.3.jar"/>
-	<classpathentry kind="lib" path="lib/optional/morfologik-stemming-1.5.3.jar"/>
-	<classpathentry kind="lib" path="lib/optional/rome-1.0.0.jar"/>
-	<classpathentry kind="lib" path="lib/optional/rome-fetcher-1.0.0.jar"/>
-	<classpathentry kind="lib" path="lib/required/attributes-binder-1.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/required/commons-lang-2.6.jar"/>
 	<classpathentry kind="lib" path="lib/required/guava-12.0.jar"/>
 	<classpathentry kind="lib" path="lib/required/hppc-0.4.1.jar"/>
@@ -39,5 +22,6 @@
 	<classpathentry kind="lib" path="lib/org.eclipse.ui.workbench.texteditor_3.4.1.r341_v20080827-1100.jar" sourcepath="lib/org.eclipse.ui.workbench.texteditor.source_3.4.1.r341_v20080827-1100.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.jface.text_3.6.0.v20100526-0800.jar" sourcepath="lib/org.eclipse.jface.text.source_3.6.0.v20100526-0800.jar"/>
 	<classpathentry kind="lib" path="lib/required/carrot2-core-3.6.0.jar"/>
+	<classpathentry kind="lib" path="lib/optional/attributes-processor-1.0.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

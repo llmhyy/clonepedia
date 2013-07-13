@@ -4,6 +4,8 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.window.Window;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
@@ -20,11 +22,13 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.ui.PlatformUI;
 
 import clonepedia.model.syntactic.ClonePatternGroup;
 import clonepedia.model.syntactic.PathPatternGroup;
 import clonepedia.model.viewer.ClonePatternGroupWrapper;
 import clonepedia.model.viewer.PathPatternGroupWrapper;
+import clonepedia.wizard.SkeletonGenerationWizard;
 
 public class SkeletonGenerationDialog extends TitleAreaDialog {
 	
@@ -129,12 +133,19 @@ public class SkeletonGenerationDialog extends TitleAreaDialog {
 				String name = tobeRemovedItem.getText();
 				Object obj = tobeRemovedItem.getData();
 				
-				candiateIntraPatternList.remove(index);
+				WizardDialog skeletonDialog = new WizardDialog(PlatformUI.getWorkbench().
+						getActiveWorkbenchWindow().getShell(), new SkeletonGenerationWizard());
 				
-				TableItem addedItem = new TableItem(selectedIntraPatternList, SWT.NONE);
-				addedItem.setText(name);
-				addedItem.setData(obj);
-				selectedIntraPatternList.getColumn(0).pack();
+				if(skeletonDialog.open() == Window.OK){
+					candiateIntraPatternList.remove(index);
+					
+					TableItem addedItem = new TableItem(selectedIntraPatternList, SWT.NONE);
+					addedItem.setText(name);
+					addedItem.setData(obj);
+					selectedIntraPatternList.getColumn(0).pack();
+				}
+				
+				
 			}
 			
 		}

@@ -362,7 +362,7 @@ public class PatternOrientedView extends MultiOrientedView {
 			}
 		};
 		showHierarchicalModelAction.setImageDescriptor(Activator.getDefault().getImageRegistry().getDescriptor(ImageUI.PATTERN_HIERARCHY));
-		showHierarchicalModelAction.setChecked(true);
+		showHierarchicalModelAction.setChecked(false);
 		showHierarchicalModelAction.run();		
 		
 		Action filterClonePatternAction = new Action(){
