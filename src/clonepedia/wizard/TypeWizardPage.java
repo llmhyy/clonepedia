@@ -166,7 +166,7 @@ import org.eclipse.jdt.internal.ui.wizards.dialogfields.StringDialogField;
  * @since 2.0
  */
 @SuppressWarnings({ "deprecation", "restriction" })
-public abstract class CustomizedTypeWizardPage extends NewContainerWizardPage {
+public abstract class TypeWizardPage extends NewContainerWizardPage {
 
 	/**
 	 * Class used in stub creation routines to add needed imports to a
@@ -351,10 +351,10 @@ public abstract class CustomizedTypeWizardPage extends NewContainerWizardPage {
 		}
 	}
 
-	private StringButtonStatusDialogField fPackageDialogField;
+	protected StringButtonStatusDialogField fPackageDialogField;
 
-	private SelectionButtonDialogField fEnclosingTypeSelection;
-	private StringButtonDialogField fEnclosingTypeDialogField;
+	protected SelectionButtonDialogField fEnclosingTypeSelection;
+	protected StringButtonDialogField fEnclosingTypeDialogField;
 
 	private boolean fCanModifyPackage;
 	private boolean fCanModifyEnclosingType;
@@ -366,7 +366,7 @@ public abstract class CustomizedTypeWizardPage extends NewContainerWizardPage {
 	 * a handle to the type to be created (does usually not exist, can be null)
 	 */
 	private IType fCurrType;
-	private StringButtonDialogField fTypeNameDialogField;
+	protected StringButtonDialogField fTypeNameDialogField;
 
 	private StringButtonDialogField fSuperClassDialogField;
 	private ListDialogField<InterfaceWrapper> fSuperInterfacesDialogField;
@@ -428,7 +428,7 @@ public abstract class CustomizedTypeWizardPage extends NewContainerWizardPage {
 	 * an interface is to be created
 	 * @param pageName the wizard page's name
 	 */
-	public CustomizedTypeWizardPage(boolean isClass, String pageName) {
+	public TypeWizardPage(boolean isClass, String pageName) {
 		this(isClass ? CLASS_TYPE : INTERFACE_TYPE, pageName);
 	}
 
@@ -440,7 +440,7 @@ public abstract class CustomizedTypeWizardPage extends NewContainerWizardPage {
 	 * @param pageName the wizard page's name
 	 * @since 3.1
 	 */
-	public CustomizedTypeWizardPage(int typeKind, String pageName) {
+	public TypeWizardPage(int typeKind, String pageName) {
 	    super(pageName);
 	    fTypeKind= typeKind;
 
@@ -1018,10 +1018,15 @@ public abstract class CustomizedTypeWizardPage extends NewContainerWizardPage {
 			if (type != null) {
 				fEnclosingTypeDialogField.setText(type.getFullyQualifiedName('.'));
 			}
-		} else if (field == fSuperClassDialogField || field == fTypeNameDialogField) {
+		} else if (field == fSuperClassDialogField) {
 			IType type= chooseSuperClass();
 			if (type != null) {
 				fSuperClassDialogField.setText(SuperInterfaceSelectionDialog.getNameWithTypeParameters(type));
+			}
+		} else if (field == fTypeNameDialogField) {
+			IType type= chooseSuperClass();
+			if (type != null) {
+				fTypeNameDialogField.setText(SuperInterfaceSelectionDialog.getNameWithTypeParameters(type));
 			}
 		}
 	}
@@ -1677,7 +1682,7 @@ public abstract class CustomizedTypeWizardPage extends NewContainerWizardPage {
 		}
 
 		// must not exist
-		if (!isEnclosingTypeSelected()) {
+		/*if (!isEnclosingTypeSelected()) {
 			IPackageFragment pack= getPackageFragment();
 			if (pack != null) {
 				ICompilationUnit cu= pack.getCompilationUnit(getCompilationUnitName(typeName));
@@ -1716,7 +1721,7 @@ public abstract class CustomizedTypeWizardPage extends NewContainerWizardPage {
 					return status;
 				}
 			}
-		}
+		}*/
 
 		if (!typeNameWithParameters.equals(typeName) && project != null) {
 			if (!JavaModelUtil.is50OrHigher(project)) {

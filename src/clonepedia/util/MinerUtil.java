@@ -12,9 +12,11 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.ui.internal.handlers.WizardHandler.New;
 
 import clonepedia.java.ASTComparator;
 import clonepedia.java.util.MinerUtilforJava;
+import clonepedia.model.Placeholder;
 import clonepedia.util.BoolComparator;
 
 public class MinerUtil {
@@ -72,9 +74,9 @@ public class MinerUtil {
 		}
 		return null;
 	}
-
-	public static Object[] generateCommonNodeList(Object[] nodeList1,
-			Object[] nodeList2, BoolComparator comparator) {
+	
+	public static int[][] buildLeveshteinTable(Object[] nodeList1,
+			Object[] nodeList2, BoolComparator comparator){
 		int[][] commonLengthTable = new int[nodeList1.length + 1][nodeList2.length + 1];
 		for (int i = 0; i < nodeList1.length + 1; i++)
 			commonLengthTable[i][0] = 0;
@@ -91,6 +93,64 @@ public class MinerUtil {
 				}
 
 			}
+		
+		return commonLengthTable;
+	}
+	
+	/**
+	 * For string1: a b c d e
+	 *     string2: a f c d
+	 * The result is a * c d *
+	 * @param nodeList1
+	 * @param nodeList2
+	 * @param comparator
+	 * @return
+	 */
+	public static Object[] generateAbstractCommonNodeList(Object[] nodeList1,
+			Object[] nodeList2, BoolComparator comparator){
+		int[][] commonLengthTable = buildLeveshteinTable(nodeList1, nodeList2, comparator);
+
+		int commonLength = (nodeList1.length > nodeList2.length)? nodeList1.length : nodeList2.length;
+		Object[] commonList = new Object[commonLength];
+
+		for (int k = commonLength - 1, i = nodeList1.length, j = nodeList2.length; (i > 0 && j > 0);) {
+			if (comparator.isMatch(nodeList1[i - 1], nodeList2[j - 1])) {
+				commonList[k] = nodeList1[i - 1];
+				k--;
+				i--;
+				j--;
+			} else {
+				if (commonLengthTable[i - 1][j] == commonLengthTable[i][j - 1]){
+					commonList[k--] = new Placeholder();
+					i--;
+					j--;
+				}
+				else if (commonLengthTable[i - 1][j] > commonLengthTable[i][j - 1]){
+					i--;
+					commonList[k--] = new Placeholder();
+				}
+				else{
+					j--;
+					commonList[k--] = new Placeholder();
+				}
+			}
+		}
+
+		return commonList;
+	}
+
+	/**
+	 * For string1: a b c d
+	 *     string2: a f c d
+	 * The result is a c d
+	 * @param nodeList1
+	 * @param nodeList2
+	 * @param comparator
+	 * @return
+	 */
+	public static Object[] generateCommonNodeList(Object[] nodeList1,
+			Object[] nodeList2, BoolComparator comparator) {
+		int[][] commonLengthTable = buildLeveshteinTable(nodeList1, nodeList2, comparator);
 
 		int commonLength = commonLengthTable[nodeList1.length][nodeList2.length];
 		Object[] commonList = new Object[commonLength];

@@ -131,17 +131,21 @@ public class SkeletonGenerationDialog extends TitleAreaDialog {
 				TableItem tobeRemovedItem = candiateIntraPatternList.getItem(index);
 				
 				String name = tobeRemovedItem.getText();
-				Object obj = tobeRemovedItem.getData();
+				PathPatternGroupWrapper wrapper = (PathPatternGroupWrapper)tobeRemovedItem.getData();
+				
+				SkeletonGenerationWizard wizard = new SkeletonGenerationWizard(wrapper);
 				
 				WizardDialog skeletonDialog = new WizardDialog(PlatformUI.getWorkbench().
-						getActiveWorkbenchWindow().getShell(), new SkeletonGenerationWizard());
+						getActiveWorkbenchWindow().getShell(), wizard);
 				
 				if(skeletonDialog.open() == Window.OK){
 					candiateIntraPatternList.remove(index);
 					
+					wrapper.setWizard(wizard);
+					
 					TableItem addedItem = new TableItem(selectedIntraPatternList, SWT.NONE);
-					addedItem.setText(name);
-					addedItem.setData(obj);
+					addedItem.setText(name);					
+					addedItem.setData(wrapper);
 					selectedIntraPatternList.getColumn(0).pack();
 				}
 				

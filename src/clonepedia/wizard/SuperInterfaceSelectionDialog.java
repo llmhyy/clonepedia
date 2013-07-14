@@ -54,7 +54,7 @@ public class SuperInterfaceSelectionDialog extends OpenTypeSelectionDialog {
 
 	private static final int ADD_ID= IDialogConstants.CLIENT_ID + 1;
 
-	private CustomizedTypeWizardPage fTypeWizardPage;
+	private TypeWizardPage fTypeWizardPage;
 	private List<String> fOldContent;
 
 	/**
@@ -71,7 +71,7 @@ public class SuperInterfaceSelectionDialog extends OpenTypeSelectionDialog {
 	 *            the java project which will be considered when searching for
 	 *            interfaces
 	 */
-	public SuperInterfaceSelectionDialog(Shell parent, IRunnableContext context, CustomizedTypeWizardPage page, IJavaProject p) {
+	public SuperInterfaceSelectionDialog(Shell parent, IRunnableContext context, TypeWizardPage page, IJavaProject p) {
 		super(parent, true, context, createSearchScope(p), IJavaSearchConstants.INTERFACE);
 		fTypeWizardPage= page;
 		// to restore the content of the dialog field if the dialog is canceled

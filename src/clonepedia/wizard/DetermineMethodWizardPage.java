@@ -5,11 +5,16 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
-public class DetermineMethodWizardPage extends WizardPage {
+import clonepedia.model.viewer.PathPatternGroupWrapper;
 
-	public DetermineMethodWizardPage(String pageName) {
+public class DetermineMethodWizardPage extends WizardPage {
+	
+	private PathPatternGroupWrapper wrapper;
+
+	public DetermineMethodWizardPage(PathPatternGroupWrapper wrapper, String pageName) {
 		super(pageName);
-		// TODO Auto-generated constructor stub
+		
+		this.wrapper = wrapper;
 	}
 
 	public DetermineMethodWizardPage(String pageName, String title,

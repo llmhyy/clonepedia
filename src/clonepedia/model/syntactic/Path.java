@@ -14,6 +14,17 @@ import clonepedia.model.ontology.PrimiType;
 import clonepedia.model.ontology.Variable;
 import clonepedia.syntactic.util.SyntacticUtil;
 
+/**
+ * Path is used to describe the path extracted from ontology. For example, 
+ * the location path instance-method-class-class-interface indicates the inheriting
+ * relation of the class containing a clone instance (i.e., a piece of cloned code 
+ * fragment).
+ * 
+ * Particularly, the first element of Path must be clone instance.
+ * 
+ * @author linyun
+ *
+ */
 public class Path extends ArrayList<OntologicalElement> {
 	/**
 	 * 
