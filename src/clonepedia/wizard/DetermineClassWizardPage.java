@@ -29,7 +29,7 @@ import clonepedia.util.MinerUtil;
 import clonepedia.util.Settings;
 
 
-public class DetermineClassWizardPage extends TypeWizardPage {
+public class DetermineClassWizardPage extends DetermineElementWizardPage {
 	
 	//private final static String PAGE_NAME= "DetermineClassWizardPage";
 	private PathPatternGroupWrapper wrapper;
@@ -130,13 +130,16 @@ public class DetermineClassWizardPage extends TypeWizardPage {
 				Class clazz = (Class)element;
 				Class superClass = clazz.getSuperClass();
 				
-				Integer i = classMap.get(superClass.getFullName());
-				if(null != i){
-					i++;
-					classMap.put(superClass.getFullName(), i);
-				}
-				else{
-					classMap.put(superClass.getFullName(), 1);
+				if(superClass != null){
+					Integer i = classMap.get(superClass.getFullName());
+					if(null != i){
+						i++;
+						classMap.put(superClass.getFullName(), i);
+					}
+					else{
+						classMap.put(superClass.getFullName(), 1);
+					}
+					
 				}
 			}
 		}

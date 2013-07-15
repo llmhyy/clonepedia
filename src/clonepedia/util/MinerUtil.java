@@ -113,7 +113,8 @@ public class MinerUtil {
 		int commonLength = (nodeList1.length > nodeList2.length)? nodeList1.length : nodeList2.length;
 		Object[] commonList = new Object[commonLength];
 
-		for (int k = commonLength - 1, i = nodeList1.length, j = nodeList2.length; (i > 0 && j > 0);) {
+		int k, i, j = 0;
+		for (k = commonLength - 1, i = nodeList1.length, j = nodeList2.length; (i > 0 && j > 0);) {
 			if (comparator.isMatch(nodeList1[i - 1], nodeList2[j - 1])) {
 				commonList[k] = nodeList1[i - 1];
 				k--;
@@ -134,6 +135,10 @@ public class MinerUtil {
 					commonList[k--] = new Placeholder();
 				}
 			}
+		}
+		
+		while(k >= 0){
+			commonList[k--] = new Placeholder();
 		}
 
 		return commonList;

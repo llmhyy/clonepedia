@@ -178,7 +178,6 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
-            defaultHandler="clonepedia.handler.SkeletonGenerationHandler"
             id="Clonepedia.skeletonGenerationCommand"
             name="Skeleton Generation">
       </command>
