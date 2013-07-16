@@ -148,7 +148,9 @@ import org.eclipse.jdt.internal.ui.wizards.dialogfields.StringButtonStatusDialog
 import org.eclipse.jdt.internal.ui.wizards.dialogfields.StringDialogField;
 
 /**
- * Change from the class <code>NewTypeWizardPage</code>, containing controls and
+ * @author linyun
+ * 
+ * Copy from the class <code>NewTypeWizardPage</code>, (^_^) containing controls and
  * validation routines for a 'New Type WizardPage'. Implementors decide which
  * components to add and to enable. Implementors can also customize the
  * validation code. <code>NewTypeWizardPage</code> is intended to serve as base

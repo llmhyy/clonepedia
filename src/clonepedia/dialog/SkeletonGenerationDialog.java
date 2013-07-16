@@ -1,5 +1,9 @@
 package clonepedia.dialog;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
@@ -24,6 +28,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.PlatformUI;
 
+import clonepedia.model.ontology.Class;
 import clonepedia.model.syntactic.ClonePatternGroup;
 import clonepedia.model.syntactic.PathPatternGroup;
 import clonepedia.model.viewer.ClonePatternGroupWrapper;
@@ -138,7 +143,14 @@ public class SkeletonGenerationDialog extends TitleAreaDialog {
 				WizardDialog skeletonDialog = new WizardDialog(PlatformUI.getWorkbench().
 						getActiveWorkbenchWindow().getShell(), wizard);
 				
+				
 				if(skeletonDialog.open() == Window.OK){
+					PathPatternGroupWrapper.PotentialLocation location = wrapper.new
+							PotentialLocation(wizard.getResidingClass(), wizard.getSuperClass(), wizard.getInterfaces(), 
+									wizard.getMethodName(), wizard.getMethodReturnType(), wizard.getInterfaces());
+					
+					wrapper.setLocation(location);
+					
 					candiateIntraPatternList.remove(index);
 					
 					wrapper.setWizard(wizard);
@@ -261,12 +273,22 @@ public class SkeletonGenerationDialog extends TitleAreaDialog {
 	
 	@Override
 	protected void okPressed() {
-		saveInput();
 		super.okPressed();
+		generateCodeSkeleton();
 	}
 
-	private void saveInput() {
-		// TODO Auto-generated method stub
+	private void generateCodeSkeleton() {
+		
+		HashMap<String, clonepedia.model.ontology.Class> targetClassList = 
+				new HashMap<String, clonepedia.model.ontology.Class>();
+		
+		for(TableItem item: selectedIntraPatternList.getItems()){
+			PathPatternGroupWrapper wrapper = (PathPatternGroupWrapper)item.getData();
+			PathPatternGroupWrapper.PotentialLocation location = wrapper.getLocation();
+			
+			String className = location.className;
+			Class clazz = targetClassList.get(className);
+		}
 		
 	}
 }

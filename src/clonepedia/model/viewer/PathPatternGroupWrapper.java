@@ -1,12 +1,42 @@
 package clonepedia.model.viewer;
 
+import java.util.List;
+
 import clonepedia.model.syntactic.PathPatternGroup;
 import clonepedia.wizard.SkeletonGenerationWizard;
 
+/**
+ * 
+ * @author linyun
+ *
+ */
 public class PathPatternGroupWrapper extends PatternGroupWrapper{
+	
+	public class PotentialLocation{
+		public String className;
+		public String superClassName;
+		public List<String> interfaceNames;
+		
+		public String methodName;
+		public String methodReturnTypeName;
+		public List<String> methodParameterNames;
+		
+		public PotentialLocation(String className, String superClassName,
+				List<String> interfaceNames, String methodName,
+				String methodReturnTypeName, List<String> methodParameterNames) {
+			super();
+			this.className = className;
+			this.superClassName = superClassName;
+			this.interfaceNames = interfaceNames;
+			this.methodName = methodName;
+			this.methodReturnTypeName = methodReturnTypeName;
+			this.methodParameterNames = methodParameterNames;
+		}
+	}
 	
 	private PathPatternGroup pathPattern;
 	private SkeletonGenerationWizard wizard;
+	private PotentialLocation location;
 	
 	public PathPatternGroupWrapper(PathPatternGroup ppg){
 		this.setPathPattern(ppg);
@@ -27,5 +57,13 @@ public class PathPatternGroupWrapper extends PatternGroupWrapper{
 
 	public void setWizard(SkeletonGenerationWizard wizard) {
 		this.wizard = wizard;
+	}
+
+	public PotentialLocation getLocation() {
+		return location;
+	}
+
+	public void setLocation(PotentialLocation location) {
+		this.location = location;
 	}
 }

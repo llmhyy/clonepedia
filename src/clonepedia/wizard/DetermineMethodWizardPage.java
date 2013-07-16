@@ -1,6 +1,8 @@
 package clonepedia.wizard;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
@@ -19,6 +21,7 @@ import clonepedia.model.ontology.Class;
 import clonepedia.model.ontology.Method;
 import clonepedia.model.ontology.OntologicalElement;
 import clonepedia.model.ontology.VarType;
+import clonepedia.model.ontology.Variable;
 import clonepedia.model.syntactic.Path;
 import clonepedia.model.viewer.PathPatternGroupWrapper;
 import clonepedia.util.DefaultComparator;
@@ -114,14 +117,36 @@ public class DetermineMethodWizardPage extends DetermineElementWizardPage {
 		
 	}
 
-	private void initMethodParameters() {
-		// TODO Auto-generated method stub
+	private void initMethodName() {
+		Method method = (Method)(wrapper.getPathPattern().getAbstractPathSequence().get(2));
 		
+		setMethodName(method.getMethodName(), true);	
 	}
 
-	private void initMethodName() {
-		// TODO Auto-generated method stub
+	private void initMethodParameters() {
+		ArrayList<ArrayList<String>> setList = new ArrayList<ArrayList<String>>();
 		
+		for(Path path: wrapper.getPathPattern()){
+			Method method = (Method)path.get(1);
+			ArrayList<String> varList = new ArrayList<String>();
+			for(Variable var: method.getParameters()){
+				varList.add(var.getVariableType().getFullName());
+			}
+			setList.add(varList);
+		}
+		
+		ArrayList<String> list = null;
+		for(ArrayList<String> l: setList){
+			if(list == null){
+				list = new ArrayList<String>();
+				list.addAll(l);
+			}
+			else{
+				list.retainAll(l);
+			}
+		}
+		
+		setMethodParameters(list, true);
 	}
 
 	private void initPackage() {

@@ -1,6 +1,8 @@
 package clonepedia.wizard;
 
 
+import java.util.List;
+
 import org.eclipse.jface.wizard.Wizard;
 
 import clonepedia.model.viewer.PathPatternGroupWrapper;
@@ -33,8 +35,30 @@ public class SkeletonGenerationWizard extends Wizard {
 	
 	@Override
 	public boolean performFinish() {
-		// TODO Auto-generated method stub
-		return true;
+		return (getContainer().getCurrentPage() == determineMethodPage);
 	}
 
+	public String getResidingClass(){
+		return this.determineClassPage.getTypeName();
+	}
+	
+	public String getSuperClass(){
+		return this.determineClassPage.getSuperClass();
+	}
+	
+	public List<String> getInterfaces(){
+		return this.determineClassPage.getSuperInterfaces();
+	}
+	
+	public String getMethodReturnType(){
+		return this.determineMethodPage.getMethodReturnType();
+	}
+	
+	public String getMethodName(){
+		return this.determineMethodPage.getMethodName();
+	}
+	
+	public List<String> getMethodParamters(){
+		return this.determineMethodPage.getMethodParameters();
+	}
 }
