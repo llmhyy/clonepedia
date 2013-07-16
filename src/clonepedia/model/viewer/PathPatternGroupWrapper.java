@@ -1,5 +1,6 @@
 package clonepedia.model.viewer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import clonepedia.model.syntactic.PathPatternGroup;
@@ -13,18 +14,22 @@ import clonepedia.wizard.SkeletonGenerationWizard;
 public class PathPatternGroupWrapper extends PatternGroupWrapper{
 	
 	public class PotentialLocation{
+		
+		public String packageName;
+		
 		public String className;
 		public String superClassName;
-		public List<String> interfaceNames;
+		public List<String> interfaceNames = new ArrayList<String>();
 		
 		public String methodName;
 		public String methodReturnTypeName;
-		public List<String> methodParameterNames;
+		public List<String> methodParameterNames = new ArrayList<String>();
 		
-		public PotentialLocation(String className, String superClassName,
+		public PotentialLocation(String packageName, String className, String superClassName,
 				List<String> interfaceNames, String methodName,
 				String methodReturnTypeName, List<String> methodParameterNames) {
 			super();
+			this.packageName = packageName;
 			this.className = className;
 			this.superClassName = superClassName;
 			this.interfaceNames = interfaceNames;

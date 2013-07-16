@@ -21,6 +21,11 @@ public interface ComplexType extends StructuralProgrammingElement{
 
 	public abstract void setMethods(ArrayList<Method> methods);
 	
+	/**
+	 * If the inheriting type is class, this method will add a superclass
+	 * If the inheriting type is interface, this method will add a super interface
+	 * @param complexType
+	 */
 	public abstract void addSuperClassOrInterface(ComplexType complexType);
 	
 	public abstract boolean isGeneralType();

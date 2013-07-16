@@ -1,6 +1,7 @@
 package clonepedia.model.ontology;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Class extends VarType implements ComplexType{
 	/**
@@ -138,6 +139,34 @@ public class Class extends VarType implements ComplexType{
 
 	public boolean isClass() {
 		return true;
+	}
+	
+	public Method findMethod(String methodName, List<String> parameterList){
+		for(Method method: methods){
+			if(method.getMethodName().equals(methodName)){
+				List<Variable> varList = method.getParameters();
+				if(varList.size() == parameterList.size()){
+					for(int i=0; i<varList.size(); i++){
+						String mParamTypeName = varList.get(i).getVariableType().getFullName();
+						String paramTypeName = parameterList.get(i);
+						if(!mParamTypeName.equals(paramTypeName)){
+							return null;
+						}
+					}
+					return method;
+				}
+			}
+		}
+		return null;
+	}
+	
+	public Interface findImplementedInterface(String interfaceName){
+		for(Interface interf: implementedInterfaces){
+			if(interf.getFullName().equals(interfaceName)){
+				return interf;
+			}
+		}
+		return null;
 	}
 
 	@Override

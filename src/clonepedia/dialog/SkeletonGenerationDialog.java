@@ -29,6 +29,10 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.PlatformUI;
 
 import clonepedia.model.ontology.Class;
+import clonepedia.model.ontology.Interface;
+import clonepedia.model.ontology.Method;
+import clonepedia.model.ontology.VarType;
+import clonepedia.model.ontology.Variable;
 import clonepedia.model.syntactic.ClonePatternGroup;
 import clonepedia.model.syntactic.PathPatternGroup;
 import clonepedia.model.viewer.ClonePatternGroupWrapper;
@@ -44,6 +48,9 @@ public class SkeletonGenerationDialog extends TitleAreaDialog {
 	
 	private Button addPatternButton;
 	private Button removePatternButton;
+	
+	private ArrayList<PathPatternGroupWrapper> buildingWrapperList
+		= new ArrayList<PathPatternGroupWrapper>();
 
 	public SkeletonGenerationDialog(Shell parentShell, ClonePatternGroupWrapper cpgWrapper) {
 		super(parentShell);
@@ -146,7 +153,8 @@ public class SkeletonGenerationDialog extends TitleAreaDialog {
 				
 				if(skeletonDialog.open() == Window.OK){
 					PathPatternGroupWrapper.PotentialLocation location = wrapper.new
-							PotentialLocation(wizard.getResidingClass(), wizard.getSuperClass(), wizard.getInterfaces(), 
+							PotentialLocation(wizard.getPackageName(), wizard.getResidingClass(), 
+									wizard.getSuperClass(), wizard.getInterfaces(), 
 									wizard.getMethodName(), wizard.getMethodReturnType(), wizard.getInterfaces());
 					
 					wrapper.setLocation(location);
@@ -159,6 +167,8 @@ public class SkeletonGenerationDialog extends TitleAreaDialog {
 					addedItem.setText(name);					
 					addedItem.setData(wrapper);
 					selectedIntraPatternList.getColumn(0).pack();
+					
+					buildingWrapperList.add(wrapper);
 				}
 				
 				
@@ -190,14 +200,16 @@ public class SkeletonGenerationDialog extends TitleAreaDialog {
 				TableItem tobeRemovedItem = selectedIntraPatternList.getItem(index);
 				
 				String name = tobeRemovedItem.getText();
-				Object obj = tobeRemovedItem.getData();
+				PathPatternGroupWrapper wrapper = (PathPatternGroupWrapper)tobeRemovedItem.getData();
 				
 				selectedIntraPatternList.remove(index);
 				
 				TableItem addedItem = new TableItem(candiateIntraPatternList, SWT.NONE);
 				addedItem.setText(name);
-				addedItem.setData(obj);
+				addedItem.setData(wrapper);
 				candiateIntraPatternList.getColumn(0).pack();
+				
+				buildingWrapperList.remove(wrapper);
 			}
 			
 			
@@ -279,16 +291,59 @@ public class SkeletonGenerationDialog extends TitleAreaDialog {
 
 	private void generateCodeSkeleton() {
 		
+		HashMap<String, Class> targetClassList = buildGenerationModel();
+		System.out.println();
+		
+	}
+	
+	private HashMap<String, Class> buildGenerationModel(){
 		HashMap<String, clonepedia.model.ontology.Class> targetClassList = 
 				new HashMap<String, clonepedia.model.ontology.Class>();
 		
-		for(TableItem item: selectedIntraPatternList.getItems()){
-			PathPatternGroupWrapper wrapper = (PathPatternGroupWrapper)item.getData();
+		for(PathPatternGroupWrapper wrapper: buildingWrapperList){
 			PathPatternGroupWrapper.PotentialLocation location = wrapper.getLocation();
 			
-			String className = location.className;
-			Class clazz = targetClassList.get(className);
+			/**
+			 * inner class has not been supported here
+			 */
+			String className = location.packageName + "." + location.className;
+			Class targetClass = targetClassList.get(className);
+			if(null == targetClass){
+				targetClass = new Class(className, null, className);
+			}
+			
+			if(null == targetClass.getSuperClass() && location.superClassName != null){
+				Class superClass = new Class(location.superClassName, null, location.superClassName);
+				targetClass.addSuperClassOrInterface(superClass);
+			}
+			
+			for(String interfaceName: location.interfaceNames){
+				Interface interf = targetClass.findImplementedInterface(interfaceName);
+				if(null == interf){
+					Interface interfaze = new Interface(interfaceName, null, interfaceName);
+					targetClass.addInterface(interfaze);
+				}
+			}
+			
+			Method m = targetClass.findMethod(location.methodName, location.methodParameterNames);
+			if(null == m){
+				ArrayList<Variable> parameters = new ArrayList<Variable>();
+				for(String paramType: location.methodParameterNames){
+					String paramName = paramType.substring(paramType.lastIndexOf("."), paramType.length());
+					paramName = paramName.toLowerCase();
+					
+					Variable var = new Variable(paramName, new Class(paramType), false);
+					
+					parameters.add(var);
+				}
+				m = new Method(targetClass, location.methodName, new Class(location.methodReturnTypeName, null, location.methodReturnTypeName), 
+						parameters);
+				targetClass.getMethods().add(m);
+			}
+			
+			targetClassList.put(className, targetClass);
 		}
 		
+		return targetClassList;
 	}
 }

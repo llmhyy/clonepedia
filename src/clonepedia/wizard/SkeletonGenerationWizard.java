@@ -37,6 +37,10 @@ public class SkeletonGenerationWizard extends Wizard {
 	public boolean performFinish() {
 		return (getContainer().getCurrentPage() == determineMethodPage);
 	}
+	
+	public String getPackageName(){
+		return this.determineClassPage.getPackageText();
+	}
 
 	public String getResidingClass(){
 		return this.determineClassPage.getTypeName();
