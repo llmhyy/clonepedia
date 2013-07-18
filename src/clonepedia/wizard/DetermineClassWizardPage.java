@@ -103,38 +103,21 @@ public class DetermineClassWizardPage extends DetermineElementWizardPage {
 			setFocus();
 	}
 
+	
 	private void init(PathPatternGroupWrapper selection) {
 		
-		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		IWorkspaceRoot root = workspace.getRoot();
-		
-		IProject project = root.getProject(Settings.projectName);
-		IJavaProject jProject = JavaCore.create(project);
-		
-		if (jProject.exists()) {
-			IPackageFragmentRoot initRoot = null;
-			IPackageFragmentRoot[] roots;
-			try {
-				roots = jProject.getPackageFragmentRoots();
-				for (int i= 0; i < roots.length; i++) {
-					if (roots[i].getKind() == IPackageFragmentRoot.K_SOURCE) {
-						initRoot = roots[i];
-						setPackageFragmentRoot(initRoot, true);
-	
-						break;
-					}
-				}
-			} catch (JavaModelException e) {
-				e.printStackTrace();
-			}
+		IPackageFragmentRoot initRoot = CodeSkeletonGenerationUtil.getPackageFragmentRoot();
+		if(null != initRoot){
+			
+			setPackageFragmentRoot(initRoot, true);
+			
+			initPackage();
+			initClass();
+			initSuperClass();
+			initInterfaces();
+			
+			doStatusUpdate();
 		}
-		
-		initPackage();
-		initClass();
-		initSuperClass();
-		initInterfaces();
-		
-		doStatusUpdate();
 	}
 
 	private void initPackage() {

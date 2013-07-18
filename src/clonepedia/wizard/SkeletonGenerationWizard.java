@@ -3,11 +3,18 @@ package clonepedia.wizard;
 
 import java.util.List;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.internal.ui.wizards.NewElementWizard;
 import org.eclipse.jface.wizard.Wizard;
 
 import clonepedia.model.viewer.PathPatternGroupWrapper;
 
 
+@SuppressWarnings("restriction")
 public class SkeletonGenerationWizard extends Wizard {
 
 	private PathPatternGroupWrapper wrapper;
@@ -33,8 +40,19 @@ public class SkeletonGenerationWizard extends Wizard {
 		addPage(determineMethodPage);
 	}
 	
+	
 	@Override
 	public boolean performFinish() {
+		
+		//warnAboutTypeCommentDeprecation();
+		//boolean res= super.performFinish();
+		/*if (res) {
+			IResource resource= fPage.getModifiedResource();
+			if (resource != null) {
+				selectAndReveal(resource);
+				openResource((IFile) resource);
+			}
+		}*/
 		return (getContainer().getCurrentPage() == determineMethodPage);
 	}
 	
@@ -65,4 +83,6 @@ public class SkeletonGenerationWizard extends Wizard {
 	public List<String> getMethodParamters(){
 		return this.determineMethodPage.getMethodParameters();
 	}
+
+	
 }
