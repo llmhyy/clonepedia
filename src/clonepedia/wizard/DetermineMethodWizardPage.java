@@ -40,7 +40,7 @@ public class DetermineMethodWizardPage extends DetermineElementWizardPage {
 		setTitle("Determine the method");
 	}
 	
-	private void init(PathPatternGroupWrapper selection) {
+	public void init(PathPatternGroupWrapper selection, String packageName) {
 		
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IWorkspaceRoot root = workspace.getRoot();
@@ -66,7 +66,7 @@ public class DetermineMethodWizardPage extends DetermineElementWizardPage {
 			}
 		}
 		
-		initPackage();
+		initPackage(packageName);
 		initMethodReturnType();
 		initMethodName();
 		initMethodParameters();
@@ -149,38 +149,7 @@ public class DetermineMethodWizardPage extends DetermineElementWizardPage {
 		setMethodParameters(list, true);
 	}
 
-	private void initPackage() {
-		
-		String abstractPackage = null;
-		
-		for(Path path: wrapper.getPathPattern()){
-			OntologicalElement element = path.get(2);
-			if(element instanceof clonepedia.model.ontology.Class){
-				Class clazz = (Class)element;
-				String classFullName = clazz.getFullName();
-				
-				String packageName = classFullName.substring(0, classFullName.lastIndexOf("."));
-				
-				if(abstractPackage == null || abstractPackage.equals(packageName)){
-					abstractPackage = packageName;
-				}
-				else{
-					String[] abstractArray = abstractPackage.split("\\.");
-					String[] specialArray = packageName.split("\\.");
-					
-					Object[] commonObjects = MinerUtil.generateAbstractCommonNodeList(abstractArray, 
-							specialArray, new DefaultComparator());
-					
-					String abstractString = "";
-					for(int i=0; i<commonObjects.length; i++){
-						abstractString += commonObjects[i].toString() + ".";
-					}
-					
-					abstractPackage = abstractString.substring(0, abstractString.length()-1);
-				}
-				
-			}
-		}
+	private void initPackage(String abstractPackage) {
 		
 		fPackageDialogField.setText(abstractPackage);
 	}
@@ -234,7 +203,7 @@ public class DetermineMethodWizardPage extends DetermineElementWizardPage {
 		
 		setControl(composite);
 		
-		init(wrapper);
+		//init(wrapper);
 	}
 
 	

@@ -1033,7 +1033,7 @@ public class SkeletonGenerationDialog extends TitleAreaDialog {
 				final ImportsManager imports, IProgressMonitor monitor, Class clazz)
 				throws CoreException {
 			
-			createInheritedMethods(type, false, true, imports, new SubProgressMonitor(monitor, 1));
+			//createInheritedMethods(type, false, true, imports, new SubProgressMonitor(monitor, 1));
 
 			for(Method method: clazz.getMethods()){
 				

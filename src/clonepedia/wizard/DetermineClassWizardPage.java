@@ -17,6 +17,7 @@ import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
@@ -219,5 +220,20 @@ public class DetermineClassWizardPage extends DetermineElementWizardPage {
 		}
 		
 		setSuperInterfaces(interfaces, true);
+	}
+	
+	@Override
+	public IWizardPage getNextPage(){
+		IWizardPage nextPage = super.getNextPage();
+		
+		determineMethodPage.init(wrapper, this.getPackageText());
+		
+		return nextPage;
+	}
+
+	private DetermineMethodWizardPage determineMethodPage;
+	
+	public void setNotifyPage(DetermineMethodWizardPage determineMethodPage) {
+		this.determineMethodPage = determineMethodPage;
 	}
 }

@@ -36,6 +36,8 @@ public class SkeletonGenerationWizard extends Wizard {
 		determineClassPage = new DetermineClassWizardPage(wrapper, "Determine the class for clone");
 		determineMethodPage = new DetermineMethodWizardPage(wrapper, "Determine the method for clone");
 		
+		determineClassPage.setNotifyPage(determineMethodPage);
+		
 		addPage(determineClassPage);
 		addPage(determineMethodPage);
 	}
