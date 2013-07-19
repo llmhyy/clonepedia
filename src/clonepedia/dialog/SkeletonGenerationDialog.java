@@ -680,11 +680,10 @@ public class SkeletonGenerationDialog extends TitleAreaDialog {
 					CompilationUnit astRoot = createASTForImports(parentCU);
 					existingImports = getExistingImports(astRoot);
 					imports = new ImportsManager(astRoot);
+					// add an import that will be removed again. Having this import solves 14661
+					imports.addImport(JavaModelUtil.concatenateName(pack.getElementName(), typeName));
 					
 					if(!isClassExist){
-						// add an import that will be removed again. Having this import
-						// solves 14661
-						imports.addImport(JavaModelUtil.concatenateName(pack.getElementName(), typeName));
 						
 						/**
 						 * create initial class skeleton such as "public class A{}"
@@ -728,6 +727,8 @@ public class SkeletonGenerationDialog extends TitleAreaDialog {
 				// correctly
 
 				ICompilationUnit cu = createdType.getCompilationUnit();
+				
+				//cu.createPackageDeclaration(packageName, null);
 
 				imports.create(false, new SubProgressMonitor(monitor, 1));
 
@@ -748,7 +749,7 @@ public class SkeletonGenerationDialog extends TitleAreaDialog {
 
 				removeUnusedImports(cu, existingImports, false);
 
-				JavaModelUtil.reconcile(cu);
+				//JavaModelUtil.reconcile(cu);
 
 				ISourceRange range = createdType.getSourceRange();
 

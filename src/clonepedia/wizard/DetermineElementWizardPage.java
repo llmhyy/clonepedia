@@ -2184,7 +2184,7 @@ public abstract class DetermineElementWizardPage extends NewContainerWizardPage 
 		fSuperClassStubTypeContext = null;
 
 		String returnTypeName = getMethodReturnType();
-		if (returnTypeName.length() == 0) {
+		if (returnTypeName.length() == 0 || returnTypeName.equals("void")) {
 			// accept the empty field (stands for java.lang.Object)
 			return status;
 		}
