@@ -120,6 +120,9 @@ public class SkeletonGenerationDialog extends TitleAreaDialog {
 	private Button addPatternButton;
 	private Button removePatternButton;
 	
+	private ImportsManager imports = null;
+	private Set<String> existingImports = null;
+	
 	private ArrayList<PathPatternGroupWrapper> buildingWrapperList
 		= new ArrayList<PathPatternGroupWrapper>();
 
@@ -307,6 +310,11 @@ public class SkeletonGenerationDialog extends TitleAreaDialog {
 			fAstRoot = astRoot;
 			fImportsRewrite = StubUtility.createImportRewrite(astRoot, true);
 		}
+		
+		/*ImportsManager(CompilationUnit astRoot, ImportRewrite importRewrite) {
+			fAstRoot = astRoot;
+			fImportsRewrite = importRewrite;
+		}*/
 	
 		/* package */ICompilationUnit getCompilationUnit() {
 			return fImportsRewrite.getCompilationUnit();
@@ -614,6 +622,9 @@ public class SkeletonGenerationDialog extends TitleAreaDialog {
 			String classFullName = clazz.getFullName();
 			String packageName = classFullName.substring(0, classFullName.lastIndexOf("."));
 			
+			this.imports = null;
+			this.existingImports = null;
+			
 			if (monitor == null) {
 				monitor = new NullProgressMonitor();
 			}
@@ -637,6 +648,7 @@ public class SkeletonGenerationDialog extends TitleAreaDialog {
 			boolean needsSave = true;
 			ICompilationUnit connectedCU = null;
 
+			
 			try {
 				String typeName = getTypeNameWithoutParameters(clazz);
 
@@ -644,10 +656,8 @@ public class SkeletonGenerationDialog extends TitleAreaDialog {
 				boolean isClassExist = true;
 
 				IType createdType = null;
-				ImportsManager imports = null;
 				int indent = 0;
-
-				Set<String> existingImports = null;
+				
 
 				String lineDelimiter = null;
 				if (!isInnerClass) {
@@ -666,22 +676,16 @@ public class SkeletonGenerationDialog extends TitleAreaDialog {
 					// create a working copy with a new owner
 
 					needsSave = true;
-					parentCU.becomeWorkingCopy(new SubProgressMonitor(monitor, 1)); // cu
-																					// is
-																					// now
-																					// a
-																					// (primary)
-																					// working
-																					// copy
+					parentCU.becomeWorkingCopy(new SubProgressMonitor(monitor, 1)); // cu is now a primary) working copy
 					connectedCU = parentCU;
 
 					IBuffer buffer = parentCU.getBuffer();
 
-					CompilationUnit astRoot = createASTForImports(parentCU);
+					/*CompilationUnit astRoot = createASTForImports(parentCU);
 					existingImports = getExistingImports(astRoot);
 					imports = new ImportsManager(astRoot);
 					// add an import that will be removed again. Having this import solves 14661
-					imports.addImport(JavaModelUtil.concatenateName(pack.getElementName(), typeName));
+					imports.addImport(JavaModelUtil.concatenateName(pack.getElementName(), typeName));*/
 					
 					if(!isClassExist){
 						
@@ -696,7 +700,7 @@ public class SkeletonGenerationDialog extends TitleAreaDialog {
 						String cuContent = constructCUContent(parentCU, simpleTypeStub, lineDelimiter, clazz);
 						buffer.setContents(cuContent);
 						
-						
+						CompilationUnit astRoot = initializeImports(parentCU, pack, typeName);
 						
 						String typeContent = constructTypeStub(parentCU, imports, lineDelimiter, clazz, createdType, pack);
 						
@@ -709,6 +713,9 @@ public class SkeletonGenerationDialog extends TitleAreaDialog {
 						} else {
 							buffer.replace(index, simpleTypeStub.length(), typeContent);
 						}
+					}
+					else{
+						initializeImports(parentCU, pack, typeName);
 					}
 
 					createdType = parentCU.getType(typeName);
@@ -783,6 +790,17 @@ public class SkeletonGenerationDialog extends TitleAreaDialog {
 			}
 			
 			return connectedCU;
+		}
+		
+		@SuppressWarnings("restriction")
+		private CompilationUnit initializeImports(ICompilationUnit parentCU, IPackageFragment pack, String typeName){
+			CompilationUnit astRoot = createASTForImports(parentCU);
+			existingImports = getExistingImports(astRoot);
+			imports = new ImportsManager(astRoot);
+			// add an import that will be removed again. Having this import solves 14661
+			imports.addImport(JavaModelUtil.concatenateName(pack.getElementName(), typeName));
+			
+			return astRoot;
 		}
 
 		private CompilationUnit createASTForImports(ICompilationUnit cu) {
