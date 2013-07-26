@@ -19,7 +19,10 @@ public class CollectImportedTypeVisitor extends ASTVisitor {
 			ITypeBinding binding = name.resolveTypeBinding();
 			
 			if(null != binding){
-				importList.add(binding.getQualifiedName());
+				String qualifiedName = binding.getQualifiedName();
+				if(qualifiedName.contains(".")){
+					importList.add(qualifiedName);					
+				}
 				
 			}
 		}

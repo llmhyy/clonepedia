@@ -76,6 +76,7 @@ import clonepedia.model.ontology.Interface;
 import clonepedia.model.ontology.Method;
 import clonepedia.model.viewer.PathPatternGroupWrapper;
 import clonepedia.wizard.SkeletonGenerationDialog.ImportsManager;
+import clonepedia.wizard.printer.ASTPrinter;
 
 public class SkeletonGenerationAction {
 	private ImportsManager imports = null;
@@ -686,41 +687,37 @@ public class SkeletonGenerationAction {
 				HashMap<Statement, ArrayList<ASTNode>> uncounterDiffMap = diffVisitor.getUncounterDiffMap();
 				
 				if(counterDiffMap.size() != 0){
-					
 					for(Statement st: counterDiffMap.keySet()){
-						String message = "You may need to change ";
-						ArrayList<ASTNode> nodeList = counterDiffMap.get(st);
-						for(ASTNode node: nodeList){
-							message += node.toString() + ", ";
-						}
-						message = message.substring(0, message.length()-2) + "";
+						generateComment(st, counterDiffMap);
 					}
 				}
 				
 				if(uncounterDiffMap.size() != 0){
-					
 					for(Statement st: uncounterDiffMap.keySet()){
-						String message = "You may need to pay attention to ";
-						ArrayList<ASTNode> nodeList = uncounterDiffMap.get(st);
-						
-						for(ASTNode node: nodeList){
-							message += node.toString() + ", ";
-						}
-						message = message.substring(0, message.length()-2) + " to delete it";
-						
-						LineComment comment = st.getAST().newLineComment();
-						
-						LineComment.propertyDescriptors(st.getAST().apiLevel());
-						
-						
-						
+						generateComment(st, uncounterDiffMap);
 					}
 				}
 			}
-			buf.append(stat.toString());
+			
+			ASTPrinter printer = new ASTPrinter();
+			stat.accept(printer);
+			
+			buf.append(printer.getResult());
 		}
 		
 		return buf.toString();
+	}
+	
+	private void generateComment(Statement stat, HashMap<Statement, ArrayList<ASTNode>> map){
+		String message = "/*You may need to change ";
+		ArrayList<ASTNode> nodeList = map.get(stat);
+		for(ASTNode node: nodeList){
+			message += node.toString() + ", ";
+		}
+		message = message.substring(0, message.length()-2) + "*/";
+		
+		stat.setLeadingComment(message);
+		
 	}
 	
 	private boolean isCloneRelatedStatement(Statement stat, CloneInstanceWrapper insWrapper, CompilationUnit unit){
