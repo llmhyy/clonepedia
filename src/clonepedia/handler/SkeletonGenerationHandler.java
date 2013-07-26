@@ -10,9 +10,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-import clonepedia.dialog.SkeletonGenerationDialog;
 import clonepedia.model.syntactic.ClonePatternGroup;
 import clonepedia.model.viewer.ClonePatternGroupWrapper;
+import clonepedia.wizard.SkeletonGenerationDialog;
 
 public class SkeletonGenerationHandler extends AbstractHandler {
 

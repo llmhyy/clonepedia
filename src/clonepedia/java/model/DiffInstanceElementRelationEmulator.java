@@ -2,6 +2,11 @@ package clonepedia.java.model;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 
+/**
+ * an element in counter diff
+ * @author linyun
+ *
+ */
 public class DiffInstanceElementRelationEmulator {
 
 	private CloneInstanceWrapper instanceWrapper;

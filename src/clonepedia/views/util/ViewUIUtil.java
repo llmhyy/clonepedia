@@ -122,7 +122,7 @@ public class ViewUIUtil {
 			for(DiffCounterRelationGroupEmulator group: setWrapper.getSyntacticSetWrapper().getRelationGroups()){
 				TreeItem counterItem = createSimpleTreeItem(tree, "CRD:", "", group);
 				int index = 0;
-				for(DiffInstanceElementRelationEmulator relation: group.getRelations()){
+				for(DiffInstanceElementRelationEmulator relation: group.getElements()){
 					CloneInstance instance = relation.getInstanceWrapper().getCloneInstance();
 					String instanceContent =  instance.toString();
 					

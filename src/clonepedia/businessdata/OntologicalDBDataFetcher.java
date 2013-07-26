@@ -767,7 +767,7 @@ public class OntologicalDBDataFetcher extends OntologicalDataFetcher{
 		
 		for(DiffCounterRelationGroupEmulator group: setWrapper.getRelationGroups()){
 			String groupId = group.getId();
-			for(DiffInstanceElementRelationEmulator relation: group.getRelations()){
+			for(DiffInstanceElementRelationEmulator relation: group.getElements()){
 				ASTNode node = relation.getNode();
 				if(MinerUtilforJava.isConcernedType(node) /*|| node.getNodeType() == ASTNode.PRIMITIVE_TYPE*/){
 					ProgrammingElement element = transferASTNodesToProgrammingElement(node, set, set.getProject());

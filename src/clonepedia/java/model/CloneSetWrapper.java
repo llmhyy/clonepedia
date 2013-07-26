@@ -605,7 +605,7 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 	private void generateDiffPartInCounterRelationalStatements() {
 		for(DiffCounterRelationGroupEmulator relationStatementGroup: relationStatementGroups){
 			ArrayList<CloneInstanceWrapper> instanceList = new ArrayList<CloneInstanceWrapper>();
-			for(DiffInstanceElementRelationEmulator relation: relationStatementGroup.getRelations()){
+			for(DiffInstanceElementRelationEmulator relation: relationStatementGroup.getElements()){
 				CloneInstanceWrapper instance = relation.getInstanceWrapper();
 				Statement stat = (Statement) relation.getNode();
 				
@@ -972,5 +972,25 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 
 	public void setCommonStatementList(Statement[] commonStatementList) {
 		this.commonStatementList = commonStatementList;
+	}
+	
+	public CloneInstanceWrapper findLongestCloneInstance(){
+		CloneInstanceWrapper instanceWrapper = null;
+		int length = 0;
+		for(CloneInstanceWrapper insWrapper: this){
+			if(instanceWrapper == null){
+				instanceWrapper = insWrapper;
+				length = instanceWrapper.getEndLine() - instanceWrapper.getStartLine();
+			}
+			else{
+				int len = instanceWrapper.getEndLine() - instanceWrapper.getStartLine();
+				if(len > length){
+					instanceWrapper = insWrapper;
+					length = len;
+				}
+			}
+		}
+		
+		return instanceWrapper;
 	}
 }

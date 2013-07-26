@@ -209,7 +209,7 @@ public class OntologicalModelDataFetcher extends OntologicalDataFetcher{
 		int i=0;
 		for(DiffCounterRelationGroupEmulator group: setWrapper.getRelationGroups()){
 			CounterRelationGroup crp = new CounterRelationGroup(new Integer(i++).toString());
-			for(DiffInstanceElementRelationEmulator relation: group.getRelations()){
+			for(DiffInstanceElementRelationEmulator relation: group.getElements()){
 				
 				ASTNode node = relation.getNode();
 				if(MinerUtilforJava.isConcernedType(node) /*|| node.getNodeType() == ASTNode.PRIMITIVE_TYPE*/){

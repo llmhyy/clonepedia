@@ -2,7 +2,11 @@ package clonepedia.java.model;
 
 import java.util.ArrayList;
 
-
+/**
+ * a counter diff in a clone set
+ * @author linyun
+ *
+ */
 
 public class DiffCounterRelationGroupEmulator {
 	
@@ -25,7 +29,7 @@ public class DiffCounterRelationGroupEmulator {
 	}
 	
 	
-	public ArrayList<DiffInstanceElementRelationEmulator> getRelations() {
+	public ArrayList<DiffInstanceElementRelationEmulator> getElements() {
 		return relations;
 	}
 

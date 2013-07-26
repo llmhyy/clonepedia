@@ -270,11 +270,11 @@ public class CloneDiffView extends ViewPart {
 			 * for counter relationally difference
 			 */
 			for(DiffCounterRelationGroupEmulator relationGroup: this.set.getRelationGroups()){
-				for(DiffInstanceElementRelationEmulator relation: relationGroup.getRelations()){
+				for(DiffInstanceElementRelationEmulator relation: relationGroup.getElements()){
 					CloneInstanceWrapper referInstance = relation.getInstanceWrapper();
 					if(referInstance.equals(instanceWrapper)){
 						generateStyleRangeFromASTNode(text, relation.getNode(), 
-								methodStartPosition, CloneDiffView.COUNTER_DIFF_STYLE, relationGroup.getRelations().size(), false);
+								methodStartPosition, CloneDiffView.COUNTER_DIFF_STYLE, relationGroup.getElements().size(), false);
 						
 						
 					}
@@ -294,12 +294,12 @@ public class CloneDiffView extends ViewPart {
 			 * for selected counter relational difference
 			 */
 			if(relationGroup != null){
-				for(DiffInstanceElementRelationEmulator relation: relationGroup.getRelations()){
+				for(DiffInstanceElementRelationEmulator relation: relationGroup.getElements()){
 					if(relation.getInstanceWrapper().equals(instanceWrapper)){
 						ASTNode node = relation.getNode();
 						
 						generateStyleRangeFromASTNode(text, node,
-								methodStartPosition, CloneDiffView.COUNTER_DIFF_STYLE, relationGroup.getRelations().size(), true);
+								methodStartPosition, CloneDiffView.COUNTER_DIFF_STYLE, relationGroup.getElements().size(), true);
 						
 						text.setTopIndex(cu.getLineNumber(node.getStartPosition()) - cu.getLineNumber(methodStartPosition) - 3);
 						text.setHorizontalIndex(cu.getColumnNumber(node.getStartPosition()) - 20);

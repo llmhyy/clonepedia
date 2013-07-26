@@ -370,7 +370,7 @@ public class DiffPropertyView extends ViewPart {
 	}
 
 	private void createTreeItemsForSingleDiff(Tree tree, DiffCounterRelationGroupEmulator diff){
-		for(DiffInstanceElementRelationEmulator tuple: diff.getRelations()){
+		for(DiffInstanceElementRelationEmulator tuple: diff.getElements()){
 			TreeItem item = new TreeItem(tree, SWT.NONE);
 			
 			CloneInstance instance = tuple.getInstanceWrapper().getCloneInstance();
@@ -456,8 +456,8 @@ public class DiffPropertyView extends ViewPart {
 			}
 		}
 		
-		int totalSize = diff.getRelations().get(0).getInstanceWrapper().getCloneInstance().getCloneSet().size();
-		int differSize = totalSize - diff.getRelations().size(); 
+		int totalSize = diff.getElements().get(0).getInstanceWrapper().getCloneInstance().getCloneSet().size();
+		int differSize = totalSize - diff.getElements().size(); 
 		if(differSize > 0){
 			list.add(differSize);
 		}
@@ -472,7 +472,7 @@ public class DiffPropertyView extends ViewPart {
 		
 		String totalNumString = String.valueOf(totalSize);
 		if(type.equals("even")){	
-			int average = diff.getRelations().size()/bucketSet.size();
+			int average = diff.getElements().size()/bucketSet.size();
 			content.append("Each ");
 			content.append(String.valueOf(average));
 			content.append(" of ");
@@ -546,7 +546,7 @@ public class DiffPropertyView extends ViewPart {
 	private HashMap<String, ArrayList<CloneInstance>> reorgnizeCRD(){
 		HashMap<String, ArrayList<CloneInstance>> bucketSet = new HashMap<String, ArrayList<CloneInstance>>();
 		if(this.diff != null){
-			for(DiffInstanceElementRelationEmulator tuple: diff.getRelations()){
+			for(DiffInstanceElementRelationEmulator tuple: diff.getElements()){
 				try {
 					CloneInstanceWrapper instanceWrapper = tuple.getInstanceWrapper();
 					CloneInstance instance = instanceWrapper.getCloneInstance();
@@ -606,7 +606,7 @@ public class DiffPropertyView extends ViewPart {
 		this.relationMap = new HashMap<TypeNode, ArrayList<DiffInstanceElementRelationEmulator>>();
 		
 		HashSet<TypeNode> tmpSet = new HashSet<TypeNode>();
-		for(DiffInstanceElementRelationEmulator relation: diff.getRelations()){
+		for(DiffInstanceElementRelationEmulator relation: diff.getElements()){
 			ASTNode node = relation.getNode();
 			ITypeBinding binding = MinerUtilforJava.getBinding(node);
 			
