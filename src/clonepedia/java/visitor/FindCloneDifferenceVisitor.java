@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.Statement;
 
@@ -12,6 +13,7 @@ import clonepedia.java.model.CloneInstanceWrapper;
 import clonepedia.java.model.CloneSetWrapper;
 import clonepedia.java.model.DiffCounterRelationGroupEmulator;
 import clonepedia.java.model.DiffInstanceElementRelationEmulator;
+import clonepedia.wizard.CodeSkeletonGenerationUtil;
 
 public class FindCloneDifferenceVisitor extends ASTVisitor {
 	
@@ -56,7 +58,18 @@ public class FindCloneDifferenceVisitor extends ASTVisitor {
 				//uncounterDiffList.add(targetNode);
 			}
 		}
+		
+		if(targetNode instanceof Statement){
+			Statement stat = (Statement)targetNode;
+			
+			CompilationUnit unit = CodeSkeletonGenerationUtil.getCompilationUnit(insWrapper.getMethodDeclaration());
+			if(!CodeSkeletonGenerationUtil.isCloneRelatedStatement(stat, insWrapper, unit)){
+				stat.setLeadingComment("//not clone");
+			}
+		}
 	}
+	
+	
 	
 	private void recordDiffInformation(int mode, ASTNode targetNode){
 		Statement stat = findMostInnerStatement(targetNode);

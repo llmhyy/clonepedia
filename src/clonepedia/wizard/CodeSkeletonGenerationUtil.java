@@ -10,8 +10,12 @@ import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.internal.ui.wizards.NewWizardMessages;
 
+import clonepedia.java.model.CloneInstanceWrapper;
 import clonepedia.util.Settings;
 
 public class CodeSkeletonGenerationUtil {
@@ -41,5 +45,24 @@ public class CodeSkeletonGenerationUtil {
 		}
 		
 		return null;
+	}
+	
+	public static CompilationUnit getCompilationUnit(ASTNode astNode){
+		CompilationUnit unit = null;
+		ASTNode node = astNode.getParent();
+		while(!(node instanceof CompilationUnit)){
+			node = node.getParent();
+		}
+		unit = (CompilationUnit)node;
+		
+		return unit;
+	}
+	
+	public static boolean isCloneRelatedStatement(Statement stat, CloneInstanceWrapper insWrapper, CompilationUnit unit){
+		int startPosition = stat.getStartPosition();
+		int endPosition = stat.getLength() + startPosition;
+		
+		return !(startPosition > unit.getPosition(insWrapper.getEndLine()+1, 0) ||
+				endPosition < unit.getPosition(insWrapper.getStartLine(), 0));
 	}
 }

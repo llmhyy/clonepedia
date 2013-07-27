@@ -162,7 +162,8 @@ public class DetermineMethodWizardPage extends DetermineElementWizardPage {
 			fMethodParametersStatus = methodParametersChanged();
 		}
 		else if(fieldName == METHODS){
-			fMethodNameStatus = methodNameChanged();			
+			fMethodNameStatus = methodNameChanged();	
+			fMethodParametersStatus = methodParametersChanged();
 		}
 
 		doStatusUpdate();

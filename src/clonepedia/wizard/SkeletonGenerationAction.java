@@ -629,7 +629,7 @@ public class SkeletonGenerationAction {
 		
 		MethodDeclaration md = insWrapper.getMethodDeclaration();
 		
-		CompilationUnit unit = getCompilationUnit(md);
+		CompilationUnit unit = CodeSkeletonGenerationUtil.getCompilationUnit(md);
 		
 		CollectImportedTypeVisitor importTypeVisitor = new CollectImportedTypeVisitor();
 		CollectStatementInMethodVisitor totalStatVisitor = new CollectStatementInMethodVisitor();
@@ -649,16 +649,7 @@ public class SkeletonGenerationAction {
 		return generateMethodContent(totalStatements, cloneStatements, insWrapper, setWrapper, unit);
 	}
 	
-	private CompilationUnit getCompilationUnit(ASTNode astNode){
-		CompilationUnit unit = null;
-		ASTNode node = astNode.getParent();
-		while(!(node instanceof CompilationUnit)){
-			node = node.getParent();
-		}
-		unit = (CompilationUnit)node;
-		
-		return unit;
-	}
+	
 	
 	private void addImports(ArrayList<String> importedTypes, ImportsManager imports){
 		for(String type: importedTypes){
@@ -673,8 +664,8 @@ public class SkeletonGenerationAction {
 		StringBuffer buf = new StringBuffer();
 		for(Statement stat: totalStatements){
 			
-			if(!isCloneRelatedStatement(stat, insWrapper, unit)){
-				buf.append("//not clone\n");
+			if(!CodeSkeletonGenerationUtil.isCloneRelatedStatement(stat, insWrapper, unit)){
+				stat.setLeadingComment("//not clone");
 			}
 			else{
 				FindCloneDifferenceVisitor diffVisitor = new FindCloneDifferenceVisitor(setWrapper, insWrapper);
@@ -718,14 +709,6 @@ public class SkeletonGenerationAction {
 		
 		stat.setLeadingComment(message);
 		
-	}
-	
-	private boolean isCloneRelatedStatement(Statement stat, CloneInstanceWrapper insWrapper, CompilationUnit unit){
-		int startPosition = stat.getStartPosition();
-		int endPosition = stat.getLength() + startPosition;
-		
-		return !(startPosition > unit.getPosition(insWrapper.getEndLine()+1, 0) ||
-				endPosition < unit.getPosition(insWrapper.getStartLine(), 0));
 	}
 
 	/**

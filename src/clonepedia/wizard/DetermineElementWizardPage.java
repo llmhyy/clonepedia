@@ -174,6 +174,8 @@ public abstract class DetermineElementWizardPage extends NewContainerWizardPage 
 	public final static String method_return_type = "Return type: ";
 	public final static String method_name = "Name: ";
 	public final static String method_parameters = "Parameters: ";
+	
+	private final String[] primitiveTypes = {"int", "float", "double", "long", "short", "char"};
 
 	/**
 	 * Public access flag. See The Java Virtual Machine Specification for more
@@ -2260,6 +2262,18 @@ public abstract class DetermineElementWizardPage extends NewContainerWizardPage 
 		}
 		return fSuperClassStubTypeContext;
 	}
+	
+	
+	
+	private boolean isPrimitiveType(String type){
+		for(String str: primitiveTypes){
+			if(type.equals(str)){
+				return true;
+			}
+		}
+		
+		return false;
+	}
 
 	protected IStatus methodParametersChanged() {
 		StatusInfo status = new StatusInfo();
@@ -2274,7 +2288,7 @@ public abstract class DetermineElementWizardPage extends NewContainerWizardPage 
 			for (int i = 0; i < nElements; i++) {
 				String intfname = elements.get(i).toString();
 				Type type = TypeContextChecker.parseSuperInterface(intfname);
-				if (type == null) {
+				if (type == null && !isPrimitiveType(intfname)) {
 					status.setError(Messages
 							.format(NewWizardMessages.NewTypeWizardPage_error_InvalidSuperInterfaceName,
 									BasicElementLabels
