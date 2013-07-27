@@ -3,7 +3,11 @@ package clonepedia.java;
 import org.eclipse.jdt.core.dom.ASTMatcher;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Block;
+import org.eclipse.jdt.core.dom.IBinding;
+import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.PrimitiveType;
 /*import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration;
@@ -114,6 +118,20 @@ public class ASTComparator implements BoolComparator {
 		case ASTNode.SIMPLE_NAME:{
 			SimpleName name1 = (SimpleName) node1;
 			SimpleName name2 = (SimpleName) node2;
+			
+			IBinding b1 = name1.resolveBinding();
+			IBinding b2 = name2.resolveBinding();
+			
+			if((b1 instanceof IMethodBinding) && (b2 instanceof IMethodBinding)){
+				IMethodBinding mb1 = (IMethodBinding)b1;
+				IMethodBinding mb2 = (IMethodBinding)b2;
+				
+				boolean cond1 = matcher.match((SimpleName) node1, node2);
+				boolean cond2 = mb1.getDeclaringClass().getBinaryName().equals(mb2.getDeclaringClass().getBinaryName());
+				boolean cond3 = mb1.getReturnType().getBinaryName().equals(mb2.getReturnType().getBinaryName());
+				
+				return cond1 && cond2 && cond3;
+			}
 			
 			boolean isName1Null = name1.resolveTypeBinding() == null;
 			boolean isName2Null = name2.resolveTypeBinding() == null;

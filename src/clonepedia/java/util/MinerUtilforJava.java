@@ -177,14 +177,14 @@ public class MinerUtilforJava {
 				SimpleName name1 = (SimpleName) n1;
 				SimpleName name2 = (SimpleName) n2;
 				
-				/*IBinding bind1 = name1.resolveBinding();
+				IBinding bind1 = name1.resolveBinding();
 				IBinding bind2 = name2.resolveBinding();
 				
 				if(bind1 != null && bind2 != null){
 					if(bind1.getKind() != bind2.getKind()){
 						return false;
 					}
-				}*/
+				}
 
 				if (name1.getParent().getNodeType() == ASTNode.SIMPLE_TYPE
 						|| name2.getParent().getNodeType() == ASTNode.SIMPLE_TYPE) {
