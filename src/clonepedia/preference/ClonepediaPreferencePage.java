@@ -2,6 +2,8 @@ package clonepedia.preference;
 
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.Collections;
 
 import org.eclipse.core.resources.IProject;
@@ -12,6 +14,8 @@ import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -129,6 +133,21 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 		GridData comboData = new GridData(SWT.FILL, SWT.FILL, true, false);
 		comboData.horizontalSpan = 2;
 		projectCombo.setLayoutData(comboData);
+		projectCombo.addModifyListener(new ModifyListener() {
+			
+			@Override
+			public void modifyText(ModifyEvent e) {
+				String projectName = projectCombo.getText();
+				
+				String ontologyFileName = getPersistentFileName(projectName, "ontological_model");
+				String intraSetFileName = getPersistentFileName(projectName, "intra_pattern_sets");
+				String interSetFileName = getPersistentFileName(projectName, "inter_pattern_sets");
+				
+				ontologyFileText.setText(ontologyFileName);
+				intraSetFileText.setText(intraSetFileName);
+				interSetFileText.setText(interSetFileName);
+			}
+		});
 		
 		createCloneFileText(composite);
 		createOntologyFileText(composite);
@@ -140,6 +159,12 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 		createDiffGroup(composite);
 		
 		return composite;
+	}
+	
+	private String getPersistentFileName(String projectName, String fileName){
+		File ontologyFile = new File("configurations" + File.separator
+				+ projectName + File.separator + fileName);
+		return ontologyFile.getAbsolutePath();
 	}
 	
 	class FileSelectionAdapter extends SelectionAdapter{

@@ -39,7 +39,7 @@ public class GenerateInterSetPatternStep implements Step {
 				return;
 			}
 			
-			MinerUtil.serialize(sets, "inter_sets");
+			MinerUtil.serialize(sets, "inter_pattern_sets");
 			
 		}
 		catch(Exception e){
