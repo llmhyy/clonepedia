@@ -17,7 +17,7 @@ import clonepedia.syntactic.util.comparator.VectorPatternComparator;
 import clonepedia.util.MinerUtil;
 import clonepedia.util.Settings;
 
-public class OntologicalModelBuildingAction implements IWorkbenchWindowActionDelegate {
+public class OntologyModelGeneration implements IWorkbenchWindowActionDelegate {
 
 	@Override
 	public void run(IAction action) {

@@ -39,7 +39,7 @@ public class TestSyntacticClustering {
 			PathComparator pathComparator = new LevenshteinPathComparator();
 			PatternComparator patternComparator = new LevenshteinPatternComparator();
 			
-			CloneSets sets = (CloneSets)MinerUtil.deserialize("ontological_model");
+			CloneSets sets = (CloneSets)MinerUtil.deserialize("ontological_model", false);
 			
 			System.out.println("Ontological model extracted.");
 			//PathComparator pathComparator = new VectorPathComparator();
@@ -66,7 +66,7 @@ public class TestSyntacticClustering {
 	}
 	
 	public static CloneSets getCloneSetsWithPatterns() throws Exception{
-		CloneSets sets = (CloneSets)MinerUtil.deserialize("intra_pattern_sets");
+		CloneSets sets = (CloneSets)MinerUtil.deserialize("intra_pattern_sets", false);
 		
 		//generator = (OntologicalModelGenerator)MinerUtil.deserialize("generator");
 		
@@ -147,7 +147,7 @@ public class TestSyntacticClustering {
 			PathComparator pathComparator = new LevenshteinPathComparator();
 			PatternComparator patternComparator = new LevenshteinPatternComparator();
 			
-			CloneSets sets = (CloneSets)MinerUtil.deserialize("ontological_model");
+			CloneSets sets = (CloneSets)MinerUtil.deserialize("ontological_model", false);
 			
 			System.out.println("Ontological model extracted.");
 			//PathComparator pathComparator = new VectorPathComparator();

@@ -10,6 +10,9 @@ public class Settings {
 		if(Activator.getDefault() != null){
 			projectName = Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.TARGET_PORJECT);
 			inputCloneFile = Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.CLONE_PATH);
+			ontologyFile = Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.ONTOLOGY_PATH);
+			intraSetFile = Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.INTRA_SET_PATH);
+			interSetFile = Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.INTER_SET_PATH);
 			diffComparisonMode = Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.DIFF_LEVEL);
 			skipPattern = Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.SKIP_PATTERN);
 		}
@@ -79,4 +82,7 @@ public class Settings {
 	//======================================================================
 	public static String projectName;
 	public static String inputCloneFile;
+	public static String ontologyFile;
+	public static String intraSetFile;
+	public static String interSetFile;
 }

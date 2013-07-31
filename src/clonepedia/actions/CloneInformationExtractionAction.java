@@ -27,9 +27,9 @@ public class CloneInformationExtractionAction implements
 			protected IStatus run(IProgressMonitor monitor) {
 				Project project = new Project(Settings.projectName, "java", "");
 				CloneInformationExtractor extractor = 
-						new CloneInformationExtractor(new CloneDetectionFileParser(), 
+						new CloneInformationExtractor(new CloneDetectionFileParser(false, ""), 
 								project, new OntologicalDBDataFetcher());
-				extractor.extract();
+				extractor.extract(null);
 				return Status.OK_STATUS;
 			}
 			

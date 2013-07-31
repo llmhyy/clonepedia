@@ -12,12 +12,12 @@ import junit.framework.TestCase;
 public class TestStructuralClusteringResult extends TestCase {
 	public void testClusteringResult() throws Exception{
 		
-		ArrayList<SyntacticCluster> list = ((SyntacticClusteringer)MinerUtil.deserialize("all_clusterer")).doClustering();
+		ArrayList<SyntacticCluster> list = ((SyntacticClusteringer)MinerUtil.deserialize("all_clusterer", false)).doClustering();
 		
 		System.out.print("");
 		
-		OntologicalModelGenerator generator = (OntologicalModelGenerator)MinerUtil.deserialize("generator");
-		SyntacticClusteringer allCluster = (SyntacticClusteringer)MinerUtil.deserialize("all_clusterer_new");
+		OntologicalModelGenerator generator = (OntologicalModelGenerator)MinerUtil.deserialize("generator", false);
+		SyntacticClusteringer allCluster = (SyntacticClusteringer)MinerUtil.deserialize("all_clusterer_new", false);
 		ArrayList<SyntacticCluster> allList = allCluster.doClustering();
 		/*StructuralClusterer locationCluster = (StructuralClusterer)MinerUtil.deserialize("location_clusterer_new");
 		ArrayList<CloneSetCluster> locationList = locationCluster.doClustering();

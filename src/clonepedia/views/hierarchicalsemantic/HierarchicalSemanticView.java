@@ -229,7 +229,7 @@ public class HierarchicalSemanticView extends SummaryView {
 		try {
 			//System.out.println("Clustering started");
 			semanticClusterList = (ArrayList<SemanticCluster>) MinerUtil
-					.deserialize("semantic_clusters");
+					.deserialize("semantic_clusters", false);
 			
 			//ArrayList<SyntacticCluster> allList = allCluster.doClustering();
 

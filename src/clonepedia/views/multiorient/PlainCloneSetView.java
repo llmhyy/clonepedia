@@ -215,7 +215,12 @@ public class PlainCloneSetView extends SummaryView {
 						syntacticSetWrapper = new CloneInformationExtractor().extractCounterRelationalDifferencesOfCloneSet(syntacticSetWrapper);					
 					}
 					else if(Settings.diffComparisonMode.equals("Statement_Based")){
-						syntacticSetWrapper = new CloneInformationExtractor().extractCounterRelationalDifferencesWithinSyntacticBoundary(syntacticSetWrapper);
+						try {
+							syntacticSetWrapper = new CloneInformationExtractor().extractCounterRelationalDifferencesWithinSyntacticBoundary(syntacticSetWrapper);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 					
 					cloneSetWrapper.setSyntacticSetWrapper(syntacticSetWrapper);

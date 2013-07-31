@@ -622,8 +622,13 @@ public class SkeletonGenerationAction {
 		CloneSet set = ppgWrapper.getPathPattern().getCloneSet();
 		CloneSetWrapper setWrapper = new CloneSetWrapper(set, new CompilationUnitPool());
 		
-		setWrapper = new CloneInformationExtractor().
-				extractCounterRelationalDifferencesWithinSyntacticBoundary(setWrapper);
+		try {
+			setWrapper = new CloneInformationExtractor().
+					extractCounterRelationalDifferencesWithinSyntacticBoundary(setWrapper);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		CloneInstanceWrapper insWrapper = setWrapper.findLongestCloneInstance();
 		

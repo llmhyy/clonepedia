@@ -13,6 +13,10 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
+import clonepedia.actions.steps.GenerateCloneTopicStep;
+import clonepedia.actions.steps.GenerateInterSetPatternStep;
+import clonepedia.actions.steps.GenerateIntraSetPatternStep;
+import clonepedia.actions.steps.GenerateOntologyStep;
 import clonepedia.businessdata.OntologicalDBDataFetcher;
 import clonepedia.businessdata.OntologicalModelDataFetcher;
 import clonepedia.filepraser.CloneDetectionFileParser;
@@ -21,55 +25,56 @@ import clonepedia.java.StructureExtractor;
 import clonepedia.model.ontology.CloneSet;
 import clonepedia.model.ontology.CloneSets;
 import clonepedia.model.ontology.Project;
+import clonepedia.syntactic.util.comparator.LevenshteinPathComparator;
 import clonepedia.util.MinerUtil;
 import clonepedia.util.Settings;
 
-public class DirectOntologicalModelGeneration implements
+public class StartFromCloneFileAction implements
 		IWorkbenchWindowActionDelegate {
 
 	@Override
 	public void run(IAction action) {
 		
-		Job job = new Job("Model Extracting"){
+		Job job = new Job("Pattern Generating"){
 
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				Project project = new Project(Settings.projectName, "java", "");
 				StructureExtractor extractor = new StructureExtractor(project, false);
 				
-				monitor.beginTask("Generating Model", 100);
+				GenerateOntologyStep step1 = new GenerateOntologyStep(project, extractor);
+				monitor.beginTask("Generating Ontology Model", step1.getTotolEffort());
+				step1.run(monitor);
 				
-				//extractor.extractProjectOutline();
-				try {
-					OntologicalModelDataFetcher modelFetcher = 
-							(OntologicalModelDataFetcher)extractor.extractProjectContent();
-					
-					monitor.worked(50);
-					
-					modelFetcher = (OntologicalModelDataFetcher) new CloneInformationExtractor(
-							new CloneDetectionFileParser(), project, modelFetcher).extract();
-					
-					monitor.worked(50);
-					
-					CloneSets sets = new CloneSets();
-					for(CloneSet set: modelFetcher.getCloneSetMap().values()){
-						sets.add(set);
-						set.setCloneSets(sets);
-					}
-					
-					MinerUtil.serialize(sets, "ontological_model");
-					
-				} catch (JavaModelException e) {
-					e.printStackTrace();
-				} catch (CoreException e) {
-					e.printStackTrace();
-				} catch (Exception e) {
-					e.printStackTrace();
+				CloneSets sets = step1.getCloneSets();
+				sets.setPathComparator(new LevenshteinPathComparator());
+				
+				GenerateIntraSetPatternStep step2 = new GenerateIntraSetPatternStep(sets);
+				monitor.beginTask("Generating Intra Clone Set Pattern", step2.getTotolEffort());
+				step2.run(monitor);
+				
+				if(monitor.isCanceled()){
+					return Status.CANCEL_STATUS;
 				}
+				
+				GenerateInterSetPatternStep step3 = new GenerateInterSetPatternStep(sets);
+				monitor.beginTask("Generating Inter Clone Set Pattern", step3.getTotolEffort());
+				step3.run(monitor);
+				
+				
+				if(monitor.isCanceled()){
+					return Status.CANCEL_STATUS;
+				}
+				
+				GenerateCloneTopicStep step4 = new GenerateCloneTopicStep(sets);
+				monitor.beginTask("Generating Clone Topics", step4.getTotolEffort());
+				step4.run(monitor);
+				
 				return Status.OK_STATUS;
 			}
 			
 		};
+		
 		job.schedule();
 
 	}

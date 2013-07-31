@@ -15,6 +15,9 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
 
+import clonepedia.actions.steps.GenerateCloneTopicStep;
+import clonepedia.actions.steps.GenerateInterSetPatternStep;
+import clonepedia.actions.steps.GenerateIntraSetPatternStep;
 import clonepedia.model.ontology.CloneSet;
 import clonepedia.model.ontology.CloneSets;
 import clonepedia.model.syntactic.PathPatternGroup;
@@ -26,24 +29,45 @@ import clonepedia.syntactic.util.comparator.PathComparator;
 import clonepedia.util.MinerUtil;
 import clonepedia.util.Settings;
 
-public class PatternAndTopicGeneration implements
+public class StartFromOntologyAction implements
 		IWorkbenchWindowActionDelegate {
 
-	private double intraCloneSetPatternProgress = 0.5;
-	private double interCloneSetPatternProgress = 0.4;
-	private double topicProgress = 0.1;
+	//private double intraCloneSetPatternProgress = 0.5;
+	//private double interCloneSetPatternProgress = 0.4;
+	//private double topicProgress = 0.1;
 	
-	private int totalUnit = 1000;
+	//private int totalUnit = 1000;
 	
 	@Override
 	public void run(IAction action) {
 		
-		Job job = new Job("Pattern and Topic Extracting"){
+		Job job = new Job("Pattern Generating"){
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				monitor.beginTask("Pattern Generation", totalUnit);
+				CloneSets sets = (CloneSets) MinerUtil.deserialize(Settings.ontologyFile, true);
+				sets.setPathComparator(new LevenshteinPathComparator());
 				
-				try{
+				GenerateIntraSetPatternStep step2 = new GenerateIntraSetPatternStep(sets);
+				monitor.beginTask("Generating Intra Clone Set Pattern", step2.getTotolEffort());
+				step2.run(monitor);
+				
+				if(monitor.isCanceled()){
+					return Status.CANCEL_STATUS;
+				}
+				
+				GenerateInterSetPatternStep step3 = new GenerateInterSetPatternStep(sets);
+				monitor.beginTask("Generating Inter Clone Set Pattern", step3.getTotolEffort());
+				step3.run(monitor);
+				
+				GenerateCloneTopicStep step4 = new GenerateCloneTopicStep(sets);
+				monitor.beginTask("Generating Clone Topics", step4.getTotolEffort());
+				step4.run(monitor);
+				
+				if(monitor.isCanceled()){
+					return Status.CANCEL_STATUS;
+				}
+				
+				/*try{
 					
 					PathComparator pathComparator = new LevenshteinPathComparator();
 					CloneSets sets = (CloneSets)MinerUtil.deserialize("ontological_model");
@@ -72,7 +96,7 @@ public class PatternAndTopicGeneration implements
 				}
 				catch(Exception e){
 					e.printStackTrace();
-				}
+				}*/
 				
 				return Status.OK_STATUS;
 			}
@@ -95,7 +119,7 @@ public class PatternAndTopicGeneration implements
 
 	}
 	
-	private void intraCloneSetPatternGeneration(IProgressMonitor monitor, CloneSets sets) throws Exception{
+	/*private void intraCloneSetPatternGeneration(IProgressMonitor monitor, CloneSets sets) throws Exception{
 		
 		monitor.subTask("generating intra clone set pattern");
 		
@@ -172,9 +196,9 @@ public class PatternAndTopicGeneration implements
 		monitor.worked((int)(ciNum/totalNum*totalUnit*this.interCloneSetPatternProgress));
 		
 		MinerUtil.serialize(sets, "inter_sets");
-	}
+	}*/
 	
-	private void topicGeneration(IProgressMonitor monitor, CloneSets sets) throws Exception{
+	/*private void topicGeneration(IProgressMonitor monitor, CloneSets sets) throws Exception{
 		
 		if(monitor.isCanceled()){
 			return;
@@ -189,9 +213,9 @@ public class PatternAndTopicGeneration implements
 		monitor.worked((int)(totalUnit*this.topicProgress));
 		
 		MinerUtil.serialize(sets, "sets");
-	}
+	}*/
 
-	private void printPatternNumber(CloneSets sets) throws Exception{
+	/*private void printPatternNumber(CloneSets sets) throws Exception{
 		int count = 0;
 		for(CloneSet set: sets.getCloneList()){
 			count += set.getClusterableLocationPatterns().size();
@@ -217,7 +241,7 @@ public class PatternAndTopicGeneration implements
 		System.out.println("The total number of diff class/interface usage patterns is: " + count);
 		
 		
-	}
+	}*/
 	
 	@Override
 	public void selectionChanged(IAction action, ISelection selection) {

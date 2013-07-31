@@ -28,22 +28,34 @@
             </groupMarker>
          </menu>
          <action
-               class="clonepedia.actions.DirectOntologicalModelGeneration"
-               icon="icons/action/genmodel.gif"
-               id="Clonepedia.DirectGenModel"
-               label="Directly Generate Ontology Model"
+               class="clonepedia.actions.StartFromIntraSetPatternAction"
+               icon="icons/action/step3.gif"
+               id="Clonepedia.GenerateFromCloneFileAction"
+               label="Generate Results from Intra Clone Set Pattern"
                menubarPath="Clonepedia/run"
                style="push"
-               toolbarPath="run">
+               toolbarPath="run"
+               tooltip="Generate the final results start from the intra clone set pattern file you configure">
          </action>
          <action
-               class="clonepedia.actions.PatternAndTopicGeneration"
-               icon="icons/action/data_gen.gif"
+               class="clonepedia.actions.StartFromOntologyAction"
+               icon="icons/action/step2.gif"
                id="Clonepedia.GeneratePatternAndTopic"
-               label="Generate Pattern and Topic"
+               label="Generate Results from Ontology"
                menubarPath="Clonepedia/run"
                style="push"
-               toolbarPath="run">
+               toolbarPath="run"
+               tooltip="Generate the final results start from the ontology file you configure">
+         </action>
+         <action
+               class="clonepedia.actions.StartFromCloneFileAction"
+               icon="icons/action/step1.gif"
+               id="Clonepedia.DirectGenModel"
+               label="Generate Results From Clone File"
+               menubarPath="Clonepedia/run"
+               style="push"
+               toolbarPath="run"
+               tooltip="Generate the final results start from the clone file you configure">
          </action>
          <action
                class="clonepedia.actions.ProgramStructureExtractionAction"
@@ -64,7 +76,7 @@
                toolbarPath="debug">
          </action>
          <action
-               class="clonepedia.actions.OntologicalModelBuildingAction"
+               class="clonepedia.actions.OntologyModelGeneration"
                icon="icons/action/build_model.gif"
                id="Clonepedia.OntologicalModelBuilding"
                label="Build Ontological Model"

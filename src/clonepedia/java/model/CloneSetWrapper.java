@@ -560,7 +560,7 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 		return lists;
 	}
 
-	public void generateDiffPartWithinSyntacticBoundary(boolean isStatementFuzzyMatch) {
+	public void generateDiffPartWithinSyntacticBoundary(boolean isStatementFuzzyMatch) throws Exception {
 		/**
 		 * deal with the instances with extra length in the beginning
 		 */
@@ -667,7 +667,7 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 		}
 	}
 
-	private void generatePatternSharingASTNodesInStatements(boolean isStatementFuzzyMatch, boolean isForThePrefixCondition){
+	private void generatePatternSharingASTNodesInStatements(boolean isStatementFuzzyMatch, boolean isForThePrefixCondition) throws Exception{
 		if(isStatementFuzzyMatch){
 			this.generatePatternSharingASTNodesInStatementsWithFuzzyMatch(isForThePrefixCondition);
 		}
@@ -747,7 +747,7 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 		}
 	}
 	
-	private void generatePatternSharingASTNodesInStatementsWithFuzzyMatch(boolean isForThePrefixCondition){
+	private void generatePatternSharingASTNodesInStatementsWithFuzzyMatch(boolean isForThePrefixCondition) throws Exception{
 		for (CloneInstanceWrapper instance : this){
 			if(!isForThePrefixCondition){
 				instance.compareStatementPointer = instance.startStatementContextIndex + 1;
@@ -777,12 +777,8 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 					//instance.markIndex(instance.comparePointer);
 					for (CloneInstanceWrapper i : otherInstances) {
 						int index = -1;
-						try {
-							index = findTheSimilarStatementIndexInInstance(
-									currentStatement, i, isForThePrefixCondition);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
+						index = findTheSimilarStatementIndexInInstance(
+								currentStatement, i, isForThePrefixCondition);
 
 						//System.out.print("");
 						if (-1 != index) {

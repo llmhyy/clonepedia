@@ -15,7 +15,7 @@ public class TestSyntacticResult {
 	public static void main(String[] args) {
 		String resultFile = "clusters_15.0";
 		MinerUtil mu = new MinerUtil();
-		ArrayList<SyntacticCluster> list = (ArrayList<SyntacticCluster>)mu.deserialize(resultFile);
+		ArrayList<SyntacticCluster> list = (ArrayList<SyntacticCluster>)mu.deserialize(resultFile, false);
 		System.out.print("");
 	}
 

@@ -17,7 +17,7 @@ public class TestCloneSetSemanticClustering {
 		clusteringer.doClustering(generator.getSets().getCloneList());
 		MinerUtil.serialize(generator.getSets(), "sets");*/
 		
-		CloneSets sets = (CloneSets)MinerUtil.deserialize("inter_pattern_sets");
+		CloneSets sets = (CloneSets)MinerUtil.deserialize("inter_pattern_sets", false);
 		clusteringer.doClustering(sets.getCloneList());
 		MinerUtil.serialize(sets, "sets");
 	}

@@ -40,7 +40,7 @@ public class ProgramStructureExtractionAction implements IWorkbenchWindowActionD
 				StructureExtractor extractor = new StructureExtractor(project, true);
 				//extractor.extractProjectOutline();
 				try {
-					extractor.extractProjectContent();
+					extractor.extractProjectContent(null);
 				} catch (JavaModelException e) {
 					e.printStackTrace();
 				} catch (CoreException e) {

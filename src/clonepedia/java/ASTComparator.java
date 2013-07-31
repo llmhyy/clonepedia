@@ -128,7 +128,11 @@ public class ASTComparator implements BoolComparator {
 				
 				boolean cond1 = matcher.match((SimpleName) node1, node2);
 				boolean cond2 = mb1.getDeclaringClass().getBinaryName().equals(mb2.getDeclaringClass().getBinaryName());
-				boolean cond3 = mb1.getReturnType().getBinaryName().equals(mb2.getReturnType().getBinaryName());
+				
+				String returnTypeName1 = mb1.getReturnType().getBinaryName();
+				String returnTypeName2 = mb2.getReturnType().getBinaryName();
+				boolean cond3 = (null != returnTypeName1) && (null != returnTypeName2) 
+						&& returnTypeName1.equals(returnTypeName2);
 				
 				return cond1 && cond2 && cond3;
 			}
@@ -144,7 +148,10 @@ public class ASTComparator implements BoolComparator {
 						matcher.match((SimpleName) node1, node2);
 			}
 			else{
-				return (name1.resolveTypeBinding().getBinaryName().equals(name2.resolveTypeBinding().getBinaryName())) && 
+				String binaryName1 = name1.resolveTypeBinding().getBinaryName();
+				String binaryName2 = name2.resolveTypeBinding().getBinaryName();
+				
+				return (null != binaryName1) && (null != binaryName2) && binaryName1.equals(binaryName2) && 
 						matcher.match((SimpleName) node1, node2);				
 			}
 		}

@@ -2,6 +2,7 @@ package clonepedia.java;
 
 import java.util.ArrayList;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -58,17 +59,17 @@ public class CloneInformationExtractor {
 	/**
 	 * Extract the structural and diff information of clone sets
 	 */
-	public OntologicalDataFetcher extract() {
+	public OntologicalDataFetcher extract(IProgressMonitor monitor) {
 		
 		CompilationUnitPool pool = new CompilationUnitPool();
 		
-		CloneSets cloneSets = cloneFileParser.getCloneSets(false, "");
+		CloneSets cloneSets = cloneFileParser.getCloneSets();
 		for (CloneSet cloneSet : cloneSets.getCloneList()) {
 			try{
 				/**
 				 * The following code is for debugging
 				 */
-				/*if(cloneSet.getId().equals("250")){
+				/*if(cloneSet.getId().equals("280097")){
 					System.out.print("");
 				}
 				else
@@ -89,7 +90,11 @@ public class CloneInformationExtractor {
 					setWrapper = extractCounterRelationalDifferencesWithinSyntacticBoundary(setWrapper);
 				}
 				setWrapperList.add(setWrapper);
-				System.out.print("");
+				
+				if(monitor != null){
+					monitor.worked(1);
+					if(monitor.isCanceled()) return this.fetcher;
+				}
 			}
 			catch(Exception e){
 				System.out.println(cloneSet.getId());
@@ -139,7 +144,7 @@ public class CloneInformationExtractor {
 		}
 	}*/
 	
-	public CloneSetWrapper extractCounterRelationalDifferencesWithinSyntacticBoundary(CloneSetWrapper setWrapper){
+	public CloneSetWrapper extractCounterRelationalDifferencesWithinSyntacticBoundary(CloneSetWrapper setWrapper) throws Exception{
 		setWrapper.generateCommonStatementListforCloneSetWrapper();
 		if (setWrapper.getCommonStatementList().length != 0) {
 			setWrapper.generateDiffPartWithinSyntacticBoundary(true);			

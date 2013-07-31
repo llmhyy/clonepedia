@@ -50,17 +50,28 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 	
 	private Combo projectCombo;
 	private Text cloneFileText;
+	private Text ontologyFileText;
+	private Text intraSetFileText;
+	private Text interSetFileText;
 	
 	private Combo levelCombo;
 	private Combo skipPatternCombo;
 	
 	private String defaultTargetProject;
 	private String defaultCloneFilePath;
+	private String defaultOntologyFilePath;
+	private String defaultIntraSetFilePath;
+	private String defaultInterSetFilePath;
+	
 	private String defaultDiffLevel;
 	private String defaultSkipPattern;
 	
 	public static final String TARGET_PORJECT = "targetProjectName";
 	public static final String CLONE_PATH = "cloneFilePath";
+	public static final String ONTOLOGY_PATH = "ontologyFilePath";
+	public static final String INTRA_SET_PATH = "intraSetFilePath";
+	public static final String INTER_SET_PATH = "interSetFilePath";
+	
 	public static final String DIFF_LEVEL = "diffLevel";
 	public static final String SKIP_PATTERN = "skipPattern";
 	
@@ -74,6 +85,9 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 		
 		this.defaultTargetProject = Activator.getDefault().getPreferenceStore().getString(TARGET_PORJECT);
 		this.defaultCloneFilePath = Activator.getDefault().getPreferenceStore().getString(CLONE_PATH);
+		this.defaultOntologyFilePath = Activator.getDefault().getPreferenceStore().getString(ONTOLOGY_PATH);
+		this.defaultIntraSetFilePath = Activator.getDefault().getPreferenceStore().getString(INTRA_SET_PATH);
+		this.defaultInterSetFilePath = Activator.getDefault().getPreferenceStore().getString(INTER_SET_PATH);
 		this.defaultDiffLevel = Activator.getDefault().getPreferenceStore().getString(DIFF_LEVEL);
 		this.defaultSkipPattern = Activator.getDefault().getPreferenceStore().getString(SKIP_PATTERN);
 		//this.defaultTargetProject = preferences.get(TARGET_PORJECT, "");
@@ -116,36 +130,87 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 		comboData.horizontalSpan = 2;
 		projectCombo.setLayoutData(comboData);
 		
-		
-		Label cloneFileLabel = new Label(composite, SWT.NONE);
-		cloneFileLabel.setText("clone file");
-		cloneFileText = new Text(composite, SWT.BORDER);
-		cloneFileText.setText(this.defaultCloneFilePath);
-		GridData textData = new GridData(SWT.FILL, SWT.FILL, true, false);
-		cloneFileText.setLayoutData(textData);
-		Button cloneFileButton = new Button(composite, SWT.NONE);
-		cloneFileButton.setText("Browser");
-		cloneFileButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e){
-				FileDialog dialog = new FileDialog(PlatformUI.getWorkbench().
-						getActiveWorkbenchWindow().getShell(), SWT.NULL);
-				
-				  String path = dialog.open();
-				  if (path != null) {
-
-					  File file = new File(path);
-					  if (file.isFile()){
-						  cloneFileText.setText(file.toString());
-					  }
-				  }	  
-			}
-		});
+		createCloneFileText(composite);
+		createOntologyFileText(composite);
+		createIntraCloneSetPatternFileText(composite);
+		createInterCloneSetPatternFileText(composite);
 		
 		createPatternGroup(composite);
 		
 		createDiffGroup(composite);
 		
 		return composite;
+	}
+	
+	class FileSelectionAdapter extends SelectionAdapter{
+		
+		private Text text;
+		
+		public FileSelectionAdapter(Text text){
+			this.text = text;
+		}
+		
+		public void widgetSelected(SelectionEvent e){
+			FileDialog dialog = new FileDialog(PlatformUI.getWorkbench().
+					getActiveWorkbenchWindow().getShell(), SWT.NULL);
+			
+			  String path = dialog.open();
+			  if (path != null) {
+
+				  File file = new File(path);
+				  if (file.isFile()){
+					  text.setText(file.toString());
+				  }
+			  }	  
+		}
+	}
+	
+	private void createCloneFileText(Composite composite){
+		Label cloneFileLabel = new Label(composite, SWT.NONE);
+		cloneFileLabel.setText("clone file:");
+		cloneFileText = new Text(composite, SWT.BORDER);
+		cloneFileText.setText(this.defaultCloneFilePath);
+		GridData textData = new GridData(SWT.FILL, SWT.FILL, true, false);
+		cloneFileText.setLayoutData(textData);
+		Button cloneFileButton = new Button(composite, SWT.NONE);
+		cloneFileButton.setText("Browse");
+		cloneFileButton.addSelectionListener(new FileSelectionAdapter(cloneFileText));
+	}
+	
+	private void createOntologyFileText(Composite composite){
+		Label ontologyFileLabel = new Label(composite, SWT.NONE);
+		ontologyFileLabel.setText("ontology file:");
+		ontologyFileText = new Text(composite, SWT.BORDER);
+		ontologyFileText.setText(this.defaultOntologyFilePath);
+		GridData textData = new GridData(SWT.FILL, SWT.FILL, true, false);
+		ontologyFileText.setLayoutData(textData);
+		Button ontologyFileButton = new Button(composite, SWT.NONE);
+		ontologyFileButton.setText("Browse");
+		ontologyFileButton.addSelectionListener(new FileSelectionAdapter(ontologyFileText));
+	}
+	
+	private void createIntraCloneSetPatternFileText(Composite composite){
+		Label intraSetFileLabel = new Label(composite, SWT.NONE);
+		intraSetFileLabel.setText("intra set file:");
+		intraSetFileText = new Text(composite, SWT.BORDER);
+		intraSetFileText.setText(this.defaultIntraSetFilePath);
+		GridData textData = new GridData(SWT.FILL, SWT.FILL, true, false);
+		intraSetFileText.setLayoutData(textData);
+		Button intraSetFileButton = new Button(composite, SWT.NONE);
+		intraSetFileButton.setText("Browse");
+		intraSetFileButton.addSelectionListener(new FileSelectionAdapter(intraSetFileText));
+	}
+	
+	private void createInterCloneSetPatternFileText(Composite composite){
+		Label interSetFileLabel = new Label(composite, SWT.NONE);
+		interSetFileLabel.setText("inter set file:");
+		interSetFileText = new Text(composite, SWT.BORDER);
+		interSetFileText.setText(this.defaultInterSetFilePath);
+		GridData textData = new GridData(SWT.FILL, SWT.FILL, true, false);
+		interSetFileText.setLayoutData(textData);
+		Button interSetFileButton = new Button(composite, SWT.NONE);
+		interSetFileButton.setText("Browse");
+		interSetFileButton.addSelectionListener(new FileSelectionAdapter(interSetFileText));
 	}
 	
 	private void createPatternGroup(Composite parent){
@@ -198,11 +263,17 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 		Preferences preferences = ConfigurationScope.INSTANCE.getNode("Clonepedia");
 		preferences.put(TARGET_PORJECT, this.projectCombo.getText());
 		preferences.put(CLONE_PATH, this.cloneFileText.getText());
+		preferences.put(ONTOLOGY_PATH, this.ontologyFileText.getText());
+		preferences.put(INTRA_SET_PATH, this.intraSetFileText.getText());
+		preferences.put(INTER_SET_PATH, this.interSetFileText.getText());
 		preferences.put(DIFF_LEVEL, this.levelCombo.getText());
 		preferences.put(SKIP_PATTERN, this.skipPatternCombo.getText());
 		
 		Activator.getDefault().getPreferenceStore().putValue(TARGET_PORJECT, this.projectCombo.getText());
 		Activator.getDefault().getPreferenceStore().putValue(CLONE_PATH, this.cloneFileText.getText());
+		Activator.getDefault().getPreferenceStore().putValue(ONTOLOGY_PATH, this.ontologyFileText.getText());
+		Activator.getDefault().getPreferenceStore().putValue(INTRA_SET_PATH, this.intraSetFileText.getText());
+		Activator.getDefault().getPreferenceStore().putValue(INTER_SET_PATH, this.interSetFileText.getText());
 		Activator.getDefault().getPreferenceStore().putValue(DIFF_LEVEL, this.levelCombo.getText());
 		Activator.getDefault().getPreferenceStore().putValue(SKIP_PATTERN, this.skipPatternCombo.getText());
 		
@@ -223,7 +294,7 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 		if(dir.exists()){
 			
 			Settings.projectName = this.projectCombo.getText();
-			Activator.setCloneSets((CloneSets) MinerUtil.deserialize("sets"));
+			Activator.setCloneSets((CloneSets) MinerUtil.deserialize("sets", false));
 			
 			CloneSetWrapperList cloneSets = SummaryUtil.wrapCloneSets(Activator.getCloneSets().getCloneList());
 			

@@ -44,7 +44,7 @@ public class TestPatternDistance extends TestCase {
 			
 			MinerUtil.serialize(generator.getSets(), "test_sets4");*/
 			
-			CloneSets sets = (CloneSets)MinerUtil.deserialize("test_sets4");
+			CloneSets sets = (CloneSets)MinerUtil.deserialize("test_sets4", false);
 			generator.setSets(sets);
 			
 			int count = 0;

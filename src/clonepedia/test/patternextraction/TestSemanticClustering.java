@@ -31,7 +31,7 @@ public class TestSemanticClustering extends TestCase {
 		System.out.println("Clustering started");
 		@SuppressWarnings("unchecked")
 		ArrayList<SyntacticCluster> clusters = (ArrayList<SyntacticCluster>) MinerUtil
-				.deserialize("all_cluster");
+				.deserialize("all_cluster", false);
 		//ArrayList<SyntacticCluster> allList = allCluster.doClustering();
 
 		ArrayList<SemanticCluster> semanticClusterList = new SemanticClusteringer().doClustering(clusters);

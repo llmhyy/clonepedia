@@ -49,12 +49,17 @@ public class MinerUtil {
 		oos.close();
 	}
 
-	public static Object deserialize(String fileName) {
+	public static Object deserialize(String fileName, boolean isAbsolutePath) {
 		
 		FileInputStream fis;
 		try {
-			fis = new FileInputStream("configurations" + File.separator
-					+ Settings.projectName + File.separator + fileName);
+			if(isAbsolutePath){
+				fis = new FileInputStream(fileName);
+			}
+			else{
+				fis = new FileInputStream("configurations" + File.separator
+						+ Settings.projectName + File.separator + fileName);				
+			}
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			Object object = ois.readObject();
 			ois.close();

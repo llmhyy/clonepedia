@@ -178,7 +178,7 @@ public class SyntacticClusteringer implements Serializable{
 		long start = System.currentTimeMillis();
 		
 		PatternClusteringer pcger = new PatternClusteringer();
-		ArrayList<ClonePatternGroup> clonePatterns = pcger.doClustering(ppgs, clonePatternStyle);
+		ArrayList<ClonePatternGroup> clonePatterns = pcger.doClustering(ppgs, clonePatternStyle, null);
 		
 		for(ClonePatternGroup clonePattern: clonePatterns){
 			for(PathPatternGroup ppg: clonePattern){
@@ -216,7 +216,7 @@ public class SyntacticClusteringer implements Serializable{
 	private void attachPatternLabels(ArrayList<SyntacticCluster> list) throws Exception{
 		PatternClusteringer pcger = new PatternClusteringer();
 		for(SyntacticCluster cluster: list){
-			ArrayList<ClonePatternGroup> clonePatterns = pcger.doClustering(cluster.getConcernedContainedPatternPathGroups(), PathSequence.LOCATION);
+			ArrayList<ClonePatternGroup> clonePatterns = pcger.doClustering(cluster.getConcernedContainedPatternPathGroups(), PathSequence.LOCATION, null);
 			
 			for(ClonePatternGroup clonePattern: clonePatterns){
 				for(PathPatternGroup ppg: clonePattern){

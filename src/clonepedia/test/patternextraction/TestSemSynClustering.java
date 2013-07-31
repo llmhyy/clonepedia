@@ -17,7 +17,7 @@ import clonepedia.util.MinerUtil;
 public class TestSemSynClustering {
 	
 	public static void main(String[] args) throws Exception{
-		OntologicalModelGenerator generator = (OntologicalModelGenerator)MinerUtil.deserialize("generator");
+		OntologicalModelGenerator generator = (OntologicalModelGenerator)MinerUtil.deserialize("generator", false);
 		ArrayList<CloneSet> setList = generator.getSets().getCloneList();
 		SemanticClusteringer clusterer = new SemanticClusteringer();
 		ArrayList<SemanticCluster> semCluList = clusterer.doClustering(setList);

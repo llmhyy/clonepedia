@@ -6,6 +6,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
@@ -73,7 +74,28 @@ public class StructureExtractor {
 		this.fetcher = typeVisitor.getFetcher();
 	}
 	
-	public OntologicalDataFetcher extractProjectContent() throws JavaModelException, CoreException{
+	public int getTotalCompilationUnitNumber(){
+		try {
+			int sum = 0;
+			
+			IPackageFragment[] packages = getRelatedPackageInProject();
+			for(IPackageFragment pack: packages){
+				sum += pack.getCompilationUnits().length;
+			}
+			
+			return sum;
+		} catch (JavaModelException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return 0;
+	}
+	
+	public OntologicalDataFetcher extractProjectContent(IProgressMonitor monitor) throws JavaModelException, CoreException{
 		
 		if(this.fetcher instanceof OntologicalDBDataFetcher){
 			new OntologicalDBDataFetcher().storeProject(project);			
@@ -81,18 +103,20 @@ public class StructureExtractor {
 		
 		CompilationUnitPool pool = new CompilationUnitPool();
 		
-		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		IProject proj = root.getProject(project.getProjectName());
-		if (proj.isNatureEnabled(MinerProperties.javaNatureName)) {
-			IJavaProject javaProject = JavaCore.create(proj);
-			
-			IPackageFragment[] packages = javaProject.getPackageFragments();
+		IPackageFragment[] packages = getRelatedPackageInProject();
+		if(null != packages){
 			for(IPackageFragment pack: packages){
 				if(pack.getKind() == IPackageFragmentRoot.K_SOURCE){
 					for(ICompilationUnit unit: pack.getCompilationUnits()){
 						
 						try {
 							parseCompilationUnit(unit, pool);
+							if(monitor != null){
+								monitor.worked(1);
+								if(monitor.isCanceled()){
+									return this.fetcher;
+								}
+							}
 						} catch (Exception e) {
 							e.printStackTrace();
 						}	
@@ -106,5 +130,19 @@ public class StructureExtractor {
 		return this.fetcher;
 	}
 	
-	
+	private IPackageFragment[] getRelatedPackageInProject() throws JavaModelException, CoreException{
+		
+		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+		IProject proj = root.getProject(project.getProjectName());
+		if (proj.isNatureEnabled(MinerProperties.javaNatureName)) {
+			IJavaProject javaProject = JavaCore.create(proj);
+			
+			IPackageFragment[] packages = javaProject.getPackageFragments();
+			
+			return packages;
+		}
+		else {
+			return null;
+		}
+	}
 }

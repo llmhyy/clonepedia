@@ -18,10 +18,9 @@ import clonepedia.util.Settings;
 
 public class CloneDetectionFileParser extends FileParser {
 	
+	private CloneSets cloneSets = new CloneSets();
 
-	public CloneSets getCloneSets(boolean debugState, String setIdInDebug) {
-		
-		CloneSets cloneSets = new CloneSets();
+	public CloneDetectionFileParser(boolean debugState, String setIdInDebug){
 		Document doc = getDocument(Settings.inputCloneFile);
 		
 		XPathFactory factory = XPathFactory.newInstance();
@@ -70,9 +69,11 @@ public class CloneDetectionFileParser extends FileParser {
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return null;
 		}
 		
+	}
+	
+	public CloneSets getCloneSets() {
 		return cloneSets;
 	}
 

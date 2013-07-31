@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+
 import clonepedia.model.ontology.CloneSet;
 import clonepedia.model.syntactic.ClonePatternGroup;
 import clonepedia.model.syntactic.PathPatternGroup;
@@ -39,7 +41,8 @@ public class PatternClusteringer implements Serializable{
 	 * @return
 	 * @throws Exception
 	 */
-	public ArrayList<ClonePatternGroup> doClustering(ArrayList<PathPatternGroup> ppgList, String clonePatternStyle) throws Exception{
+	public ArrayList<ClonePatternGroup> doClustering(ArrayList<PathPatternGroup> ppgList, 
+			String clonePatternStyle, IProgressMonitor monitor) throws Exception{
 		ArrayList<ClonePatternGroup> clusterList = new ArrayList<ClonePatternGroup>();
 		for(PathPatternGroup ppg: ppgList){
 			if(clusterList.size() == 0)
@@ -64,6 +67,10 @@ public class PatternClusteringer implements Serializable{
 					clusterList.add(cpg);
 				}
 					
+				if(monitor != null){
+					monitor.worked(1);
+					if(monitor.isCanceled())return clusterList;
+				}
 			}
 		}
 		
@@ -124,6 +131,7 @@ public class PatternClusteringer implements Serializable{
 	 */
 	private double getDistanceBetweenPatternAndCluster(ClonePatternGroup pc,
 			PathPatternGroup ppg) throws Exception {
+		
 		LevenshteinPatternComparator comparator = new LevenshteinPatternComparator();
 		//int averageLength = ppg.getCloneSet().getCloneSets().getAveragePathSequenceLength();
 		return new LevenshteinPathComparator().computePathDistance(ppg.getAbstractPathSequence(), pc.getAbstractPathSequence());
