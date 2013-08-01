@@ -1,6 +1,7 @@
 package clonepedia.model.ontology;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class Class extends VarType implements ComplexType{
@@ -262,4 +263,41 @@ public class Class extends VarType implements ComplexType{
 		}
 		this.methods.add(method);
 	}
+
+	@Override
+	public HashSet<ComplexType> getParents() {
+		HashSet<ComplexType> parents = new HashSet<ComplexType>();
+		for(Interface interf: this.getImplementedInterfaces()){
+			parents.add(interf);
+		}
+		
+		if(superClass != null){
+			parents.add(superClass);			
+		}
+		
+		collectParents(parents);
+		
+		return parents;
+	}
+	
+	
+	
+	private void collectParents(HashSet<ComplexType> parents){
+		
+		if(parents.size() == 0){
+			return;
+		}
+		else{
+			ArrayList<HashSet<ComplexType>> setList = new ArrayList<HashSet<ComplexType>>();
+			for(ComplexType type: parents){
+				HashSet<ComplexType> newParents = type.getParents();
+				setList.add(newParents);
+			}
+			
+			for(HashSet<ComplexType> set: setList){
+				parents.addAll(set);
+			}
+		}
+	}
+	
 }

@@ -1,5 +1,7 @@
 package clonepedia.actions.steps;
 
+import java.util.ArrayList;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.JavaModelException;
@@ -8,6 +10,8 @@ import clonepedia.businessdata.OntologicalModelDataFetcher;
 import clonepedia.filepraser.CloneDetectionFileParser;
 import clonepedia.java.CloneInformationExtractor;
 import clonepedia.java.StructureExtractor;
+import clonepedia.java.TemplateMethodBuilder;
+import clonepedia.java.model.TemplateMethodGroup;
 import clonepedia.model.ontology.CloneSet;
 import clonepedia.model.ontology.CloneSets;
 import clonepedia.model.ontology.Project;
@@ -34,6 +38,7 @@ public class GenerateOntologyStep implements Step{
 			modelFetcher = (OntologicalModelDataFetcher) new CloneInformationExtractor(
 					parser, project, modelFetcher).extract(monitor);
 			
+			
 			CloneSets sets = new CloneSets();
 			for(CloneSet set: modelFetcher.getCloneSetMap().values()){
 				sets.add(set);
@@ -41,6 +46,10 @@ public class GenerateOntologyStep implements Step{
 			}
 			
 			this.sets = sets;
+			
+			TemplateMethodBuilder builder = new TemplateMethodBuilder(sets);
+			builder.build();
+			ArrayList<TemplateMethodGroup> templateMethodGroupList = builder.getMethodGroupList();
 			
 			MinerUtil.serialize(sets, "ontological_model");
 			

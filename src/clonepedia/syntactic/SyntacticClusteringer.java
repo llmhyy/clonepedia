@@ -3,18 +3,14 @@ package clonepedia.syntactic;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import clonepedia.debug.Debugger;
-import clonepedia.exception.UnknowClusteringException;
+
 import clonepedia.model.cluster.SyntacticCluster;
 import clonepedia.model.ontology.CloneSet;
-import clonepedia.model.ontology.CloneSets;
 import clonepedia.model.syntactic.ClonePatternGroup;
 import clonepedia.model.syntactic.PathPatternGroup;
 import clonepedia.model.syntactic.PathSequence;
 import clonepedia.summary.PatternClusteringer;
-import clonepedia.syntactic.util.SyntacticUtil;
 import clonepedia.syntactic.util.comparator.PatternComparator;
-import clonepedia.util.MinerUtil;
 import clonepedia.util.Settings;
 
 @Deprecated
@@ -25,8 +21,8 @@ public class SyntacticClusteringer implements Serializable{
 	 */
 	private static final long serialVersionUID = -3669223348356522539L;
 	//private CloneSets cloneSets;
-	private SyntacticCluster[] clusters;
-	private double matrix[][];
+	
+	
 	private PatternComparator patternComparator;
 	//private String clusteringStyle;
 	private ArrayList<CloneSet> concernedSets;
@@ -52,39 +48,11 @@ public class SyntacticClusteringer implements Serializable{
 				concernedSets.add(set);
 		}
 		
-		int size = concernedSets.size();
-		
-		clusters = new SyntacticCluster[size];
-		for(int i=0; i<clusters.length; i++){
-			clusters[i] = new SyntacticCluster();
-			clusters[i].add(concernedSets.get(i));
-		}
-		
-		matrix = new double[size][size];
-		for(int i=0; i<size; i++)
-			for(int j=0; j<size; j++)
-				matrix[i][j] = -1;
-		
-		
-		//Debugger.printClusteringMatrix(matrix, clusters);
-		//System.out.print("");
 	}
 
 	//private double thresholdDistance = 1.7d;
 	//private double distanceDeductRate = 0.9d;
 	//private double weight = 1/2d;
-	
-	private class Distance{
-		public int i;
-		public int j;
-		public double distance;
-		public Distance(int i, int j, double distance) {
-			super();
-			this.i = i;
-			this.j = j;
-			this.distance = distance;
-		}
-	}
 	
 	public PatternComparator getPatternComparator() {
 		return patternComparator;
@@ -98,51 +66,7 @@ public class SyntacticClusteringer implements Serializable{
 		this.patternComparator = patternComparator;
 	}
 
-	public ArrayList<SyntacticCluster> doClustering() throws Exception{
-		
-		initializeMatrix(matrix, clusters);
-		
-		Distance sd = findShortestDistanceInMatrix(matrix);
-		
-		int count = 0;
-		while(sd.distance < Settings.thresholdDistanceForSyntacticClustering){
-			try{
-				clusters[sd.i].merge(clusters[sd.j]);
-			}
-			catch(NullPointerException e){
-				e.printStackTrace();
-			}
-			
-			
-			clusters[sd.j] = null;
-			recomputeMatrixWithSimpilfiedAverageLinkage(matrix, sd.i, sd.j);
-			nullifyOneClusterInMatrix(matrix, sd.j);
-			
-			sd = findShortestDistanceInMatrix(matrix);
-			count++;
-			if(null == sd)
-				break;
-		}
-		
-		System.out.println("The iteration time for clustering is:" + count);
-		
-		ArrayList<SyntacticCluster> list = new ArrayList<SyntacticCluster>();
-		
-		for(int i=0; i<clusters.length; i++)
-			if(clusters[i] != null){
-				for(CloneSet set: clusters[i]){
-					set.setResidingCluster(clusters[i]);
-				}
-				list.add(clusters[i]);
-			}
-		
-		long start = System.currentTimeMillis();
-		attachPatternLabels(list);
-		long end = System.currentTimeMillis();
-		System.out.println("The time for attachPatternLabels is: " + (end-start));
-		
-		return list;
-	}
+	
 	
 	public ArrayList<ClonePatternGroup> doClustering0() throws Exception{
 		
@@ -213,74 +137,9 @@ public class SyntacticClusteringer implements Serializable{
 		return ppgs;
 	}
 	
-	private void attachPatternLabels(ArrayList<SyntacticCluster> list) throws Exception{
-		PatternClusteringer pcger = new PatternClusteringer();
-		for(SyntacticCluster cluster: list){
-			ArrayList<ClonePatternGroup> clonePatterns = pcger.doClustering(cluster.getConcernedContainedPatternPathGroups(), PathSequence.LOCATION, null);
-			
-			for(ClonePatternGroup clonePattern: clonePatterns){
-				for(PathPatternGroup ppg: clonePattern){
-					CloneSet set = ppg.getCloneSet();
-					set.addPatternLabel(clonePattern);
-				}
-				clonePattern.updateAbstractPathSequence();
-			}
-			
-			cluster.setClonePatterns(clonePatterns);
-		}
-	}
 	
-	/**
-	 * index1 must be smaller than index2
-	 * @param matrix
-	 * @param index1
-	 * @param index2
-	 * @throws Exception
-	 */
-	private void recomputeMatrixWithCompleteLinkage(double[][] matrix, int index1, int index2) throws Exception{
-		if(index1 >= index2)throw new Exception("index1 cannot be larger than index2");
-		for(int i=0; i<matrix.length; i++){
-			if(i<index1){
-				matrix[i][index1] = (matrix[i][index1] > matrix[i][index2])? matrix[i][index1] : matrix[i][index2];
-			}								
-			else if (i>index1 && i<index2){
-				matrix[index1][i] = (matrix[index1][i] > matrix[i][index2])? matrix[index1][i] : matrix[i][index2];
-			}				
-			else if(i>index2){
-				matrix[index1][i] = (matrix[index1][i] > matrix[index2][i])? matrix[index1][i] : matrix[index2][i];
-			}	
-		}
-	}
 	
-	/**
-	 * index1 must be smaller than index2
-	 * @param matrix
-	 * @param index1
-	 * @param index2
-	 * @throws Exception
-	 */
-	private void recomputeMatrixWithSimpilfiedAverageLinkage(double[][] matrix, int index1, int index2) throws Exception{
-		if(index1 >= index2)throw new Exception("index1 cannot be larger than index2");
-		for(int i=0; i<matrix.length; i++){
-			if(i<index1){
-				matrix[i][index1] = (matrix[i][index1] + matrix[i][index2])/2;
-			}								
-			else if (i>index1 && i<index2){
-				matrix[index1][i] = (matrix[index1][i] + matrix[i][index2])/2;
-			}				
-			else if(i>index2){
-				matrix[index1][i] = (matrix[index1][i] + matrix[index2][i])/2;
-			}	
-		}
-	}
 	
-	private void nullifyOneClusterInMatrix(double[][] matrix, int index) {
-		for(int i=0; i<index; i++)
-			matrix[i][index] = -1;
-		for(int j=index+1; j<matrix.length; j++)
-			matrix[index][j] = -1;
-		
-	}
 
 	/*private void nullifyColumnInMatrix(double[][] matrix, int c) {
 		for(int i=0; i<matrix.length; i++)
@@ -299,115 +158,7 @@ public class SyntacticClusteringer implements Serializable{
 		}
 	}*/
 
-	private Distance findShortestDistanceInMatrix(double[][] matrix){
-		Distance sd = findFirstValidDistanceInMatrix(matrix);
-		if(null == sd)
-			return null;
-		int m = sd.i;
-		//int n = sd.j;
-		
-		for(int i=m; i<matrix.length; i++)
-			for(int j=i+1; j<matrix[i].length; j++){
-				/*if(i==5 && j==6)
-					System.out.print("");*/
-				
-				if(matrix[i][j] != -1 && matrix[i][j] < sd.distance){
-					sd.i = i;
-					sd.j = j;
-					sd.distance = matrix[i][j];
-				}
-			}
-		
-		return sd;
-	}
 	
-	private Distance findFirstValidDistanceInMatrix(double[][] matrix){
-		for(int i=0; i<matrix.length; i++)
-			for(int j=i+1; j<matrix[i].length; j++){
-				if(matrix[i][j] != -1){
-					return new Distance(i, j, matrix[i][j]);
-				}
-			}
-		
-		return null;
-	}
-	
-	private void initializeMatrix(double matrix[][], SyntacticCluster[] clusters) throws Exception{
-		System.out.println("Matrix initiliazation start");
-		int length = clusters.length;
-		for(int i=0; i<length; i++){
-			for(int j=i+1; j<length; j++){
-				SyntacticCluster cluster1 = clusters[i];
-				SyntacticCluster cluster2 = clusters[j];
-				
-				/*if(cluster1.isContainsCloneSet("472571") && cluster2.isContainsCloneSet("473017"))
-					System.out.print("");
-				*/
-				/*if(cluster1.isContainsCloneSet("479138") && cluster2.isContainsCloneSet("491370"))
-					System.out.print("");*/
-				
-				if(null != cluster1 && null != cluster2){
-					//matrix[i][j] = calculateClusterDistance(cluster1, cluster2);
-					//long start = System.currentTimeMillis();
-					matrix[i][j] = calculateSingleElementClusterDistance(cluster1, cluster2);
-					//long end = System.currentTimeMillis();
-					//long time = end-start;
-					//System.out.println("Time used in calculateSingleElementClusterDistance:" + time);
-					/*if(time > 800){
-						System.out.println(cluster1.get(0).getPatterns().size() + "*" + cluster1.get(0).getPatterns().size() + ":" + time);
-					}*/
-					//System.out.print("");
-				}
-				else
-					matrix[i][j] = -1;
-				
-				double progress = ((double)((2*length-i+1)*i)+2*j)/(length*(length-1));
-				//Debugger.printProgress(progress);
-			}
-		}
-	}
-
-	private double calculateClusterDistance(SyntacticCluster cluster1, SyntacticCluster cluster2) throws Exception {
-		return getTheLongestDistanceBetweenTwoClusters(cluster1, cluster2);
-	}
-	
-	private double getTheLongestDistanceBetweenTwoClusters(SyntacticCluster cluster1, 
-			SyntacticCluster cluster2) throws Exception{
-		
-		if(cluster1 == null || cluster2 == null) return -1;
-		
-		double longestDistance = 0;
-		for(CloneSet set1: cluster1)
-			for(CloneSet set2: cluster2){
-				double distance = calculateCloneSetDistance(set1, set2/*, clusteringStyle*/);
-				if(distance > longestDistance)
-					longestDistance = distance;
-			}
-		return longestDistance;
-	}
-	
-	private double calculateSingleElementClusterDistance(SyntacticCluster cluster1, SyntacticCluster cluster2) throws Exception{
-		CloneSet set1 = cluster1.get(0);
-		CloneSet set2 = cluster2.get(0);
-		
-		/*if(set1.getId().equals("104501") && set2.getId().equals("218346"))
-			System.out.print("");*/
-		double result = 0;
-		try{
-			//long start = System.currentTimeMillis();
-			result = calculateCloneSetDistance(set1, set2/*, clusteringStyle*/);
-			//long end = System.currentTimeMillis();
-			//long time = end - start;
-			//System.out.println("Time used in calculateCloneSetDistance:" + time);
-			
-		}
-		catch(IndexOutOfBoundsException e){
-			e.printStackTrace();
-		}
-		
-		
-		return result;
-	}
 	
 	private class PatternDistance{
 		public PathPatternGroup ppg1;

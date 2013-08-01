@@ -207,6 +207,9 @@ public class MinerUtil {
 	
 	public static double computeLevenshteinDistance(ArrayList<? extends Object> seq1, ArrayList<? extends Object> seq2, SimilarityComparator comparator) throws Exception{
 		
+		if(comparator == null)
+			comparator = new DefaultComparator(); 
+		
 		double matrix[][] = new double[seq1.size()+1][seq2.size()+1];
 		
 		for(int i=0; i<matrix.length; i++)
@@ -233,6 +236,10 @@ public class MinerUtil {
 	}
 	
 	public static double computeAdjustedLevenshteinDistance(ArrayList<? extends Object> seq1, ArrayList<? extends Object> seq2, SimilarityComparator comparator) throws Exception{
+		
+		if(comparator == null)
+			comparator = new DefaultComparator(); 
+		
 		double value = computeLevenshteinDistance(seq1, seq2, comparator);
 		//double maxLen = (seq1.size() > seq2.size())? seq1.size() : seq2.size();
 		//double minLen = (seq1.size() < seq2.size())? seq1.size() : seq2.size();

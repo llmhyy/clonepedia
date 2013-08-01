@@ -1,6 +1,7 @@
 package clonepedia.model.ontology;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public interface ComplexType extends StructuralProgrammingElement{
 	public abstract boolean isClass();
@@ -35,5 +36,7 @@ public interface ComplexType extends StructuralProgrammingElement{
 	public abstract void addDistinctField(Field field);
 	
 	public abstract void addDistinctMethod(Method method);
+	
+	public abstract HashSet<ComplexType> getParents();
 
 }

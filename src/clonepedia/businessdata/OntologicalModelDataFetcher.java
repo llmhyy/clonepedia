@@ -47,7 +47,7 @@ public class OntologicalModelDataFetcher extends OntologicalDataFetcher{
 	private HashMap<String, Interface> interfaceMap = new HashMap<String, Interface>();
 	private HashMap<String, Method> methodMap = new HashMap<String, Method>();
 	private HashMap<String, Field> fieldMap = new HashMap<String, Field>(); 
-	
+
 	public HashMap<String, CloneSet> getCloneSetMap(){
 		return this.cloneSetMap;
 	}
@@ -122,7 +122,7 @@ public class OntologicalModelDataFetcher extends OntologicalDataFetcher{
 		
 		return field;
 	}
-
+	
 	@Override
 	public void storeClasswithDependency(Class clas) {
 		this.classMap.put(clas.getFullName(), clas);

@@ -82,6 +82,7 @@ public abstract class OntologicalDataFetcher implements Serializable{
 					CloneInstance instance = instanceWrapper.getCloneInstance();
 					Method residingMethod = MinerUtilforJava.getMethodfromASTNode(instanceWrapper.getMethodDeclaration(), project, this);
 					instance.setResidingMethod(residingMethod);
+					residingMethod.addCloneInstance(instance);
 					storeCloneInstanceWithDependency(instance);
 				}
 				

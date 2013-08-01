@@ -1,8 +1,12 @@
 package clonepedia.model.ontology;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
-public class Method implements MergeableSimpleOntologicalElement{
+import clonepedia.java.util.JavaMetricComputingUtil;
+import clonepedia.model.cluster.IClusterable;
+
+public class Method implements MergeableSimpleOntologicalElement, IClusterable{
 	/**
 	 * 
 	 */
@@ -12,6 +16,7 @@ public class Method implements MergeableSimpleOntologicalElement{
 	private String methodName;
 	private VarType returnType;
 	private ArrayList<Variable> parameters = new ArrayList<Variable>();
+	private HashSet<CloneInstance> cloneInstances = new HashSet<CloneInstance>();
 	
 	private String fullName;
 	
@@ -22,9 +27,7 @@ public class Method implements MergeableSimpleOntologicalElement{
 		this.methodId = methodId;
 	}
 	
-	public int hashCode(){
-		return toString().hashCode();
-	}
+	
 	
 	public Method(ComplexType owner, String methodName, VarType returnType,
 			ArrayList<Variable> parameters) {
@@ -53,13 +56,29 @@ public class Method implements MergeableSimpleOntologicalElement{
 		this.returnType = returnType;
 		this.parameters = parameters;
 	}
+	
+	public int hashCode(){
+		return toString().hashCode();
+	}
+	
+	public boolean equals(Object obj){
+		if(obj instanceof OntologicalElement){
+			OntologicalElement ele = (OntologicalElement)obj;
+			return this.equals(ele);
+		}
+		return false;
+	}
 
 	@Override
 	public boolean equals(OntologicalElement element) {
 		if(element instanceof Method){
 			Method referMethod = (Method)element;
 			try{
-				return referMethod.getMethodId().equals(this.getMethodId());
+				
+				
+				
+				return this.getOwner().getFullName().equals(referMethod.getOwner().getFullName())
+						&& this.toString().equals(referMethod.toString());
 			}
 			catch(NullPointerException e){
 				return false;
@@ -196,5 +215,54 @@ public class Method implements MergeableSimpleOntologicalElement{
 	@Override
 	public ArrayList<ProgrammingElement> getSupportingElements(){
 		return this.supportingElements;
+	}
+
+	public void addCloneInstance(CloneInstance instance){
+		this.cloneInstances.add(instance);
+	}
+	
+	public HashSet<CloneInstance> getCloneInstances() {
+		return cloneInstances;
+	}
+
+	public void setCloneInstances(HashSet<CloneInstance> cloneInstances) {
+		this.cloneInstances = cloneInstances;
+	}
+
+	@Override
+	public double computeDistanceWith(IClusterable clusterable) {
+		if(clusterable instanceof Method){
+			Method tobeComparedMethod = (Method)clusterable;
+			
+			String thisLocation = this.owner.getFullName();
+			String thatLocation = tobeComparedMethod.getOwner().getFullName();
+			
+			double packageLocationScore = JavaMetricComputingUtil.
+					comparePackageLocation(thisLocation, thatLocation);
+			
+			//System.out.println();
+			
+			double classLocationScore = JavaMetricComputingUtil.
+					compareClassLocation((Class)this.getOwner(), (Class)tobeComparedMethod.getOwner());
+			
+			double returnTypeScore = JavaMetricComputingUtil.
+					compareReturnType(this.getReturnType(), tobeComparedMethod.getReturnType());
+			
+			double paramScore = JavaMetricComputingUtil.
+					compareParameterList(this.getParamTypeStringList(), tobeComparedMethod.getParamTypeStringList());
+			
+			return 1 - (packageLocationScore + classLocationScore + returnTypeScore + paramScore)/4;
+		}
+		
+		else return 0;
+	}
+	
+	public ArrayList<String> getParamTypeStringList(){
+		ArrayList<String> paramList = new ArrayList<String>();
+		for(Variable v: this.parameters){
+			paramList.add(v.getVarType().getFullName());
+		}
+		
+		return paramList;
 	}
 }

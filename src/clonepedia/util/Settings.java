@@ -85,4 +85,7 @@ public class Settings {
 	public static String ontologyFile;
 	public static String intraSetFile;
 	public static String interSetFile;
+	
+	//======================================================================
+	public static double thresholdDistanceForHierarchyClustering = 0.4d;
 }
