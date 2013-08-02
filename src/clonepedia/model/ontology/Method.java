@@ -3,9 +3,9 @@ package clonepedia.model.ontology;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import clonepedia.java.model.TemplateMethodGroup;
 import clonepedia.java.util.JavaMetricComputingUtil;
 import clonepedia.model.cluster.IClusterable;
+import clonepedia.model.template.TemplateMethodGroup;
 
 public class Method implements MergeableSimpleOntologicalElement, IClusterable{
 	/**
@@ -20,7 +20,7 @@ public class Method implements MergeableSimpleOntologicalElement, IClusterable{
 	private HashSet<CloneInstance> cloneInstances = new HashSet<CloneInstance>();
 	
 	private HashSet<Method> callerMethods = new HashSet<Method>();
-	private HashSet<Method> calleeMethod = new HashSet<Method>();
+	private HashSet<Method> calleeMethods = new HashSet<Method>();
 	private ArrayList<TemplateMethodGroup> templateGroupList = new ArrayList<TemplateMethodGroup>();
 	
 	private String fullName;
@@ -61,7 +61,8 @@ public class Method implements MergeableSimpleOntologicalElement, IClusterable{
 	}
 	
 	public int hashCode(){
-		return toString().hashCode();
+		return super.hashCode();
+		//return toString().hashCode();
 	}
 	
 	public boolean equals(Object obj){
@@ -77,9 +78,6 @@ public class Method implements MergeableSimpleOntologicalElement, IClusterable{
 		if(element instanceof Method){
 			Method referMethod = (Method)element;
 			try{
-				
-				
-				
 				return this.getOwner().getFullName().equals(referMethod.getOwner().getFullName())
 						&& this.toString().equals(referMethod.toString());
 			}
@@ -269,17 +267,10 @@ public class Method implements MergeableSimpleOntologicalElement, IClusterable{
 		return paramList;
 	}
 
-
-
 	public HashSet<Method> getCallerMethods() {
 		return callerMethods;
 	}
 
-
-
-	public void setCallerMethods(HashSet<Method> callerMethods) {
-		this.callerMethods = callerMethods;
-	}
 
 	public void addCallerMethod(Method m){
 		this.callerMethods.add(m);
@@ -287,16 +278,11 @@ public class Method implements MergeableSimpleOntologicalElement, IClusterable{
 
 
 	public HashSet<Method> getCalleeMethod() {
-		return calleeMethod;
-	}
-
-
-	public void setCalleeMethod(HashSet<Method> calleeMethod) {
-		this.calleeMethod = calleeMethod;
+		return this.calleeMethods;
 	}
 	
 	public void addCalleeMethod(Method m){
-		this.calleeMethod.add(m);
+		this.calleeMethods.add(m);
 	}
 
 	public ArrayList<TemplateMethodGroup> getTemplateGroupList() {

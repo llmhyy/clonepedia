@@ -1,8 +1,7 @@
-package clonepedia.java;
+package clonepedia.featuretemplate;
 
 import java.util.ArrayList;
 
-import clonepedia.java.model.TemplateMethodGroup;
 import clonepedia.model.cluster.IClusterable;
 import clonepedia.model.cluster.NormalCluster;
 import clonepedia.model.cluster.hierarchy.HierarchyClusterAlgorithm;
@@ -10,6 +9,7 @@ import clonepedia.model.ontology.CloneInstance;
 import clonepedia.model.ontology.CloneSet;
 import clonepedia.model.ontology.CloneSets;
 import clonepedia.model.ontology.Method;
+import clonepedia.model.template.TemplateMethodGroup;
 
 /**
  * 

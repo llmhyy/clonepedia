@@ -1,4 +1,4 @@
-package clonepedia.java.model;
+package clonepedia.model.template;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -22,6 +22,9 @@ public class TemplateMethodGroup implements Serializable{
 
 	private ArrayList<TemplateMethodGroup> calleeGroup = new ArrayList<TemplateMethodGroup>();
 	private ArrayList<TemplateMethodGroup> callerGroup = new ArrayList<TemplateMethodGroup>();
+	
+	private int featureId;
+	private boolean visited;
 	
 	public String toString(){
 		StringBuffer buf = new StringBuffer();
@@ -57,7 +60,9 @@ public class TemplateMethodGroup implements Serializable{
 	}
 	
 	public void addCalleeGroup(TemplateMethodGroup group){
-		this.calleeGroup.add(group);
+		if(!this.calleeGroup.contains(group)){
+			this.calleeGroup.add(group);			
+		}
 	}
 
 	public void setCalleeGroup(ArrayList<TemplateMethodGroup> calleeGroup) {
@@ -73,8 +78,24 @@ public class TemplateMethodGroup implements Serializable{
 	}
 	
 	public void addCallerGroup(TemplateMethodGroup group){
-		this.callerGroup.add(group);
+		if(!this.callerGroup.contains(group)){
+			this.callerGroup.add(group);			
+		}
 	}
 
+	public void setFeaureId(int index){
+		this.featureId = index;
+	}
 	
+	public boolean isVisisted(){
+		return visited;
+	}
+	
+	public void mark(){
+		this.visited = true;
+	}
+	
+	public void resetVisitTag(){
+		this.visited = false;
+	}
 }

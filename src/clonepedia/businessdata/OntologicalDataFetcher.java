@@ -152,7 +152,7 @@ public abstract class OntologicalDataFetcher implements Serializable {
 		}
 	}
 
-	@SuppressWarnings("restriction")
+	/*@SuppressWarnings("restriction")
 	protected void appendCallerMethod(MethodDeclaration md, Method residingMethod) {
 		CompilationUnit unit = MinerUtilforJava.getCompilationUnit(md);
 		
@@ -169,11 +169,11 @@ public abstract class OntologicalDataFetcher implements Serializable {
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		IProject project = root.getProject(residingMethod.getOwner().getProject().getProjectName());
 		try {
-			/*if (project.isNatureEnabled(MinerProperties.javaNatureName)) {
+			if (project.isNatureEnabled(MinerProperties.javaNatureName)) {
 				IJavaProject javaProject = JavaCore.create(project);
 				
 				
-			}*/
+			}
 			
 			ASTParser parser = ASTParser.newParser(AST.JLS3);
 			parser.setKind(ASTParser.K_COMPILATION_UNIT);
@@ -207,7 +207,7 @@ public abstract class OntologicalDataFetcher implements Serializable {
 		}
 		
 		
-	}
+	}*/
 	
 	
 

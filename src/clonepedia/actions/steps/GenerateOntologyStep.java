@@ -7,14 +7,16 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.JavaModelException;
 
 import clonepedia.businessdata.OntologicalModelDataFetcher;
+import clonepedia.featuretemplate.TemplateFeatureBuilder;
+import clonepedia.featuretemplate.TemplateMethodBuilder;
 import clonepedia.filepraser.CloneDetectionFileParser;
 import clonepedia.java.CloneInformationExtractor;
 import clonepedia.java.StructureExtractor;
-import clonepedia.java.TemplateMethodBuilder;
-import clonepedia.java.model.TemplateMethodGroup;
 import clonepedia.model.ontology.CloneSet;
 import clonepedia.model.ontology.CloneSets;
 import clonepedia.model.ontology.Project;
+import clonepedia.model.template.TemplateFeature;
+import clonepedia.model.template.TemplateMethodGroup;
 import clonepedia.util.MinerUtil;
 
 public class GenerateOntologyStep implements Step{
@@ -52,6 +54,9 @@ public class GenerateOntologyStep implements Step{
 			ArrayList<TemplateMethodGroup> templateMethodGroupList = builder.getMethodGroupList();
 			
 			sets.setTemplateMethodGroup(templateMethodGroupList);
+			
+			TemplateFeatureBuilder featureBuilder = new TemplateFeatureBuilder(templateMethodGroupList);
+			ArrayList<TemplateFeature> features = featureBuilder.generateTemplateFeatures();
 			
 			MinerUtil.serialize(sets, "ontological_model");
 			

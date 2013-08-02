@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-import clonepedia.java.model.TemplateMethodGroup;
 import clonepedia.model.syntactic.Path;
+import clonepedia.model.template.TemplateMethodGroup;
 import clonepedia.syntactic.util.comparator.PathComparator;
 import clonepedia.util.Settings;
 

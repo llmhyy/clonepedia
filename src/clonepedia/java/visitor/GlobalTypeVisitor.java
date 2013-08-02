@@ -179,10 +179,6 @@ public class GlobalTypeVisitor extends ASTVisitor {
 		for(IMethodBinding methodBinding: binding.getDeclaredMethods()){
 			Method method = MinerUtilforJava.getMethodfromBinding(methodBinding, project, cu, fetcher);
 			
-			if(method.getName().contains("findStart")){
-				System.out.print("");
-			}
-			
 			method = fetcher.getTheExistingMethodorCreateOne(method);
 			
 			MethodDeclaration md = (MethodDeclaration)cu.findDeclaringNode(methodBinding);
@@ -197,9 +193,6 @@ public class GlobalTypeVisitor extends ASTVisitor {
 					invokedMethod.addCallerMethod(method);
 					method.addCalleeMethod(invokedMethod);
 				}
-			}
-			else{
-				System.out.print("");
 			}
 		}
 	}
