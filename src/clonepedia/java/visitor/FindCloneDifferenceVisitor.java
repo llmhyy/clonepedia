@@ -13,6 +13,7 @@ import clonepedia.java.model.CloneInstanceWrapper;
 import clonepedia.java.model.CloneSetWrapper;
 import clonepedia.java.model.DiffCounterRelationGroupEmulator;
 import clonepedia.java.model.DiffInstanceElementRelationEmulator;
+import clonepedia.java.util.MinerUtilforJava;
 import clonepedia.wizard.CodeSkeletonGenerationUtil;
 
 public class FindCloneDifferenceVisitor extends ASTVisitor {
@@ -62,7 +63,7 @@ public class FindCloneDifferenceVisitor extends ASTVisitor {
 		if(targetNode instanceof Statement){
 			Statement stat = (Statement)targetNode;
 			
-			CompilationUnit unit = CodeSkeletonGenerationUtil.getCompilationUnit(insWrapper.getMethodDeclaration());
+			CompilationUnit unit = MinerUtilforJava.getCompilationUnit(insWrapper.getMethodDeclaration());
 			if(!CodeSkeletonGenerationUtil.isCloneRelatedStatement(stat, insWrapper, unit)){
 				stat.setLeadingComment("//not clone");
 			}

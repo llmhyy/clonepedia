@@ -74,7 +74,7 @@ public class HierarchyClusterAlgorithm {
 
 	private void initializeMatrix(double matrix[][], NormalCluster[] clusters)
 			throws Exception {
-		System.out.println("Matrix initiliazation start");
+		//System.out.println("Matrix initiliazation start");
 		int length = clusters.length;
 		for (int i = 0; i < length; i++) {
 			for (int j = i + 1; j < length; j++) {

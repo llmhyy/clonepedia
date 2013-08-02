@@ -3,6 +3,7 @@ package clonepedia.model.ontology;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import clonepedia.java.model.TemplateMethodGroup;
 import clonepedia.java.util.JavaMetricComputingUtil;
 import clonepedia.model.cluster.IClusterable;
 
@@ -18,6 +19,10 @@ public class Method implements MergeableSimpleOntologicalElement, IClusterable{
 	private ArrayList<Variable> parameters = new ArrayList<Variable>();
 	private HashSet<CloneInstance> cloneInstances = new HashSet<CloneInstance>();
 	
+	private HashSet<Method> callerMethods = new HashSet<Method>();
+	private HashSet<Method> calleeMethod = new HashSet<Method>();
+	private ArrayList<TemplateMethodGroup> templateGroupList = new ArrayList<TemplateMethodGroup>();
+	
 	private String fullName;
 	
 	private boolean isMerged = false;
@@ -26,8 +31,6 @@ public class Method implements MergeableSimpleOntologicalElement, IClusterable{
 	public Method(String methodId){
 		this.methodId = methodId;
 	}
-	
-	
 	
 	public Method(ComplexType owner, String methodName, VarType returnType,
 			ArrayList<Variable> parameters) {
@@ -264,5 +267,47 @@ public class Method implements MergeableSimpleOntologicalElement, IClusterable{
 		}
 		
 		return paramList;
+	}
+
+
+
+	public HashSet<Method> getCallerMethods() {
+		return callerMethods;
+	}
+
+
+
+	public void setCallerMethods(HashSet<Method> callerMethods) {
+		this.callerMethods = callerMethods;
+	}
+
+	public void addCallerMethod(Method m){
+		this.callerMethods.add(m);
+	}
+
+
+	public HashSet<Method> getCalleeMethod() {
+		return calleeMethod;
+	}
+
+
+	public void setCalleeMethod(HashSet<Method> calleeMethod) {
+		this.calleeMethod = calleeMethod;
+	}
+	
+	public void addCalleeMethod(Method m){
+		this.calleeMethod.add(m);
+	}
+
+	public ArrayList<TemplateMethodGroup> getTemplateGroupList() {
+		return templateGroupList;
+	}
+
+	public void setTemplateGroupList(ArrayList<TemplateMethodGroup> templateGroupList) {
+		this.templateGroupList = templateGroupList;
+	}
+	
+	public void addTemplateGroup(TemplateMethodGroup group){
+		this.templateGroupList.add(group);
 	}
 }

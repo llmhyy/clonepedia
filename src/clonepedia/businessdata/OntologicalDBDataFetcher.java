@@ -884,11 +884,11 @@ public class OntologicalDBDataFetcher extends OntologicalDataFetcher{
 	private void storeCommonPartCallRelation(CloneSet set, Method method)
 			throws Exception {
 		storeCloneSet(set);
-		getTheExistingMethodorCreateOne(method);
+		Method m = getTheExistingMethodorCreateOne(method);
 
 		Properties relationProperties = new Properties();
 		relationProperties.put("cloneSetId", set.getId());
-		relationProperties.put("methodId", method.getMethodId());
+		relationProperties.put("methodId", m.getMethodId());
 
 		DBOperator.insertDataRecord(new Relation(Relation.CommonPartCall), relationProperties);
 	}
@@ -1118,12 +1118,12 @@ public class OntologicalDBDataFetcher extends OntologicalDataFetcher{
 			valClassProperties.put("outerClassId", outerClass.getId());
 
 		if (null != superClass) {
-			getTheExistingClassorCreateOne(superClass.getFullName(),
+			superClass = getTheExistingClassorCreateOne(superClass.getFullName(),
 					superClass.getProject());
 		}
 
 		if (null != outerClass) {
-			getTheExistingClassorCreateOne(outerClass.getFullName(),
+			outerClass = getTheExistingClassorCreateOne(outerClass.getFullName(),
 					outerClass.getProject());
 		}
 		

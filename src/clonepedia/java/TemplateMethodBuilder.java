@@ -11,6 +11,11 @@ import clonepedia.model.ontology.CloneSet;
 import clonepedia.model.ontology.CloneSets;
 import clonepedia.model.ontology.Method;
 
+/**
+ * 
+ * @author linyun
+ *
+ */
 public class TemplateMethodBuilder {
 	
 	private CloneSets sets;
@@ -24,9 +29,6 @@ public class TemplateMethodBuilder {
 		for(CloneSet set: this.sets.getCloneList()){
 			TemplateMethodGroup methodGroup = new TemplateMethodGroup();
 			for(CloneInstance instance: set){
-				if(instance.getResidingMethod().getFullName().contains("processAttList")){
-					System.out.println();
-				}
 				methodGroup.addMethod(instance.getResidingMethod());
 			}
 			
@@ -34,6 +36,22 @@ public class TemplateMethodBuilder {
 				verifyTemplateMethodGroup(methodGroup);
 			}
 		}
+		
+		sanitize();
+	}
+	
+	/**
+	 * Case I: The cloned code ranges of a small-size template method group (TMG) will be overlapped,
+	 * or even proper contained in a larger-size template method. 
+	 * 
+	 * Solution: In this case, I remove small-size TMG and keep large-size TMG
+	 * 
+	 * Case II: The TMG of the same size may involve more than one clone set
+	 * 
+	 * Solution: Merge them.
+	 */
+	private void sanitize(){
+		//TODO 
 	}
 	
 	/**
@@ -63,7 +81,10 @@ public class TemplateMethodBuilder {
 				if(cluster.size() > 1){
 					TemplateMethodGroup newGroup = new TemplateMethodGroup();
 					for(IClusterable ele: cluster){
-						newGroup.addMethod((Method)ele);
+						Method tMethod = (Method)ele;
+						newGroup.addMethod(tMethod);
+						tMethod.addTemplateGroup(newGroup);
+						
 					}
 					this.methodGroupList.add(newGroup);
 				}

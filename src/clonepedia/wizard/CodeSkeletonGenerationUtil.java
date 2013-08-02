@@ -47,17 +47,6 @@ public class CodeSkeletonGenerationUtil {
 		return null;
 	}
 	
-	public static CompilationUnit getCompilationUnit(ASTNode astNode){
-		CompilationUnit unit = null;
-		ASTNode node = astNode.getParent();
-		while(!(node instanceof CompilationUnit)){
-			node = node.getParent();
-		}
-		unit = (CompilationUnit)node;
-		
-		return unit;
-	}
-	
 	public static boolean isCloneRelatedStatement(Statement stat, CloneInstanceWrapper insWrapper, CompilationUnit unit){
 		int startPosition = stat.getStartPosition();
 		int endPosition = stat.getLength() + startPosition;

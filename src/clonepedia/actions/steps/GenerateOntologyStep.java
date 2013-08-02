@@ -51,6 +51,8 @@ public class GenerateOntologyStep implements Step{
 			builder.build();
 			ArrayList<TemplateMethodGroup> templateMethodGroupList = builder.getMethodGroupList();
 			
+			sets.setTemplateMethodGroup(templateMethodGroupList);
+			
 			MinerUtil.serialize(sets, "ontological_model");
 			
 		} catch (JavaModelException e) {

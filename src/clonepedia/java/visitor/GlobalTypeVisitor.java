@@ -1,5 +1,8 @@
 package clonepedia.java.visitor;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
@@ -7,6 +10,7 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import clonepedia.businessdata.OntologicalDBDataFetcher;
@@ -174,7 +178,29 @@ public class GlobalTypeVisitor extends ASTVisitor {
 	private void parseAndStoreMethodInformation(ITypeBinding binding, ComplexType owner, CompilationUnit cu) throws Exception {
 		for(IMethodBinding methodBinding: binding.getDeclaredMethods()){
 			Method method = MinerUtilforJava.getMethodfromBinding(methodBinding, project, cu, fetcher);
-			fetcher.getTheExistingMethodorCreateOne(method);
+			
+			if(method.getName().contains("findStart")){
+				System.out.print("");
+			}
+			
+			method = fetcher.getTheExistingMethodorCreateOne(method);
+			
+			MethodDeclaration md = (MethodDeclaration)cu.findDeclaringNode(methodBinding);
+			if(null != md){
+				FindInvokingMethodsVistor visitor = new FindInvokingMethodsVistor();	
+				md.accept(visitor);
+				HashSet<IMethodBinding> invokedMethodBindings = visitor.getInvokedMethodBindings();
+				for(IMethodBinding imb: invokedMethodBindings){
+					Method invokedMethod = MinerUtilforJava.getMethodfromBinding(imb, project, cu, fetcher);
+					invokedMethod = fetcher.getTheExistingMethodorCreateOne(invokedMethod);
+					
+					invokedMethod.addCallerMethod(method);
+					method.addCalleeMethod(invokedMethod);
+				}
+			}
+			else{
+				System.out.print("");
+			}
 		}
 	}
 

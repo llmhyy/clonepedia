@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
+import clonepedia.java.model.TemplateMethodGroup;
 import clonepedia.model.syntactic.Path;
 import clonepedia.syntactic.util.comparator.PathComparator;
 import clonepedia.util.Settings;
@@ -18,6 +19,8 @@ public class CloneSets implements Serializable{
 	
 	private PathComparator pathComparator;
 	private int averagePathSequenceLength;
+	
+	private ArrayList<TemplateMethodGroup> templateMethodGroupList;
 	
 	public void buildPatternforCloneSets() throws Exception{
 		int setsNum = this.getCloneList().size();
@@ -129,6 +132,14 @@ public class CloneSets implements Serializable{
 
 	public int getAveragePathSequenceLength() {
 		return averagePathSequenceLength;
+	}
+
+	public ArrayList<TemplateMethodGroup> getTemplateMethodGroup() {
+		return templateMethodGroupList;
+	}
+
+	public void setTemplateMethodGroup(ArrayList<TemplateMethodGroup> templateMethodGroupList) {
+		this.templateMethodGroupList = templateMethodGroupList;
 	}
 	
 	

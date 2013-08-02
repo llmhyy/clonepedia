@@ -1,8 +1,13 @@
 package clonepedia.java.util;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IMember;
+import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
@@ -25,6 +30,8 @@ import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.TypeLiteral;
 import org.eclipse.jdt.core.dom.BooleanLiteral;
+import org.eclipse.jdt.internal.corext.callhierarchy.CallHierarchy;
+import org.eclipse.jdt.internal.corext.callhierarchy.MethodWrapper;
 
 import clonepedia.businessdata.OntologicalDBDataFetcher;
 import clonepedia.businessdata.OntologicalDataFetcher;
@@ -674,5 +681,60 @@ public class MinerUtilforJava {
 			}
 		}
 		else return null;
+	}
+	
+	public static CompilationUnit getCompilationUnit(ASTNode astNode){
+		CompilationUnit unit = null;
+		ASTNode node = astNode.getParent();
+		while(!(node instanceof CompilationUnit)){
+			node = node.getParent();
+		}
+		unit = (CompilationUnit)node;
+		
+		return unit;
+	}
+	
+	public static HashSet<IMethod> getCallerForMethod(IMethod methodElement){
+		CallHierarchy callHierarchy = CallHierarchy.getDefault();
+
+		IMember[] members = { methodElement };
+		MethodWrapper[] methodWrappers = callHierarchy.getCallerRoots(members);
+		HashSet<IMethod> callers = new HashSet<IMethod>();
+		for (MethodWrapper mw : methodWrappers) {
+			
+			try{
+				MethodWrapper[] mw2 = mw.getCalls(new NullProgressMonitor());
+				HashSet<IMethod> temp = getIMethods(mw2);
+				callers.addAll(temp);				
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		
+		return callers;
+	}
+
+	private static HashSet<IMethod> getIMethods(MethodWrapper[] methodWrappers) {
+		HashSet<IMethod> c = new HashSet<IMethod>();
+		for (MethodWrapper m : methodWrappers) {
+			IMethod im = getIMethodFromMethodWrapper(m);
+			if (im != null) {
+				c.add(im);
+			}
+		}
+		return c;
+	}
+
+	private static IMethod getIMethodFromMethodWrapper(MethodWrapper m) {
+		try {
+			IMember im = m.getMember();
+			if (im.getElementType() == IJavaElement.METHOD) {
+				return (IMethod) m.getMember();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

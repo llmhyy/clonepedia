@@ -66,6 +66,7 @@ import clonepedia.java.CloneInformationExtractor;
 import clonepedia.java.CompilationUnitPool;
 import clonepedia.java.model.CloneInstanceWrapper;
 import clonepedia.java.model.CloneSetWrapper;
+import clonepedia.java.util.MinerUtilforJava;
 import clonepedia.java.visitor.CodeGenerationStatementVistor;
 import clonepedia.java.visitor.CollectImportedTypeVisitor;
 import clonepedia.java.visitor.CollectStatementInMethodVisitor;
@@ -634,7 +635,7 @@ public class SkeletonGenerationAction {
 		
 		MethodDeclaration md = insWrapper.getMethodDeclaration();
 		
-		CompilationUnit unit = CodeSkeletonGenerationUtil.getCompilationUnit(md);
+		CompilationUnit unit = MinerUtilforJava.getCompilationUnit(md);
 		
 		CollectImportedTypeVisitor importTypeVisitor = new CollectImportedTypeVisitor();
 		CollectStatementInMethodVisitor totalStatVisitor = new CollectStatementInMethodVisitor();

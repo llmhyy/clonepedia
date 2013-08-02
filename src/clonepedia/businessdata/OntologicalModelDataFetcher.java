@@ -52,6 +52,10 @@ public class OntologicalModelDataFetcher extends OntologicalDataFetcher{
 		return this.cloneSetMap;
 	}
 	
+	public HashMap<String, Method> getMethodMap(){
+		return this.methodMap;
+	}
+	
 	@Override
 	public Class getTheExistingClassorCreateOne(String classFullName,
 			Project project) {
@@ -216,7 +220,11 @@ public class OntologicalModelDataFetcher extends OntologicalDataFetcher{
 					ProgrammingElement element = transferASTNodesToProgrammingElement(node, set, set.getProject());
 					CloneInstanceWrapper instanceWrapper = relation.getInstanceWrapper();
 					CloneInstance instance = getExistingCloneInstanceorCreateOne(instanceWrapper.getCloneInstance());
-					Method residingMethod = MinerUtilforJava.getMethodfromASTNode(instanceWrapper.getMethodDeclaration(), set.getProject(), this);
+					
+					Method residingMethod = instance.getResidingMethod();
+					if(null == residingMethod){
+						residingMethod = MinerUtilforJava.getMethodfromASTNode(instanceWrapper.getMethodDeclaration(), set.getProject(), this);
+					}
 					instance.setResidingMethod(residingMethod);
 					if(null != element){
 						InstanceElementRelation ier = new InstanceElementRelation(instance, element);

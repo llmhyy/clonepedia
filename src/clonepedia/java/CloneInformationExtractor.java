@@ -106,7 +106,7 @@ public class CloneInformationExtractor {
 		
 		return this.fetcher;
 	}
-	
+
 	/**
 	 * A clone set will maintain a common node list represent all the common AST nodes shared
 	 * by its instances in order, which is used as a reference list during the algorithm. 
