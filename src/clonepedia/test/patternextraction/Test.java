@@ -19,12 +19,12 @@ public class Test {
 		b.setASet(aSet);
 
 		try {
-			FileOutputStream fileOut = new FileOutputStream("test.srl");
+			FileOutputStream fileOut = new FileOutputStream("D:\\linyun\\test.srl");
 			ObjectOutputStream out = new ObjectOutputStream(fileOut);
 			out.writeObject(a);
 			fileOut.close();
 
-			FileInputStream fileIn = new FileInputStream("test.srl");
+			FileInputStream fileIn = new FileInputStream("D:\\linyun\\test.srl");
 			ObjectInputStream in = new ObjectInputStream(fileIn);
 			A rehydratedA = (A) in.readObject();
 			// Won't get this far, will fail above...

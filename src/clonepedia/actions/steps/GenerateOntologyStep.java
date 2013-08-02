@@ -55,8 +55,8 @@ public class GenerateOntologyStep implements Step{
 			
 			sets.setTemplateMethodGroup(templateMethodGroupList);
 			
-			TemplateFeatureBuilder featureBuilder = new TemplateFeatureBuilder(templateMethodGroupList);
-			ArrayList<TemplateFeature> features = featureBuilder.generateTemplateFeatures();
+			/*TemplateFeatureBuilder featureBuilder = new TemplateFeatureBuilder(templateMethodGroupList);
+			ArrayList<TemplateFeature> features = featureBuilder.generateTemplateFeatures();*/
 			
 			MinerUtil.serialize(sets, "ontological_model");
 			

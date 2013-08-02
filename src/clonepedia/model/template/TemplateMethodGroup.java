@@ -3,6 +3,7 @@ package clonepedia.model.template;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.TreeSet;
 
 import clonepedia.model.ontology.CloneSet;
 import clonepedia.model.ontology.Method;
@@ -17,7 +18,7 @@ public class TemplateMethodGroup implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = -652499753497315887L;
-	private HashSet<Method> methods = new HashSet<Method>();
+	private TreeSet<Method> methods = new TreeSet<Method>();
 	private HashSet<CloneSet> relatedCloneSets = new HashSet<CloneSet>();
 
 	private ArrayList<TemplateMethodGroup> calleeGroup = new ArrayList<TemplateMethodGroup>();
@@ -25,6 +26,19 @@ public class TemplateMethodGroup implements Serializable{
 	
 	private int featureId;
 	private boolean visited;
+	
+	public TemplateMethodGroup(){
+		this.visited = false;
+	}
+	
+	public int hasCode(){
+		int product = 1;
+		for(Method m: this.methods){
+			product *= m.toString().hashCode();
+		}
+		
+		return product;
+	}
 	
 	public String toString(){
 		StringBuffer buf = new StringBuffer();
@@ -39,11 +53,11 @@ public class TemplateMethodGroup implements Serializable{
 		this.methods.add(m);
 	}
 	
-	public HashSet<Method> getMethods() {
+	public TreeSet<Method> getMethods() {
 		return methods;
 	}
 
-	public void setMethods(HashSet<Method> methods) {
+	public void setMethods(TreeSet<Method> methods) {
 		this.methods = methods;
 	}
 

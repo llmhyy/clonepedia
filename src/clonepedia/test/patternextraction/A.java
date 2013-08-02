@@ -27,8 +27,8 @@ public class A implements Serializable {
 	}
 
 	public int hashCode() {
-		//return getB().hashCode(); // FAILS HERE in deserialization.
-		return super.hashCode();
+		return getB().hashCode(); // FAILS HERE in deserialization.
+		//return super.hashCode();
 	}
 
 	public void setB(B b) {

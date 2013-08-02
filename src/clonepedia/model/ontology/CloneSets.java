@@ -20,7 +20,7 @@ public class CloneSets implements Serializable{
 	private PathComparator pathComparator;
 	private int averagePathSequenceLength;
 	
-	private ArrayList<TemplateMethodGroup> templateMethodGroupList;
+	private ArrayList<TemplateMethodGroup> templateMethodGroupList = new ArrayList<TemplateMethodGroup>();
 	
 	public void buildPatternforCloneSets() throws Exception{
 		int setsNum = this.getCloneList().size();

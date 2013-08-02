@@ -2,12 +2,13 @@ package clonepedia.model.ontology;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.TreeSet;
 
 import clonepedia.java.util.JavaMetricComputingUtil;
 import clonepedia.model.cluster.IClusterable;
 import clonepedia.model.template.TemplateMethodGroup;
 
-public class Method implements MergeableSimpleOntologicalElement, IClusterable{
+public class Method implements MergeableSimpleOntologicalElement, IClusterable, Comparable<Method>{
 	/**
 	 * 
 	 */
@@ -19,8 +20,8 @@ public class Method implements MergeableSimpleOntologicalElement, IClusterable{
 	private ArrayList<Variable> parameters = new ArrayList<Variable>();
 	private HashSet<CloneInstance> cloneInstances = new HashSet<CloneInstance>();
 	
-	private HashSet<Method> callerMethods = new HashSet<Method>();
-	private HashSet<Method> calleeMethods = new HashSet<Method>();
+	private TreeSet<Method> callerMethods = new TreeSet<Method>();
+	private TreeSet<Method> calleeMethods = new TreeSet<Method>();
 	private ArrayList<TemplateMethodGroup> templateGroupList = new ArrayList<TemplateMethodGroup>();
 	
 	private String fullName;
@@ -60,9 +61,19 @@ public class Method implements MergeableSimpleOntologicalElement, IClusterable{
 		this.parameters = parameters;
 	}
 	
+	@Override
+	public int compareTo(Method o) {
+		if(this.equals(0)){
+			return 0;
+		}
+		else{
+			return this.toString().compareTo(o.toString());
+		}
+	}
+	
 	public int hashCode(){
-		return super.hashCode();
-		//return toString().hashCode();
+		//return super.hashCode();
+		return toString().hashCode();
 	}
 	
 	public boolean equals(Object obj){
@@ -267,7 +278,7 @@ public class Method implements MergeableSimpleOntologicalElement, IClusterable{
 		return paramList;
 	}
 
-	public HashSet<Method> getCallerMethods() {
+	public TreeSet<Method> getCallerMethods() {
 		return callerMethods;
 	}
 
@@ -277,7 +288,7 @@ public class Method implements MergeableSimpleOntologicalElement, IClusterable{
 	}
 
 
-	public HashSet<Method> getCalleeMethod() {
+	public TreeSet<Method> getCalleeMethod() {
 		return this.calleeMethods;
 	}
 	
@@ -294,6 +305,9 @@ public class Method implements MergeableSimpleOntologicalElement, IClusterable{
 	}
 	
 	public void addTemplateGroup(TemplateMethodGroup group){
-		this.templateGroupList.add(group);
+		if(!this.templateGroupList.contains(group))
+			this.templateGroupList.add(group);
 	}
+
+	
 }
