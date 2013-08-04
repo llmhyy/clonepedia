@@ -40,29 +40,31 @@ public class TemplateFeatureBuilder {
 	
 	private void gatherCalleeGroups(TemplateFeature feature, TemplateMethodGroup group){
 		
-		if(group.getCalleeGroup().size() == 0
-				|| feature.contains(group)){
+		if(group.getCalleeGroup().size() == 0){
 			return;
 		}
 		else{
 			for(TemplateMethodGroup calleeGroup: group.getCalleeGroup()){
 				calleeGroup.mark();
-				feature.addTemplateMethodGroup(calleeGroup);
-				gatherCalleeGroups(feature, calleeGroup);
+				if(!feature.contains(calleeGroup)){
+					feature.addTemplateMethodGroup(calleeGroup);
+					gatherCalleeGroups(feature, calleeGroup);					
+				}
 			}
 		}
 	}
 	
 	private void gatherCallerGroups(TemplateFeature feature, TemplateMethodGroup group){
-		if(group.getCallerGroup().size() == 0
-				|| feature.contains(group)){
+		if(group.getCallerGroup().size() == 0){
 			return;
 		}
 		else{
 			for(TemplateMethodGroup callerGroup: group.getCallerGroup()){
 				callerGroup.mark();
-				feature.addTemplateMethodGroup(callerGroup);
-				gatherCallerGroups(feature, callerGroup);
+				if(!feature.contains(group)){
+					feature.addTemplateMethodGroup(callerGroup);
+					gatherCallerGroups(feature, callerGroup);					
+				}
 			}
 		}
 	}
@@ -70,9 +72,11 @@ public class TemplateFeatureBuilder {
 	private void contructCallGraph(){
 		for(TemplateMethodGroup group: this.methodGroupList){
 			for(Method m: group.getMethods()){
-				for(TemplateMethodGroup calleeGroup: m.getTemplateGroupList()){
-					group.addCalleeGroup(calleeGroup);
-					calleeGroup.addCallerGroup(group);
+				for(Method calleeMethod: m.getCalleeMethod()){
+					for(TemplateMethodGroup calleeGroup: calleeMethod.getTemplateGroupList()){
+						group.addCalleeGroup(calleeGroup);
+						calleeGroup.addCallerGroup(group);
+					}					
 				}
 			}
 		}

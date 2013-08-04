@@ -62,12 +62,13 @@ public class Method implements MergeableSimpleOntologicalElement, IClusterable, 
 	}
 	
 	@Override
-	public int compareTo(Method o) {
-		if(this.equals(0)){
+	public int compareTo(Method method) {
+		if(this.equals(method)){
 			return 0;
 		}
 		else{
-			return this.toString().compareTo(o.toString());
+			//System.out.print("");
+			return this.getFullName().compareTo(method.getFullName());
 		}
 	}
 	

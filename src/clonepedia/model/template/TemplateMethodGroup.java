@@ -74,7 +74,7 @@ public class TemplateMethodGroup implements Serializable{
 	}
 	
 	public void addCalleeGroup(TemplateMethodGroup group){
-		if(!this.calleeGroup.contains(group)){
+		if(!this.calleeGroup.contains(group) && !group.equals(this)){
 			this.calleeGroup.add(group);			
 		}
 	}
@@ -92,7 +92,7 @@ public class TemplateMethodGroup implements Serializable{
 	}
 	
 	public void addCallerGroup(TemplateMethodGroup group){
-		if(!this.callerGroup.contains(group)){
+		if(!this.callerGroup.contains(group) && !group.equals(this)){
 			this.callerGroup.add(group);			
 		}
 	}

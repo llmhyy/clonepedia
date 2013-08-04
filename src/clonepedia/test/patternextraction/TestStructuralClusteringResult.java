@@ -37,21 +37,27 @@ public class TestStructuralClusteringResult extends TestCase {
 		/*TemplateMethodBuilder builder = new TemplateMethodBuilder(sets);
 		builder.build();
 		ArrayList<TemplateMethodGroup> templateMethodGroupList = builder.getMethodGroupList();*/
-		
-		/*CloneSets sets = (CloneSets) MinerUtil.deserialize("D://linyun//eclipse_for_clone//configurations//JHotDraw7_0_6//ontological_model", true);
+		CloneSets sets = (CloneSets)MinerUtil.deserialize("E://eclipse//configurations//JHotDraw7.0.6//ontological_model", true);
 		sets.setPathComparator(new LevenshteinPathComparator());
-		ArrayList<TemplateMethodGroup> templateMethodGroupList = sets.getTemplateMethodGroup();
+		
+		TemplateMethodBuilder builder = new TemplateMethodBuilder(sets);
+		builder.build();
+		ArrayList<TemplateMethodGroup> templateMethodGroupList = builder.getMethodGroupList();
+		
+		sets.setTemplateMethodGroup(templateMethodGroupList);
+		
+		
+		//ArrayList<TemplateMethodGroup> templateMethodGroupList = sets.getTemplateMethodGroup();
 		
 		TemplateFeatureBuilder featureBuilder = new TemplateFeatureBuilder(templateMethodGroupList);
-		ArrayList<TemplateFeature> features = featureBuilder.generateTemplateFeatures();*/
+		ArrayList<TemplateFeature> features = featureBuilder.generateTemplateFeatures();
 		
-		/*HashSet<ATest> aList = new HashSet<ATest>();
-		for(int i=0; i<10; i++){
-			ATest a = new ATest(String.valueOf(i));
-			aList.add(a);
+		ArrayList<TemplateFeature> validateFeatures = new ArrayList<TemplateFeature>();
+		for(TemplateFeature feature: features){
+			if(feature.getTemplateMethodGroupList().size() > 1){
+				validateFeatures.add(feature);
+			}
 		}
-		MinerUtil.serialize(aList, "test");*/
-		CloneSets sets = (CloneSets)MinerUtil.deserialize("D://linyun//eclipse_for_clone//configurations//JHotDraw7_0_6//ontological_model", true);
 		
 		System.out.print("");
 	}

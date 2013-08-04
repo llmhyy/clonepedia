@@ -27,6 +27,11 @@ public class TemplateMethodBuilder {
 	
 	public void build(){
 		for(CloneSet set: this.sets.getCloneList()){
+			
+			if(set.getId().equals("480386")){
+				System.out.print("");
+			}
+			
 			TemplateMethodGroup methodGroup = new TemplateMethodGroup();
 			for(CloneInstance instance: set){
 				methodGroup.addMethod(instance.getResidingMethod());

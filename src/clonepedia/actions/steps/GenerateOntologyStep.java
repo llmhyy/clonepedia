@@ -49,11 +49,11 @@ public class GenerateOntologyStep implements Step{
 			
 			this.sets = sets;
 			
-			TemplateMethodBuilder builder = new TemplateMethodBuilder(sets);
+			/*TemplateMethodBuilder builder = new TemplateMethodBuilder(sets);
 			builder.build();
 			ArrayList<TemplateMethodGroup> templateMethodGroupList = builder.getMethodGroupList();
 			
-			sets.setTemplateMethodGroup(templateMethodGroupList);
+			sets.setTemplateMethodGroup(templateMethodGroupList);*/
 			
 			/*TemplateFeatureBuilder featureBuilder = new TemplateFeatureBuilder(templateMethodGroupList);
 			ArrayList<TemplateFeature> features = featureBuilder.generateTemplateFeatures();*/

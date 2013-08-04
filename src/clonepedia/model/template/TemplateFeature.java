@@ -20,4 +20,8 @@ public class TemplateFeature {
 	public ArrayList<TemplateMethodGroup> getTemplateMethodGroupList(){
 		return this.methodGroupList;
 	}
+	
+	public String toString(){
+		return this.methodGroupList.toString();
+	}
 }
