@@ -26,6 +26,12 @@
             <groupMarker
                   name="output">
             </groupMarker>
+            <separator
+                  name="separator3">
+            </separator>
+            <groupMarker
+                  name="test">
+            </groupMarker>
          </menu>
          <action
                class="clonepedia.actions.StartFromIntraSetPatternAction"
@@ -92,6 +98,15 @@
                menubarPath="Clonepedia/output"
                style="push"
                toolbarPath="output">
+         </action>
+         <action
+               class="clonepedia.actions.test.TestAction"
+               icon="icons/action/test.gif"
+               id="Clonepedia.TestAction"
+               label="Test"
+               menubarPath="Clonepedia/test"
+               style="push"
+               toolbarPath="test">
          </action>
       </actionSet>
    </extension>

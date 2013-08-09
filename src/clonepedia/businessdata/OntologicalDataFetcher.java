@@ -102,7 +102,7 @@ public abstract class OntologicalDataFetcher implements Serializable {
 	protected abstract void storeCommonRelation(CloneSet set,
 			ProgrammingElement element) throws Exception;
 
-	protected abstract void storeDiffRelation(CloneSetWrapper setWrapper)
+	public abstract CloneSet storeDiffRelation(CloneSetWrapper setWrapper)
 			throws Exception;
 
 	public void storeCloneInformation(ArrayList<CloneSetWrapper> setWrapperList, Project project) {
@@ -116,10 +116,6 @@ public abstract class OntologicalDataFetcher implements Serializable {
 					CloneInstance instance = instanceWrapper.getCloneInstance();
 					Method residingMethod = MinerUtilforJava.
 							getMethodfromASTNode(instanceWrapper.getMethodDeclaration(), project, this);
-
-					if(residingMethod.getName().contains("fileSaved")){
-						System.out.print("");
-					}
 					
 					residingMethod = this.getTheExistingMethodorCreateOne(residingMethod);
 					//appendCallerMethod(instanceWrapper.getMethodDeclaration(), residingMethod);

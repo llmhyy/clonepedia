@@ -12,7 +12,7 @@ import clonepedia.model.ontology.Method;
  * @author linyun
  *
  */
-public class TemplateMethodGroup implements Serializable{
+public class TemplateMethodGroup implements Serializable, Comparable<TemplateMethodGroup>{
 
 	/**
 	 * 
@@ -31,22 +31,69 @@ public class TemplateMethodGroup implements Serializable{
 		this.visited = false;
 	}
 	
-	public int hasCode(){
-		int product = 1;
-		for(Method m: this.methods){
-			product *= m.toString().hashCode();
-		}
-		
-		return product;
-	}
-	
 	public String toString(){
 		StringBuffer buf = new StringBuffer();
 		for(Method m: methods){
 			buf.append(m.toString() + "\n");
 		}
 		
+		for(CloneSet set: this.relatedCloneSets){
+			buf.append(set.getId() + " ");
+		}
+		
 		return buf.toString();
+	}
+	
+	@Override
+	public int compareTo(TemplateMethodGroup tmg) {
+		return this.toString().compareTo(tmg.toString());
+	}
+	
+	@Override
+	public int hashCode(){
+		
+		int product = 0;
+		for(Method m: this.methods){
+			product += m.toString().hashCode();
+		}
+		
+		return product;
+	}
+
+	@Override
+	public boolean equals(Object obj){
+		if(obj instanceof TemplateMethodGroup){
+			TemplateMethodGroup tmg = (TemplateMethodGroup)obj;
+			/*if(tmg.toString().contains("findContains") && this.toString().contains("findContains")){
+				System.out.print("");
+			}*/
+			if(tmg.getMethods().size() == this.getMethods().size()){
+				for(Method m: tmg.getMethods()){
+					if(!this.getMethods().contains(m)){
+						return false;
+					}
+				}
+				
+				return true;
+			}
+			
+			return false;
+		}
+		
+		return false;
+	}
+	
+	public CloneSet findSmallestCloneSet(){
+		CloneSet[] sets = this.relatedCloneSets.toArray(new CloneSet[0]);
+		CloneSet tmpSet = sets[0];
+		
+		for(int i=1; i<sets.length; i++){
+			if(sets[i].size() < tmpSet.size()){
+				tmpSet = sets[i];
+			}
+		}
+		
+		return tmpSet;
 	}
 	
 	public void addMethod(Method m){
@@ -112,4 +159,10 @@ public class TemplateMethodGroup implements Serializable{
 	public void resetVisitTag(){
 		this.visited = false;
 	}
+	
+	public void addRelatedCloneSet(CloneSet set){
+		this.relatedCloneSets.add(set);
+	}
+
+	
 }

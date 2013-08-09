@@ -206,7 +206,7 @@ public class OntologicalModelDataFetcher extends OntologicalDataFetcher{
 	}
 
 	@Override
-	protected void storeDiffRelation(CloneSetWrapper setWrapper) throws Exception {
+	public CloneSet storeDiffRelation(CloneSetWrapper setWrapper) throws Exception {
 		
 		CloneSet set = getExistingCloneSetorCreateOne(setWrapper.getCloneSet());
 		
@@ -236,6 +236,7 @@ public class OntologicalModelDataFetcher extends OntologicalDataFetcher{
 			set.addCounterRelationGroup(crp);
 		}
 		
+		return set;
 	}
 	
 }

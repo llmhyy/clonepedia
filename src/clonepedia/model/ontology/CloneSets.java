@@ -4,7 +4,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.TreeSet;
 
+import clonepedia.businessdata.OntologicalDataFetcher;
 import clonepedia.model.syntactic.Path;
 import clonepedia.model.template.TemplateMethodGroup;
 import clonepedia.syntactic.util.comparator.PathComparator;
@@ -20,7 +22,9 @@ public class CloneSets implements Serializable{
 	private PathComparator pathComparator;
 	private int averagePathSequenceLength;
 	
-	private ArrayList<TemplateMethodGroup> templateMethodGroupList = new ArrayList<TemplateMethodGroup>();
+	private OntologicalDataFetcher dataFetcher;
+	
+	private TreeSet<TemplateMethodGroup> templateMethodGroupList = new TreeSet<TemplateMethodGroup>();
 	
 	public void buildPatternforCloneSets() throws Exception{
 		int setsNum = this.getCloneList().size();
@@ -134,12 +138,20 @@ public class CloneSets implements Serializable{
 		return averagePathSequenceLength;
 	}
 
-	public ArrayList<TemplateMethodGroup> getTemplateMethodGroup() {
+	public TreeSet<TemplateMethodGroup> getTemplateMethodGroup() {
 		return templateMethodGroupList;
 	}
 
-	public void setTemplateMethodGroup(ArrayList<TemplateMethodGroup> templateMethodGroupList) {
+	public void setTemplateMethodGroup(TreeSet<TemplateMethodGroup> templateMethodGroupList) {
 		this.templateMethodGroupList = templateMethodGroupList;
+	}
+
+	public OntologicalDataFetcher getDataFetcher() {
+		return dataFetcher;
+	}
+
+	public void setDataFetcher(OntologicalDataFetcher dataFetcher) {
+		this.dataFetcher = dataFetcher;
 	}
 	
 	

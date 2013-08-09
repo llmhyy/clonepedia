@@ -47,6 +47,8 @@ public class GenerateOntologyStep implements Step{
 				set.setCloneSets(sets);
 			}
 			
+			sets.setDataFetcher(modelFetcher);
+			
 			this.sets = sets;
 			
 			/*TemplateMethodBuilder builder = new TemplateMethodBuilder(sets);

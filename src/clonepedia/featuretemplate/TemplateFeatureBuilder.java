@@ -15,7 +15,7 @@ public class TemplateFeatureBuilder {
 	}
 	
 	public ArrayList<TemplateFeature> generateTemplateFeatures(){
-		contructCallGraph();
+		//contructCallGraph();
 		
 		ArrayList<TemplateFeature> templateFeatures = new ArrayList<TemplateFeature>();
 		
@@ -69,16 +69,5 @@ public class TemplateFeatureBuilder {
 		}
 	}
 	
-	private void contructCallGraph(){
-		for(TemplateMethodGroup group: this.methodGroupList){
-			for(Method m: group.getMethods()){
-				for(Method calleeMethod: m.getCalleeMethod()){
-					for(TemplateMethodGroup calleeGroup: calleeMethod.getTemplateGroupList()){
-						group.addCalleeGroup(calleeGroup);
-						calleeGroup.addCallerGroup(group);
-					}					
-				}
-			}
-		}
-	}
+	
 }

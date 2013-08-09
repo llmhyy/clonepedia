@@ -94,7 +94,14 @@ public class CloneSet extends HashSet<CloneInstance> implements RegionalOwner, I
 	}
 	
 	public String toString(){
-		return this.cloneSetId;
+		StringBuffer buffer = new StringBuffer();
+		buffer.append(this.cloneSetId + '\n');
+		
+		for(CloneInstance instance: this){
+			buffer.append(instance.toString() + '\n');
+		}
+		
+		return buffer.toString();
 	}
 	
 	private void splitNameAndAddThemIntoWordBag(String name, WordBag wordBag){
@@ -626,6 +633,10 @@ public class CloneSet extends HashSet<CloneInstance> implements RegionalOwner, I
 		}
 		
 		return paths;
+	}
+	
+	public void clearCounterRelationGroups(){
+		this.counterRelationGroups = new ArrayList<CounterRelationGroup>();
 	}
 
 	public CounterRelationGroup containsCounterRelationGroup(String counterRelationId){

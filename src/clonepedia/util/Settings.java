@@ -88,4 +88,7 @@ public class Settings {
 	
 	//======================================================================
 	public static double thresholdDistanceForHierarchyClustering = 0.4d;
+	
+	//======================================================================
+	public static int templateMethodGroupCallingStrength = 2;
 }

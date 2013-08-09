@@ -2,6 +2,7 @@ package clonepedia.test.patternextraction;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.TreeSet;
 
 import clonepedia.featuretemplate.TemplateFeatureBuilder;
 import clonepedia.featuretemplate.TemplateMethodBuilder;
@@ -37,19 +38,19 @@ public class TestStructuralClusteringResult extends TestCase {
 		/*TemplateMethodBuilder builder = new TemplateMethodBuilder(sets);
 		builder.build();
 		ArrayList<TemplateMethodGroup> templateMethodGroupList = builder.getMethodGroupList();*/
-		CloneSets sets = (CloneSets)MinerUtil.deserialize("E://eclipse//configurations//JHotDraw7.0.6//ontological_model", true);
+		CloneSets sets = (CloneSets)MinerUtil.deserialize("D://linyun//eclipse_for_clone//configurations//JHotDraw7_0_6//ontological_model", true);
 		sets.setPathComparator(new LevenshteinPathComparator());
 		
 		TemplateMethodBuilder builder = new TemplateMethodBuilder(sets);
 		builder.build();
-		ArrayList<TemplateMethodGroup> templateMethodGroupList = builder.getMethodGroupList();
+		/*TreeSet<TemplateMethodGroup> templateMethodGroupList = builder.getMethodGroupList();
 		
-		sets.setTemplateMethodGroup(templateMethodGroupList);
+		sets.setTemplateMethodGroup(templateMethodGroupList);*/
 		
 		
 		//ArrayList<TemplateMethodGroup> templateMethodGroupList = sets.getTemplateMethodGroup();
 		
-		TemplateFeatureBuilder featureBuilder = new TemplateFeatureBuilder(templateMethodGroupList);
+		/*TemplateFeatureBuilder featureBuilder = new TemplateFeatureBuilder(templateMethodGroupList);
 		ArrayList<TemplateFeature> features = featureBuilder.generateTemplateFeatures();
 		
 		ArrayList<TemplateFeature> validateFeatures = new ArrayList<TemplateFeature>();
@@ -57,7 +58,7 @@ public class TestStructuralClusteringResult extends TestCase {
 			if(feature.getTemplateMethodGroupList().size() > 1){
 				validateFeatures.add(feature);
 			}
-		}
+		}*/
 		
 		System.out.print("");
 	}

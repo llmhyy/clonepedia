@@ -761,7 +761,7 @@ public class OntologicalDBDataFetcher extends OntologicalDataFetcher{
 
 	}
 
-	public void storeDiffRelation(CloneSetWrapper setWrapper) throws Exception{
+	public CloneSet storeDiffRelation(CloneSetWrapper setWrapper) throws Exception{
 		
 		CloneSet set = setWrapper.getCloneSet();
 		
@@ -782,6 +782,8 @@ public class OntologicalDBDataFetcher extends OntologicalDataFetcher{
 				}
 			}
 		}
+		
+		return set;
 	}
 	
 	public void storeInstanceDiffRelation(String counterRelationId,
