@@ -13,6 +13,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
+import clonepedia.featuretemplate.TemplateFeatureBuilder;
 import clonepedia.featuretemplate.TemplateMethodBuilder;
 import clonepedia.model.ontology.CloneSets;
 import clonepedia.model.template.TemplateMethodGroup;
@@ -39,6 +40,9 @@ public class TestAction implements IWorkbenchWindowActionDelegate {
 				for(TemplateMethodGroup tmg: templateMethodGroupList){
 					list.add(tmg);
 				}
+				
+				TemplateFeatureBuilder featureBuilder = new TemplateFeatureBuilder(list);
+				featureBuilder.generateTemplateFeatures();
 				
 				//sets.setTemplateMethodGroup(templateMethodGroupList);
 				return Status.OK_STATUS;

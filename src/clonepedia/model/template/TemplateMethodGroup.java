@@ -5,14 +5,16 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.TreeSet;
 
+import clonepedia.model.cluster.IClusterable;
 import clonepedia.model.ontology.CloneSet;
+import clonepedia.model.ontology.ComplexType;
 import clonepedia.model.ontology.Method;
 /**
  * 
  * @author linyun
  *
  */
-public class TemplateMethodGroup implements Serializable, Comparable<TemplateMethodGroup>{
+public class TemplateMethodGroup implements Serializable, Comparable<TemplateMethodGroup>, IClusterable{
 
 	/**
 	 * 
@@ -40,6 +42,8 @@ public class TemplateMethodGroup implements Serializable, Comparable<TemplateMet
 		for(CloneSet set: this.relatedCloneSets){
 			buf.append(set.getId() + " ");
 		}
+		
+		buf.append('\n');
 		
 		return buf.toString();
 	}
@@ -165,4 +169,38 @@ public class TemplateMethodGroup implements Serializable, Comparable<TemplateMet
 	}
 
 	
+	
+	/**
+	 * This distance is used to compute similarity of the declaring class of each method
+	 * in template method group. The distance is 1 - Jaccard coefficient.
+	 */
+	@Override
+	public double computeDistanceWith(IClusterable cluster) {
+		if(cluster instanceof TemplateMethodGroup){
+			TemplateMethodGroup tmg = (TemplateMethodGroup)cluster;
+			
+			ArrayList<ComplexType> types1 = getDeclaringClassFromTemplateMethodGroup(this);
+			ArrayList<ComplexType> types2 = getDeclaringClassFromTemplateMethodGroup(tmg);
+			
+			double count = 0;
+			for(ComplexType type: types1){
+				if(types2.contains(type)){
+					count++;
+				}
+			}
+			
+			return 1 - count/(types1.size()+types2.size()-count);
+		}
+		
+		return 1;
+	}
+
+	private ArrayList<ComplexType> getDeclaringClassFromTemplateMethodGroup(TemplateMethodGroup tmg){
+		ArrayList<ComplexType> types = new ArrayList<ComplexType>();
+		for(Method m: tmg.getMethods()){
+			types.add(m.getOwner());
+		}
+		
+		return types;
+	}
 }

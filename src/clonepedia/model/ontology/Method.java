@@ -267,7 +267,7 @@ public class Method implements MergeableSimpleOntologicalElement, IClusterable, 
 			return 1 - (packageLocationScore + classLocationScore + returnTypeScore + paramScore)/4;
 		}
 		
-		else return 0;
+		else return 1;
 	}
 	
 	public ArrayList<String> getParamTypeStringList(){
