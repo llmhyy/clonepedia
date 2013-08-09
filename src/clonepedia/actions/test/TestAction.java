@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.TreeSet;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -20,20 +24,29 @@ public class TestAction implements IWorkbenchWindowActionDelegate {
 
 	@Override
 	public void run(IAction action) {
-		CloneSets sets = (CloneSets)MinerUtil.deserialize(Settings.ontologyFile, true);
-		sets.setPathComparator(new LevenshteinPathComparator());
 		
-		TemplateMethodBuilder builder = new TemplateMethodBuilder(sets);
-		builder.build();
-		HashSet<TemplateMethodGroup> templateMethodGroupList = builder.getMethodGroupList();
+		Job job = new Job("building template"){
+			protected IStatus run(IProgressMonitor monitor) {
+				
+				CloneSets sets = (CloneSets)MinerUtil.deserialize(Settings.ontologyFile, true);
+				sets.setPathComparator(new LevenshteinPathComparator());
+				
+				TemplateMethodBuilder builder = new TemplateMethodBuilder(sets);
+				builder.build();
+				HashSet<TemplateMethodGroup> templateMethodGroupList = builder.getMethodGroupList();
+				
+				ArrayList<TemplateMethodGroup> list = new ArrayList<TemplateMethodGroup>();
+				for(TemplateMethodGroup tmg: templateMethodGroupList){
+					list.add(tmg);
+				}
+				
+				//sets.setTemplateMethodGroup(templateMethodGroupList);
+				return Status.OK_STATUS;
+			}
+		};
 		
-		ArrayList<TemplateMethodGroup> list = new ArrayList<TemplateMethodGroup>();
-		for(TemplateMethodGroup tmg: templateMethodGroupList){
-			list.add(tmg);
-		}
+		job.schedule();
 		
-		//sets.setTemplateMethodGroup(templateMethodGroupList);
-		System.out.println();
 	}
 
 	@Override
