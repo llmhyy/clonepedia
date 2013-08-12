@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.TreeSet;
 
 import clonepedia.model.cluster.IClusterable;
+import clonepedia.model.ontology.Class;
 import clonepedia.model.ontology.CloneSet;
 import clonepedia.model.ontology.ComplexType;
 import clonepedia.model.ontology.Method;
@@ -175,6 +176,10 @@ public class TemplateMethodGroup implements Serializable, Comparable<TemplateMet
 		if(cluster instanceof TemplateMethodGroup){
 			TemplateMethodGroup tmg = (TemplateMethodGroup)cluster;
 			
+			if(tmg.toString().contains("alignFigure") && this.toString().contains("alignFigure")){
+				System.out.print("");
+			}
+			
 			ArrayList<ComplexType> types1 = getDeclaringClassFromTemplateMethodGroup(this);
 			ArrayList<ComplexType> types2 = getDeclaringClassFromTemplateMethodGroup(tmg);
 			
@@ -194,7 +199,25 @@ public class TemplateMethodGroup implements Serializable, Comparable<TemplateMet
 	private ArrayList<ComplexType> getDeclaringClassFromTemplateMethodGroup(TemplateMethodGroup tmg){
 		ArrayList<ComplexType> types = new ArrayList<ComplexType>();
 		for(Method m: tmg.getMethods()){
-			types.add(m.getOwner());
+			ComplexType type = m.getOwner(); 
+			types.add(type);
+			
+			for(ComplexType superType: type.getParents()){
+				if(!types.contains(superType)){
+					types.add(superType);
+				}
+			}
+			
+			if(type.isClass()){
+				Class clazz = (Class)type;
+				Class outerClass = clazz.getOuterClass();
+				while(outerClass != null){
+					if(!types.contains(outerClass)){
+						types.add(outerClass);
+					}
+					outerClass = outerClass.getOuterClass();
+				}
+			}
 		}
 		
 		return types;

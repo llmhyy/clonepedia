@@ -55,7 +55,7 @@ public class Class extends VarType implements ComplexType{
 	public boolean equals(Object obj){
 		if(obj instanceof Class){
 			Class referClass = (Class)obj;
-			return referClass.getId().equals(this.getId());
+			return referClass.getFullName().equals(this.getFullName());
 		}
 		return false;
 	}

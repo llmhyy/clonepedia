@@ -56,7 +56,7 @@ public class Interface extends VarType implements ComplexType{
 			Interface referInterface = (Interface)obj;
 			
 			try{
-				return referInterface.getId().equals(this.getId());
+				return referInterface.getFullName().equals(this.getFullName());
 			}
 			catch(NullPointerException e){
 				return false;
