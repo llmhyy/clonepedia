@@ -33,12 +33,12 @@ import clonepedia.util.Settings;
  * @author linyun
  * 
  */
-public class TemplateMethodBuilder {
+public class TMGBuilder {
 
 	private CloneSets sets;
 	private HashSet<TemplateMethodGroup> methodGroupList = new HashSet<TemplateMethodGroup>();
 
-	public TemplateMethodBuilder(CloneSets sets) {
+	public TMGBuilder(CloneSets sets) {
 		this.sets = sets;
 	}
 
@@ -104,11 +104,13 @@ public class TemplateMethodBuilder {
 	}
 	
 	private void increaseTMGByCounterDiff(){
-		ArrayList<TemplateMethodGroup> list = new ArrayList<TemplateMethodGroup>();
+		//ArrayList<TemplateMethodGroup> list = new ArrayList<TemplateMethodGroup>();
 		
 		int count = 0;
 		
-		for(TemplateMethodGroup tmg: this.methodGroupList){
+		TemplateMethodGroup[] tmgList = this.methodGroupList.toArray(new TemplateMethodGroup[0]);
+		
+		for(TemplateMethodGroup tmg: tmgList){
 			CloneSet set = tmg.findSmallestCloneSet();
 			ArrayList<CounterRelationGroup> counterDifferences = identifyCounterDifferences(set, tmg, count);
 			
@@ -124,32 +126,40 @@ public class TemplateMethodBuilder {
 					}
 				}
 				
-				if(methodGroup.getMethods().size() > 1){
-					
-					for(Method m: methodGroup.getMethods()){
-						m.addTemplateGroup(methodGroup);
+				if(methodGroup.getMethods().size() <= 1) continue;
+				
+				TemplateMethodGroup identifiedTMG = findExistingTempalteMethodGroupOrCreateOne(methodGroup);
+
+				/**
+				 * the TMG of each methods are decided only after the uniqueness of a TMG is ensured
+				 */
+				for(InstanceElementRelation pair: group.getRelationList()){
+					OntologicalElement element = pair.getElement();
+					if(element instanceof Method){
+						Method candiateMethod = (Method)element;
+						//methodGroup.addMethod(candiateMethod);
+						candiateMethod.addTemplateGroup(methodGroup);
 					}
-					
-					list.add(methodGroup);
-					
-					tmg.addCalleeGroup(methodGroup);
-					methodGroup.addCallerGroup(tmg);
 				}
+				
+				//list.add(identifiedTMG);
+				if(tmg.toString().contains("main")){
+					System.out.print("");
+				}
+				
+				tmg.addCalleeGroup(identifiedTMG);
+				identifiedTMG.addCallerGroup(tmg);
 			}
 		}
 		
-		for(TemplateMethodGroup tmg: list){
+		/*for(TemplateMethodGroup tmg: list){
 			
-			if(tmg.toString().contains("findContains")){
+			if(tmg.toString().contains("construct")){
 				System.out.println();
 			}
-			
-			TemplateMethodGroup group = findExistingTempalteMethodGroupOrCreateOne(tmg);
-			group.getRelatedCloneSets().addAll(tmg.getRelatedCloneSets());
-			
 			//System.out.print("");
-			//this.methodGroupList.add(tmg);
-		}
+			this.methodGroupList.add(tmg);
+		}*/
 	}
 	
 	private ArrayList<CounterRelationGroup> identifyCounterDifferences(CloneSet set, TemplateMethodGroup tmg, int count){
@@ -248,7 +258,7 @@ public class TemplateMethodBuilder {
 			elements[count++] = m;
 		}
 
-		HierarchyClusterAlgorithm algorithm = new HierarchyClusterAlgorithm(elements);
+		HierarchyClusterAlgorithm algorithm = new HierarchyClusterAlgorithm(elements, Settings.thresholdDistanceForTMGLocationClustering);
 		try {
 			ArrayList<NormalCluster> clusters = algorithm.doClustering();
 
@@ -258,11 +268,17 @@ public class TemplateMethodBuilder {
 					for (IClusterable ele : cluster) {
 						Method tMethod = (Method) ele;
 						newGroup.addMethod(tMethod);
-						tMethod.addTemplateGroup(newGroup);
-
+						//tMethod.addTemplateGroup(newGroup);
+					}
+					TemplateMethodGroup tmg = findExistingTempalteMethodGroupOrCreateOne(newGroup);
+					/**
+					 * the TMG of each methods are decided only after the uniqueness of a TMG is ensured
+					 */
+					for (IClusterable ele : cluster) {
+						Method tMethod = (Method) ele;
+						tMethod.addTemplateGroup(tmg);
 					}
 					
-					TemplateMethodGroup tmg = findExistingTempalteMethodGroupOrCreateOne(newGroup);
 					tmg.addRelatedCloneSet(set);
 					//newGroup.addRelatedCloneSet(set);
 				}

@@ -17,8 +17,12 @@ public class HierarchyClusterAlgorithm {
 
 	private double matrix[][];
 	private NormalCluster[] clusters;
+	private double threshold;
 
-	public HierarchyClusterAlgorithm(IClusterable[] elements) {
+	public HierarchyClusterAlgorithm(IClusterable[] elements, double threshold) {
+		
+		this.setThreshold(threshold);
+		
 		int size = elements.length;
 
 		clusters = new NormalCluster[size];
@@ -43,7 +47,7 @@ public class HierarchyClusterAlgorithm {
 		Distance sd = findShortestDistanceInMatrix(matrix);
 
 		//int count = 0;
-		while (sd.distance < Settings.thresholdDistanceForHierarchyClustering) {
+		while (sd.distance < this.threshold) {
 			try {
 				clusters[sd.i].merge(clusters[sd.j]);
 			} catch (NullPointerException e) {
@@ -51,7 +55,8 @@ public class HierarchyClusterAlgorithm {
 			}
 
 			clusters[sd.j] = null;
-			recomputeMatrixWithSimpilfiedAverageLinkage(matrix, sd.i, sd.j);
+			//recomputeMatrixWithSimpilfiedAverageLinkage(matrix, sd.i, sd.j);
+			recomputeMatrixWithSingleLinkage(matrix, sd.i, sd.j);
 			nullifyOneClusterInMatrix(matrix, sd.j);
 
 			sd = findShortestDistanceInMatrix(matrix);
@@ -222,6 +227,32 @@ public class HierarchyClusterAlgorithm {
 			}
 		}
 	}
+	
+	/**
+	 * index1 must be smaller than index2
+	 * 
+	 * @param matrix
+	 * @param index1
+	 * @param index2
+	 * @throws Exception
+	 */
+	private void recomputeMatrixWithSingleLinkage(double[][] matrix,
+			int index1, int index2) throws Exception {
+		if (index1 >= index2)
+			throw new Exception("index1 cannot be larger than index2");
+		for (int i = 0; i < matrix.length; i++) {
+			if (i < index1) {
+				matrix[i][index1] = (matrix[i][index1] < matrix[i][index2]) ? matrix[i][index1]
+						: matrix[i][index2];
+			} else if (i > index1 && i < index2) {
+				matrix[index1][i] = (matrix[index1][i] < matrix[i][index2]) ? matrix[index1][i]
+						: matrix[i][index2];
+			} else if (i > index2) {
+				matrix[index1][i] = (matrix[index1][i] < matrix[index2][i]) ? matrix[index1][i]
+						: matrix[index2][i];
+			}
+		}
+	}
 
 	/**
 	 * index1 must be smaller than index2
@@ -252,6 +283,14 @@ public class HierarchyClusterAlgorithm {
 		for (int j = index + 1; j < matrix.length; j++)
 			matrix[index][j] = -1;
 
+	}
+
+	public double getThreshold() {
+		return threshold;
+	}
+
+	public void setThreshold(double threshold) {
+		this.threshold = threshold;
 	}
 
 	/*private void attachPatternLabels(ArrayList<NormalCluster> list)

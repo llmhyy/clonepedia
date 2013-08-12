@@ -87,7 +87,8 @@ public class Settings {
 	public static String interSetFile;
 	
 	//======================================================================
-	public static double thresholdDistanceForHierarchyClustering = 0.4d;
+	public static double thresholdDistanceForTMGFilteringAndSplitting = 0.4d;
+	public static double thresholdDistanceForTMGLocationClustering = 0.5d;
 	
 	//======================================================================
 	public static int templateMethodGroupCallingStrength = 2;

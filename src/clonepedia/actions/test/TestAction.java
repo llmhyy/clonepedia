@@ -13,9 +13,10 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
-import clonepedia.featuretemplate.TemplateFeatureBuilder;
-import clonepedia.featuretemplate.TemplateMethodBuilder;
+import clonepedia.featuretemplate.TFGBuilder;
+import clonepedia.featuretemplate.TMGBuilder;
 import clonepedia.model.ontology.CloneSets;
+import clonepedia.model.template.TemplateFeatureGroup;
 import clonepedia.model.template.TemplateMethodGroup;
 import clonepedia.syntactic.util.comparator.LevenshteinPathComparator;
 import clonepedia.util.MinerUtil;
@@ -32,7 +33,7 @@ public class TestAction implements IWorkbenchWindowActionDelegate {
 				CloneSets sets = (CloneSets)MinerUtil.deserialize(Settings.ontologyFile, true);
 				sets.setPathComparator(new LevenshteinPathComparator());
 				
-				TemplateMethodBuilder builder = new TemplateMethodBuilder(sets);
+				TMGBuilder builder = new TMGBuilder(sets);
 				builder.build();
 				HashSet<TemplateMethodGroup> templateMethodGroupList = builder.getMethodGroupList();
 				
@@ -41,8 +42,9 @@ public class TestAction implements IWorkbenchWindowActionDelegate {
 					list.add(tmg);
 				}
 				
-				TemplateFeatureBuilder featureBuilder = new TemplateFeatureBuilder(list);
+				TFGBuilder featureBuilder = new TFGBuilder(list);
 				featureBuilder.generateTemplateFeatures();
+				ArrayList<ArrayList<TemplateFeatureGroup>> featureGroups = featureBuilder.getFeatureGroups();
 				
 				//sets.setTemplateMethodGroup(templateMethodGroupList);
 				return Status.OK_STATUS;

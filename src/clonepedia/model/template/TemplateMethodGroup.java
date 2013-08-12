@@ -26,7 +26,7 @@ public class TemplateMethodGroup implements Serializable, Comparable<TemplateMet
 	private ArrayList<TemplateMethodGroup> calleeGroup = new ArrayList<TemplateMethodGroup>();
 	private ArrayList<TemplateMethodGroup> callerGroup = new ArrayList<TemplateMethodGroup>();
 	
-	private int featureId;
+	private TemplateFeatureGroup templateFeatureGroup;
 	private boolean visited;
 	
 	public TemplateMethodGroup(){
@@ -147,12 +147,8 @@ public class TemplateMethodGroup implements Serializable, Comparable<TemplateMet
 			this.callerGroup.add(group);			
 		}
 	}
-
-	public void setFeaureId(int index){
-		this.featureId = index;
-	}
 	
-	public boolean isVisisted(){
+	public boolean isVisited(){
 		return visited;
 	}
 	
@@ -202,5 +198,13 @@ public class TemplateMethodGroup implements Serializable, Comparable<TemplateMet
 		}
 		
 		return types;
+	}
+
+	public TemplateFeatureGroup getTFG() {
+		return templateFeatureGroup;
+	}
+
+	public void setTFG(TemplateFeatureGroup templateFeatureGroup) {
+		this.templateFeatureGroup = templateFeatureGroup;
 	}
 }
