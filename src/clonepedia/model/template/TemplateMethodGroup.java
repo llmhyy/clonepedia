@@ -2,6 +2,7 @@ package clonepedia.model.template;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.TreeSet;
 
@@ -22,7 +23,9 @@ public class TemplateMethodGroup implements Serializable, Comparable<TemplateMet
 	 */
 	private static final long serialVersionUID = -652499753497315887L;
 	private TreeSet<Method> methods = new TreeSet<Method>();
+	
 	private HashSet<CloneSet> relatedCloneSets = new HashSet<CloneSet>();
+	private ArrayList<TemplateMethodGroup> containedTMGs = new ArrayList<TemplateMethodGroup>();
 
 	private ArrayList<TemplateMethodGroup> calleeGroup = new ArrayList<TemplateMethodGroup>();
 	private ArrayList<TemplateMethodGroup> callerGroup = new ArrayList<TemplateMethodGroup>();
@@ -86,6 +89,17 @@ public class TemplateMethodGroup implements Serializable, Comparable<TemplateMet
 		}
 		
 		return false;
+	}
+	
+	public boolean contains(TemplateMethodGroup tmg){
+		if(tmg.getMethods().size() > this.getMethods().size())return false;
+		
+		for(Method m: tmg.getMethods()){
+			if(!this.getMethods().contains(m)){
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	public CloneSet findSmallestCloneSet(){
@@ -229,5 +243,17 @@ public class TemplateMethodGroup implements Serializable, Comparable<TemplateMet
 
 	public void setTFG(TemplateFeatureGroup templateFeatureGroup) {
 		this.templateFeatureGroup = templateFeatureGroup;
+	}
+
+	public ArrayList<TemplateMethodGroup> getContainedTMGs() {
+		return containedTMGs;
+	}
+
+	public void setContainedTMGs(ArrayList<TemplateMethodGroup> containedTMGs) {
+		this.containedTMGs = containedTMGs;
+	}
+
+	public void addContainedTMG(TemplateMethodGroup tmg){
+		this.containedTMGs.add(tmg);
 	}
 }

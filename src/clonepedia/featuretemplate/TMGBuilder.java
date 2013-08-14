@@ -1,6 +1,8 @@
 package clonepedia.featuretemplate;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.TreeSet;
@@ -52,6 +54,13 @@ public class TMGBuilder {
 		}
 		
 		increaseTMGByCounterDiff();
+		
+		list = new ArrayList<TemplateMethodGroup>();
+		for(TemplateMethodGroup tmg: methodGroupList){
+			list.add(tmg);
+		}
+		
+		sanitize();
 		
 		list = new ArrayList<TemplateMethodGroup>();
 		for(TemplateMethodGroup tmg: methodGroupList){
@@ -147,8 +156,8 @@ public class TMGBuilder {
 					System.out.print("");
 				}
 				
-				tmg.addCalleeGroup(identifiedTMG);
-				identifiedTMG.addCallerGroup(tmg);
+				//tmg.addCalleeGroup(identifiedTMG);
+				//identifiedTMG.addCallerGroup(tmg);
 			}
 		}
 		
@@ -208,9 +217,9 @@ public class TMGBuilder {
 	private void init() {
 		for (CloneSet set : this.sets.getCloneList()) {
 
-			if (set.getId().equals("480386")) {
+			/*if (set.getId().equals("480386")) {
 				System.out.print("");
-			}
+			}*/
 
 			TemplateMethodGroup methodGroup = new TemplateMethodGroup();
 			for (CloneInstance instance : set) {
@@ -222,7 +231,7 @@ public class TMGBuilder {
 			}
 		}
 
-		sanitize();
+		//sanitize();
 	}
 
 	/**
@@ -230,14 +239,37 @@ public class TMGBuilder {
 	 * (TMG) will be overlapped, or even proper contained in a larger-size
 	 * template method.
 	 * 
-	 * Solution: In this case, I remove small-size TMG and keep large-size TMG
+	 * Solution: In this case, I remove small-size TMG and keep large-size TMG but the removed
+	 * small TMGs are kept in the large TMG containing them.
 	 * 
-	 * Case II: The TMG of the same size may involve more than one clone set
-	 * 
-	 * Solution: Merge them.
 	 */
 	private void sanitize() {
-		// TODO
+		TemplateMethodGroup[] groupArray = this.methodGroupList.toArray(new TemplateMethodGroup[0]);
+		
+		Arrays.sort(groupArray, new TMGSizeComparator());
+		
+		ArrayList<Integer> toBeSanitizedTMGIndex = new ArrayList<Integer>();
+		
+		for(int i=0; i<groupArray.length; i++){
+			if(toBeSanitizedTMGIndex.contains(new Integer(i))) continue;
+			
+			for(int j=i+1; j<groupArray.length; j++){
+				if(toBeSanitizedTMGIndex.contains(new Integer(j))) continue;
+				if(groupArray[i].getMethods().size() ==  groupArray[j].getMethods().size()) continue;
+				
+				if(groupArray[i].contains(groupArray[j])){
+					toBeSanitizedTMGIndex.add(j);
+					groupArray[i].addContainedTMG(groupArray[j]);
+				}
+			}
+		}
+		
+		for(Integer i: toBeSanitizedTMGIndex){
+			TemplateMethodGroup tmg = groupArray[i];
+			if(this.methodGroupList.contains(tmg)){
+				this.methodGroupList.remove(tmg);
+			}
+		}
 	}
 
 	/**
