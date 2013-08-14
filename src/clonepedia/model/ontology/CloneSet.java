@@ -901,4 +901,14 @@ public class CloneSet extends HashSet<CloneInstance> implements RegionalOwner, I
 		
 		return list;
 	}
+	
+	public boolean containsResidingMethod(Method method){
+		for(CloneInstance instance: this){
+			if(instance.getResidingMethod().equals(method)){
+				return true;
+			}
+		}
+		
+		return false;
+	}
 }

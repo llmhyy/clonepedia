@@ -38,13 +38,25 @@ public class TestAction implements IWorkbenchWindowActionDelegate {
 				HashSet<TemplateMethodGroup> templateMethodGroupList = builder.getMethodGroupList();
 				
 				ArrayList<TemplateMethodGroup> list = new ArrayList<TemplateMethodGroup>();
+				
+				ArrayList<TemplateMethodGroup> sigificantTMGList = new ArrayList<TemplateMethodGroup>();
 				for(TemplateMethodGroup tmg: templateMethodGroupList){
 					list.add(tmg);
+					if(tmg.getMethods().size() > 2){
+						sigificantTMGList.add(tmg);
+					}
 				}
 				
 				TFGBuilder featureBuilder = new TFGBuilder(list);
 				featureBuilder.generateTemplateFeatures();
 				ArrayList<ArrayList<TemplateFeatureGroup>> featureGroups = featureBuilder.getFeatureGroups();
+				
+				ArrayList<ArrayList<TemplateFeatureGroup>> significantGroups = new ArrayList<ArrayList<TemplateFeatureGroup>>();
+				for(ArrayList<TemplateFeatureGroup> group: featureGroups){
+					if(group.size() > 2){
+						significantGroups.add(group);
+					}
+				}
 				
 				//sets.setTemplateMethodGroup(templateMethodGroupList);
 				return Status.OK_STATUS;

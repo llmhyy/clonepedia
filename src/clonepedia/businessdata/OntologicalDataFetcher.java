@@ -21,6 +21,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTParser;
+import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -29,6 +30,8 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.PrimitiveType;
 import org.eclipse.jdt.core.dom.SimpleName;
+import org.eclipse.jdt.core.dom.Statement;
+import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeLiteral;
 import org.eclipse.jdt.internal.corext.callhierarchy.CallHierarchy;
 import org.eclipse.jdt.internal.corext.callhierarchy.MethodWrapper;
@@ -244,20 +247,32 @@ public abstract class OntologicalDataFetcher implements Serializable {
 					return null;
 
 				if (name.resolveBinding().getKind() == IBinding.TYPE) {
-					ITypeBinding typeBinding = (ITypeBinding) name
-							.resolveBinding();
+					
+					ASTNode parentNode = name.getParent();
+					while(!((parentNode instanceof Statement) || (parentNode instanceof ClassInstanceCreation))){
+						parentNode = parentNode.getParent();
+					}
+					
+					ITypeBinding typeBinding = (ITypeBinding) name.resolveBinding();
+					
+					if(parentNode instanceof ClassInstanceCreation){
+						ClassInstanceCreation creation = (ClassInstanceCreation)parentNode;
+						IMethodBinding constructorBinding = creation.resolveConstructorBinding();
+						if(constructorBinding.getDeclaringClass().equals(typeBinding)){
+							Method m = MinerUtilforJava.getMethodfromBinding(constructorBinding, project, (CompilationUnit) node.getRoot(), this);
+							Method method = getTheExistingMethodorCreateOne(m);
+							return method;
+						}
+					}
+					
 					if (typeBinding.isClass() || typeBinding.isInterface()) {
-						return MinerUtilforJava.transferTypeToComplexType(
-								typeBinding, project,
-								(CompilationUnit) node.getRoot(), this);
-					} else
+						return MinerUtilforJava.transferTypeToComplexType(typeBinding, project, (CompilationUnit) node.getRoot(), this);
+					} else {						
 						return null;
+					}
 				} else if (name.resolveBinding().getKind() == IBinding.METHOD) {
-					IMethodBinding methodBinding = (IMethodBinding) name
-							.resolveBinding();
-					Method m = MinerUtilforJava.getMethodfromBinding(
-							methodBinding, project,
-							(CompilationUnit) node.getRoot(), this);
+					IMethodBinding methodBinding = (IMethodBinding) name.resolveBinding();
+					Method m = MinerUtilforJava.getMethodfromBinding(methodBinding, project, (CompilationUnit) node.getRoot(), this);
 					Method method = getTheExistingMethodorCreateOne(m);
 					return method;
 				} else if (name.resolveBinding().getKind() == IBinding.VARIABLE) {

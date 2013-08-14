@@ -91,5 +91,5 @@ public class Settings {
 	public static double thresholdDistanceForTMGLocationClustering = 0.5d;
 	
 	//======================================================================
-	public static int templateMethodGroupCallingStrength = 2;
+	public static int templateMethodGroupCallingStrength = 3;
 }

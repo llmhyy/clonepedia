@@ -120,6 +120,13 @@ public class TMGBuilder {
 		TemplateMethodGroup[] tmgList = this.methodGroupList.toArray(new TemplateMethodGroup[0]);
 		
 		for(TemplateMethodGroup tmg: tmgList){
+			
+			if(tmg.toString().contains("main")){
+				System.out.print("");
+			}
+			
+			//System.out.print("");
+			
 			CloneSet set = tmg.findSmallestCloneSet();
 			ArrayList<CounterRelationGroup> counterDifferences = identifyCounterDifferences(set, tmg, count);
 			
@@ -147,7 +154,7 @@ public class TMGBuilder {
 					if(element instanceof Method){
 						Method candiateMethod = (Method)element;
 						//methodGroup.addMethod(candiateMethod);
-						candiateMethod.addTemplateGroup(methodGroup);
+						candiateMethod.addTemplateGroup(identifiedTMG);
 					}
 				}
 				
@@ -161,6 +168,7 @@ public class TMGBuilder {
 			}
 		}
 		
+		//sanitize();
 		/*for(TemplateMethodGroup tmg: list){
 			
 			if(tmg.toString().contains("construct")){
@@ -178,26 +186,62 @@ public class TMGBuilder {
 			groups = set.getCounterRelationGroups();
 		}
 		else{
-			CloneSet copiedSet = copyCloneSetWithoutIrrelevantCloneInstance(tmg, set);
-			copiedSet.setId(copiedSet.getId() + "_" + count);
-			copiedSet.clearCounterRelationGroups();
+			/**
+			 * If the size is shrunk, the length of clone instance may increase.
+			 */
+			CloneSet suitableSet = findMoreSuitableCloneSet(tmg);
 			
-			CloneSetWrapper setWrapper = new CloneSetWrapper(copiedSet, new CompilationUnitPool());
-			OntologicalDataFetcher fetcher = copiedSet.getCloneSets().getDataFetcher();
-			
-			setWrapper = new CloneInformationExtractor().extractCounterRelationalDifferencesOfCloneSet(setWrapper);	
-			
-			CloneSet newSet;
-			try {
-				newSet = fetcher.storeDiffRelation(setWrapper);
-				groups = newSet.getCounterRelationGroups();
-			} catch (Exception e) {
-				e.printStackTrace();
+			if(null != suitableSet){
+				groups = suitableSet.getCounterRelationGroups();
 			}
-			
+			else{
+				
+				CloneSet copiedSet = copyCloneSetWithoutIrrelevantCloneInstance(tmg, set);
+				copiedSet.setId(copiedSet.getId() + "_" + count);
+				copiedSet.clearCounterRelationGroups();
+				
+				CloneSetWrapper setWrapper = new CloneSetWrapper(copiedSet, new CompilationUnitPool());
+				OntologicalDataFetcher fetcher = copiedSet.getCloneSets().getDataFetcher();
+				
+				setWrapper = new CloneInformationExtractor().extractCounterRelationalDifferencesOfCloneSet(setWrapper);	
+				
+				CloneSet newSet;
+				try {
+					newSet = fetcher.storeDiffRelation(setWrapper);
+					groups = newSet.getCounterRelationGroups();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		
 		return groups;
+	}
+	
+	/**
+	 * If the size is shrunk, the length of clone instance may increase.
+	 */
+	private CloneSet findMoreSuitableCloneSet(TemplateMethodGroup tmg){
+		for(CloneSet set: this.sets.getCloneList()){
+			if(isCloneSetMatchTMG(set, tmg)){
+				return set;
+			}
+		}
+		
+		return null;
+	}
+	
+	private boolean isCloneSetMatchTMG(CloneSet set, TemplateMethodGroup tmg){
+		
+		if(set.size() != tmg.getMethods().size()) return false;
+		
+		for(Method m: tmg.getMethods()){
+			if(!set.containsResidingMethod(m)){
+				return false;
+			}
+		}
+		
+		return true;
 	}
 	
 	private CloneSet copyCloneSetWithoutIrrelevantCloneInstance(TemplateMethodGroup tmg, CloneSet set){
