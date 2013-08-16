@@ -833,6 +833,7 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 						(distance <= Settings.thresholdForStatementDifference)){
 					if((smallestDistance > distance) || (similarStatementIndex == -1)){
 						similarStatementIndex = i;
+						smallestDistance = distance;
 					}
 				}
 			}
