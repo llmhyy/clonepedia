@@ -69,7 +69,6 @@
                id="Clonepedia.ProgramStructureExtractionAction"
                label="&amp;Extract Program Structure"
                menubarPath="Clonepedia/debug"
-               toolbarPath="debug"
                tooltip="Extract Program Structure">
          </action>
          <action
@@ -78,8 +77,7 @@
                id="Clonepedia.CloneInformationExtractionAction"
                label="Extract Clone Information"
                menubarPath="Clonepedia/debug"
-               style="push"
-               toolbarPath="debug">
+               style="push">
          </action>
          <action
                class="clonepedia.actions.OntologyModelGeneration"
@@ -87,8 +85,7 @@
                id="Clonepedia.OntologicalModelBuilding"
                label="Build Ontological Model"
                menubarPath="Clonepedia/debug"
-               style="push"
-               toolbarPath="debug">
+               style="push">
          </action>
          <action
                class="clonepedia.actions.ExportOverallDetailAction"

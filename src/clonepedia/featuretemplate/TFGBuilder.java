@@ -5,30 +5,32 @@ import java.util.ArrayList;
 import clonepedia.model.cluster.IClusterable;
 import clonepedia.model.cluster.NormalCluster;
 import clonepedia.model.cluster.hierarchy.HierarchyClusterAlgorithm;
+import clonepedia.model.template.TFGList;
 import clonepedia.model.template.TemplateFeatureGroup;
 import clonepedia.model.template.TemplateMethodGroup;
+import clonepedia.model.template.TotalTFGs;
 import clonepedia.util.Settings;
 
 public class TFGBuilder {
 
 	private ArrayList<TemplateMethodGroup> methodGroupList;
-	private ArrayList<ArrayList<TemplateFeatureGroup>> featureGroups = new ArrayList<ArrayList<TemplateFeatureGroup>>();
+	private TotalTFGs featureGroups = new TotalTFGs();
 
 	public TFGBuilder(ArrayList<TemplateMethodGroup> methodGroupList) {
 		this.methodGroupList = methodGroupList;
 	}
 
 	public void generateTemplateFeatures() {
-		ArrayList<TemplateFeatureGroup> features = clusterTMGByLocation();
+		TFGList features = clusterTMGByLocation();
 		
 		buildCallingRelationsForTemplateFeatures(features);
 		
 		connectTFGsByCallingRelation(features);
 	}
 	
-	private ArrayList<TemplateFeatureGroup> clusterTMGByLocation(){
+	private TFGList clusterTMGByLocation(){
 		
-		ArrayList<TemplateFeatureGroup> features = new ArrayList<TemplateFeatureGroup>();
+		TFGList features = new TFGList();
 		
 		TemplateMethodGroup[] groupList = this.methodGroupList.toArray(new TemplateMethodGroup[0]);
 		
@@ -79,15 +81,15 @@ public class TFGBuilder {
 		}
 	}
 	
-	private void connectTFGsByCallingRelation(ArrayList<TemplateFeatureGroup> TFGList){
+	private void connectTFGsByCallingRelation(TFGList tfgList){
 
-		TemplateFeatureGroup[] groupList = TFGList.toArray(new TemplateFeatureGroup[0]);
+		TemplateFeatureGroup[] groupList = tfgList.toArray(new TemplateFeatureGroup[0]);
 
 		for (int i = 0; i < groupList.length; i++) {
 			TemplateFeatureGroup tfg = groupList[i];
 			// the group has not been visited
 			if (!tfg.isVisited()) {
-				ArrayList<TemplateFeatureGroup> features = new ArrayList<TemplateFeatureGroup>();
+				TFGList features = new TFGList();
 				features.add(tfg);
 
 				gatherNeighbourTMGs(features, tfg);
@@ -98,7 +100,7 @@ public class TFGBuilder {
 		}
 	}
 	
-	private void gatherNeighbourTMGs(ArrayList<TemplateFeatureGroup> features,
+	private void gatherNeighbourTMGs(TFGList features,
 			TemplateFeatureGroup group) {
 
 		if (features.size() == 0) {
@@ -196,11 +198,11 @@ public class TFGBuilder {
 
 	
 
-	public ArrayList<ArrayList<TemplateFeatureGroup>> getFeatureGroups() {
+	public TotalTFGs getFeatureGroups() {
 		return featureGroups;
 	}
 
-	public void setFeatureGroups(ArrayList<ArrayList<TemplateFeatureGroup>> featureGroups) {
+	public void setFeatureGroups(TotalTFGs featureGroups) {
 		this.featureGroups = featureGroups;
 	}
 }
