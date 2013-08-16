@@ -1,4 +1,4 @@
-package clonepedia.actions.test;
+package clonepedia.actions;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -16,13 +16,15 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import clonepedia.featuretemplate.TFGBuilder;
 import clonepedia.featuretemplate.TMGBuilder;
 import clonepedia.model.ontology.CloneSets;
+import clonepedia.model.template.TFGList;
+import clonepedia.model.template.TMGList;
 import clonepedia.model.template.TemplateFeatureGroup;
 import clonepedia.model.template.TemplateMethodGroup;
 import clonepedia.syntactic.util.comparator.LevenshteinPathComparator;
 import clonepedia.util.MinerUtil;
 import clonepedia.util.Settings;
 
-public class TestAction implements IWorkbenchWindowActionDelegate {
+public class TemplateGenerationAction implements IWorkbenchWindowActionDelegate {
 
 	@Override
 	public void run(IAction action) {
@@ -58,7 +60,18 @@ public class TestAction implements IWorkbenchWindowActionDelegate {
 					}
 				}
 				
-				//sets.setTemplateMethodGroup(templateMethodGroupList);
+				TMGList tmgList = new TMGList(sets, list);
+				TFGList tfgList = new TFGList(sets, featureGroups);
+				
+				try {
+					MinerUtil.serialize(tmgList, "tmgList");
+					MinerUtil.serialize(tfgList, "tfgList");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+				//sets.setTemplateMethodGroup(list);
+				//sets.setFeatureGroupList(featureGroups);
 				return Status.OK_STATUS;
 			}
 		};

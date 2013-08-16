@@ -1,9 +1,15 @@
 package clonepedia.model.template;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public class TemplateFeatureGroup {
+public class TemplateFeatureGroup implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3366461236737697331L;
+
 	private ArrayList<TemplateMethodGroup> methodGroupList = new ArrayList<TemplateMethodGroup>();
 	
 	private HashSet<TemplateFeatureGroup> callerTFG = new HashSet<TemplateFeatureGroup>();

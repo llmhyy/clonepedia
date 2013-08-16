@@ -8,6 +8,7 @@ import java.util.TreeSet;
 
 import clonepedia.businessdata.OntologicalDataFetcher;
 import clonepedia.model.syntactic.Path;
+import clonepedia.model.template.TemplateFeatureGroup;
 import clonepedia.model.template.TemplateMethodGroup;
 import clonepedia.syntactic.util.comparator.PathComparator;
 import clonepedia.util.Settings;
@@ -24,7 +25,8 @@ public class CloneSets implements Serializable{
 	
 	private OntologicalDataFetcher dataFetcher;
 	
-	private TreeSet<TemplateMethodGroup> templateMethodGroupList = new TreeSet<TemplateMethodGroup>();
+	//private ArrayList<TemplateMethodGroup> templateMethodGroupList = new ArrayList<TemplateMethodGroup>();
+	//private ArrayList<ArrayList<TemplateFeatureGroup>> featureGroupList = new ArrayList<ArrayList<TemplateFeatureGroup>>();
 	
 	public void buildPatternforCloneSets() throws Exception{
 		int setsNum = this.getCloneList().size();
@@ -138,13 +140,13 @@ public class CloneSets implements Serializable{
 		return averagePathSequenceLength;
 	}
 
-	public TreeSet<TemplateMethodGroup> getTemplateMethodGroup() {
+	/*public ArrayList<TemplateMethodGroup> getTemplateMethodGroup() {
 		return templateMethodGroupList;
 	}
 
-	public void setTemplateMethodGroup(TreeSet<TemplateMethodGroup> templateMethodGroupList) {
+	public void setTemplateMethodGroup(ArrayList<TemplateMethodGroup> templateMethodGroupList) {
 		this.templateMethodGroupList = templateMethodGroupList;
-	}
+	}*/
 
 	public OntologicalDataFetcher getDataFetcher() {
 		return dataFetcher;
@@ -153,6 +155,14 @@ public class CloneSets implements Serializable{
 	public void setDataFetcher(OntologicalDataFetcher dataFetcher) {
 		this.dataFetcher = dataFetcher;
 	}
+
+	/*public ArrayList<ArrayList<TemplateFeatureGroup>> getFeatureGroupList() {
+		return featureGroupList;
+	}
+
+	public void setFeatureGroupList(ArrayList<ArrayList<TemplateFeatureGroup>> featureGroupList) {
+		this.featureGroupList = featureGroupList;
+	}*/
 	
 	
 }

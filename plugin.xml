@@ -30,7 +30,7 @@
                   name="separator3">
             </separator>
             <groupMarker
-                  name="test">
+                  name="template">
             </groupMarker>
          </menu>
          <action
@@ -100,13 +100,13 @@
                toolbarPath="output">
          </action>
          <action
-               class="clonepedia.actions.test.TestAction"
-               icon="icons/action/test.gif"
-               id="Clonepedia.TestAction"
-               label="Test"
-               menubarPath="Clonepedia/test"
+               class="clonepedia.actions.TemplateGenerationAction"
+               icon="icons/action/template.gif"
+               id="Clonepedia.TemplateGenerationAction"
+               label="Template Generation"
+               menubarPath="Clonepedia/template"
                style="push"
-               toolbarPath="test">
+               toolbarPath="template">
          </action>
       </actionSet>
    </extension>

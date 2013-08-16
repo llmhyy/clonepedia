@@ -203,7 +203,12 @@ public class TMGBuilder {
 				CloneSetWrapper setWrapper = new CloneSetWrapper(copiedSet, new CompilationUnitPool());
 				OntologicalDataFetcher fetcher = copiedSet.getCloneSets().getDataFetcher();
 				
-				setWrapper = new CloneInformationExtractor().extractCounterRelationalDifferencesOfCloneSet(setWrapper);	
+				//setWrapper = new CloneInformationExtractor().extractCounterRelationalDifferencesOfCloneSet(setWrapper);	
+				try {
+					setWrapper = new CloneInformationExtractor().extractCounterRelationalDifferencesWithinSyntacticBoundary(setWrapper);
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
 				
 				CloneSet newSet;
 				try {
