@@ -36,6 +36,11 @@ public class MinerUtil {
 
 	public static void serialize(Object obj, String fileName) throws Exception {
 		
+		File configurationDir = new File("configurations");
+		if(!configurationDir.exists()){
+			configurationDir.mkdir();
+		}
+		
 		String targetDir = "configurations" + File.separator + Settings.projectName;
 		File dir = new File(targetDir);
 		if(!dir.exists()){
