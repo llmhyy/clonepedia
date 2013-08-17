@@ -24,7 +24,7 @@ public class TemplateMethodGroup implements Serializable, Comparable<TemplateMet
 	private static final long serialVersionUID = -652499753497315887L;
 	private TreeSet<Method> methods = new TreeSet<Method>();
 	
-	private HashSet<CloneSet> relatedCloneSets = new HashSet<CloneSet>();
+	private TreeSet<CloneSet> relatedCloneSets = new TreeSet<CloneSet>();
 	private ArrayList<TemplateMethodGroup> containedTMGs = new ArrayList<TemplateMethodGroup>();
 
 	private ArrayList<TemplateMethodGroup> calleeGroup = new ArrayList<TemplateMethodGroup>();
@@ -127,11 +127,11 @@ public class TemplateMethodGroup implements Serializable, Comparable<TemplateMet
 		this.methods = methods;
 	}
 
-	public HashSet<CloneSet> getRelatedCloneSets() {
+	public TreeSet<CloneSet> getRelatedCloneSets() {
 		return relatedCloneSets;
 	}
 
-	public void setRelatedCloneSets(HashSet<CloneSet> relatedCloneSets) {
+	public void setRelatedCloneSets(TreeSet<CloneSet> relatedCloneSets) {
 		this.relatedCloneSets = relatedCloneSets;
 	}
 

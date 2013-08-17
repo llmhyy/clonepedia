@@ -18,7 +18,7 @@ import clonepedia.syntactic.util.abstractor.PathAbstractor;
 import clonepedia.util.MinerUtil;
 import clonepedia.util.Settings;
 
-public class CloneSet extends HashSet<CloneInstance> implements RegionalOwner, ISemanticClusterable {
+public class CloneSet extends HashSet<CloneInstance> implements RegionalOwner, ISemanticClusterable, Comparable<CloneSet> {
 	private CloneSets sets;
 	//private PathComparator pathComparator;
 	private String cloneSetId;
@@ -82,17 +82,25 @@ public class CloneSet extends HashSet<CloneInstance> implements RegionalOwner, I
 	/*public PathComparator getPathComparator() {
 		return this.sets.getPathComparator();
 	}*/
+	
+	@Override
+	public int compareTo(CloneSet o) {
+		return o.getId().compareTo(this.getId());
+	}
 
+	@Override
 	public boolean equals(Object obj){
 		if(obj instanceof CloneSet)
 			return getId().equals(((CloneSet)obj).getId());
 		return false;
 	}
 	
+	@Override
 	public int hashCode(){
 		return getId().hashCode();
 	}
 	
+	@Override
 	public String toString(){
 		StringBuffer buffer = new StringBuffer();
 		buffer.append(this.cloneSetId + '\n');
@@ -911,4 +919,6 @@ public class CloneSet extends HashSet<CloneInstance> implements RegionalOwner, I
 		
 		return false;
 	}
+
+	
 }
