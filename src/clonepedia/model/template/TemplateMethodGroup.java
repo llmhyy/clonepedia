@@ -216,7 +216,7 @@ public class TemplateMethodGroup implements Serializable, Comparable<TemplateMet
 			ComplexType type = m.getOwner(); 
 			types.add(type);
 			
-			for(ComplexType superType: type.getParents()){
+			for(ComplexType superType: type.getAllParents()){
 				if(!types.contains(superType)){
 					types.add(superType);
 				}

@@ -216,11 +216,18 @@ public class Interface extends VarType implements ComplexType{
 	}
 	
 	@Override
-	public HashSet<ComplexType> getParents() {
+	public HashSet<ComplexType> getDirectParents() {
 		HashSet<ComplexType> parents = new HashSet<ComplexType>();
 		for(Interface interf: this.superInterfaces){
 			parents.add(interf);
 		}
+		
+		return parents;
+	}
+
+	@Override
+	public HashSet<ComplexType> getAllParents() {
+		HashSet<ComplexType> parents = getDirectParents();
 		
 		collectParents(parents);
 		
@@ -234,7 +241,7 @@ public class Interface extends VarType implements ComplexType{
 		}
 		else{
 			for(ComplexType type: parents){
-				parents.addAll(type.getParents());
+				parents.addAll(type.getAllParents());
 			}
 		}
 	}

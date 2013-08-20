@@ -37,6 +37,8 @@ public interface ComplexType extends StructuralProgrammingElement{
 	
 	public abstract void addDistinctMethod(Method method);
 	
-	public abstract HashSet<ComplexType> getParents();
+	public abstract HashSet<ComplexType> getAllParents();
+	
+	public abstract HashSet<ComplexType> getDirectParents();
 
 }

@@ -77,8 +77,8 @@ public class JavaMetricComputingUtil {
 					return maxScore;
 				}
 				
-				HashSet<ComplexType> parents1 = convertVarTypeToComplexType(varType1).getParents();
-				HashSet<ComplexType> parents2 = convertVarTypeToComplexType(varType2).getParents();
+				HashSet<ComplexType> parents1 = convertVarTypeToComplexType(varType1).getAllParents();
+				HashSet<ComplexType> parents2 = convertVarTypeToComplexType(varType2).getAllParents();
 
 				ArrayList<String> typeStringList1 = convertTypeToString(parents1);
 				ArrayList<String> typeStringList2 = convertTypeToString(parents2);
@@ -90,8 +90,8 @@ public class JavaMetricComputingUtil {
 			if((varType1 instanceof clonepedia.model.ontology.Class && varType2 instanceof Interface) ||
 					(varType1 instanceof Interface && varType2 instanceof clonepedia.model.ontology.Class)){
 				
-				HashSet<ComplexType> parents1 = convertVarTypeToComplexType(varType1).getParents();
-				HashSet<ComplexType> parents2 = convertVarTypeToComplexType(varType2).getParents();
+				HashSet<ComplexType> parents1 = convertVarTypeToComplexType(varType1).getAllParents();
+				HashSet<ComplexType> parents2 = convertVarTypeToComplexType(varType2).getAllParents();
 
 				if(varType1 instanceof Interface){
 					parents1.add((Interface)varType1);

@@ -263,9 +263,9 @@ public class Class extends VarType implements ComplexType{
 		}
 		this.methods.add(method);
 	}
-
+	
 	@Override
-	public HashSet<ComplexType> getParents() {
+	public HashSet<ComplexType> getDirectParents() {
 		HashSet<ComplexType> parents = new HashSet<ComplexType>();
 		for(Interface interf: this.getImplementedInterfaces()){
 			parents.add(interf);
@@ -275,12 +275,17 @@ public class Class extends VarType implements ComplexType{
 			parents.add(superClass);			
 		}
 		
+		return parents;
+	}
+
+	@Override
+	public HashSet<ComplexType> getAllParents() {
+		HashSet<ComplexType> parents = getDirectParents();
+		
 		collectParents(parents);
 		
 		return parents;
 	}
-	
-	
 	
 	private void collectParents(HashSet<ComplexType> parents){
 		
@@ -290,7 +295,7 @@ public class Class extends VarType implements ComplexType{
 		else{
 			ArrayList<HashSet<ComplexType>> setList = new ArrayList<HashSet<ComplexType>>();
 			for(ComplexType type: parents){
-				HashSet<ComplexType> newParents = type.getParents();
+				HashSet<ComplexType> newParents = type.getAllParents();
 				setList.add(newParents);
 			}
 			
@@ -299,5 +304,7 @@ public class Class extends VarType implements ComplexType{
 			}
 		}
 	}
+
+	
 	
 }
