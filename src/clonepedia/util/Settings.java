@@ -89,7 +89,12 @@ public class Settings {
 	//======================================================================
 	public static double thresholdDistanceForTMGFilteringAndSplitting = 0.4d;
 	public static double thresholdDistanceForTMGLocationClustering = 0.5d;
+	public static double thresholdDistanceForDeclaringClassClustering = 0.7d;
 	
 	//======================================================================
 	public static int templateMethodGroupCallingStrength = 3;
+	
+	//======================================================================
+	public static double thresholdSimilarityForDecidingAbstractedClass = 0.6d;
+	public static double thresholdSimilarityForDecidingAbstractedInterface = 0.6d;
 }

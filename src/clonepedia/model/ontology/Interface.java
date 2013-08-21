@@ -245,4 +245,9 @@ public class Interface extends VarType implements ComplexType{
 			}
 		}
 	}
+	
+	@Override
+	public void setMerge(boolean isMerged) {
+		this.isMerged = isMerged;
+	}
 }

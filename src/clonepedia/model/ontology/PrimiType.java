@@ -8,6 +8,8 @@ public class PrimiType extends VarType implements ProgrammingElement{
 	 * 
 	 */
 	private static final long serialVersionUID = -3176680308112333471L;
+	
+	private boolean isMerged = false;
 
 	public PrimiType(String typeName) {
 		this.fullName = typeName;
@@ -57,7 +59,11 @@ public class PrimiType extends VarType implements ProgrammingElement{
 	@Override
 	public boolean isMerged() {
 		// TODO Auto-generated method stub
-		return false;
+		return this.isMerged;
 	}
 	
+	@Override
+	public void setMerge(boolean isMerged) {
+		this.isMerged = isMerged;
+	}
 }

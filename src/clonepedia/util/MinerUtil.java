@@ -21,6 +21,9 @@ import clonepedia.util.BoolComparator;
 
 public class MinerUtil {
 
+	public final static int CamelSplitting = 0;
+	public final static int DotSplitting = 1;
+	
 	public static void logMessage(String log, String fileName) {
 		try {
 			// Create file
@@ -293,7 +296,7 @@ public class MinerUtil {
 	}
 
 	public static String[] splitCamelString(String s) {
-		return s.split("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])|([\\*])");
+		return s.split("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])");
 	}
 	
 	public static String convertCharacterArrayToString(Character[] array){
@@ -342,5 +345,47 @@ public class MinerUtil {
 		word = word.replace("^", "\\^");
 		
 		return word;
+	}
+	
+	public static String generateAbstractString(ArrayList<String> stringList, int splittingStyle){
+		String abstractName = stringList.get(0);
+		
+		for(int i=1; i<stringList.size(); i++){
+			
+			String[] abstractNameWords = splitString(splittingStyle, abstractName);
+			String[] specialNameWords = splitString(splittingStyle, stringList.get(i));
+			
+			Object[] commonWords = MinerUtil.generateAbstractCommonNodeList(specialNameWords, 
+					abstractNameWords, new DefaultComparator());
+			
+			String separator = "";
+			if(splittingStyle == DotSplitting){
+				separator = ".";
+			}
+			
+			
+			String abString = "";
+			for(Object word: commonWords){
+				abString += word.toString() + separator;
+			}
+			
+			if(splittingStyle != CamelSplitting){
+				abString = abString.substring(0, abString.length()-1);
+			}
+			
+			abstractName = abString;
+		}
+		
+		return abstractName;
+	}
+	
+	private static String[] splitString(int splittingStype, String string){
+		if(splittingStype == CamelSplitting){
+			return splitCamelString(string);
+		}
+		else if(splittingStype == DotSplitting){
+			return string.split("\\.");
+		}
+		return null;
 	}
 }

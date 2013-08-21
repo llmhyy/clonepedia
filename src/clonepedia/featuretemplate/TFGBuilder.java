@@ -34,7 +34,8 @@ public class TFGBuilder {
 		
 		TemplateMethodGroup[] groupList = this.methodGroupList.toArray(new TemplateMethodGroup[0]);
 		
-		HierarchyClusterAlgorithm algorithm = new HierarchyClusterAlgorithm(groupList, Settings.thresholdDistanceForTMGLocationClustering);
+		HierarchyClusterAlgorithm algorithm = new HierarchyClusterAlgorithm(groupList, 
+				Settings.thresholdDistanceForTMGLocationClustering, HierarchyClusterAlgorithm.SingleLinkage);
 		try {
 			ArrayList<NormalCluster> clusters = algorithm.doClustering();
 			

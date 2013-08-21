@@ -6,12 +6,39 @@ import java.util.HashSet;
 import clonepedia.model.ontology.Class;
 import clonepedia.model.ontology.ComplexType;
 import clonepedia.model.ontology.Interface;
+import clonepedia.model.ontology.Method;
 import clonepedia.model.ontology.VarType;
+import clonepedia.model.template.TemplateMethodGroup;
 import clonepedia.util.MinerUtil;
 
 public class JavaMetricComputingUtil {
 	
-	public static final double maxScore = 1;
+	public static final double maxSimilarScore = 1;
+	
+	public static double compareClassContent(Class class1, Class class2){
+		
+		if(class1.getMethods().size() == 0 && class2.getMethods().size() == 0){
+			return maxSimilarScore;
+		}
+		
+		double count = 0;
+		
+		for(Method method: class1.getMethods()){
+			ArrayList<TemplateMethodGroup> tmgList = method.getTemplateGroupList();
+			
+			label:
+			for(TemplateMethodGroup tmg: tmgList){
+				for(Method candidateMethod: tmg.getMethods()){
+					if(candidateMethod.getOwner().getFullName().equals(class2.getFullName())){
+						count++;
+						break label;
+					}
+				}
+			}
+		}
+		
+		return 2*count/(class1.getMethods().size() + class2.getMethods().size());
+	}
 	
 	public static double comparePackageLocation(String package1, String package2){
 		String[] packs1 = package1.split("\\.");
@@ -39,7 +66,7 @@ public class JavaMetricComputingUtil {
 		 * This means constructor
 		 */
 		if(null == varType1 && null == varType2){
-			return maxScore;
+			return maxSimilarScore;
 		}
 		else if(!(varType1 != null && varType2 != null)){
 			return 0;
@@ -50,10 +77,10 @@ public class JavaMetricComputingUtil {
 	
 	public static double compareParameterList(ArrayList<String> paramList1, ArrayList<String> paramList2){
 		if(paramList1.size() == 0 && paramList2.size() == 0){
-			return maxScore;
+			return maxSimilarScore;
 		}
 		else
-			return compareList(paramList1, paramList2);
+			return compareStringList(paramList1, paramList2);
 	}
 	
 	private static ArrayList<String> convert(String[] strList){
@@ -69,12 +96,12 @@ public class JavaMetricComputingUtil {
 		if(varType1.getConcreteType() == varType2.getConcreteType()){
 			if(varType1.getConcreteType() != VarType.ClassType && 
 					varType1.getConcreteType() != VarType.InterfaceType){
-				return (varType1.getFullName().equals(varType2.getFullName()))? maxScore : 0;
+				return (varType1.getFullName().equals(varType2.getFullName()))? maxSimilarScore : 0;
 			}
 			else{
 				
 				if(varType1.getFullName().equals(varType2.getFullName())){
-					return maxScore;
+					return maxSimilarScore;
 				}
 				
 				HashSet<ComplexType> parents1 = convertVarTypeToComplexType(varType1).getAllParents();
@@ -83,7 +110,7 @@ public class JavaMetricComputingUtil {
 				ArrayList<String> typeStringList1 = convertTypeToString(parents1);
 				ArrayList<String> typeStringList2 = convertTypeToString(parents2);
 				
-				return compareList(typeStringList1, typeStringList2);
+				return compareStringList(typeStringList1, typeStringList2);
 			}
 		}
 		else{
@@ -103,7 +130,7 @@ public class JavaMetricComputingUtil {
 				ArrayList<String> typeStringList1 = convertTypeToString(parents1);
 				ArrayList<String> typeStringList2 = convertTypeToString(parents2);
 				
-				return compareList(typeStringList1, typeStringList2);
+				return compareStringList(typeStringList1, typeStringList2);
 			}
 		}
 		
@@ -132,7 +159,7 @@ public class JavaMetricComputingUtil {
 	 * @param list2
 	 * @return
 	 */
-	public static double compareList(ArrayList<String> list1, ArrayList<String> list2){
+	public static double compareStringList(ArrayList<String> list1, ArrayList<String> list2){
 		
 		if(list1.size() == 0 && list2.size() == 0){
 			return 0;

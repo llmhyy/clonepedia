@@ -15,13 +15,19 @@ import clonepedia.util.Settings;
 
 public class HierarchyClusterAlgorithm {
 
+	public final static int SingleLinkage = 0;
+	public final static int CompleteLinkage = 1;
+	public final static int AverageLinkage = 2;
+	
 	private double matrix[][];
 	private NormalCluster[] clusters;
 	private double threshold;
+	private int clusteringType = SingleLinkage;
 
-	public HierarchyClusterAlgorithm(IClusterable[] elements, double threshold) {
+	public HierarchyClusterAlgorithm(IClusterable[] elements, double threshold, int clusteringType) {
 		
 		this.setThreshold(threshold);
+		this.setClusteringType(clusteringType);
 		
 		int size = elements.length;
 
@@ -56,7 +62,15 @@ public class HierarchyClusterAlgorithm {
 
 			clusters[sd.j] = null;
 			//recomputeMatrixWithSimpilfiedAverageLinkage(matrix, sd.i, sd.j);
-			recomputeMatrixWithSingleLinkage(matrix, sd.i, sd.j);
+			switch(this.clusteringType){
+			case SingleLinkage:
+				recomputeMatrixWithSingleLinkage(matrix, sd.i, sd.j);
+			case CompleteLinkage:
+				recomputeMatrixWithCompleteLinkage(matrix, sd.i, sd.j);
+			case AverageLinkage:
+				recomputeMatrixWithSimpilfiedAverageLinkage(matrix, sd.i, sd.j);	
+			}
+			
 			nullifyOneClusterInMatrix(matrix, sd.j);
 
 			sd = findShortestDistanceInMatrix(matrix);
@@ -291,6 +305,14 @@ public class HierarchyClusterAlgorithm {
 
 	public void setThreshold(double threshold) {
 		this.threshold = threshold;
+	}
+
+	public int getClusteringType() {
+		return clusteringType;
+	}
+
+	public void setClusteringType(int clusteringType) {
+		this.clusteringType = clusteringType;
 	}
 
 	/*private void attachPatternLabels(ArrayList<NormalCluster> list)

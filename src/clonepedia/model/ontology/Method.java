@@ -310,5 +310,8 @@ public class Method implements MergeableSimpleOntologicalElement, IClusterable, 
 			this.templateGroupList.add(group);
 	}
 
-	
+	@Override
+	public void setMerge(boolean isMerged) {
+		this.isMerged = isMerged;
+	}
 }

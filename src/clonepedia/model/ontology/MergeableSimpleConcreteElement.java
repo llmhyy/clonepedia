@@ -60,4 +60,9 @@ public class MergeableSimpleConcreteElement implements MergeableSimpleOntologica
 	public ArrayList<ProgrammingElement> getSupportingElements(){
 		return this.supportingElements;
 	}
+	
+	@Override
+	public void setMerge(boolean isMerged) {
+		this.isMerged = isMerged;
+	}
 }

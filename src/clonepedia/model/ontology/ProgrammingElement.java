@@ -12,4 +12,6 @@ public interface ProgrammingElement extends OntologicalElement{
 	public ArrayList<ProgrammingElement> getSupportingElements();
 	
 	public boolean isMerged();
+	
+	public void setMerge(boolean isMerged);
 }

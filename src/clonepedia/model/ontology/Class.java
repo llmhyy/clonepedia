@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-public class Class extends VarType implements ComplexType{
+import clonepedia.java.util.JavaMetricComputingUtil;
+import clonepedia.model.cluster.IClusterable;
+
+public class Class extends VarType implements ComplexType, IClusterable{
 	/**
 	 * 
 	 */
@@ -305,6 +308,30 @@ public class Class extends VarType implements ComplexType{
 		}
 	}
 
-	
+	@Override
+	public double computeDistanceWith(IClusterable clusterable) {
+		if(clusterable instanceof Class){
+			
+			
+			Class toBeComparedClass = (Class)clusterable;
+			if(this.getFullName().contains("Main") && toBeComparedClass.getFullName().contains("Main")){
+				System.out.print("");
+			}
+			
+			double typeScore = JavaMetricComputingUtil.compareClassLocation(toBeComparedClass, this);
+			double contentScore = JavaMetricComputingUtil.compareClassContent(toBeComparedClass, this);
+			
+			//System.out.print("");
+			
+			return 1 - (3*typeScore + 7*contentScore)/10;
+		}
+		
+		return 1.0;
+	}
+
+	@Override
+	public void setMerge(boolean isMerged) {
+		this.isMerged = isMerged;
+	}
 	
 }

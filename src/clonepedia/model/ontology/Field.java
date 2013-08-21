@@ -129,5 +129,8 @@ public class Field implements MergeableSimpleOntologicalElement{
 		return this.supportingElements;
 	}
 	
-	
+	@Override
+	public void setMerge(boolean isMerged) {
+		this.isMerged = isMerged;
+	}
 }

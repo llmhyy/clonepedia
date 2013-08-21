@@ -339,7 +339,8 @@ public class TMGBuilder {
 			elements[count++] = m;
 		}
 
-		HierarchyClusterAlgorithm algorithm = new HierarchyClusterAlgorithm(elements, Settings.thresholdDistanceForTMGLocationClustering);
+		HierarchyClusterAlgorithm algorithm = new HierarchyClusterAlgorithm(elements, 
+				Settings.thresholdDistanceForTMGLocationClustering, HierarchyClusterAlgorithm.SingleLinkage);
 		try {
 			ArrayList<NormalCluster> clusters = algorithm.doClustering();
 

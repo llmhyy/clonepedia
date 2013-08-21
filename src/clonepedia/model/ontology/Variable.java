@@ -150,4 +150,9 @@ public class Variable implements MergeableSimpleOntologicalElement{
 	public ArrayList<ProgrammingElement> getSupportingElements(){
 		return this.supportingElements;
 	}
+	
+	@Override
+	public void setMerge(boolean isMerged) {
+		this.isMerged = isMerged;
+	}
 }
