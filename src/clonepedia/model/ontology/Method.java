@@ -153,6 +153,10 @@ public class Method implements MergeableSimpleOntologicalElement, IClusterable, 
 	public String getMethodName() {
 		return methodName;
 	}
+	
+	public void setMethodName(String methodName){
+		this.methodName = methodName;
+	}
 
 	public void setMethodId(String methodId) {
 		this.methodId = methodId;
@@ -166,6 +170,15 @@ public class Method implements MergeableSimpleOntologicalElement, IClusterable, 
 		this.parameters = parameters;
 	}
 
+	public ArrayList<VarType> getParameterTypes(){
+		ArrayList<VarType> types = new ArrayList<VarType>();
+		for(Variable v: this.getParameters()){
+			types.add(v.getVarType());
+		}
+		
+		return types;
+	}
+	
 	@Override
 	public OntologicalElementType getOntologicalType() {
 		return OntologicalElementType.Method;

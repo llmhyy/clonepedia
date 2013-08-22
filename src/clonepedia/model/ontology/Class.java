@@ -242,6 +242,10 @@ public class Class extends VarType implements ComplexType, IClusterable{
 		return this.isMerged;
 	}
 	
+	public boolean isInnerClass(){
+		return this.getOuterClass() != null;
+	}
+	
 	@Override
 	public ArrayList<ProgrammingElement> getSupportingElements(){
 		return this.supportingElements;

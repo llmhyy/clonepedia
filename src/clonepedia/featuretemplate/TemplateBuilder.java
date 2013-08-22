@@ -3,6 +3,8 @@ package clonepedia.featuretemplate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.TreeSet;
 
 import clonepedia.model.cluster.IClusterable;
 import clonepedia.model.cluster.NormalCluster;
@@ -12,11 +14,12 @@ import clonepedia.model.ontology.ComplexType;
 import clonepedia.model.ontology.Interface;
 import clonepedia.model.ontology.Method;
 import clonepedia.model.ontology.ProgrammingElement;
+import clonepedia.model.ontology.VarType;
+import clonepedia.model.ontology.Variable;
 import clonepedia.model.template.TFGList;
 import clonepedia.model.template.Template;
 import clonepedia.model.template.TemplateFeatureGroup;
 import clonepedia.model.template.TemplateMethodGroup;
-import clonepedia.util.DefaultComparator;
 import clonepedia.util.MinerUtil;
 import clonepedia.util.Settings;
 
@@ -24,6 +27,8 @@ public class TemplateBuilder {
 	private TFGList tfgList;
 	
 	private ArrayList<Class> abstractClassList = new ArrayList<Class>();
+	
+	private ArrayList<Method> abstractMethodList = new ArrayList<Method>();
 	
 	public TemplateBuilder(TFGList tfgList){
 		this.tfgList = tfgList;
@@ -35,9 +40,99 @@ public class TemplateBuilder {
 		
 		abstractClasses();
 		
-		return null;
+		buildAbstractInnerOuterClassRelation();
+		
+		buildAbstractCallRelation();
+		
+		return new Template(abstractClassList, abstractMethodList);
 	}
 	
+	
+	
+	private void buildAbstractInnerOuterClassRelation() {
+
+		Class[] classList = abstractClassList.toArray(new Class[0]);
+		for(int i=0; i<classList.length; i++){
+			if(isAbstractClassContainingInnerClass(classList[i])){
+				for(int j=0; j<classList.length; j++){
+					if(i != j){
+						if(couldAnAbstractClassBeConsideredAsInnerClassOfAnother(classList[i], classList[j])){
+							classList[i].setOuterClass(classList[j]);
+						}
+					}
+				}
+			}
+		}
+		
+	}
+	
+	private boolean couldAnAbstractClassBeConsideredAsInnerClassOfAnother(Class innerAbClass, Class outerAbClass){
+		
+		int count = 0;
+		for(ProgrammingElement innerElement: innerAbClass.getSupportingElements()){
+			Class innerClass = (Class)innerElement;
+			Class outerClass = innerClass.getOuterClass();
+			
+			if(outerAbClass.getSupportingElements().contains(outerClass)){
+				count++;
+			}
+		}
+		
+		return count >= Settings.innerOuterClassRelationAbstractionStrength;
+	}
+	
+	private boolean isAbstractClassContainingInnerClass(Class abstractClass){
+		for(ProgrammingElement element: abstractClass.getSupportingElements()){
+			Class clazz = (Class)element;
+			if(clazz.isInnerClass())return true;
+		}
+		return false;
+	}
+
+	private void buildAbstractCallRelation() {
+		for(int i=0; i<abstractMethodList.size(); i++){
+			for(int j=0; j<abstractMethodList.size(); j++){
+				if(i != j && existValidatedCallingRelations(abstractMethodList.get(i), abstractMethodList.get(j))){
+					abstractMethodList.get(i).addCalleeMethod(abstractMethodList.get(j));
+					abstractMethodList.get(j).addCallerMethod(abstractMethodList.get(i));
+				}
+			}
+		}
+		
+	}
+	
+	/**
+	 * this method is a clone of TMGBuidler#existValidatedCallingRelations, ready to be refactored
+	 * @param callerMethod
+	 * @param calleeMethod
+	 * @return
+	 */
+	private boolean existValidatedCallingRelations(Method callerAbstractMethod, Method calleeAbstractMethod){
+		
+		int count = 0;
+		
+		TreeSet<Method> examinedMethods = new TreeSet<Method>();
+		for(ProgrammingElement callerEle: callerAbstractMethod.getSupportingElements()){
+			Method methodInCallerGroup = (Method)callerEle;
+			if(examinedMethods.contains(methodInCallerGroup)) continue;
+			
+			for(ProgrammingElement calleeEle: methodInCallerGroup.getCalleeMethod()){
+				Method calleeMethod = (Method)calleeEle;
+				if(examinedMethods.contains(calleeMethod)) continue;
+				
+				if(calleeAbstractMethod.getSupportingElements().contains(calleeMethod)){
+					examinedMethods.add(methodInCallerGroup);
+					examinedMethods.add(calleeMethod);
+					
+					count++;
+					break;
+				}
+			}
+		}
+		
+		return count >= Settings.templateMethodGroupCallingStrength;
+	}
+
 	/**
 	 * list all the classes declaring methods in TMGs and cluster them to make sure
 	 * that only similar classes can take part in abstraction.
@@ -65,8 +160,8 @@ public class TemplateBuilder {
 			clusterList = algorithm.doClustering();
 			for(NormalCluster cluster: clusterList){
 				Class abstractedClass = new Class("", null, "");
+				abstractedClass.setMerge(true);
 				if(cluster.size() > 1){
-					abstractedClass.setMerge(true);
 					for(IClusterable clusterable: cluster){
 						Class declaringClass = (Class)clusterable;
 						
@@ -76,6 +171,7 @@ public class TemplateBuilder {
 				}
 				else{
 					abstractedClass = (Class)cluster.get(0);
+					abstractedClass.getSupportingElements().add(abstractedClass);
 				}
 				this.abstractClassList.add(abstractedClass);
 			}
@@ -87,7 +183,7 @@ public class TemplateBuilder {
 	
 	private void abstractClasses(){
 		for(Class abstractedClass: this.abstractClassList){
-			if(abstractedClass.isMerged()){
+			if(abstractedClass.getSupportingElements().size() > 1){
 				abstractedClass.setFullName(mergeName(abstractedClass));
 				mergeSuperType(abstractedClass);
 				//mergeInterfaces(abstractedClass);
@@ -97,8 +193,110 @@ public class TemplateBuilder {
 	}
 
 	private void mergeMethods(Class abstractedClass) {
-		// TODO Auto-generated method stub
 		
+		for(TemplateFeatureGroup tfg: tfgList){
+			for(TemplateMethodGroup tmg: tfg.getTemplateMethodGroupList()){
+				ArrayList<Method> relatedMethodList = getRelatedMethodFromTMGToAbstractClass(tmg, abstractedClass);
+				if(relatedMethodList.size() > 1){
+					Method abstractedMethod = abstractMethod(relatedMethodList);
+					
+					abstractedClass.getMethods().add(abstractedMethod);
+					abstractedMethod.setOwner(abstractedClass);
+					
+					this.abstractMethodList.add(abstractedMethod);
+				}
+			}
+		}
+		
+	}
+	
+	private Method abstractMethod(ArrayList<Method> relatedMethodList) {
+		Method abstractedMethod = new Method("");
+		for(Method m: relatedMethodList){
+			abstractedMethod.getSupportingElements().add(m);
+		}
+		
+		abstractedMethod.setMethodName(mergeName(abstractedMethod));
+		
+		abstractReturnTypeForMethod(abstractedMethod);
+		
+		abstractParametersForMethod(abstractedMethod);
+		
+		return abstractedMethod;
+	}
+	
+	/**
+	 * compute intersection (deal with it in simplified way)
+	 * @param abstractedMethod
+	 */
+	private void abstractParametersForMethod(Method abstractedMethod) {
+		
+		ProgrammingElement firstElement = abstractedMethod.getSupportingElements().get(0);
+		Method firstMethod = (Method)firstElement;
+		
+		ArrayList<Variable> paramList = new ArrayList<Variable>();
+		paramList.addAll(firstMethod.getParameters());
+		
+		for(int i=1; i<abstractedMethod.getSupportingElements().size(); i++){
+			Method m = (Method)(abstractedMethod.getSupportingElements().get(i)); 
+			
+			Iterator<Variable> iterator = paramList.iterator();
+			while(iterator.hasNext()){
+				Variable variable = iterator.next();
+				if(!m.getParameterTypes().contains(variable.getVariableType())){
+					iterator.remove();
+				}
+			}
+		}
+		
+		abstractedMethod.setParameters(paramList);
+	}
+
+	/**
+	 * take the most frequent return type as the abstracted return type
+	 * @param abstractedMethod
+	 */
+	private void abstractReturnTypeForMethod(Method abstractedMethod){
+		HashMap<VarType, Integer> returnTypeMap = new HashMap<VarType, Integer>();
+		for(ProgrammingElement element: abstractedMethod.getSupportingElements()){
+			Method m = (Method)element; 
+			
+			VarType varType = m.getReturnType();
+			if(varType != null){
+				Integer frequency = returnTypeMap.get(varType);
+				if(null == frequency){
+					returnTypeMap.put(varType, 1);
+				}
+				else{
+					returnTypeMap.put(varType, ++frequency);
+				}
+			}
+		}
+		
+		VarType abstractedReturnType = null;
+		int highestFrequency = 0;
+		for(VarType type: returnTypeMap.keySet()){
+			Integer frequency = returnTypeMap.get(type);
+			if(frequency > highestFrequency){
+				highestFrequency = frequency;
+				abstractedReturnType = type;
+			}
+		}
+		
+		abstractedMethod.setReturnType(abstractedReturnType);
+	}
+
+	private ArrayList<Method> getRelatedMethodFromTMGToAbstractClass(TemplateMethodGroup tmg, Class abstractedClass){
+		ArrayList<Method> relatedMethodList = new ArrayList<Method>();
+		
+		for(Method m: tmg.getMethods()){
+			ComplexType type = m.getOwner();
+			if(abstractedClass.getSupportingElements().contains(type)){
+				relatedMethodList.add(m);
+			}
+		}
+		
+		return relatedMethodList;
 	}
 
 	/**
@@ -178,7 +376,10 @@ public class TemplateBuilder {
 		
 		String abstractName = MinerUtil.generateAbstractString(nameStringList, MinerUtil.CamelSplitting);
 		
-		return packageString + "." + abstractName;
+		if(packageString.length() != 0)
+			return packageString + "." + abstractName;
+		else
+			return abstractName;
 	}
 	
 	

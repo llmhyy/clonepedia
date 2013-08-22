@@ -93,6 +93,7 @@ public class Settings {
 	
 	//======================================================================
 	public static int templateMethodGroupCallingStrength = 3;
+	public static int innerOuterClassRelationAbstractionStrength = 2;
 	
 	//======================================================================
 	public static double thresholdSimilarityForDecidingAbstractedClass = 0.6d;

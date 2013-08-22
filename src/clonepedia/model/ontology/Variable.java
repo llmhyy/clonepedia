@@ -42,7 +42,7 @@ public class Variable implements MergeableSimpleOntologicalElement{
 		this.useType = useType;
 		this.owner = owner;
 	}
-
+	
 	@Override
 	public boolean equals(OntologicalElement element) {
 		if(element instanceof Variable){
