@@ -44,11 +44,82 @@ public class TemplateBuilder {
 		
 		buildAbstractCallRelation();
 		
+		sanitize();
+		
 		return new Template(abstractClassList, abstractMethodList);
 	}
 	
+	private void sanitize(){
+		Iterator<Class> iterator = abstractClassList.iterator();
+		while(iterator.hasNext()){
+			Class clazz = iterator.next();
+			if(clazz.getMethods().size() == 0 && clazz.getInnerClassList().size() == 0){
+				iterator.remove();
+			}
+		}
+	}
 	
-	
+	/**
+	 * list all the classes declaring methods in TMGs and cluster them to make sure
+	 * that only similar classes can take part in abstraction.
+	 */
+	private void init(){
+		HashSet<Class> declaringClassSet = new HashSet<Class>();
+		for(TemplateFeatureGroup tfg: tfgList){
+			for(TemplateMethodGroup tmg: tfg.getTemplateMethodGroupList()){
+				for(Method method: tmg.getMethods()){
+					ComplexType owner = method.getOwner();
+					if(owner.isClass()){
+						Class declaringClass = (Class)owner;
+						declaringClassSet.add(declaringClass);
+					}
+				}
+			}
+		}
+		
+		Class[] declaringClassArray = declaringClassSet.toArray(new Class[0]);
+		HierarchyClusterAlgorithm algorithm = new HierarchyClusterAlgorithm(declaringClassArray, 
+				/*0.7*/Settings.thresholdDistanceForDeclaringClassClustering, HierarchyClusterAlgorithm.CompleteLinkage);
+		
+		ArrayList<NormalCluster> clusterList;
+		try {
+			clusterList = algorithm.doClustering();
+			for(NormalCluster cluster: clusterList){
+				Class abstractedClass = new Class("", null, "");
+				abstractedClass.setMerge(true);
+				if(cluster.size() > 1){
+					for(IClusterable clusterable: cluster){
+						Class declaringClass = (Class)clusterable;
+						
+						abstractedClass.setProject(declaringClass.getProject());
+						abstractedClass.getSupportingElements().add(declaringClass);
+					}					
+				}
+				else{
+					Class instanceClass = (Class)cluster.get(0); 
+					abstractedClass.setFullName(instanceClass.getFullName());
+					abstractedClass.setProject(instanceClass.getProject());
+					abstractedClass.getSupportingElements().add(abstractedClass);
+				}
+				this.abstractClassList.add(abstractedClass);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+		
+	}
+
+	private void abstractClasses(){
+		for(Class abstractedClass: this.abstractClassList){
+			if(abstractedClass.getSupportingElements().size() > 1){
+				abstractedClass.setFullName(mergeName(abstractedClass));
+				mergeSuperType(abstractedClass);
+				//mergeInterfaces(abstractedClass);
+				mergeMethods(abstractedClass);				
+			}
+		}
+	}
+
 	private void buildAbstractInnerOuterClassRelation() {
 
 		Class[] classList = abstractClassList.toArray(new Class[0]);
@@ -132,65 +203,6 @@ public class TemplateBuilder {
 		}
 		
 		return count >= Settings.templateMethodGroupCallingStrength;
-	}
-
-	/**
-	 * list all the classes declaring methods in TMGs and cluster them to make sure
-	 * that only similar classes can take part in abstraction.
-	 */
-	private void init(){
-		HashSet<Class> declaringClassSet = new HashSet<Class>();
-		for(TemplateFeatureGroup tfg: tfgList){
-			for(TemplateMethodGroup tmg: tfg.getTemplateMethodGroupList()){
-				for(Method method: tmg.getMethods()){
-					ComplexType owner = method.getOwner();
-					if(owner.isClass()){
-						Class declaringClass = (Class)owner;
-						declaringClassSet.add(declaringClass);
-					}
-				}
-			}
-		}
-		
-		Class[] declaringClassArray = declaringClassSet.toArray(new Class[0]);
-		HierarchyClusterAlgorithm algorithm = new HierarchyClusterAlgorithm(declaringClassArray, 
-				/*0.7*/Settings.thresholdDistanceForDeclaringClassClustering, HierarchyClusterAlgorithm.CompleteLinkage);
-		
-		ArrayList<NormalCluster> clusterList;
-		try {
-			clusterList = algorithm.doClustering();
-			for(NormalCluster cluster: clusterList){
-				Class abstractedClass = new Class("", null, "");
-				abstractedClass.setMerge(true);
-				if(cluster.size() > 1){
-					for(IClusterable clusterable: cluster){
-						Class declaringClass = (Class)clusterable;
-						
-						abstractedClass.setProject(declaringClass.getProject());
-						abstractedClass.getSupportingElements().add(declaringClass);
-					}					
-				}
-				else{
-					abstractedClass = (Class)cluster.get(0);
-					abstractedClass.getSupportingElements().add(abstractedClass);
-				}
-				this.abstractClassList.add(abstractedClass);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} 
-		
-	}
-	
-	private void abstractClasses(){
-		for(Class abstractedClass: this.abstractClassList){
-			if(abstractedClass.getSupportingElements().size() > 1){
-				abstractedClass.setFullName(mergeName(abstractedClass));
-				mergeSuperType(abstractedClass);
-				//mergeInterfaces(abstractedClass);
-				mergeMethods(abstractedClass);				
-			}
-		}
 	}
 
 	private void mergeMethods(Class abstractedClass) {
