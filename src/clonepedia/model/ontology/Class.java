@@ -59,7 +59,14 @@ public class Class extends VarType implements ComplexType, IClusterable{
 	public boolean equals(Object obj){
 		if(obj instanceof Class){
 			Class referClass = (Class)obj;
-			return referClass.getFullName().equals(this.getFullName());
+			if(referClass.isMerged == this.isMerged){				
+				if(isMerged){
+					return referClass == this;
+				}
+				else{
+					return referClass.getFullName().equals(this.getFullName());				
+				}
+			}
 		}
 		return false;
 	}
