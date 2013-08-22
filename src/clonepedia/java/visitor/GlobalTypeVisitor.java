@@ -146,6 +146,7 @@ public class GlobalTypeVisitor extends ASTVisitor {
 			
 			clonepedia.model.ontology.Class outerClass = fetcher.getTheExistingClassorCreateOne(outerClassFullName, project);
 			clas.setOuterClass(outerClass);
+			outerClass.getInnerClassList().add(clas);
 			
 		} 
 		else {

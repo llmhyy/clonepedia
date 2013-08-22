@@ -58,6 +58,7 @@ public class TemplateBuilder {
 					if(i != j){
 						if(couldAnAbstractClassBeConsideredAsInnerClassOfAnother(classList[i], classList[j])){
 							classList[i].setOuterClass(classList[j]);
+							classList[j].getInnerClassList().add(classList[i]);
 						}
 					}
 				}

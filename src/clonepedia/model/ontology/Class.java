@@ -17,6 +17,7 @@ public class Class extends VarType implements ComplexType, IClusterable{
 	//private String classFullName;
 	private Class superClass;
 	private Class outerClass;
+	private ArrayList<Class> innerClassList = new ArrayList<Class>();
 	private ArrayList<Interface> implementedInterfaces = new ArrayList<Interface>();
 	private ArrayList<Method> methods = new ArrayList<Method>();
 	private ArrayList<Field> fields = new ArrayList<Field>();
@@ -336,6 +337,14 @@ public class Class extends VarType implements ComplexType, IClusterable{
 	@Override
 	public void setMerge(boolean isMerged) {
 		this.isMerged = isMerged;
+	}
+
+	public ArrayList<Class> getInnerClassList() {
+		return innerClassList;
+	}
+
+	public void setInnerClassList(ArrayList<Class> innerClassList) {
+		this.innerClassList = innerClassList;
 	}
 	
 }

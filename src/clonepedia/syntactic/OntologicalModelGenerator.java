@@ -169,6 +169,7 @@ public class OntologicalModelGenerator implements Serializable{
 				
 				clas.setSuperClass(superClass);
 				clas.setOuterClass(outerClass);
+				outerClass.getInnerClassList().add(clas);
 				
 				ArrayList<String> interfaceIds = fetcher.getImplementedInterfaceIds(clas.getId());
 				for(String id: interfaceIds){
