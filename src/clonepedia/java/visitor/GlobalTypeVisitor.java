@@ -3,6 +3,7 @@ package clonepedia.java.visitor;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
@@ -164,6 +165,8 @@ public class GlobalTypeVisitor extends ASTVisitor {
 			Interface interf = (Interface)MinerUtilforJava.transferTypeToComplexType(interfaceBinding, project, compilationUnit, fetcher);
 			clas.addInterface(interf);
 		}
+		
+		clas.setPackageName(compilationUnit.getPackage().getName().getFullyQualifiedName());
 		
 		fetcher.storeClasswithDependency(clas);
 		return clas;

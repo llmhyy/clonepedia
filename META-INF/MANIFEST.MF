@@ -57,4 +57,5 @@ Import-Package: org.eclipse.jdt.ui
 Export-Package: clonepedia.featuretemplate,
  clonepedia.model.ontology,
  clonepedia.model.template,
- clonepedia.util
+ clonepedia.util,
+ clonepedia.wizard

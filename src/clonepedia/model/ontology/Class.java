@@ -15,6 +15,7 @@ public class Class extends VarType implements ComplexType, IClusterable{
 	private String classId;
 	private Project project;
 	//private String classFullName;
+	private String packageName;
 	private Class superClass;
 	private Class outerClass;
 	private ArrayList<Class> innerClassList = new ArrayList<Class>();
@@ -353,5 +354,12 @@ public class Class extends VarType implements ComplexType, IClusterable{
 	public void setInnerClassList(ArrayList<Class> innerClassList) {
 		this.innerClassList = innerClassList;
 	}
-	
+
+	public String getPackageName() {
+		return packageName;
+	}
+
+	public void setPackageName(String packageName) {
+		this.packageName = packageName;
+	}
 }
