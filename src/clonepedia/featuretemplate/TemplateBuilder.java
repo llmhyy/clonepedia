@@ -112,7 +112,8 @@ public class TemplateBuilder {
 	private void abstractClasses(){
 		for(Class abstractedClass: this.abstractClassList){
 			if(abstractedClass.getSupportingElements().size() > 1){
-				abstractedClass.setFullName(mergeName(abstractedClass));
+				mergeName(abstractedClass);
+				
 				mergeSuperType(abstractedClass);
 				//mergeInterfaces(abstractedClass);
 				mergeMethods(abstractedClass);			
@@ -229,7 +230,7 @@ public class TemplateBuilder {
 			abstractedMethod.getSupportingElements().add(m);
 		}
 		
-		abstractedMethod.setMethodName(mergeName(abstractedMethod));
+		mergeName(abstractedMethod);
 		
 		abstractReturnTypeForMethod(abstractedMethod);
 		
@@ -368,7 +369,7 @@ public class TemplateBuilder {
 		}
 	}
 	
-	private String mergeName(ProgrammingElement element){
+	private void mergeName(ProgrammingElement element){
 		ArrayList<ProgrammingElement> elementList = element.getSupportingElements();
 		
 		ArrayList<String> packageStringList = new ArrayList<String>();
@@ -394,10 +395,18 @@ public class TemplateBuilder {
 		
 		String abstractName = MinerUtil.generateAbstractString(nameStringList, MinerUtil.CamelSplitting);
 		
-		if(packageString.length() != 0)
-			return packageString + "." + abstractName;
+		if(packageString.length() != 0){
+			Class clazz = (Class)element;
+			clazz.setPackageName(packageString);
+			clazz.setFullName( packageString + "." + abstractName);
+		}
+		else{
+			Method m = (Method)element;
+			m.setMethodName(abstractName);
+		}
+		/*	return packageString + "." + abstractName;
 		else
-			return abstractName;
+			return abstractName;*/
 	}
 	
 	
