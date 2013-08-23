@@ -296,7 +296,7 @@ public class MinerUtil {
 	}
 
 	public static String[] splitCamelString(String s) {
-		return s.split("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])");
+		return s.split("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])|(?<!^)(?=(\\*)+)");
 	}
 	
 	public static String convertCharacterArrayToString(Character[] array){

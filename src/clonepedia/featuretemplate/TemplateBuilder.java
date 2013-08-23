@@ -115,7 +115,7 @@ public class TemplateBuilder {
 				abstractedClass.setFullName(mergeName(abstractedClass));
 				mergeSuperType(abstractedClass);
 				//mergeInterfaces(abstractedClass);
-				mergeMethods(abstractedClass);				
+				mergeMethods(abstractedClass);			
 			}
 		}
 	}
@@ -374,12 +374,17 @@ public class TemplateBuilder {
 		ArrayList<String> packageStringList = new ArrayList<String>();
 		ArrayList<String> nameStringList = new ArrayList<String>();
 		for(ProgrammingElement ele: elementList){
-			if(element instanceof Class){
-				String classString =  ((Class)ele).getFullName();
-				String packageString = classString.substring(0, classString.lastIndexOf("."));
-				packageStringList.add(packageString);				
+			if(ele instanceof Class){
+				String fullName = ((Class)ele).getFullName();
+				String packageString = ((Class)ele).getPackageName();
+				String classNameString = fullName.substring(packageString.length()+1, fullName.length()) ;
+				
+				packageStringList.add(packageString);
+				nameStringList.add(classNameString);
 			}
-			nameStringList.add(ele.getSimpleElementName());
+			else{
+				nameStringList.add(ele.getSimpleElementName());				
+			}
 		}
 		
 		String packageString = "";
