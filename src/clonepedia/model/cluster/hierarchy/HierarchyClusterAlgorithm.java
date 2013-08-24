@@ -48,6 +48,12 @@ public class HierarchyClusterAlgorithm {
 
 	public ArrayList<NormalCluster> doClustering() throws Exception {
 
+		if(clusters.length < 2){
+			ArrayList<NormalCluster> list = new ArrayList<NormalCluster>();
+			list.add(clusters[0]);
+			return list;
+		}
+		
 		initializeMatrix(matrix, clusters);
 
 		Distance sd = findShortestDistanceInMatrix(matrix);

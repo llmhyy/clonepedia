@@ -15,9 +15,11 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
 import clonepedia.featuretemplate.TFGBuilder;
 import clonepedia.featuretemplate.TMGBuilder;
+import clonepedia.featuretemplate.TemplateBuilder;
 import clonepedia.model.ontology.CloneSets;
 import clonepedia.model.template.TFGList;
 import clonepedia.model.template.TMGList;
+import clonepedia.model.template.Template;
 import clonepedia.model.template.TemplateFeatureGroup;
 import clonepedia.model.template.TemplateMethodGroup;
 import clonepedia.model.template.TotalTFGs;
@@ -54,10 +56,19 @@ public class TemplateGenerationAction implements IWorkbenchWindowActionDelegate 
 				featureBuilder.generateTemplateFeatures();
 				TotalTFGs featureGroups = featureBuilder.getFeatureGroups();
 				
-				ArrayList<ArrayList<TemplateFeatureGroup>> significantGroups = new ArrayList<ArrayList<TemplateFeatureGroup>>();
-				for(ArrayList<TemplateFeatureGroup> group: featureGroups){
-					if(group.size() > 2){
-						significantGroups.add(group);
+				TotalTFGs significantGroups = new TotalTFGs();
+				for(TFGList feature: featureGroups){
+					int count = 0;
+					for(TemplateFeatureGroup tfg: feature){
+						count += tfg.getTemplateMethodGroupList().size();
+					}
+					if(count > 3){
+						
+						TemplateBuilder templateBuilder = new TemplateBuilder(feature);
+						Template template = templateBuilder.buildTemplate();
+						
+						feature.setTemplate(template);
+						significantGroups.add(feature);
 					}
 				}
 				
@@ -66,7 +77,7 @@ public class TemplateGenerationAction implements IWorkbenchWindowActionDelegate 
 				
 				try {
 					MinerUtil.serialize(tmgList, "tmgList");
-					MinerUtil.serialize(featureGroups, "totalTFGs");
+					MinerUtil.serialize(significantGroups, "totalTFGs");
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

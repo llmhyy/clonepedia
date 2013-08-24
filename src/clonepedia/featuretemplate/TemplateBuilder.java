@@ -36,7 +36,12 @@ public class TemplateBuilder {
 	
 	public Template buildTemplate(){
 		
-		init();
+		try {
+			init();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 		
 		abstractClasses();
 		
@@ -63,7 +68,7 @@ public class TemplateBuilder {
 	 * list all the classes declaring methods in TMGs and cluster them to make sure
 	 * that only similar classes can take part in abstraction.
 	 */
-	private void init(){
+	private void init() throws Exception{
 		HashSet<Class> declaringClassSet = new HashSet<Class>();
 		for(TemplateFeatureGroup tfg: tfgList){
 			for(TemplateMethodGroup tmg: tfg.getTemplateMethodGroupList()){
