@@ -27,4 +27,15 @@ public class TotalTFGs extends ArrayList<TFGList> {
 	public void setSets(CloneSets sets) {
 		this.sets = sets;
 	}
+	
+	public Template findTemplate(String templateID){
+		for(TFGList tfgList: this){
+			Template template = tfgList.getTemplate();
+			if(template.getTemplateID().equals(templateID)){
+				return template;
+			}
+		}
+		
+		return null;
+	}
 }
