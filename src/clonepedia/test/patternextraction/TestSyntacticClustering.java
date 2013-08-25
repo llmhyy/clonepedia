@@ -28,7 +28,23 @@ public class TestSyntacticClustering {
 	
 	public static void main(String[] args){
 		
-		runPatternClustering();
+		ArrayList<String> list1 = new ArrayList<String>();
+		ArrayList<String> list2 = new ArrayList<String>();
+		
+		list1.add("aaa");
+		list1.add("bbb");
+		list1.add("ddd");
+		//list1.add("ccc");
+		list1.add("eee");
+		
+		list2.add("eee");
+		list2.add("bbb");
+		list2.add("ddd");
+		list2.add("aaa");
+		
+		System.out.println(MinerUtil.isTwoStringSetEqual(list1, list2));
+		
+		//runPatternClustering();
 	}
 	
 	public static void runPatternGeneration(){

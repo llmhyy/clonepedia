@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.ui.internal.handlers.WizardHandler.New;
@@ -384,6 +386,25 @@ public class MinerUtil {
 		}
 		
 		return abstractName;
+	}
+	
+	public static boolean isTwoStringSetEqual(List<String> stringList1, List<String> stringList2){
+		if(stringList1.size() == stringList2.size()){
+			String[] array1 = stringList1.toArray(new String[0]);
+			String[] array2 = stringList2.toArray(new String[0]);
+			
+			Arrays.sort(array1);
+			Arrays.sort(array2);
+			
+			for(int i=0; i<array1.length; i++){
+				if(!array1[i].equals(array2[i])){
+					return false;
+				}
+			}
+			return true;
+		}
+		
+		return false;
 	}
 	
 	private static String[] splitString(int splittingStype, String string){

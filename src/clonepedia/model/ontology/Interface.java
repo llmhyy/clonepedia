@@ -2,6 +2,9 @@ package clonepedia.model.ontology;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+
+import clonepedia.util.MinerUtil;
 
 public class Interface extends VarType implements ComplexType{
 	/**
@@ -43,23 +46,38 @@ public class Interface extends VarType implements ComplexType{
 	}
 
 	public int hashCode(){
-		try{
-			return this.fullName.hashCode();
+		if(isMerged){
+			int hashCode = 0;
+			for(ProgrammingElement element: this.supportingElements){
+				hashCode += element.getFullName().hashCode();
+			}
+			return hashCode;
 		}
-		catch(NullPointerException e){
-			return "nullInterface".hashCode();
+		else{
+			return this.fullName.hashCode();
 		}
 	}
 	
 	public boolean equals(Object obj){
 		if(obj instanceof Interface){
 			Interface referInterface = (Interface)obj;
-			
-			try{
-				return referInterface.getFullName().equals(this.getFullName());
-			}
-			catch(NullPointerException e){
-				return false;
+			if(referInterface.isMerged == this.isMerged){				
+				if(isMerged){
+					List<String> list1 = new ArrayList<String>();
+					List<String> list2 = new ArrayList<String>();
+					
+					for(ProgrammingElement element: this.getSupportingElements()){
+						list1.add(element.getFullName());
+					}
+					for(ProgrammingElement element: referInterface.getSupportingElements()){
+						list2.add(element.getFullName());
+					}
+					
+					return MinerUtil.isTwoStringSetEqual(list1, list2);
+				}
+				else{
+					return referInterface.getFullName().equals(this.getFullName());				
+				}
 			}
 		}
 		return false;

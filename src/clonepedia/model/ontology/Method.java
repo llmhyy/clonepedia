@@ -2,11 +2,13 @@ package clonepedia.model.ontology;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.TreeSet;
 
 import clonepedia.java.util.JavaMetricComputingUtil;
 import clonepedia.model.cluster.IClusterable;
 import clonepedia.model.template.TemplateMethodGroup;
+import clonepedia.util.MinerUtil;
 
 public class Method implements MergeableSimpleOntologicalElement, IClusterable, Comparable<Method>{
 	/**
@@ -73,14 +75,39 @@ public class Method implements MergeableSimpleOntologicalElement, IClusterable, 
 	}
 	
 	public int hashCode(){
-		//return super.hashCode();
-		return toString().hashCode();
+		if(isMerged){
+			int hashCode = 0;
+			for(ProgrammingElement element: this.supportingElements){
+				hashCode += element.getFullName().hashCode();
+			}
+			return hashCode;
+		}
+		else{
+			return getFullName().hashCode();
+		}
 	}
 	
 	public boolean equals(Object obj){
-		if(obj instanceof OntologicalElement){
-			OntologicalElement ele = (OntologicalElement)obj;
-			return this.equals(ele);
+		if(obj instanceof Method){
+			Method referMethod = (Method)obj;
+			if(referMethod.isMerged == this.isMerged){				
+				if(isMerged){
+					List<String> list1 = new ArrayList<String>();
+					List<String> list2 = new ArrayList<String>();
+					
+					for(ProgrammingElement element: this.getSupportingElements()){
+						list1.add(element.getFullName());
+					}
+					for(ProgrammingElement element: referMethod.getSupportingElements()){
+						list2.add(element.getFullName());
+					}
+					
+					return MinerUtil.isTwoStringSetEqual(list1, list2);
+				}
+				else{
+					return referMethod.getFullName().equals(this.getFullName());				
+				}
+			}
 		}
 		return false;
 	}
