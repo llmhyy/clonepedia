@@ -2,6 +2,7 @@ package clonepedia.model.template;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import clonepedia.model.ontology.Class;
 import clonepedia.model.ontology.Method;
@@ -11,10 +12,14 @@ public class Template implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = -69586874579958250L;
+	
+	private Long templateID = UUID.randomUUID().getMostSignificantBits();
 
 	private ArrayList<Class> abstractClassList = new ArrayList<Class>();
 	
 	private ArrayList<Method> abstractMethodList = new ArrayList<Method>();
+	
+	private String name = "feature_template";
 
 	public Template(ArrayList<Class> abstractClassList,
 			ArrayList<Method> abstractMethodList) {
@@ -39,5 +44,15 @@ public class Template implements Serializable{
 		this.abstractMethodList = abstractMethodList;
 	}
 	
+	public Long getTemplateID(){
+		return this.templateID;
+	}
 	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 }
