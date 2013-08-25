@@ -2,7 +2,7 @@ package clonepedia.model.ontology;
 
 import java.util.ArrayList;
 
-public class Variable implements MergeableSimpleOntologicalElement{
+public class Variable extends MergeableSimpleOntologicalElement{
 	/**
 	 * 
 	 */
@@ -13,10 +13,6 @@ public class Variable implements MergeableSimpleOntologicalElement{
 	private VariableUseType useType;
 	private RegionalOwner owner;
 	
-	private boolean isMerged = false;
-	private ArrayList<ProgrammingElement> supportingElements = new ArrayList<ProgrammingElement>();
-	
-
 	public Variable(String variableName, VarType variableType, boolean isMerged) {
 		super();
 		this.variableName = variableName;
@@ -141,21 +137,6 @@ public class Variable implements MergeableSimpleOntologicalElement{
 			return "*";
 	}
 	
-	@Override
-	public boolean isMerged(){
-		return this.isMerged;
-	}
-	
-	@Override
-	public ArrayList<ProgrammingElement> getSupportingElements(){
-		return this.supportingElements;
-	}
-	
-	@Override
-	public void setMerge(boolean isMerged) {
-		this.isMerged = isMerged;
-	}
-
 	@Override
 	public String getFullName() {
 		return this.variableName;

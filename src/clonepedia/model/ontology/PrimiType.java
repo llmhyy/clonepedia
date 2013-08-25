@@ -2,15 +2,26 @@ package clonepedia.model.ontology;
 
 import java.util.ArrayList;
 
-public class PrimiType extends VarType implements ProgrammingElement{
+public class PrimiType extends ProgrammingElement implements VarType{
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -3176680308112333471L;
 	
-	private boolean isMerged = false;
-
+	
+	public String toString(){
+		return fullName;
+	}
+	
+	public boolean equals(Object obj){
+		if(obj instanceof VarType){
+			VarType vt = (VarType)obj;
+			return vt.getFullName().equals(this.fullName);
+		}
+		return false;
+	}
+	
 	public PrimiType(String typeName) {
 		this.fullName = typeName;
 	}
@@ -54,16 +65,5 @@ public class PrimiType extends VarType implements ProgrammingElement{
 	public ArrayList<ProgrammingElement> getSupportingElements() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public boolean isMerged() {
-		// TODO Auto-generated method stub
-		return this.isMerged;
-	}
-	
-	@Override
-	public void setMerge(boolean isMerged) {
-		this.isMerged = isMerged;
 	}
 }

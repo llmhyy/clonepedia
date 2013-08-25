@@ -7,7 +7,7 @@ import java.util.ArrayList;
  * @author TSLLINY
  *
  */
-public class Constant implements UnstructuralProgrammingElement{
+public class Constant extends UnstructuralProgrammingElement{
 	/**
 	 * 
 	 */
@@ -15,9 +15,6 @@ public class Constant implements UnstructuralProgrammingElement{
 	private String constantName;
 	private PrimiType constantType;
 	private RegionalOwner owner;
-	
-	private boolean isMerged = false;
-	private ArrayList<ProgrammingElement> supportingElements = new ArrayList<ProgrammingElement>();
 	
 	public String toString(){
 		return constantType + " " + constantName;
@@ -88,6 +85,11 @@ public class Constant implements UnstructuralProgrammingElement{
 		return false;
 	}
 	
+	@Override
+	public String getFullName(){
+		return this.constantName;
+	}
+	
 	public int hashCode(){
 		try{
 			return toString().hashCode();
@@ -103,25 +105,5 @@ public class Constant implements UnstructuralProgrammingElement{
 			return /*"c:" +*/ getConstantName();
 		else
 			return "*";
-	}
-	
-	@Override
-	public boolean isMerged(){
-		return this.isMerged;
-	}
-	
-	@Override
-	public ArrayList<ProgrammingElement> getSupportingElements(){
-		return this.supportingElements;
-	}
-
-	@Override
-	public void setMerge(boolean isMerged) {
-		this.isMerged = isMerged;
-	}
-
-	@Override
-	public String getFullName() {
-		return this.constantName;
 	}
 }

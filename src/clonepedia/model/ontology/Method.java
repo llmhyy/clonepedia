@@ -10,7 +10,7 @@ import clonepedia.model.cluster.IClusterable;
 import clonepedia.model.template.TemplateMethodGroup;
 import clonepedia.util.MinerUtil;
 
-public class Method implements MergeableSimpleOntologicalElement, IClusterable, Comparable<Method>{
+public class Method extends MergeableSimpleOntologicalElement implements  IClusterable, Comparable<Method>{
 	/**
 	 * 
 	 */
@@ -25,11 +25,6 @@ public class Method implements MergeableSimpleOntologicalElement, IClusterable, 
 	private TreeSet<Method> callerMethods = new TreeSet<Method>();
 	private TreeSet<Method> calleeMethods = new TreeSet<Method>();
 	private ArrayList<TemplateMethodGroup> templateGroupList = new ArrayList<TemplateMethodGroup>();
-	
-	private String fullName;
-	
-	private boolean isMerged = false;
-	private ArrayList<ProgrammingElement> supportingElements = new ArrayList<ProgrammingElement>();
 
 	public Method(String methodId){
 		this.methodId = methodId;
@@ -259,16 +254,6 @@ public class Method implements MergeableSimpleOntologicalElement, IClusterable, 
 		else
 			return "*";
 	}
-	
-	@Override
-	public boolean isMerged(){
-		return this.isMerged;
-	}
-	
-	@Override
-	public ArrayList<ProgrammingElement> getSupportingElements(){
-		return this.supportingElements;
-	}
 
 	public void addCloneInstance(CloneInstance instance){
 		this.cloneInstances.add(instance);
@@ -348,10 +333,5 @@ public class Method implements MergeableSimpleOntologicalElement, IClusterable, 
 	public void addTemplateGroup(TemplateMethodGroup group){
 		if(!this.templateGroupList.contains(group))
 			this.templateGroupList.add(group);
-	}
-
-	@Override
-	public void setMerge(boolean isMerged) {
-		this.isMerged = isMerged;
 	}
 }

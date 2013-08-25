@@ -8,24 +8,17 @@ import clonepedia.java.util.JavaMetricComputingUtil;
 import clonepedia.model.cluster.IClusterable;
 import clonepedia.util.MinerUtil;
 
-public class Class extends VarType implements ComplexType, IClusterable{
+public class Class extends ComplexType implements VarType, IClusterable{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -1782670082339703936L;
 	private String classId;
-	private Project project;
-	//private String classFullName;
 	private String packageName;
 	private Class superClass;
 	private Class outerClass;
 	private ArrayList<Class> innerClassList = new ArrayList<Class>();
 	private ArrayList<Interface> implementedInterfaces = new ArrayList<Interface>();
-	private ArrayList<Method> methods = new ArrayList<Method>();
-	private ArrayList<Field> fields = new ArrayList<Field>();
-	
-	private boolean isMerged = false;
-	private ArrayList<ProgrammingElement> supportingElements = new ArrayList<ProgrammingElement>();
 	
 	public Class(String id){
 		this.classId = id;
@@ -87,12 +80,6 @@ public class Class extends VarType implements ComplexType, IClusterable{
 		return false;
 	}
 	
-	public String getSimpleName(){
-		if(fullName == null)
-			return "*";
-		return fullName.substring(fullName.lastIndexOf(".")+1, fullName.length());
-	}
-	
 	public void addInterface(Interface interf){
 		implementedInterfaces.add(interf);
 	}
@@ -107,22 +94,6 @@ public class Class extends VarType implements ComplexType, IClusterable{
 
 	public void setId(String classId) {
 		this.classId = classId;
-	}
-
-	public Project getProject() {
-		return project;
-	}
-
-	public void setProject(Project project) {
-		this.project = project;
-	}
-
-	public String getFullName() {
-		return fullName;
-	}
-
-	public void setFullName(String classFullName) {
-		this.fullName = classFullName;
 	}
 
 	public Class getSuperClass() {
@@ -147,22 +118,6 @@ public class Class extends VarType implements ComplexType, IClusterable{
 
 	public void setImplementedInterfaces(ArrayList<Interface> implementedInterfaces) {
 		this.implementedInterfaces = implementedInterfaces;
-	}
-
-	public ArrayList<Method> getMethods() {
-		return methods;
-	}
-
-	public void setMethods(ArrayList<Method> methods) {
-		this.methods = methods;
-	}
-
-	public ArrayList<Field> getFields() {
-		return fields;
-	}
-
-	public void setFields(ArrayList<Field> fields) {
-		this.fields = fields;
 	}
 
 	public boolean isClass() {
@@ -246,43 +201,9 @@ public class Class extends VarType implements ComplexType, IClusterable{
 		else if(complexType instanceof Interface)
 			this.implementedInterfaces.add((Interface)complexType);
 	}
-
-	@Override
-	public boolean isGeneralType() {
-		if(fullName.startsWith("java.lang.") || fullName.startsWith("org.w3c."))
-			return true;
-		else
-			return false;
-	}
-
-	@Override
-	public boolean isCompatibleWith(ComplexType complextType) {
-		// TODO Auto-generated method stub
-		return true;
-	}
-	
-	@Override
-	public boolean isMerged(){
-		return this.isMerged;
-	}
 	
 	public boolean isInnerClass(){
 		return this.getOuterClass() != null;
-	}
-	
-	@Override
-	public ArrayList<ProgrammingElement> getSupportingElements(){
-		return this.supportingElements;
-	}
-
-	@Override
-	public void addDistinctField(Field field) {
-		for(Field f: this.fields){
-			if(f.equals(field)){
-				return;
-			}
-		}
-		this.fields.add(field);
 	}
 
 	@Override
@@ -355,11 +276,6 @@ public class Class extends VarType implements ComplexType, IClusterable{
 		}
 		
 		return 1.0;
-	}
-
-	@Override
-	public void setMerge(boolean isMerged) {
-		this.isMerged = isMerged;
 	}
 
 	public ArrayList<Class> getInnerClassList() {

@@ -6,21 +6,13 @@ import java.util.List;
 
 import clonepedia.util.MinerUtil;
 
-public class Interface extends VarType implements ComplexType{
+public class Interface extends ComplexType implements VarType{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -8826805904323619852L;
 	private String interfaceId;
-	private Project project;
 	private ArrayList<Interface> superInterfaces = new ArrayList<Interface>();
-	
-	private ArrayList<Method> methods = new ArrayList<Method>();
-	private ArrayList<Field> fields = new ArrayList<Field>();
-	
-	private boolean isMerged = false;
-	private ArrayList<ProgrammingElement> supportingElements = new ArrayList<ProgrammingElement>();
-	
 	
 	public Interface(String id){
 		this.interfaceId = id;
@@ -83,12 +75,6 @@ public class Interface extends VarType implements ComplexType{
 		return false;
 	}
 	
-	public String getSimpleName(){
-		if(fullName == null)
-			return "*";
-		return fullName.substring(fullName.lastIndexOf(".")+1, fullName.length());
-	}
-	
 	public void addSuperInterface(Interface interf){
 		superInterfaces.add(interf);
 	}
@@ -103,26 +89,6 @@ public class Interface extends VarType implements ComplexType{
 
 	public void setId(String interfaceId) {
 		this.interfaceId = interfaceId;
-	}
-
-	public String getFullName() {
-		return fullName;
-	}
-
-	public void setFullName(String interfaceFullName) {
-		this.fullName = interfaceFullName;
-	}
-
-	public Project getProject() {
-		return project;
-	}
-
-	public ArrayList<Method> getMethods() {
-		return methods;
-	}
-
-	public void setMethods(ArrayList<Method> methods) {
-		this.methods = methods;
 	}
 
 	public ArrayList<Interface> getSuperInterfaces() {
@@ -149,14 +115,6 @@ public class Interface extends VarType implements ComplexType{
 		successors.addAll(superInterfaces);
 		
 		return successors;
-	}
-
-	public ArrayList<Field> getFields() {
-		return fields;
-	}
-
-	public void setFields(ArrayList<Field> fields) {
-		this.fields = fields;
 	}
 
 	@Override
@@ -187,40 +145,6 @@ public class Interface extends VarType implements ComplexType{
 	public void addSuperClassOrInterface(ComplexType complexType) {
 		if(complexType instanceof Interface)
 			this.superInterfaces.add((Interface)complexType);
-	}
-	
-	@Override
-	public boolean isGeneralType() {
-		if(fullName.startsWith("java.lang.") || fullName.startsWith("org.w3c."))
-			return true;
-		else
-			return false;
-	}
-
-	@Override
-	public boolean isCompatibleWith(ComplexType complextType) {
-		// TODO Auto-generated method stub
-		return true;
-	}
-	
-	@Override
-	public boolean isMerged(){
-		return this.isMerged;
-	}
-	
-	@Override
-	public ArrayList<ProgrammingElement> getSupportingElements(){
-		return this.supportingElements;
-	}
-	
-	@Override
-	public void addDistinctField(Field field) {
-		for(Field f: this.fields){
-			if(f.equals(field)){
-				return;
-			}
-		}
-		this.fields.add(field);
 	}
 
 	@Override
@@ -262,10 +186,5 @@ public class Interface extends VarType implements ComplexType{
 				parents.addAll(type.getAllParents());
 			}
 		}
-	}
-	
-	@Override
-	public void setMerge(boolean isMerged) {
-		this.isMerged = isMerged;
 	}
 }

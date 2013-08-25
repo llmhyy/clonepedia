@@ -2,7 +2,7 @@ package clonepedia.model.ontology;
 
 import java.util.ArrayList;
 
-public class Field implements MergeableSimpleOntologicalElement{
+public class Field extends MergeableSimpleOntologicalElement{
 	/**
 	 * 
 	 */
@@ -10,10 +10,6 @@ public class Field implements MergeableSimpleOntologicalElement{
 	private String fieldName;
 	private ComplexType ownerType;
 	private VarType fieldType;
-	
-	private boolean isMerged = false;
-	private ArrayList<ProgrammingElement> supportingElements = new ArrayList<ProgrammingElement>();
-	
 
 	public Field(String fieldName, ComplexType ownerType, VarType fieldType) {
 		super();
@@ -117,20 +113,5 @@ public class Field implements MergeableSimpleOntologicalElement{
 		if(fieldName != null)
 			return /*"f:" +*/ getFieldName();
 		else return "*";
-	}
-
-	@Override
-	public boolean isMerged(){
-		return this.isMerged;
-	}
-	
-	@Override
-	public ArrayList<ProgrammingElement> getSupportingElements(){
-		return this.supportingElements;
-	}
-	
-	@Override
-	public void setMerge(boolean isMerged) {
-		this.isMerged = isMerged;
 	}
 }

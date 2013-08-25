@@ -1,5 +1,10 @@
 package clonepedia.model.ontology;
 
-public interface StructuralProgrammingElement extends ProgrammingElement {
+public abstract class StructuralProgrammingElement extends ProgrammingElement {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2743473597849494366L;
 	
 }
