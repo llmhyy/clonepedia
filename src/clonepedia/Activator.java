@@ -80,6 +80,9 @@ public class Activator extends AbstractUIPlugin {
 		imgReg.put(ImageUI.FILTER, getImageDescriptor(ImageUI.FILTER));
 		imgReg.put(ImageUI.UP_ARROW, getImageDescriptor(ImageUI.UP_ARROW));
 		imgReg.put(ImageUI.DOWN_ARROW, getImageDescriptor(ImageUI.DOWN_ARROW));
+		
+		imgReg.put(ImageUI.LOAD_DATA, getImageDescriptor(ImageUI.LOAD_DATA));
+		imgReg.put(ImageUI.SAVE_DATA, getImageDescriptor(ImageUI.SAVE_DATA));
 	}
 
 	/*

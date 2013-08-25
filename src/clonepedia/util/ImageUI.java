@@ -13,4 +13,7 @@ public class ImageUI {
 	public static String FILTER = "icons/filter.gif";
 	public static String UP_ARROW = "icons/up_arrow.gif";
 	public static String DOWN_ARROW = "icons/down_arrow.gif";
+	
+	public static String LOAD_DATA = "icons/view/load_data.gif";
+	public static String SAVE_DATA = "icons/view/save_data.gif";
 }
