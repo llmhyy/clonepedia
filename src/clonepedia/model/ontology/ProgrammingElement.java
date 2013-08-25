@@ -14,4 +14,6 @@ public interface ProgrammingElement extends OntologicalElement{
 	public boolean isMerged();
 	
 	public void setMerge(boolean isMerged);
+
+	public String getFullName();
 }

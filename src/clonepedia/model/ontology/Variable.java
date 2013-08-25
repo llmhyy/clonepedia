@@ -155,4 +155,9 @@ public class Variable implements MergeableSimpleOntologicalElement{
 	public void setMerge(boolean isMerged) {
 		this.isMerged = isMerged;
 	}
+
+	@Override
+	public String getFullName() {
+		return this.variableName;
+	}
 }

@@ -119,4 +119,9 @@ public class Constant implements UnstructuralProgrammingElement{
 	public void setMerge(boolean isMerged) {
 		this.isMerged = isMerged;
 	}
+
+	@Override
+	public String getFullName() {
+		return this.constantName;
+	}
 }
