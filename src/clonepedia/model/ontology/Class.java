@@ -6,7 +6,6 @@ import java.util.List;
 
 import clonepedia.java.util.JavaMetricComputingUtil;
 import clonepedia.model.cluster.IClusterable;
-import clonepedia.util.MinerUtil;
 
 public class Class extends ComplexType implements VarType, IClusterable{
 	/**
@@ -60,17 +59,7 @@ public class Class extends ComplexType implements VarType, IClusterable{
 			Class referClass = (Class)obj;
 			if(referClass.isMerged == this.isMerged){				
 				if(isMerged){
-					List<String> list1 = new ArrayList<String>();
-					List<String> list2 = new ArrayList<String>();
-					
-					for(ProgrammingElement element: this.getSupportingElements()){
-						list1.add(element.getFullName());
-					}
-					for(ProgrammingElement element: referClass.getSupportingElements()){
-						list2.add(element.getFullName());
-					}
-					
-					return MinerUtil.isTwoStringSetEqual(list1, list2);
+					return compareMergedElement(referClass);
 				}
 				else{
 					return referClass.getFullName().equals(this.getFullName());				

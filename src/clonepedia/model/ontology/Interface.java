@@ -2,9 +2,6 @@ package clonepedia.model.ontology;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
-
-import clonepedia.util.MinerUtil;
 
 public class Interface extends ComplexType implements VarType{
 	/**
@@ -55,17 +52,7 @@ public class Interface extends ComplexType implements VarType{
 			Interface referInterface = (Interface)obj;
 			if(referInterface.isMerged == this.isMerged){				
 				if(isMerged){
-					List<String> list1 = new ArrayList<String>();
-					List<String> list2 = new ArrayList<String>();
-					
-					for(ProgrammingElement element: this.getSupportingElements()){
-						list1.add(element.getFullName());
-					}
-					for(ProgrammingElement element: referInterface.getSupportingElements()){
-						list2.add(element.getFullName());
-					}
-					
-					return MinerUtil.isTwoStringSetEqual(list1, list2);
+					return compareMergedElement(referInterface);
 				}
 				else{
 					return referInterface.getFullName().equals(this.getFullName());				

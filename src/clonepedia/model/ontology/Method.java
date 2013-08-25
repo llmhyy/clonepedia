@@ -2,13 +2,11 @@ package clonepedia.model.ontology;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.TreeSet;
 
 import clonepedia.java.util.JavaMetricComputingUtil;
 import clonepedia.model.cluster.IClusterable;
 import clonepedia.model.template.TemplateMethodGroup;
-import clonepedia.util.MinerUtil;
 
 public class Method extends MergeableSimpleOntologicalElement implements  IClusterable, Comparable<Method>{
 	/**
@@ -87,17 +85,7 @@ public class Method extends MergeableSimpleOntologicalElement implements  IClust
 			Method referMethod = (Method)obj;
 			if(referMethod.isMerged == this.isMerged){				
 				if(isMerged){
-					List<String> list1 = new ArrayList<String>();
-					List<String> list2 = new ArrayList<String>();
-					
-					for(ProgrammingElement element: this.getSupportingElements()){
-						list1.add(element.getFullName());
-					}
-					for(ProgrammingElement element: referMethod.getSupportingElements()){
-						list2.add(element.getFullName());
-					}
-					
-					return MinerUtil.isTwoStringSetEqual(list1, list2);
+					return compareMergedElement(referMethod);
 				}
 				else{
 					return referMethod.getFullName().equals(this.getFullName());				

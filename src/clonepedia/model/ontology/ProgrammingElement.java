@@ -1,6 +1,9 @@
 package clonepedia.model.ontology;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import clonepedia.util.MinerUtil;
 
 public abstract class ProgrammingElement implements OntologicalElement{
 	/**
@@ -21,6 +24,20 @@ public abstract class ProgrammingElement implements OntologicalElement{
 	 */
 	public ArrayList<ProgrammingElement> getSupportingElements(){
 		return this.supportingElements;
+	}
+	
+	protected boolean compareMergedElement(ProgrammingElement referElement){
+		List<String> list1 = new ArrayList<String>();
+		List<String> list2 = new ArrayList<String>();
+		
+		for(ProgrammingElement element: this.getSupportingElements()){
+			list1.add(element.getFullName());
+		}
+		for(ProgrammingElement element: referElement.getSupportingElements()){
+			list2.add(element.getFullName());
+		}
+		
+		return MinerUtil.isTwoStringSetEqual(list1, list2);
 	}
 	
 	public boolean isMerged(){
