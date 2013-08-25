@@ -56,7 +56,7 @@ public class GenerateIntraSetPatternStep implements Step {
 
 			printPatternNumber(sets);
 			
-			MinerUtil.serialize(sets, "intra_pattern_sets");
+			MinerUtil.serialize(sets, "intra_pattern_sets", false);
 		}
 		catch(Exception e){
 			e.printStackTrace();

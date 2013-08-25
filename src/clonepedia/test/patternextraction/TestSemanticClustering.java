@@ -48,8 +48,8 @@ public class TestSemanticClustering extends TestCase {
 		
 		CloneSets sets = semanticClusterList.get(0).getUnits().get(0).getCloneSets().get(0).getCloneSets();
 		
-		MinerUtil.serialize(semanticClusterList, "semantic_clusters");
-		MinerUtil.serialize(sets, "sets");
+		MinerUtil.serialize(semanticClusterList, "semantic_clusters", false);
+		MinerUtil.serialize(sets, "sets", false);
 		//ConsoleFormatter.displayClusters(clustersByTopic);
 	}
 	

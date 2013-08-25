@@ -67,7 +67,7 @@ public class OntologicalModelGenerator implements Serializable{
 		oos.writeObject(sets); 
 		oos.flush(); 
 		oos.close(); */
-		MinerUtil.serialize(sets, "ontological_model");
+		MinerUtil.serialize(sets, "ontological_model", false);
 		
 		//buildPatternforCloneSets();
 	}

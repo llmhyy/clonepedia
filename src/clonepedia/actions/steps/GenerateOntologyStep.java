@@ -60,7 +60,7 @@ public class GenerateOntologyStep implements Step{
 			/*TemplateFeatureBuilder featureBuilder = new TemplateFeatureBuilder(templateMethodGroupList);
 			ArrayList<TemplateFeature> features = featureBuilder.generateTemplateFeatures();*/
 			
-			MinerUtil.serialize(sets, "ontological_model");
+			MinerUtil.serialize(sets, "ontological_model", false);
 			
 		} catch (JavaModelException e) {
 			e.printStackTrace();

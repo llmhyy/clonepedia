@@ -29,7 +29,7 @@ public class GenerateCloneTopicStep implements Step {
 		monitor.worked(1);
 		
 		try {
-			MinerUtil.serialize(sets, "sets");
+			MinerUtil.serialize(sets, "sets", false);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

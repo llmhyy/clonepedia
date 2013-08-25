@@ -76,8 +76,8 @@ public class TemplateGenerationAction implements IWorkbenchWindowActionDelegate 
 				//TFGList tfgList = new TFGList(sets, featureGroups);
 				
 				try {
-					MinerUtil.serialize(tmgList, "tmgList");
-					MinerUtil.serialize(significantGroups, "totalTFGs");
+					MinerUtil.serialize(tmgList, "tmgList", false);
+					MinerUtil.serialize(significantGroups, "totalTFGs", false);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

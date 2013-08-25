@@ -37,20 +37,27 @@ public class MinerUtil {
 		}
 	}
 
-	public static void serialize(Object obj, String fileName) throws Exception {
+	public static void serialize(Object obj, String fileName, boolean isAbsolutePath) throws Exception {
 		
-		File configurationDir = new File("configurations");
-		if(!configurationDir.exists()){
-			configurationDir.mkdir();
+		FileOutputStream fos;
+		if(isAbsolutePath){
+			fos = new FileOutputStream(fileName);
 		}
-		
-		String targetDir = "configurations" + File.separator + Settings.projectName;
-		File dir = new File(targetDir);
-		if(!dir.exists()){
-			dir.mkdir();
+		else{
+			File configurationDir = new File("configurations");
+			if(!configurationDir.exists()){
+				configurationDir.mkdir();
+			}
+			
+			String targetDir = "configurations" + File.separator + Settings.projectName;
+			File dir = new File(targetDir);
+			if(!dir.exists()){
+				dir.mkdir();
+			}
+			
+			fos = new FileOutputStream(targetDir + File.separator + fileName);
+			
 		}
-		
-		FileOutputStream fos = new FileOutputStream(targetDir + File.separator + fileName);
 		ObjectOutputStream oos = new ObjectOutputStream(fos);
 		oos.writeObject(obj);
 		oos.flush();

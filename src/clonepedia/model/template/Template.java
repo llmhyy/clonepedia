@@ -20,6 +20,7 @@ public class Template implements Serializable{
 	private ArrayList<Method> abstractMethodList = new ArrayList<Method>();
 	
 	private String name = "feature_template";
+	private String description = "";
 
 	public Template(ArrayList<Class> abstractClassList,
 			ArrayList<Method> abstractMethodList) {
@@ -54,5 +55,13 @@ public class Template implements Serializable{
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 }

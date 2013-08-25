@@ -58,7 +58,7 @@ public class TestSyntacticClustering {
 			sets.buildPatternforCloneSets();
 			endTime = System.currentTimeMillis();
 			System.out.println("The time spended on buildPatternForCloneSets is: " + (endTime-startTime));
-			MinerUtil.serialize(sets, "intra_pattern_sets");
+			MinerUtil.serialize(sets, "intra_pattern_sets", false);
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -119,7 +119,7 @@ public class TestSyntacticClustering {
 				clusteringer = new SyntacticClusteringer0(sets.getCloneList());
 				clusteringer.doClustering();
 				
-				MinerUtil.serialize(sets, "inter_pattern_sets");
+				MinerUtil.serialize(sets, "inter_pattern_sets", false);
 				
 				//clusterer.doClustering();
 			} catch (Exception e) {
@@ -166,7 +166,7 @@ public class TestSyntacticClustering {
 			sets.buildPatternforCloneSets();
 			endTime = System.currentTimeMillis();
 			System.out.println("The time spended on buildPatternForCloneSets is: " + (endTime-startTime));
-			MinerUtil.serialize(sets, "intra_pattern_sets");
+			MinerUtil.serialize(sets, "intra_pattern_sets", false);
 			
 			//generator = (OntologicalModelGenerator)MinerUtil.deserialize("generator");
 			
@@ -224,7 +224,7 @@ public class TestSyntacticClustering {
 				System.out.println("The time spended on all doClustering is: " + (endTime-startTime));
 				MinerUtil.serialize(clusters, "all_cluster");*/
 				//MinerUtil.serialize(clonePatterns, "clone_patterns");
-				MinerUtil.serialize(sets, "syntactic_sets");
+				MinerUtil.serialize(sets, "syntactic_sets", false);
 				/*startTime = System.currentTimeMillis();
 				clusterer = new StructuralClusterer(generator.getSets(), patternComparator, StructuralClusterer.usagePatternClustering);
 				endTime = System.currentTimeMillis();
