@@ -56,7 +56,7 @@ public class Activator extends AbstractUIPlugin {
 		super.start(context);
 		plugin = this;
 		
-		sets = (CloneSets) MinerUtil.deserialize("sets", false);
+		//sets = (CloneSets) MinerUtil.deserialize("sets", false);
 		
 		/*int sum = 0;
 		for(CloneSet set: sets.getCloneList()){
