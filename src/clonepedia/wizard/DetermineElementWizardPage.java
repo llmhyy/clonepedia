@@ -901,9 +901,11 @@ public abstract class DetermineElementWizardPage extends NewContainerWizardPage 
 	}
 	
 	protected void createMethodReturnTypeControls(Composite composite, int nColumns) {
+		
 		fMethodReturnTypeField.doFillIntoGrid(composite, nColumns);
 		Text text = fMethodReturnTypeField.getTextControl(null);
 		LayoutUtil.setWidthHint(text, getMaxFieldWidth());
+		LayoutUtil.setHorizontalGrabbing(text);
 
 		JavaTypeCompletionProcessor superClassCompletionProcessor = new JavaTypeCompletionProcessor(
 				false, false, true);
