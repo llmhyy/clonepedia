@@ -76,7 +76,6 @@ import clonepedia.model.ontology.CloneSet;
 import clonepedia.model.ontology.Interface;
 import clonepedia.model.ontology.Method;
 import clonepedia.model.viewer.PathPatternGroupWrapper;
-import clonepedia.wizard.SkeletonGenerationDialog.ImportsManager;
 import clonepedia.wizard.printer.ASTPrinter;
 
 public class SkeletonGenerationAction {
