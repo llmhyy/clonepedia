@@ -31,7 +31,7 @@ public class TotalTFGs extends ArrayList<TFGList> {
 	public Template findTemplate(String templateID){
 		for(TFGList tfgList: this){
 			Template template = tfgList.getTemplate();
-			if(template.getTemplateID().equals(templateID)){
+			if(template.getTemplateID().toString().equals(templateID)){
 				return template;
 			}
 		}

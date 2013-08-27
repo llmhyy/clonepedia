@@ -2,10 +2,13 @@ package clonepedia.model.template;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import clonepedia.model.ontology.Class;
 import clonepedia.model.ontology.Method;
+import clonepedia.model.ontology.ProgrammingElement;
+import clonepedia.util.MinerUtil;
 
 public class Template implements Serializable{
 	/**
@@ -27,6 +30,21 @@ public class Template implements Serializable{
 		super();
 		this.abstractClassList = abstractClassList;
 		this.abstractMethodList = abstractMethodList;
+	}
+	
+	public Method findAbstractOntologyMethod(List<String> fullNameList){
+		for(Method abstractMethod: this.abstractMethodList){
+			List<String> supportingFullNameList = new ArrayList<String>();
+			for(ProgrammingElement supportingElement: abstractMethod.getSupportingElements()){
+				supportingFullNameList.add(supportingElement.getFullName());
+			}
+			
+			if(MinerUtil.isTwoStringSetEqual(fullNameList, supportingFullNameList)){
+				return abstractMethod;
+			}
+		}
+		
+		return null;
 	}
 
 	public ArrayList<Class> getAbstractClassList() {
