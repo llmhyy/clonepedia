@@ -11,6 +11,7 @@ import clonepedia.model.ontology.Class;
 import clonepedia.model.ontology.CloneSet;
 import clonepedia.model.ontology.ComplexType;
 import clonepedia.model.ontology.Method;
+import clonepedia.util.MinerUtil;
 /**
  * 
  * @author linyun
@@ -22,6 +23,9 @@ public class TemplateMethodGroup implements Serializable, Comparable<TemplateMet
 	 * 
 	 */
 	private static final long serialVersionUID = -652499753497315887L;
+	
+	private String name;
+	
 	private TreeSet<Method> methods = new TreeSet<Method>();
 	
 	private TreeSet<CloneSet> relatedCloneSets = new TreeSet<CloneSet>();
@@ -255,5 +259,23 @@ public class TemplateMethodGroup implements Serializable, Comparable<TemplateMet
 
 	public void addContainedTMG(TemplateMethodGroup tmg){
 		this.containedTMGs.add(tmg);
+	}
+
+	public String getName() {
+		ArrayList<String> list = new ArrayList<String>();
+		if(this.name == null){
+			for(Method m: getMethods()){
+				list.add(m.getMethodName());
+			}
+			
+			this.name = MinerUtil.generateAbstractString(list, MinerUtil.CamelSplitting);
+			
+		}
+		return name;	
+		
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 }
