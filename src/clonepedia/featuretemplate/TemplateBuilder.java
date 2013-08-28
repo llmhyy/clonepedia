@@ -91,8 +91,8 @@ public class TemplateBuilder {
 			clusterList = algorithm.doClustering();
 			for(NormalCluster cluster: clusterList){
 				Class abstractedClass = new Class("", null, "");
-				abstractedClass.setMerge(true);
 				if(cluster.size() > 1){
+					abstractedClass.setMerge(true);
 					for(IClusterable clusterable: cluster){
 						Class declaringClass = (Class)clusterable;
 						
@@ -122,6 +122,9 @@ public class TemplateBuilder {
 				mergeSuperType(abstractedClass);
 				//mergeInterfaces(abstractedClass);
 				mergeMethods(abstractedClass);			
+			}
+			else{
+				mergeMethods(abstractedClass);	
 			}
 		}
 	}
