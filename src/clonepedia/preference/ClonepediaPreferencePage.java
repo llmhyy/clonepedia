@@ -370,6 +370,7 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 	private void confirmChanges(){
 		Settings.projectName = this.projectCombo.getText();
 		Settings.inputCloneFile = this.cloneFileText.getText();
+		Settings.ontologyFile = this.ontologyFileText.getText();
 		Settings.diffComparisonMode = this.levelCombo.getText();
 		Settings.skipPattern = this.skipPatternCombo.getText();
 	}

@@ -132,38 +132,47 @@ public class MinerUtil {
 			Object[] nodeList2, BoolComparator comparator){
 		int[][] commonLengthTable = buildLeveshteinTable(nodeList1, nodeList2, comparator);
 
-		int commonLength = (nodeList1.length > nodeList2.length)? nodeList1.length : nodeList2.length;
-		Object[] commonList = new Object[commonLength];
+		//int commonLength = (nodeList1.length > nodeList2.length)? nodeList1.length : nodeList2.length;
+		ArrayList<Object> commonList = new ArrayList<Object>();
 
-		int k, i, j = 0;
-		for (k = commonLength - 1, i = nodeList1.length, j = nodeList2.length; (i > 0 && j > 0);) {
+		int i, j = 0;
+		for (i = nodeList1.length, j = nodeList2.length; (i > 0 && j > 0);) {
 			if (comparator.isMatch(nodeList1[i - 1], nodeList2[j - 1])) {
-				commonList[k] = nodeList1[i - 1];
-				k--;
+				//commonList[k] = nodeList1[i - 1];
+				//k--;
+				commonList.add(nodeList1[i-1]);
 				i--;
 				j--;
 			} else {
 				if (commonLengthTable[i - 1][j] == commonLengthTable[i][j - 1]){
-					commonList[k--] = new Placeholder();
+					//commonList[k--] = new Placeholder();
+					commonList.add(new Placeholder());
 					i--;
 					j--;
 				}
 				else if (commonLengthTable[i - 1][j] > commonLengthTable[i][j - 1]){
 					i--;
-					commonList[k--] = new Placeholder();
+					//commonList[k--] = new Placeholder();
+					commonList.add(new Placeholder());
 				}
 				else{
 					j--;
-					commonList[k--] = new Placeholder();
+					//commonList[k--] = new Placeholder();
+					commonList.add(new Placeholder());
 				}
 			}
 		}
 		
-		while(k >= 0){
+		/*while(k >= 0){
 			commonList[k--] = new Placeholder();
+		}*/
+		
+		Object[] commonArray = new Object[commonList.size()];
+		for(int m=0; m<commonArray.length; m++){
+			commonArray[m] = commonList.get(commonList.size()-1-m);
 		}
 
-		return commonList;
+		return commonArray;
 	}
 
 	/**

@@ -92,8 +92,9 @@ public class Settings {
 	public static double thresholdDistanceForDeclaringClassClustering = 0.7d;
 	
 	//======================================================================
-	public static int templateMethodGroupCallingStrength = 3;
+	public static int templateMethodGroupCallingStrength = 2;
 	public static int innerOuterClassRelationAbstractionStrength = 2;
+	public static int graphMethodGroupCallingStrength = 2;
 	
 	//======================================================================
 	public static double thresholdSimilarityForDecidingAbstractedClass = 0.6d;
