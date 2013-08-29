@@ -386,6 +386,11 @@ public class TemplateBuilder {
 			if(ele instanceof Class){
 				String fullName = ((Class)ele).getFullName();
 				String packageString = ((Class)ele).getPackageName();
+				
+				if(packageString == null){
+					packageString = fullName.substring(0, fullName.lastIndexOf("."));
+				}
+				
 				String classNameString = fullName.substring(packageString.length()+1, fullName.length()) ;
 				
 				packageStringList.add(packageString);
