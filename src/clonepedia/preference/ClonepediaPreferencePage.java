@@ -58,6 +58,9 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 	private Text intraSetFileText;
 	private Text interSetFileText;
 	
+	private Text templateMethodCallStrengthText;
+	private Text abstractMethodCallStrengthText;
+	
 	private Combo levelCombo;
 	private Combo skipPatternCombo;
 	
@@ -70,6 +73,9 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 	private String defaultDiffLevel;
 	private String defaultSkipPattern;
 	
+	private String defaultTemplateMethodCallStrength;
+	private String defaultAbstractMethodCallStrength;
+	
 	public static final String TARGET_PORJECT = "targetProjectName";
 	public static final String CLONE_PATH = "cloneFilePath";
 	public static final String ONTOLOGY_PATH = "ontologyFilePath";
@@ -78,6 +84,9 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 	
 	public static final String DIFF_LEVEL = "diffLevel";
 	public static final String SKIP_PATTERN = "skipPattern";
+	
+	public static final String TEMPLATE_METHOD_STRENGTH = "templateMethodCallStrength";
+	public static final String ABSTRACT_METHOD_STRENGTH = "abstractMethodCallStrength";
 	
 	public ClonepediaPreferencePage() {
 		// TODO Auto-generated constructor stub
@@ -94,6 +103,9 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 		this.defaultInterSetFilePath = Activator.getDefault().getPreferenceStore().getString(INTER_SET_PATH);
 		this.defaultDiffLevel = Activator.getDefault().getPreferenceStore().getString(DIFF_LEVEL);
 		this.defaultSkipPattern = Activator.getDefault().getPreferenceStore().getString(SKIP_PATTERN);
+		
+		this.defaultTemplateMethodCallStrength = Activator.getDefault().getPreferenceStore().getString(TEMPLATE_METHOD_STRENGTH);
+		this.defaultAbstractMethodCallStrength = Activator.getDefault().getPreferenceStore().getString(ABSTRACT_METHOD_STRENGTH);
 		//this.defaultTargetProject = preferences.get(TARGET_PORJECT, "");
 		//this.defaultCloneFilePath = preferences.get(CLONE_PATH, "");
 		//Activator.setCloneSets((CloneSets) MinerUtil.deserialize("sets"));
@@ -157,6 +169,8 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 		createPatternGroup(composite);
 		
 		createDiffGroup(composite);
+		
+		createTemplateGroup(composite);
 		
 		return composite;
 	}
@@ -284,6 +298,45 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 		levelCombo.setLayoutData(comboData);
 	}
 	
+	private void createTemplateGroup(Composite parent){
+		Group templateGroup = new Group(parent, SWT.NONE);
+		templateGroup.setText("parameters for template generation");
+		GridData diffGroupData = new GridData(SWT.FILL, SWT.FILL, true, true);
+		diffGroupData.horizontalSpan = 3;
+		templateGroup.setLayoutData(diffGroupData);
+		
+		GridLayout layout = new GridLayout();
+		layout.numColumns = 3;
+		
+		templateGroup.setLayout(layout);
+		
+		createTemplateMethodCallStrengthText(templateGroup);
+		
+		createAbstractMethodCallStrengthText(templateGroup);
+	}
+	
+	private void createTemplateMethodCallStrengthText(Group group){
+		Label templateMethodCallStrengthLabel = new Label(group, SWT.NONE);
+		templateMethodCallStrengthLabel.setText("TMG call strength");
+		
+		templateMethodCallStrengthText = new Text(group, SWT.BORDER);
+		templateMethodCallStrengthText.setText(String.valueOf(this.defaultTemplateMethodCallStrength));
+		GridData templateMethodData = new GridData(SWT.FILL, SWT.FILL, true, false);
+		templateMethodData.horizontalSpan = 2;
+		templateMethodCallStrengthText.setLayoutData(templateMethodData);
+	}
+	
+	private void createAbstractMethodCallStrengthText(Group group){
+		Label abstractMethodCallStrengthLabel = new Label(group, SWT.NONE);
+		abstractMethodCallStrengthLabel.setText("abstract method call strength");
+		
+		abstractMethodCallStrengthText = new Text(group, SWT.BORDER);
+		abstractMethodCallStrengthText.setText(String.valueOf(this.defaultAbstractMethodCallStrength));
+		GridData abstractMethodData = new GridData(SWT.FILL, SWT.FILL, true, false);
+		abstractMethodData.horizontalSpan = 2;
+		abstractMethodCallStrengthText.setLayoutData(abstractMethodData);
+	}
+	
 	public boolean performOk(){
 		Preferences preferences = ConfigurationScope.INSTANCE.getNode("Clonepedia");
 		preferences.put(TARGET_PORJECT, this.projectCombo.getText());
@@ -293,6 +346,8 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 		preferences.put(INTER_SET_PATH, this.interSetFileText.getText());
 		preferences.put(DIFF_LEVEL, this.levelCombo.getText());
 		preferences.put(SKIP_PATTERN, this.skipPatternCombo.getText());
+		preferences.put(TEMPLATE_METHOD_STRENGTH, this.templateMethodCallStrengthText.getText());
+		preferences.put(ABSTRACT_METHOD_STRENGTH, this.abstractMethodCallStrengthText.getText());
 		
 		Activator.getDefault().getPreferenceStore().putValue(TARGET_PORJECT, this.projectCombo.getText());
 		Activator.getDefault().getPreferenceStore().putValue(CLONE_PATH, this.cloneFileText.getText());
@@ -301,6 +356,8 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 		Activator.getDefault().getPreferenceStore().putValue(INTER_SET_PATH, this.interSetFileText.getText());
 		Activator.getDefault().getPreferenceStore().putValue(DIFF_LEVEL, this.levelCombo.getText());
 		Activator.getDefault().getPreferenceStore().putValue(SKIP_PATTERN, this.skipPatternCombo.getText());
+		Activator.getDefault().getPreferenceStore().putValue(TEMPLATE_METHOD_STRENGTH, this.templateMethodCallStrengthText.getText());
+		Activator.getDefault().getPreferenceStore().putValue(ABSTRACT_METHOD_STRENGTH, this.abstractMethodCallStrengthText.getText());
 		
 		if(!Settings.projectName.equals(this.projectCombo.getText()) ){
 			UIRefresh();			
@@ -373,6 +430,9 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 		Settings.ontologyFile = this.ontologyFileText.getText();
 		Settings.diffComparisonMode = this.levelCombo.getText();
 		Settings.skipPattern = this.skipPatternCombo.getText();
+		
+		Settings.templateMethodGroupCallingStrength = Integer.valueOf(this.templateMethodCallStrengthText.getText());
+		Settings.abstractMethodGroupCallingStrength = Integer.valueOf(this.abstractMethodCallStrengthText.getText());
 	}
 	
 	public ClonepediaPreferencePage(String title) {

@@ -94,7 +94,7 @@ public class Settings {
 	//======================================================================
 	public static int templateMethodGroupCallingStrength = 2;
 	public static int innerOuterClassRelationAbstractionStrength = 2;
-	public static int graphMethodGroupCallingStrength = 2;
+	public static int abstractMethodGroupCallingStrength = 2;
 	
 	//======================================================================
 	public static double thresholdSimilarityForDecidingAbstractedClass = 0.6d;

@@ -211,7 +211,7 @@ public class TemplateBuilder {
 			}
 		}
 		
-		return count >= Settings.templateMethodGroupCallingStrength;
+		return count >= Settings.abstractMethodGroupCallingStrength;
 	}
 
 	private void mergeMethods(Class abstractedClass) {
