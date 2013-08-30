@@ -8,7 +8,7 @@ import java.util.TreeSet;
 
 import clonepedia.businessdata.OntologicalDataFetcher;
 import clonepedia.model.syntactic.Path;
-import clonepedia.model.template.TemplateFeatureGroup;
+import clonepedia.model.template.SubCandidateTemplate;
 import clonepedia.model.template.TemplateMethodGroup;
 import clonepedia.syntactic.util.comparator.PathComparator;
 import clonepedia.util.Settings;

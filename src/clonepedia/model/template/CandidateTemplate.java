@@ -3,7 +3,7 @@ package clonepedia.model.template;
 import java.util.ArrayList;
 
 
-public class TFGList extends ArrayList<TemplateFeatureGroup>  {
+public class CandidateTemplate extends ArrayList<SubCandidateTemplate>  {
 
 	/**
 	 * 

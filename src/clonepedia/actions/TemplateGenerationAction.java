@@ -13,16 +13,16 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
-import clonepedia.featuretemplate.TFGBuilder;
+import clonepedia.featuretemplate.CandidateTemplateBuilder;
 import clonepedia.featuretemplate.TMGBuilder;
 import clonepedia.featuretemplate.TemplateBuilder;
 import clonepedia.model.ontology.CloneSets;
-import clonepedia.model.template.TFGList;
+import clonepedia.model.template.CandidateTemplate;
 import clonepedia.model.template.TMGList;
 import clonepedia.model.template.Template;
-import clonepedia.model.template.TemplateFeatureGroup;
+import clonepedia.model.template.SubCandidateTemplate;
 import clonepedia.model.template.TemplateMethodGroup;
-import clonepedia.model.template.TotalTFGs;
+import clonepedia.model.template.TotalCandidateTemplates;
 import clonepedia.syntactic.util.comparator.LevenshteinPathComparator;
 import clonepedia.util.MinerUtil;
 import clonepedia.util.Settings;
@@ -52,14 +52,14 @@ public class TemplateGenerationAction implements IWorkbenchWindowActionDelegate 
 					}
 				}
 				
-				TFGBuilder featureBuilder = new TFGBuilder(list);
+				CandidateTemplateBuilder featureBuilder = new CandidateTemplateBuilder(list);
 				featureBuilder.generateTemplateFeatures();
-				TotalTFGs featureGroups = featureBuilder.getFeatureGroups();
+				TotalCandidateTemplates featureGroups = featureBuilder.getFeatureGroups();
 				
-				TotalTFGs significantGroups = new TotalTFGs();
-				for(TFGList feature: featureGroups){
+				TotalCandidateTemplates significantGroups = new TotalCandidateTemplates();
+				for(CandidateTemplate feature: featureGroups){
 					int count = 0;
-					for(TemplateFeatureGroup tfg: feature){
+					for(SubCandidateTemplate tfg: feature){
 						count += tfg.getTemplateMethodGroupList().size();
 					}
 					if(count > 3){

@@ -5,32 +5,32 @@ import java.util.ArrayList;
 import clonepedia.model.cluster.IClusterable;
 import clonepedia.model.cluster.NormalCluster;
 import clonepedia.model.cluster.hierarchy.HierarchyClusterAlgorithm;
-import clonepedia.model.template.TFGList;
-import clonepedia.model.template.TemplateFeatureGroup;
+import clonepedia.model.template.CandidateTemplate;
+import clonepedia.model.template.SubCandidateTemplate;
 import clonepedia.model.template.TemplateMethodGroup;
-import clonepedia.model.template.TotalTFGs;
+import clonepedia.model.template.TotalCandidateTemplates;
 import clonepedia.util.Settings;
 
-public class TFGBuilder {
+public class CandidateTemplateBuilder {
 
 	private ArrayList<TemplateMethodGroup> methodGroupList;
-	private TotalTFGs featureGroups = new TotalTFGs();
+	private TotalCandidateTemplates featureGroups = new TotalCandidateTemplates();
 
-	public TFGBuilder(ArrayList<TemplateMethodGroup> methodGroupList) {
+	public CandidateTemplateBuilder(ArrayList<TemplateMethodGroup> methodGroupList) {
 		this.methodGroupList = methodGroupList;
 	}
 
 	public void generateTemplateFeatures() {
-		TFGList features = clusterTMGByLocation();
+		CandidateTemplate features = clusterTMGByLocation();
 		
 		buildCallingRelationsForTemplateFeatures(features);
 		
 		connectTFGsByCallingRelation(features);
 	}
 	
-	private TFGList clusterTMGByLocation(){
+	private CandidateTemplate clusterTMGByLocation(){
 		
-		TFGList features = new TFGList();
+		CandidateTemplate features = new CandidateTemplate();
 		
 		TemplateMethodGroup[] groupList = this.methodGroupList.toArray(new TemplateMethodGroup[0]);
 		
@@ -41,7 +41,7 @@ public class TFGBuilder {
 			
 			//int count = 0;
 			for(NormalCluster cluster: clusters){
-				TemplateFeatureGroup featureGroup = new TemplateFeatureGroup();
+				SubCandidateTemplate featureGroup = new SubCandidateTemplate();
 				
 				for(IClusterable clusterable: cluster){
 					TemplateMethodGroup tmg = (TemplateMethodGroup)clusterable;
@@ -63,11 +63,11 @@ public class TFGBuilder {
 		return features;
 	}
 	
-	private void buildCallingRelationsForTemplateFeatures(ArrayList<TemplateFeatureGroup> features){
-		for(TemplateFeatureGroup callerTFG: features){
+	private void buildCallingRelationsForTemplateFeatures(ArrayList<SubCandidateTemplate> features){
+		for(SubCandidateTemplate callerTFG: features){
 			for(TemplateMethodGroup callerTMG: callerTFG.getTemplateMethodGroupList()){
 				for(TemplateMethodGroup calleeTMG: callerTMG.getCalleeGroup()){
-					TemplateFeatureGroup calleeTFG = calleeTMG.getTFG();
+					SubCandidateTemplate calleeTFG = calleeTMG.getTFG();
 					
 					if(calleeTFG == null){
 						System.out.print("");
@@ -82,15 +82,26 @@ public class TFGBuilder {
 		}
 	}
 	
-	private void connectTFGsByCallingRelation(TFGList tfgList){
+	/**
+	 * Just think of such a problem as graph traversing. Given one vertex v in graph G, we can get a set of
+	 * nodes V by DFS. Let us call such a vertex set as depth set (Not that depth set can only be achieved by
+	 * traversing only one vertex in G). If graph G has n vertexes, thus, there are at most n depth sets for G. 
+	 * We call a depth set independent if and only if it will no longer be a depth set when we add one other 
+	 * vertex into the set. Such a method is written for compute all the independent depth set in a G.
+	 * 
+	 * Tempalte Feature Group (TFG) is for node.
+	 * Calling Relation is for edge.
+	 * @param tfgList
+	 */
+	private void connectTFGsByCallingRelation(CandidateTemplate tfgList){
 
-		TemplateFeatureGroup[] groupList = tfgList.toArray(new TemplateFeatureGroup[0]);
+		SubCandidateTemplate[] groupList = tfgList.toArray(new SubCandidateTemplate[0]);
 
 		for (int i = 0; i < groupList.length; i++) {
-			TemplateFeatureGroup tfg = groupList[i];
+			SubCandidateTemplate tfg = groupList[i];
 			// the group has not been visited
 			if (!tfg.isVisited()) {
-				TFGList features = new TFGList();
+				CandidateTemplate features = new CandidateTemplate();
 				features.add(tfg);
 
 				gatherNeighbourTMGs(features, tfg);
@@ -101,13 +112,13 @@ public class TFGBuilder {
 		}
 	}
 	
-	private void gatherNeighbourTMGs(TFGList features,
-			TemplateFeatureGroup group) {
+	private void gatherNeighbourTMGs(CandidateTemplate features,
+			SubCandidateTemplate group) {
 
-		if (features.size() == 0) {
+		if (group.getCalleeTFG().size() == 0 && group.getCallerTFG().size() == 0) {
 			return;
 		} else {
-			for (TemplateFeatureGroup calleeGroup : group.getCalleeTFG()) {
+			for (SubCandidateTemplate calleeGroup : group.getCalleeTFG()) {
 				calleeGroup.mark();
 				if (!features.contains(calleeGroup)) {
 					features.add(calleeGroup);
@@ -115,17 +126,32 @@ public class TFGBuilder {
 				}
 			}
 			
-			for (TemplateFeatureGroup callerGroup : group.getCallerTFG()) {
+			/*for (TemplateFeatureGroup callerGroup : group.getCallerTFG()) {
 				callerGroup.mark();
 				if (!features.contains(callerGroup)) {
 					features.add(callerGroup);
 					gatherNeighbourTMGs(features, callerGroup);
 				}
-			}
+			}*/
 		}
 	}
 	
-	/*private void gatherCallerTMGs(ArrayList<TemplateFeatureGroup> features,
+	/*private void gatherCalleeTMGs(TFGList features, TemplateFeatureGroup group) {
+
+		if (features.size() == 0) {
+			return;
+		} else {
+			for (TemplateFeatureGroup callerGroup : group.getCallerTFG()) {
+				callerGroup.mark();
+				if (!features.contains(callerGroup)) {
+					features.add(callerGroup);
+					gatherCalleeTMGs(features, callerGroup);
+				}
+			}
+		}
+	}*/
+	
+	/*private void gatherCallerTMGs(TFGList features,
 			TemplateFeatureGroup group) {
 
 		if (features.size() == 0) {
@@ -141,7 +167,7 @@ public class TFGBuilder {
 		}
 	}*/
 	
-	private void gatherCalleeGroups(TemplateFeatureGroup feature,
+	private void gatherCalleeGroups(SubCandidateTemplate feature,
 			TemplateMethodGroup group) {
 
 		if (group.getCalleeGroup().size() == 0) {
@@ -157,7 +183,7 @@ public class TFGBuilder {
 		}
 	}
 
-	private void gatherCallerGroups(TemplateFeatureGroup feature,
+	private void gatherCallerGroups(SubCandidateTemplate feature,
 			TemplateMethodGroup group) {
 		if (group.getCallerGroup().size() == 0) {
 			return;
@@ -172,10 +198,10 @@ public class TFGBuilder {
 		}
 	}
 
-	private ArrayList<TemplateFeatureGroup> generateTemplateFeatureByDirectlyCallingRelation() {
+	private ArrayList<SubCandidateTemplate> generateTemplateFeatureByDirectlyCallingRelation() {
 		// contructCallGraph();
 
-		ArrayList<TemplateFeatureGroup> templateFeatures = new ArrayList<TemplateFeatureGroup>();
+		ArrayList<SubCandidateTemplate> templateFeatures = new ArrayList<SubCandidateTemplate>();
 
 		TemplateMethodGroup[] groupList = methodGroupList
 				.toArray(new TemplateMethodGroup[0]);
@@ -184,7 +210,7 @@ public class TFGBuilder {
 			TemplateMethodGroup tmg = groupList[i];
 			// the group has not been visited
 			if (!tmg.isVisited()) {
-				TemplateFeatureGroup feature = new TemplateFeatureGroup();
+				SubCandidateTemplate feature = new SubCandidateTemplate();
 				feature.addTemplateMethodGroup(tmg);
 
 				gatherCalleeGroups(feature, tmg);
@@ -199,11 +225,11 @@ public class TFGBuilder {
 
 	
 
-	public TotalTFGs getFeatureGroups() {
+	public TotalCandidateTemplates getFeatureGroups() {
 		return featureGroups;
 	}
 
-	public void setFeatureGroups(TotalTFGs featureGroups) {
+	public void setFeatureGroups(TotalCandidateTemplates featureGroups) {
 		this.featureGroups = featureGroups;
 	}
 }

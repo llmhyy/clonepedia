@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.TreeSet;
 
-import clonepedia.featuretemplate.TFGBuilder;
+import clonepedia.featuretemplate.CandidateTemplateBuilder;
 import clonepedia.featuretemplate.TMGBuilder;
 import clonepedia.model.cluster.SyntacticCluster;
 import clonepedia.model.ontology.CloneSet;
 import clonepedia.model.ontology.CloneSets;
-import clonepedia.model.template.TemplateFeatureGroup;
+import clonepedia.model.template.SubCandidateTemplate;
 import clonepedia.model.template.TemplateMethodGroup;
 import clonepedia.syntactic.OntologicalModelGenerator;
 import clonepedia.syntactic.SyntacticClusteringer;

@@ -16,21 +16,21 @@ import clonepedia.model.ontology.Method;
 import clonepedia.model.ontology.ProgrammingElement;
 import clonepedia.model.ontology.VarType;
 import clonepedia.model.ontology.Variable;
-import clonepedia.model.template.TFGList;
+import clonepedia.model.template.CandidateTemplate;
 import clonepedia.model.template.Template;
-import clonepedia.model.template.TemplateFeatureGroup;
+import clonepedia.model.template.SubCandidateTemplate;
 import clonepedia.model.template.TemplateMethodGroup;
 import clonepedia.util.MinerUtil;
 import clonepedia.util.Settings;
 
 public class TemplateBuilder {
-	private TFGList tfgList;
+	private CandidateTemplate tfgList;
 	
 	private ArrayList<Class> abstractClassList = new ArrayList<Class>();
 	
 	private ArrayList<Method> abstractMethodList = new ArrayList<Method>();
 	
-	public TemplateBuilder(TFGList tfgList){
+	public TemplateBuilder(CandidateTemplate tfgList){
 		this.tfgList = tfgList;
 	}
 	
@@ -70,7 +70,7 @@ public class TemplateBuilder {
 	 */
 	private void init() throws Exception{
 		HashSet<Class> declaringClassSet = new HashSet<Class>();
-		for(TemplateFeatureGroup tfg: tfgList){
+		for(SubCandidateTemplate tfg: tfgList){
 			for(TemplateMethodGroup tmg: tfg.getTemplateMethodGroupList()){
 				for(Method method: tmg.getMethods()){
 					ComplexType owner = method.getOwner();
@@ -216,7 +216,7 @@ public class TemplateBuilder {
 
 	private void mergeMethods(Class abstractedClass) {
 		
-		for(TemplateFeatureGroup tfg: tfgList){
+		for(SubCandidateTemplate tfg: tfgList){
 			for(TemplateMethodGroup tmg: tfg.getTemplateMethodGroupList()){
 				ArrayList<Method> relatedMethodList = getRelatedMethodFromTMGToAbstractClass(tmg, abstractedClass);
 				if(relatedMethodList.size() > 1){

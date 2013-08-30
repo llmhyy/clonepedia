@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public class TemplateFeatureGroup implements Serializable{
+public class SubCandidateTemplate implements Serializable{
 	/**
 	 * 
 	 */
@@ -12,12 +12,12 @@ public class TemplateFeatureGroup implements Serializable{
 
 	private ArrayList<TemplateMethodGroup> methodGroupList = new ArrayList<TemplateMethodGroup>();
 	
-	private HashSet<TemplateFeatureGroup> callerTFG = new HashSet<TemplateFeatureGroup>();
-	private HashSet<TemplateFeatureGroup> calleeTFG = new HashSet<TemplateFeatureGroup>();
+	private HashSet<SubCandidateTemplate> callerTFG = new HashSet<SubCandidateTemplate>();
+	private HashSet<SubCandidateTemplate> calleeTFG = new HashSet<SubCandidateTemplate>();
 	
 	private boolean visited = false;
 	
-	public TemplateFeatureGroup(){};
+	public SubCandidateTemplate(){};
 	
 	public void addTemplateMethodGroup(TemplateMethodGroup group){
 		if(!methodGroupList.contains(group)){
@@ -37,27 +37,27 @@ public class TemplateFeatureGroup implements Serializable{
 		return this.methodGroupList.toString();
 	}
 
-	public HashSet<TemplateFeatureGroup> getCallerTFG() {
+	public HashSet<SubCandidateTemplate> getCallerTFG() {
 		return callerTFG;
 	}
 
-	public void setCallerTFG(HashSet<TemplateFeatureGroup> callerTFG) {
+	public void setCallerTFG(HashSet<SubCandidateTemplate> callerTFG) {
 		this.callerTFG = callerTFG;
 	}
 	
-	public void addCallerTFG(TemplateFeatureGroup callerTFG){
+	public void addCallerTFG(SubCandidateTemplate callerTFG){
 		this.callerTFG.add(callerTFG);
 	}
 
-	public HashSet<TemplateFeatureGroup> getCalleeTFG() {
+	public HashSet<SubCandidateTemplate> getCalleeTFG() {
 		return calleeTFG;
 	}
 
-	public void setCalleeTFG(HashSet<TemplateFeatureGroup> calleeTFG) {
+	public void setCalleeTFG(HashSet<SubCandidateTemplate> calleeTFG) {
 		this.calleeTFG = calleeTFG;
 	}
 	
-	public void addCalleeTFG(TemplateFeatureGroup calleeTFG){
+	public void addCalleeTFG(SubCandidateTemplate calleeTFG){
 		this.calleeTFG.add(calleeTFG);
 	}
 	

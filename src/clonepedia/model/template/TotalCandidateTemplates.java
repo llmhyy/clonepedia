@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import clonepedia.model.ontology.CloneSets;
 
-public class TotalTFGs extends ArrayList<TFGList> {
+public class TotalCandidateTemplates extends ArrayList<CandidateTemplate> {
 
 	/**
 	 * 
@@ -13,9 +13,9 @@ public class TotalTFGs extends ArrayList<TFGList> {
 
 	private CloneSets sets;
 	
-	public TotalTFGs(){}
+	public TotalCandidateTemplates(){}
 	
-	public TotalTFGs(CloneSets sets) {
+	public TotalCandidateTemplates(CloneSets sets) {
 		super();
 		this.sets = sets;
 	}
@@ -29,7 +29,7 @@ public class TotalTFGs extends ArrayList<TFGList> {
 	}
 	
 	public Template findTemplate(String templateID){
-		for(TFGList tfgList: this){
+		for(CandidateTemplate tfgList: this){
 			Template template = tfgList.getTemplate();
 			if(template.getTemplateID().toString().equals(templateID)){
 				return template;
