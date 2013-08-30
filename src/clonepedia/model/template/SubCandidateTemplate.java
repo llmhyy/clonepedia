@@ -15,6 +15,8 @@ public class SubCandidateTemplate implements Serializable{
 	private HashSet<SubCandidateTemplate> callerTFG = new HashSet<SubCandidateTemplate>();
 	private HashSet<SubCandidateTemplate> calleeTFG = new HashSet<SubCandidateTemplate>();
 	
+	private HashSet<SubCandidateTemplate> reachableList = new HashSet<SubCandidateTemplate>();
+	
 	private boolean visited = false;
 	
 	public SubCandidateTemplate(){};
@@ -67,5 +69,13 @@ public class SubCandidateTemplate implements Serializable{
 	
 	public boolean isVisited(){
 		return this.visited;
+	}
+
+	public HashSet<SubCandidateTemplate> getReachableList() {
+		return reachableList;
+	}
+
+	public void setReachableList(HashSet<SubCandidateTemplate> reachableList) {
+		this.reachableList = reachableList;
 	}
 }

@@ -22,7 +22,7 @@ import clonepedia.model.template.TMGList;
 import clonepedia.model.template.Template;
 import clonepedia.model.template.SubCandidateTemplate;
 import clonepedia.model.template.TemplateMethodGroup;
-import clonepedia.model.template.TotalCandidateTemplates;
+import clonepedia.model.template.CandidateTemplateList;
 import clonepedia.syntactic.util.comparator.LevenshteinPathComparator;
 import clonepedia.util.MinerUtil;
 import clonepedia.util.Settings;
@@ -54,9 +54,9 @@ public class TemplateGenerationAction implements IWorkbenchWindowActionDelegate 
 				
 				CandidateTemplateBuilder featureBuilder = new CandidateTemplateBuilder(list);
 				featureBuilder.generateTemplateFeatures();
-				TotalCandidateTemplates featureGroups = featureBuilder.getFeatureGroups();
+				CandidateTemplateList featureGroups = featureBuilder.getCandidateTemplateList();
 				
-				TotalCandidateTemplates significantGroups = new TotalCandidateTemplates();
+				CandidateTemplateList significantGroups = new CandidateTemplateList();
 				for(CandidateTemplate feature: featureGroups){
 					int count = 0;
 					for(SubCandidateTemplate tfg: feature){

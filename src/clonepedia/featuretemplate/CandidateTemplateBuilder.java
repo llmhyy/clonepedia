@@ -8,29 +8,29 @@ import clonepedia.model.cluster.hierarchy.HierarchyClusterAlgorithm;
 import clonepedia.model.template.CandidateTemplate;
 import clonepedia.model.template.SubCandidateTemplate;
 import clonepedia.model.template.TemplateMethodGroup;
-import clonepedia.model.template.TotalCandidateTemplates;
+import clonepedia.model.template.CandidateTemplateList;
 import clonepedia.util.Settings;
 
 public class CandidateTemplateBuilder {
 
 	private ArrayList<TemplateMethodGroup> methodGroupList;
-	private TotalCandidateTemplates featureGroups = new TotalCandidateTemplates();
+	private CandidateTemplateList candidateTemplateList = new CandidateTemplateList();
 
 	public CandidateTemplateBuilder(ArrayList<TemplateMethodGroup> methodGroupList) {
 		this.methodGroupList = methodGroupList;
 	}
 
 	public void generateTemplateFeatures() {
-		CandidateTemplate features = clusterTMGByLocation();
+		ArrayList<SubCandidateTemplate> subCandidateTemplateList = clusterTMGByLocation();
 		
-		buildCallingRelationsForTemplateFeatures(features);
+		buildCallingRelationsForTemplateFeatures(subCandidateTemplateList);
 		
-		connectTFGsByCallingRelation(features);
+		connectSubCandidateTemplatesByCallingRelation(subCandidateTemplateList);
 	}
 	
-	private CandidateTemplate clusterTMGByLocation(){
+	private ArrayList<SubCandidateTemplate> clusterTMGByLocation(){
 		
-		CandidateTemplate features = new CandidateTemplate();
+		ArrayList<SubCandidateTemplate> list = new ArrayList<SubCandidateTemplate>();
 		
 		TemplateMethodGroup[] groupList = this.methodGroupList.toArray(new TemplateMethodGroup[0]);
 		
@@ -41,16 +41,16 @@ public class CandidateTemplateBuilder {
 			
 			//int count = 0;
 			for(NormalCluster cluster: clusters){
-				SubCandidateTemplate featureGroup = new SubCandidateTemplate();
+				SubCandidateTemplate subCandidateTemplate = new SubCandidateTemplate();
 				
 				for(IClusterable clusterable: cluster){
 					TemplateMethodGroup tmg = (TemplateMethodGroup)clusterable;
-					featureGroup.addTemplateMethodGroup(tmg);
-					tmg.setTFG(featureGroup);
+					subCandidateTemplate.addTemplateMethodGroup(tmg);
+					tmg.setSubCandidateTemplate(subCandidateTemplate);
 					//tmg.mark();
 				}
 				
-				features.add(featureGroup);
+				list.add(subCandidateTemplate);
 			}
 			
 			//System.out.println(count);
@@ -60,14 +60,14 @@ public class CandidateTemplateBuilder {
 			e.printStackTrace();
 		}
 		
-		return features;
+		return list;
 	}
 	
-	private void buildCallingRelationsForTemplateFeatures(ArrayList<SubCandidateTemplate> features){
-		for(SubCandidateTemplate callerTFG: features){
+	private void buildCallingRelationsForTemplateFeatures(ArrayList<SubCandidateTemplate> list){
+		for(SubCandidateTemplate callerTFG: list){
 			for(TemplateMethodGroup callerTMG: callerTFG.getTemplateMethodGroupList()){
 				for(TemplateMethodGroup calleeTMG: callerTMG.getCalleeGroup()){
-					SubCandidateTemplate calleeTFG = calleeTMG.getTFG();
+					SubCandidateTemplate calleeTFG = calleeTMG.getSubCandiateTemplate();
 					
 					if(calleeTFG == null){
 						System.out.print("");
@@ -93,21 +93,21 @@ public class CandidateTemplateBuilder {
 	 * Calling Relation is for edge.
 	 * @param tfgList
 	 */
-	private void connectTFGsByCallingRelation(CandidateTemplate tfgList){
+	private void connectSubCandidateTemplatesByCallingRelation(ArrayList<SubCandidateTemplate> list){
 
-		SubCandidateTemplate[] groupList = tfgList.toArray(new SubCandidateTemplate[0]);
+		SubCandidateTemplate[] groupList = list.toArray(new SubCandidateTemplate[0]);
 
 		for (int i = 0; i < groupList.length; i++) {
-			SubCandidateTemplate tfg = groupList[i];
+			SubCandidateTemplate subTemplate = groupList[i];
 			// the group has not been visited
-			if (!tfg.isVisited()) {
-				CandidateTemplate features = new CandidateTemplate();
-				features.add(tfg);
+			if (!subTemplate.isVisited()) {
+				CandidateTemplate candidateTemplate = new CandidateTemplate();
+				candidateTemplate.add(subTemplate);
 
-				gatherNeighbourTMGs(features, tfg);
+				gatherNeighbourTMGs(candidateTemplate, subTemplate);
 				//gatherCallerTMGs(features, tfg);
 
-				this.featureGroups.add(features);
+				this.candidateTemplateList.add(candidateTemplate);
 			}
 		}
 	}
@@ -225,11 +225,11 @@ public class CandidateTemplateBuilder {
 
 	
 
-	public TotalCandidateTemplates getFeatureGroups() {
-		return featureGroups;
+	public CandidateTemplateList getCandidateTemplateList() {
+		return candidateTemplateList;
 	}
 
-	public void setFeatureGroups(TotalCandidateTemplates featureGroups) {
-		this.featureGroups = featureGroups;
+	public void setCandidateTemplateList(CandidateTemplateList featureGroups) {
+		this.candidateTemplateList = featureGroups;
 	}
 }

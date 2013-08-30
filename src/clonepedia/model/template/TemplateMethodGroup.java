@@ -34,7 +34,7 @@ public class TemplateMethodGroup implements Serializable, Comparable<TemplateMet
 	private ArrayList<TemplateMethodGroup> calleeGroup = new ArrayList<TemplateMethodGroup>();
 	private ArrayList<TemplateMethodGroup> callerGroup = new ArrayList<TemplateMethodGroup>();
 	
-	private SubCandidateTemplate templateFeatureGroup;
+	private SubCandidateTemplate subCandidateTemplate;
 	private boolean visited;
 	
 	public TemplateMethodGroup(){
@@ -241,12 +241,12 @@ public class TemplateMethodGroup implements Serializable, Comparable<TemplateMet
 		return types;
 	}
 
-	public SubCandidateTemplate getTFG() {
-		return templateFeatureGroup;
+	public SubCandidateTemplate getSubCandiateTemplate() {
+		return subCandidateTemplate;
 	}
 
-	public void setTFG(SubCandidateTemplate templateFeatureGroup) {
-		this.templateFeatureGroup = templateFeatureGroup;
+	public void setSubCandidateTemplate(SubCandidateTemplate templateFeatureGroup) {
+		this.subCandidateTemplate = templateFeatureGroup;
 	}
 
 	public ArrayList<TemplateMethodGroup> getContainedTMGs() {

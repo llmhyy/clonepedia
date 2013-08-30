@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import clonepedia.model.ontology.CloneSets;
 
-public class TotalCandidateTemplates extends ArrayList<CandidateTemplate> {
+public class CandidateTemplateList extends ArrayList<CandidateTemplate> {
 
 	/**
 	 * 
@@ -13,9 +13,9 @@ public class TotalCandidateTemplates extends ArrayList<CandidateTemplate> {
 
 	private CloneSets sets;
 	
-	public TotalCandidateTemplates(){}
+	public CandidateTemplateList(){}
 	
-	public TotalCandidateTemplates(CloneSets sets) {
+	public CandidateTemplateList(CloneSets sets) {
 		super();
 		this.sets = sets;
 	}
