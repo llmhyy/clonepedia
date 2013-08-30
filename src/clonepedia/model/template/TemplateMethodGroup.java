@@ -199,9 +199,13 @@ public class TemplateMethodGroup implements Serializable, Comparable<TemplateMet
 		if(cluster instanceof TemplateMethodGroup){
 			TemplateMethodGroup tmg = (TemplateMethodGroup)cluster;
 			
-			if(tmg.toString().contains("alignFigure") && this.toString().contains("alignFigure")){
+			/*if(tmg.toString().contains("run") && this.toString().contains("construct")){
 				System.out.print("");
 			}
+			
+			if(tmg.toString().contains("construct") && this.toString().contains("run")){
+				System.out.print("");
+			}*/
 			
 			ArrayList<ComplexType> types1 = getDeclaringClassFromTemplateMethodGroup(this);
 			ArrayList<ComplexType> types2 = getDeclaringClassFromTemplateMethodGroup(tmg);
@@ -213,7 +217,7 @@ public class TemplateMethodGroup implements Serializable, Comparable<TemplateMet
 				}
 			}
 			
-			return 1 - count/(types1.size()+types2.size()-count);
+			return 1 - 2*count/(types1.size()+types2.size());
 		}
 		
 		return 1;
