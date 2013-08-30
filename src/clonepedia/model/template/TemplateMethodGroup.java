@@ -210,17 +210,53 @@ public class TemplateMethodGroup implements Serializable, Comparable<TemplateMet
 			ArrayList<ComplexType> types1 = getDeclaringClassFromTemplateMethodGroup(this);
 			ArrayList<ComplexType> types2 = getDeclaringClassFromTemplateMethodGroup(tmg);
 			
-			double count = 0;
+			double typeCount = 0;
 			for(ComplexType type: types1){
 				if(types2.contains(type)){
-					count++;
+					typeCount++;
 				}
 			}
 			
-			return 1 - 2*count/(types1.size()+types2.size());
+			ArrayList<String> packs1 = getPackagesFromTemplateMethodGroup(this);
+			ArrayList<String> packs2 = getPackagesFromTemplateMethodGroup(tmg);
+			
+			double packCount = 0;
+			for(String pack: packs1){
+				if(packs2.contains(pack)){
+					packCount++;
+				}
+			}
+			
+			double typeSimilarity = 2*typeCount/(types1.size()+types2.size());
+			double packSimilarity = 2*packCount/(packs1.size()+packs2.size());
+			
+			return 1 - (typeSimilarity+packSimilarity)/2;
+			
 		}
 		
 		return 1;
+	}
+	
+	private ArrayList<String> getPackagesFromTemplateMethodGroup(TemplateMethodGroup tmg){
+		ArrayList<String> packages = new ArrayList<String>();
+		for(Method m: tmg.getMethods()){
+			ComplexType type = m.getOwner();
+			String packageString = type.getFullName();
+			packageString = packageString.substring(0, packageString.lastIndexOf("."));
+			String[] strList = MinerUtil.splitString(MinerUtil.DotSplitting, packageString);
+			
+			for(String pack: strList){
+				/*if(!pack.equals("org") && !pack.equals("jhotdraw")){
+					packages.add(pack);					
+				}*/
+				
+				if(!pack.equals("clonepedia")){
+					packages.add(pack);					
+				}
+			}
+		}
+		
+		return packages;
 	}
 
 	private ArrayList<ComplexType> getDeclaringClassFromTemplateMethodGroup(TemplateMethodGroup tmg){

@@ -418,7 +418,7 @@ public class MinerUtil {
 		return false;
 	}
 	
-	private static String[] splitString(int splittingStype, String string){
+	public static String[] splitString(int splittingStype, String string){
 		if(splittingStype == CamelSplitting){
 			return splitCamelString(string);
 		}
