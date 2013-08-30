@@ -44,6 +44,12 @@ public class CandidateTemplateBuilder {
 		
 		TemplateMethodGroup[] groupList = this.methodGroupList.toArray(new TemplateMethodGroup[0]);
 		
+		for(int i=0; i<groupList.length; i++){
+			if(groupList[i].toString().contains("main")){
+				System.out.print("");
+			}
+		}
+		
 		HierarchyClusterAlgorithm algorithm = new HierarchyClusterAlgorithm(groupList, 
 				Settings.thresholdDistanceForTMGLocationClustering, HierarchyClusterAlgorithm.SingleLinkage);
 		try {
@@ -51,6 +57,11 @@ public class CandidateTemplateBuilder {
 			
 			//int count = 0;
 			for(NormalCluster cluster: clusters){
+				
+				/*if(cluster.toString().contains("main")){
+					System.out.print("");
+				}*/
+				
 				SubCandidateTemplate subCandidateTemplate = new SubCandidateTemplate();
 				
 				for(IClusterable clusterable: cluster){
@@ -61,6 +72,7 @@ public class CandidateTemplateBuilder {
 				}
 				
 				list.add(subCandidateTemplate);
+				//count += cluster.size();
 			}
 			
 			//System.out.println(count);
@@ -110,6 +122,11 @@ public class CandidateTemplateBuilder {
 		}
 		
 		for(SubCandidateTemplate sct: list){
+			
+			/*if(sct.toString().contains("main")){
+				System.out.println();
+			}*/
+			
 			if(!sct.isVisited() && sct.isValidateNode()){
 				sct.buildDepthSet();
 				
