@@ -14,6 +14,11 @@ import clonepedia.model.ontology.Method;
 import clonepedia.util.MinerUtil;
 /**
  * 
+ * renaming, the concept is as follows:
+ * A TMG contains several corresponding methods
+ * A SubCandidateTemplate contains TMGs with similar locations
+ * A CandidateTemplate contains several SubCaididateTemplate with call relations
+ * 
  * @author linyun
  *
  */

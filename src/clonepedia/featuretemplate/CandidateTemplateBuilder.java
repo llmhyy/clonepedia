@@ -10,7 +10,16 @@ import clonepedia.model.template.SubCandidateTemplate;
 import clonepedia.model.template.TemplateMethodGroup;
 import clonepedia.model.template.CandidateTemplateList;
 import clonepedia.util.Settings;
-
+/**
+ * 
+ * renaming, the concept is as follows:
+ * A TMG contains several corresponding methods
+ * A SubCandidateTemplate contains TMGs with similar locations
+ * A CandidateTemplate contains several SubCaididateTemplate with call relations
+ * 
+ * @author linyun
+ *
+ */
 public class CandidateTemplateBuilder {
 
 	private ArrayList<TemplateMethodGroup> methodGroupList;
@@ -25,6 +34,7 @@ public class CandidateTemplateBuilder {
 		
 		buildCallingRelationsForTemplateFeatures(subCandidateTemplateList);
 		
+		//connectSubCandidateTemplatesByCallingRelation_(subCandidateTemplateList);
 		connectSubCandidateTemplatesByCallingRelation(subCandidateTemplateList);
 	}
 	
@@ -95,6 +105,29 @@ public class CandidateTemplateBuilder {
 	 */
 	private void connectSubCandidateTemplatesByCallingRelation(ArrayList<SubCandidateTemplate> list){
 
+		for(SubCandidateTemplate sct: list){
+			sct.buildReachableList();
+		}
+		
+		for(SubCandidateTemplate sct: list){
+			if(!sct.isVisited() && sct.isValidateNode()){
+				sct.buildDepthSet();
+				
+				CandidateTemplate ct = new CandidateTemplate();
+				for(SubCandidateTemplate sct0: sct.getDepthSet()){
+					ct.add(sct0);
+				}
+				this.candidateTemplateList.add(ct);
+			}
+		}
+	}
+	
+	/**
+	 * Old method, connect sub-candidate templates with all its caller and callee.
+	 * @param list
+	 */
+	private void connectSubCandidateTemplatesByCallingRelation_(ArrayList<SubCandidateTemplate> list){
+
 		SubCandidateTemplate[] groupList = list.toArray(new SubCandidateTemplate[0]);
 
 		for (int i = 0; i < groupList.length; i++) {
@@ -115,10 +148,10 @@ public class CandidateTemplateBuilder {
 	private void gatherNeighbourTMGs(CandidateTemplate features,
 			SubCandidateTemplate group) {
 
-		if (group.getCalleeTFG().size() == 0 && group.getCallerTFG().size() == 0) {
+		if (features.size() == 0/*group.getCalleeSubCT().size() == 0 && group.getCallerSubCT().size() == 0*/) {
 			return;
 		} else {
-			for (SubCandidateTemplate calleeGroup : group.getCalleeTFG()) {
+			for (SubCandidateTemplate calleeGroup : group.getCalleeSubCT()) {
 				calleeGroup.mark();
 				if (!features.contains(calleeGroup)) {
 					features.add(calleeGroup);
@@ -126,13 +159,13 @@ public class CandidateTemplateBuilder {
 				}
 			}
 			
-			/*for (TemplateFeatureGroup callerGroup : group.getCallerTFG()) {
+			for (SubCandidateTemplate callerGroup : group.getCallerSubCT()) {
 				callerGroup.mark();
 				if (!features.contains(callerGroup)) {
 					features.add(callerGroup);
 					gatherNeighbourTMGs(features, callerGroup);
 				}
-			}*/
+			}
 		}
 	}
 	

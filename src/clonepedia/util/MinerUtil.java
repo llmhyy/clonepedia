@@ -11,6 +11,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -424,5 +426,24 @@ public class MinerUtil {
 			return string.split("\\.");
 		}
 		return null;
+	}
+
+	public static boolean isTwoSetSame(HashSet set1, HashSet set2) {
+		if(set1.size() == set2.size()){
+			HashSet clone = new HashSet(set2); 
+		    Iterator it = set1.iterator();
+		    while (it.hasNext() ){
+		        Object obj = it.next();
+		        if (clone.contains(obj)){ 
+		            clone.remove(obj);
+		        } else {
+		            return false;
+		        }
+		    }
+		    
+		    return true;
+		}
+		
+		return false;
 	}
 }
