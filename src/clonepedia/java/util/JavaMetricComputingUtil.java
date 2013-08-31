@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 import clonepedia.model.ontology.Class;
+import clonepedia.model.ontology.CloneInstance;
+import clonepedia.model.ontology.CloneSet;
 import clonepedia.model.ontology.ComplexType;
 import clonepedia.model.ontology.Interface;
 import clonepedia.model.ontology.Method;
 import clonepedia.model.ontology.VarType;
 import clonepedia.model.template.TemplateMethodGroup;
+import clonepedia.util.DefaultComparator;
 import clonepedia.util.MinerUtil;
 
 public class JavaMetricComputingUtil {
@@ -38,6 +41,30 @@ public class JavaMetricComputingUtil {
 		}
 		
 		return 2*count/(class1.getMethods().size() + class2.getMethods().size());
+	}
+	
+	public static double compareMethodName(String methodName1, String methodName2){
+		String[] array1 = MinerUtil.splitCamelString(methodName1);
+		String[] array2 = MinerUtil.splitCamelString(methodName2);
+		
+		ArrayList<String> list1 = new ArrayList<String>();
+		ArrayList<String> list2 = new ArrayList<String>();
+		
+		for(int i=0; i<array1.length; i++){
+			list1.add(array1[i]);
+		}
+		
+		for(int i=0; i<array2.length; i++){
+			list2.add(array2[i]);
+		}
+		
+		try {
+			return 1 - MinerUtil.computeAdjustedLevenshteinDistance(list1, list2, new DefaultComparator());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return 0;
 	}
 	
 	public static double comparePackageLocation(String package1, String package2){
@@ -81,6 +108,38 @@ public class JavaMetricComputingUtil {
 		}
 		else
 			return compareStringList(paramList1, paramList2);
+	}
+	
+	public static double compareMethodContent(Method m1, Method m2){
+		HashSet<CloneInstance> set1 = m1.getCloneInstances();
+		HashSet<CloneInstance> set2 = m2.getCloneInstances();
+		
+		ArrayList<CloneSet> list = new ArrayList<CloneSet>();
+		for(CloneInstance instance1: set1){
+			for(CloneInstance instance2: set2){
+				if(instance1.getCloneSet().getId().equals(instance2.getCloneSet().getId())){
+					list.add(instance1.getCloneSet());
+					break;
+				}
+			}
+		}
+		
+		double commonLength = 0;
+		for(CloneSet set: list){
+			CloneInstance instance = set.toArray(new CloneInstance[0])[0];
+			double len = instance.getEndLine() - instance.getStartLine() + 1;
+			if(len > commonLength){
+				commonLength = len;
+			}
+		}
+		
+		int totalLengh = m1.getLength() + m2.getLength();
+		if(totalLengh != 0){
+			return 2*commonLength/totalLengh;			
+		}
+		else{
+			return 0;
+		}
 	}
 	
 	private static ArrayList<String> convert(String[] strList){

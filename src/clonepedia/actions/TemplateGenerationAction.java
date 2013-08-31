@@ -15,6 +15,7 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
 import clonepedia.featuretemplate.CandidateTemplateBuilder;
 import clonepedia.featuretemplate.TMGBuilder;
+import clonepedia.featuretemplate.TMGBuilder2;
 import clonepedia.featuretemplate.TemplateBuilder;
 import clonepedia.model.ontology.CloneSets;
 import clonepedia.model.template.CandidateTemplate;
@@ -35,11 +36,13 @@ public class TemplateGenerationAction implements IWorkbenchWindowActionDelegate 
 		Job job = new Job("building template"){
 			protected IStatus run(IProgressMonitor monitor) {
 				
+				monitor.beginTask("Template generation start", 100);
+				
 				CloneSets sets = (CloneSets)MinerUtil.deserialize(Settings.ontologyFile, true);
 				sets.setPathComparator(new LevenshteinPathComparator());
 				
-				TMGBuilder builder = new TMGBuilder(sets);
-				builder.build();
+				TMGBuilder2 builder = new TMGBuilder2(sets);
+				builder.build(monitor);
 				HashSet<TemplateMethodGroup> templateMethodGroupList = builder.getMethodGroupList();
 				
 				ArrayList<TemplateMethodGroup> list = new ArrayList<TemplateMethodGroup>();
@@ -52,9 +55,21 @@ public class TemplateGenerationAction implements IWorkbenchWindowActionDelegate 
 					}
 				}
 				
+				System.out.println("significant TMG: " + sigificantTMGList.size());
+				
 				CandidateTemplateBuilder featureBuilder = new CandidateTemplateBuilder(list);
-				featureBuilder.generateTemplateFeatures();
+				featureBuilder.generateTemplateFeatures(monitor);
 				CandidateTemplateList featureGroups = featureBuilder.getCandidateTemplateList();
+				
+				try {
+					MinerUtil.serialize(featureGroups, "featureGroups", false);
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+				
+				System.out.println("cadidate template list: " + featureGroups.size());
+				
+				//CandidateTemplateList featureGroups = (CandidateTemplateList)MinerUtil.deserialize("featureGroups", false);
 				
 				CandidateTemplateList significantGroups = new CandidateTemplateList();
 				for(CandidateTemplate feature: featureGroups){
@@ -76,11 +91,15 @@ public class TemplateGenerationAction implements IWorkbenchWindowActionDelegate 
 					}
 				}
 				
-				TMGList tmgList = new TMGList(sets, list);
+				//System.out.println("cadidate template list: " + featureGroups.size());
+				
+				monitor.worked(30);
+				
+				//TMGList tmgList = new TMGList(sets, list);
 				//TFGList tfgList = new TFGList(sets, featureGroups);
 				
 				try {
-					MinerUtil.serialize(tmgList, "tmgList", false);
+					//MinerUtil.serialize(tmgList, "tmgList", false);
 					MinerUtil.serialize(significantGroups, "totalTFGs", false);
 				} catch (Exception e) {
 					e.printStackTrace();

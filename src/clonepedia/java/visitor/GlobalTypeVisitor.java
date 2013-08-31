@@ -191,11 +191,22 @@ public class GlobalTypeVisitor extends ASTVisitor {
 				md.accept(visitor);
 				HashSet<IMethodBinding> invokedMethodBindings = visitor.getInvokedMethodBindings();
 				for(IMethodBinding imb: invokedMethodBindings){
-					Method invokedMethod = MinerUtilforJava.getMethodfromBinding(imb, project, cu, fetcher);
-					invokedMethod = fetcher.getTheExistingMethodorCreateOne(invokedMethod);
 					
-					invokedMethod.addCallerMethod(method);
-					method.addCalleeMethod(invokedMethod);
+					/*if(imb.toString().contains("clonepedia.model.ontology.VariableUseType valueOf(java.lang.String)")){
+						System.out.println();
+					}*/
+					
+					Method invokedMethod = MinerUtilforJava.getMethodfromBinding(imb, project, cu, fetcher);
+					
+					try{
+						invokedMethod = fetcher.getTheExistingMethodorCreateOne(invokedMethod);
+						
+						invokedMethod.addCallerMethod(method);
+						method.addCalleeMethod(invokedMethod);						
+					}
+					catch(NullPointerException e){
+						e.printStackTrace();
+					}
 				}
 			}
 		}

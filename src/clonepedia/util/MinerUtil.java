@@ -165,9 +165,11 @@ public class MinerUtil {
 			}
 		}
 		
-		/*while(k >= 0){
-			commonList[k--] = new Placeholder();
-		}*/
+		while(i > 0 || j > 0){
+			commonList.add(new Placeholder());
+			i--;
+			j--;
+		}
 		
 		Object[] commonArray = new Object[commonList.size()];
 		for(int m=0; m<commonArray.length; m++){
@@ -269,11 +271,12 @@ public class MinerUtil {
 			comparator = new DefaultComparator(); 
 		
 		double value = computeLevenshteinDistance(seq1, seq2, comparator);
-		//double maxLen = (seq1.size() > seq2.size())? seq1.size() : seq2.size();
+		double maxLen = (seq1.size() > seq2.size())? seq1.size() : seq2.size();
 		//double minLen = (seq1.size() < seq2.size())? seq1.size() : seq2.size();
 		
 		//return (maxLen/minLen)*(2*value)/(maxLen + minLen);
-		return (2*value)/(seq1.size() + seq2.size());
+		//return (2*value)/(seq1.size() + seq2.size());
+		return value/maxLen;
 	}
 	
 	public static double getSmallestValue(double entry1, double entry2, double entry3){

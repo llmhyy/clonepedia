@@ -6,7 +6,12 @@ import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.util.ArrayList;
 
+import clonepedia.featuretemplate.TemplateBuilder;
 import clonepedia.model.cluster.SyntacticCluster;
+import clonepedia.model.template.CandidateTemplate;
+import clonepedia.model.template.CandidateTemplateList;
+import clonepedia.model.template.SubCandidateTemplate;
+import clonepedia.model.template.Template;
 import clonepedia.util.MinerUtil;
 
 public class TestSyntacticResult {
@@ -22,7 +27,7 @@ public class TestSyntacticResult {
 		ArrayList<SyntacticCluster> list = (ArrayList<SyntacticCluster>)mu.deserialize(resultFile, false);
 		System.out.print("");*/
 		
-		TestSyntacticResult tsr = new TestSyntacticResult();
+		/*TestSyntacticResult tsr = new TestSyntacticResult();
 		tsr.addPoperpertyChangeListener(new PropertyChangeListener() {
 			
 			@Override
@@ -32,7 +37,29 @@ public class TestSyntacticResult {
 			}
 		});
 		
-		tsr.setA(1);
+		tsr.setA(1);*/
+		
+		CandidateTemplateList featureGroups = (CandidateTemplateList)MinerUtil.deserialize("E:\\eclipse_for_model\\configurations\\Clonepedia\\featureGroups", true);
+		
+		CandidateTemplateList significantGroups = new CandidateTemplateList();
+		for(CandidateTemplate feature: featureGroups){
+			int count = 0;
+			for(SubCandidateTemplate tfg: feature){
+				count += tfg.getTemplateMethodGroupList().size();
+			}
+			if(count > 3){
+				
+				/*if(feature.toString().contains("QuadNode")){
+					System.out.println();
+				}*/
+				
+				TemplateBuilder templateBuilder = new TemplateBuilder(feature);
+				Template template = templateBuilder.buildTemplate();
+				
+				feature.setTemplate(template);
+				significantGroups.add(feature);
+			}
+		}
 		
 	}
 	

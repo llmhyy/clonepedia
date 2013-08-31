@@ -2,6 +2,8 @@ package clonepedia.featuretemplate;
 
 import java.util.ArrayList;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+
 import clonepedia.model.cluster.IClusterable;
 import clonepedia.model.cluster.NormalCluster;
 import clonepedia.model.cluster.hierarchy.HierarchyClusterAlgorithm;
@@ -29,13 +31,22 @@ public class CandidateTemplateBuilder {
 		this.methodGroupList = methodGroupList;
 	}
 
-	public void generateTemplateFeatures() {
+	public void generateTemplateFeatures(IProgressMonitor monitor) {
 		ArrayList<SubCandidateTemplate> subCandidateTemplateList = clusterTMGByLocation();
+		
+		monitor.worked(20);
+		System.out.println("cluster TMG by location: " + subCandidateTemplateList.size());
 		
 		buildCallingRelationsForTemplateFeatures(subCandidateTemplateList);
 		
+		monitor.worked(10);
+		System.out.println("build calling relation for sub canidate template");
+		
 		//connectSubCandidateTemplatesByCallingRelation_(subCandidateTemplateList);
 		connectSubCandidateTemplatesByCallingRelation(subCandidateTemplateList);
+		
+		monitor.worked(10);
+		System.out.println("connect sub candidate template: " + candidateTemplateList.size());
 	}
 	
 	private ArrayList<SubCandidateTemplate> clusterTMGByLocation(){

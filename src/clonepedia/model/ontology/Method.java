@@ -20,6 +20,8 @@ public class Method extends MergeableSimpleOntologicalElement implements  IClust
 	private ArrayList<Variable> parameters = new ArrayList<Variable>();
 	private HashSet<CloneInstance> cloneInstances = new HashSet<CloneInstance>();
 	
+	private int length = 0;
+	
 	private TreeSet<Method> callerMethods = new TreeSet<Method>();
 	private TreeSet<Method> calleeMethods = new TreeSet<Method>();
 	private ArrayList<TemplateMethodGroup> templateGroupList = new ArrayList<TemplateMethodGroup>();
@@ -260,8 +262,15 @@ public class Method extends MergeableSimpleOntologicalElement implements  IClust
 		if(clusterable instanceof Method){
 			Method tobeComparedMethod = (Method)clusterable;
 			
+			/*if(this.getMethodName().contains("hookActionsOnToolBar") && tobeComparedMethod.getMethodName().contains("hookActionsOnToolBar")){
+				System.out.println();
+			}*/
+			
 			String thisLocation = this.owner.getFullName();
 			String thatLocation = tobeComparedMethod.getOwner().getFullName();
+			
+			double methodNameScore = JavaMetricComputingUtil.
+					compareMethodName(this.getMethodName(), tobeComparedMethod.getMethodName());
 			
 			double packageLocationScore = JavaMetricComputingUtil.
 					comparePackageLocation(thisLocation, thatLocation);
@@ -277,7 +286,10 @@ public class Method extends MergeableSimpleOntologicalElement implements  IClust
 			double paramScore = JavaMetricComputingUtil.
 					compareParameterList(this.getParamTypeStringList(), tobeComparedMethod.getParamTypeStringList());
 			
-			return 1 - (packageLocationScore + classLocationScore + returnTypeScore + paramScore)/4;
+			double contentScore = JavaMetricComputingUtil.compareMethodContent(this, tobeComparedMethod);
+			
+			//return 1 - (packageLocationScore + classLocationScore + returnTypeScore + paramScore)/4;
+			return 1 - (methodNameScore + packageLocationScore + classLocationScore + returnTypeScore + paramScore + contentScore)/6;
 		}
 		
 		else return 1;
@@ -321,5 +333,13 @@ public class Method extends MergeableSimpleOntologicalElement implements  IClust
 	public void addTemplateGroup(TemplateMethodGroup group){
 		if(!this.templateGroupList.contains(group))
 			this.templateGroupList.add(group);
+	}
+
+	public int getLength() {
+		return length;
+	}
+
+	public void setLength(int length) {
+		this.length = length;
 	}
 }

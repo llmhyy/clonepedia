@@ -30,6 +30,7 @@ import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.TypeLiteral;
 import org.eclipse.jdt.core.dom.BooleanLiteral;
+import org.eclipse.jdt.internal.compiler.ast.ConstructorDeclaration;
 import org.eclipse.jdt.internal.corext.callhierarchy.CallHierarchy;
 import org.eclipse.jdt.internal.corext.callhierarchy.MethodWrapper;
 
@@ -418,8 +419,18 @@ public class MinerUtilforJava {
 			VarType paramType = getVariableType(paramList[i], project, cu, fetcher);
 			parameters.add(new Variable("", paramType, false));
 		}
-
-		return new Method(methodOwner, methodName, returnType, parameters);
+		Method method = new Method(methodOwner, methodName, returnType, parameters);
+		
+		ASTNode node = cu.findDeclaringNode(methodBinding);
+		if(null != node){
+			MethodDeclaration md = (MethodDeclaration)node;
+			int startLine = cu.getLineNumber(md.getStartPosition());
+			int endLine = cu.getLineNumber(md.getStartPosition() + md.getLength());
+			
+			method.setLength(endLine - startLine + 1);
+			
+		}
+		return method;
 	}
 	
 	public static Field getFieldfromBinding(IVariableBinding variableBinding, Project project, CompilationUnit cu, OntologicalDataFetcher fetcher) throws Exception{
