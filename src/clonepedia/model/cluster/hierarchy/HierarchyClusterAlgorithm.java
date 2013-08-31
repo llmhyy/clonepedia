@@ -121,6 +121,7 @@ public class HierarchyClusterAlgorithm {
 					// long start = System.currentTimeMillis();
 					matrix[i][j] = calculateSingleElementClusterDistance(
 							cluster1, cluster2);
+					System.out.print("");
 					// long end = System.currentTimeMillis();
 					// long time = end-start;
 					// System.out.println("Time used in calculateSingleElementClusterDistance:"
@@ -131,7 +132,6 @@ public class HierarchyClusterAlgorithm {
 					 * "*" + cluster1.get(0).getPatterns().size() + ":" + time);
 					 * }
 					 */
-					// System.out.print("");
 				} else
 					matrix[i][j] = -1;
 

@@ -77,6 +77,14 @@ public class TemplateBuilder {
 					if(owner.isClass()){
 						Class declaringClass = (Class)owner;
 						declaringClassSet.add(declaringClass);
+						
+						if(declaringClass.getFullName().contains("ExitAction.Ano")){
+							System.out.println();
+						}
+						
+						if(declaringClass.isInnerClass()){
+							declaringClassSet.add(declaringClass.getOuterClass());
+						}
 					}
 				}
 			}
@@ -116,16 +124,20 @@ public class TemplateBuilder {
 
 	private void abstractClasses(){
 		for(Class abstractedClass: this.abstractClassList){
-			if(abstractedClass.getSupportingElements().size() > 1){
-				mergeName(abstractedClass);
-				
-				mergeSuperType(abstractedClass);
-				//mergeInterfaces(abstractedClass);
-				mergeMethods(abstractedClass);			
-			}
-			else{
-				mergeMethods(abstractedClass);	
-			}
+			abstractClass(abstractedClass);
+		}
+	}
+	
+	private void abstractClass(Class abstractedClass){
+		if(abstractedClass.getSupportingElements().size() > 1){
+			mergeName(abstractedClass);
+			
+			mergeSuperType(abstractedClass);
+			//mergeInterfaces(abstractedClass);
+			mergeMethods(abstractedClass);			
+		}
+		else{
+			mergeMethods(abstractedClass);	
 		}
 	}
 

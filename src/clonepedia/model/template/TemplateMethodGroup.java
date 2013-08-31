@@ -49,7 +49,7 @@ public class TemplateMethodGroup implements Serializable, Comparable<TemplateMet
 	public String toString(){
 		StringBuffer buf = new StringBuffer();
 		for(Method m: methods){
-			buf.append(m.toString() + "\n");
+			buf.append(m.getFullName().toString() + "\n");
 		}
 		
 		for(CloneSet set: this.relatedCloneSets){
@@ -246,13 +246,17 @@ public class TemplateMethodGroup implements Serializable, Comparable<TemplateMet
 			String[] strList = MinerUtil.splitString(MinerUtil.DotSplitting, packageString);
 			
 			for(String pack: strList){
-				/*if(!pack.equals("org") && !pack.equals("jhotdraw")){
-					packages.add(pack);					
-				}*/
-				
-				if(!pack.equals("clonepedia")){
-					packages.add(pack);					
+				if(!pack.equals("org") && !pack.equals("jhotdraw")){
+					//if(!packages.contains(pack)){
+						packages.add(pack);											
+					//}
 				}
+				
+				/*if(!pack.equals("clonepedia")){
+					if(!packages.contains(pack)){
+						packages.add(pack);											
+					}				
+				}*/
 			}
 		}
 		
