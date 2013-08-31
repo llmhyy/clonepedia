@@ -99,7 +99,7 @@ public class Settings {
 	
 	//======================================================================
 	public static int templateMethodGroupCallingStrength = 2;
-	public static int innerOuterClassRelationAbstractionStrength = 2;
+	public static double innerOuterClassRelationAbstractionRatio = 0.5d;
 	public static int abstractMethodGroupCallingStrength = 2;
 	
 	//======================================================================

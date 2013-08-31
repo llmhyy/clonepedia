@@ -64,6 +64,10 @@ public class TemplateGenerationAction implements IWorkbenchWindowActionDelegate 
 					}
 					if(count > 3){
 						
+						/*if(feature.toString().contains("QuadNode")){
+							System.out.println();
+						}*/
+						
 						TemplateBuilder templateBuilder = new TemplateBuilder(feature);
 						Template template = templateBuilder.buildTemplate();
 						

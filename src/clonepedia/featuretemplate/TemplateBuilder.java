@@ -78,9 +78,9 @@ public class TemplateBuilder {
 						Class declaringClass = (Class)owner;
 						declaringClassSet.add(declaringClass);
 						
-						if(declaringClass.getFullName().contains("ExitAction.Ano")){
+						/*if(declaringClass.getFullName().contains("ExitAction.Ano")){
 							System.out.println();
-						}
+						}*/
 						
 						if(declaringClass.isInnerClass()){
 							declaringClassSet.add(declaringClass.getOuterClass());
@@ -111,8 +111,11 @@ public class TemplateBuilder {
 				else{
 					Class instanceClass = (Class)cluster.get(0); 
 					abstractedClass.setFullName(instanceClass.getFullName());
+					abstractedClass.getSupportingElements().add(instanceClass);
 					abstractedClass.setProject(instanceClass.getProject());
-					abstractedClass.getSupportingElements().add(abstractedClass);
+					//abstractedClass.setOuterClass(instanceClass.getOuterClass());
+					//abstractedClass.setSuperClass(instanceClass.getSuperClass());
+					//abstractedClass.setImplementedInterfaces(instanceClass.getImplementedInterfaces());
 				}
 				this.abstractClassList.add(abstractedClass);
 			}
@@ -161,7 +164,7 @@ public class TemplateBuilder {
 	
 	private boolean couldAnAbstractClassBeConsideredAsInnerClassOfAnother(Class innerAbClass, Class outerAbClass){
 		
-		int count = 0;
+		double count = 0;
 		for(ProgrammingElement innerElement: innerAbClass.getSupportingElements()){
 			Class innerClass = (Class)innerElement;
 			Class outerClass = innerClass.getOuterClass();
@@ -171,7 +174,14 @@ public class TemplateBuilder {
 			}
 		}
 		
-		return count >= Settings.innerOuterClassRelationAbstractionStrength;
+		if(innerAbClass.getSupportingElements().size() == 0){
+			return false;
+		}
+		else{
+			double ratio = count/innerAbClass.getSupportingElements().size();
+			return ratio >= Settings.innerOuterClassRelationAbstractionRatio;
+			
+		}
 	}
 	
 	private boolean isAbstractClassContainingInnerClass(Class abstractClass){
