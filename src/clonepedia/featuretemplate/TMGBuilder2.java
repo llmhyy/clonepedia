@@ -69,10 +69,12 @@ public class TMGBuilder2 {
 				if(cluster.size() > 1){
 					TemplateMethodGroup tmg = new TemplateMethodGroup();
 					for(IClusterable clusterable: cluster){
-						tmg.addMethod((Method)clusterable);
+						Method m = (Method)clusterable;
+						tmg.addMethod(m);
+						m.addTemplateGroup(tmg);
 					}
 					
-					this.methodGroupList.add(tmg);					
+					this.methodGroupList.add(tmg);	
 				}
 				
 			}

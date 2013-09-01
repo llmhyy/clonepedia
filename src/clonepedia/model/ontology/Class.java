@@ -194,6 +194,10 @@ public class Class extends ComplexType implements VarType, IClusterable{
 	public boolean isInnerClass(){
 		return this.getOuterClass() != null;
 	}
+	
+	public boolean isAnonymousClass(){
+		return this.getFullName().contains("Anonymous");
+	}
 
 	@Override
 	public void addDistinctMethod(Method method) {
@@ -259,7 +263,7 @@ public class Class extends ComplexType implements VarType, IClusterable{
 			double typeScore = JavaMetricComputingUtil.compareClassLocation(toBeComparedClass, this);
 			double contentScore = JavaMetricComputingUtil.compareClassContent(toBeComparedClass, this);
 			
-			//System.out.print("");
+			System.out.print("");
 			
 			return 1 - (3*typeScore + 7*contentScore)/10;
 		}

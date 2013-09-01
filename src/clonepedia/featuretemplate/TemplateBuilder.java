@@ -92,7 +92,7 @@ public class TemplateBuilder {
 		
 		Class[] declaringClassArray = declaringClassSet.toArray(new Class[0]);
 		HierarchyClusterAlgorithm algorithm = new HierarchyClusterAlgorithm(declaringClassArray, 
-				/*0.7*/Settings.thresholdDistanceForDeclaringClassClustering, HierarchyClusterAlgorithm.CompleteLinkage);
+				0.7/*Settings.thresholdDistanceForDeclaringClassClustering*/, HierarchyClusterAlgorithm.CompleteLinkage);
 		
 		ArrayList<NormalCluster> clusterList;
 		try {

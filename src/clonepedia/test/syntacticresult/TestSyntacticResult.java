@@ -39,7 +39,7 @@ public class TestSyntacticResult {
 		
 		tsr.setA(1);*/
 		
-		CandidateTemplateList featureGroups = (CandidateTemplateList)MinerUtil.deserialize("E:\\eclipse_for_model\\configurations\\Clonepedia\\featureGroups", true);
+		CandidateTemplateList featureGroups = (CandidateTemplateList)MinerUtil.deserialize("E:\\eclipse_for_model\\configurations\\JHotDraw7.0.6\\featureGroups", true);
 		
 		CandidateTemplateList significantGroups = new CandidateTemplateList();
 		for(CandidateTemplate feature: featureGroups){
@@ -49,9 +49,9 @@ public class TestSyntacticResult {
 			}
 			if(count > 3){
 				
-				/*if(feature.toString().contains("QuadNode")){
+				if(feature.toString().contains("Main")){
 					System.out.println();
-				}*/
+				}
 				
 				TemplateBuilder templateBuilder = new TemplateBuilder(feature);
 				Template template = templateBuilder.buildTemplate();
@@ -59,6 +59,13 @@ public class TestSyntacticResult {
 				feature.setTemplate(template);
 				significantGroups.add(feature);
 			}
+		}
+		
+		try {
+			//MinerUtil.serialize(tmgList, "tmgList", false);
+			MinerUtil.serialize(significantGroups, "E:\\eclipse_for_model\\configurations\\JHotDraw7.0.6\\totalTFGs", true);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		
 	}
