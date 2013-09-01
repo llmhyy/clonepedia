@@ -42,7 +42,7 @@ public class TestStructuralClusteringResult extends TestCase {
 		sets.setPathComparator(new LevenshteinPathComparator());
 		
 		TMGBuilder builder = new TMGBuilder(sets);
-		builder.build();
+		builder.build(null);
 		/*TreeSet<TemplateMethodGroup> templateMethodGroupList = builder.getMethodGroupList();
 		
 		sets.setTemplateMethodGroup(templateMethodGroupList);*/

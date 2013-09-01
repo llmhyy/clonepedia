@@ -41,7 +41,8 @@ public class TemplateGenerationAction implements IWorkbenchWindowActionDelegate 
 				CloneSets sets = (CloneSets)MinerUtil.deserialize(Settings.ontologyFile, true);
 				sets.setPathComparator(new LevenshteinPathComparator());
 				
-				TMGBuilder2 builder = new TMGBuilder2(sets);
+				//TMGBuilder2 builder = new TMGBuilder2(sets);
+				TMGBuilder builder = new TMGBuilder(sets);
 				builder.build(monitor);
 				HashSet<TemplateMethodGroup> templateMethodGroupList = builder.getMethodGroupList();
 				

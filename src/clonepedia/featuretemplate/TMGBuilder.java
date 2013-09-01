@@ -7,6 +7,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.TreeSet;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+
 import clonepedia.businessdata.OntologicalDataFetcher;
 import clonepedia.java.CloneInformationExtractor;
 import clonepedia.java.CompilationUnitPool;
@@ -44,7 +46,7 @@ public class TMGBuilder {
 		this.sets = sets;
 	}
 
-	public void build() {
+	public void build(IProgressMonitor monitor) {
 		
 		init();
 		
