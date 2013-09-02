@@ -30,6 +30,8 @@ public class TemplateBuilder {
 	
 	private ArrayList<Method> abstractMethodList = new ArrayList<Method>();
 	
+	private ArrayList<TemplateMethodGroup> additionalTMGList = new ArrayList<TemplateMethodGroup>();
+	
 	public TemplateBuilder(CandidateTemplate tfgList){
 		this.tfgList = tfgList;
 	}
@@ -92,7 +94,7 @@ public class TemplateBuilder {
 		
 		Class[] declaringClassArray = declaringClassSet.toArray(new Class[0]);
 		HierarchyClusterAlgorithm algorithm = new HierarchyClusterAlgorithm(declaringClassArray, 
-				0.7/*Settings.thresholdDistanceForDeclaringClassClustering*/, HierarchyClusterAlgorithm.CompleteLinkage);
+				/*0.7*/Settings.thresholdDistanceForDeclaringClassClustering, HierarchyClusterAlgorithm.CompleteLinkage);
 		
 		ArrayList<NormalCluster> clusterList;
 		try {
@@ -136,11 +138,45 @@ public class TemplateBuilder {
 			mergeName(abstractedClass);
 			
 			mergeSuperType(abstractedClass);
+			
+			tryFindingMoreAbstractMethods(abstractedClass);
+			
 			//mergeInterfaces(abstractedClass);
 			mergeMethods(abstractedClass);			
 		}
 		else{
 			mergeMethods(abstractedClass);	
+		}
+	}
+
+	private void tryFindingMoreAbstractMethods(Class abstractedClass) {
+		ArrayList<Method> methodList = new ArrayList<Method>();
+		for(ProgrammingElement element: abstractedClass.getSupportingElements()){
+			Class clazz = (Class)element;
+			for(Method m: clazz.getMethods()){
+				if(m.getCloneInstances().size() == 0){
+					methodList.add(m);
+				}
+			}
+		}
+		
+		Method[] methodArray = methodList.toArray(new Method[0]);
+		
+		HierarchyClusterAlgorithm algorithm = new HierarchyClusterAlgorithm(methodArray, 
+				Settings.thresholdDistanceForTMGFilteringAndSplitting, HierarchyClusterAlgorithm.CompleteLinkage);
+		
+		try {
+			ArrayList<NormalCluster> list = algorithm.doClustering();
+			for(NormalCluster cluster: list){
+				TemplateMethodGroup tmg = new TemplateMethodGroup();
+				for(IClusterable clusterable: cluster){
+					Method method = (Method)clusterable;
+					tmg.addMethod(method);
+				}
+				this.additionalTMGList.add(tmg);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -240,18 +276,25 @@ public class TemplateBuilder {
 		
 		for(SubCandidateTemplate tfg: tfgList){
 			for(TemplateMethodGroup tmg: tfg.getTemplateMethodGroupList()){
-				ArrayList<Method> relatedMethodList = getRelatedMethodFromTMGToAbstractClass(tmg, abstractedClass);
-				if(relatedMethodList.size() > 1){
-					Method abstractedMethod = abstractMethod(relatedMethodList);
-					
-					abstractedClass.getMethods().add(abstractedMethod);
-					abstractedMethod.setOwner(abstractedClass);
-					
-					this.abstractMethodList.add(abstractedMethod);
-				}
+				mergeSingleTMG(tmg, abstractedClass);
 			}
 		}
 		
+		for(TemplateMethodGroup tmg: this.additionalTMGList){
+			mergeSingleTMG(tmg, abstractedClass);
+		}
+	}
+	
+	private void mergeSingleTMG(TemplateMethodGroup tmg, Class abstractedClass){
+		ArrayList<Method> relatedMethodList = getRelatedMethodFromTMGToAbstractClass(tmg, abstractedClass);
+		if(relatedMethodList.size() > 1){
+			Method abstractedMethod = abstractMethod(relatedMethodList);
+			
+			abstractedClass.getMethods().add(abstractedMethod);
+			abstractedMethod.setOwner(abstractedClass);
+			
+			this.abstractMethodList.add(abstractedMethod);
+		}
 	}
 	
 	private Method abstractMethod(ArrayList<Method> relatedMethodList) {
