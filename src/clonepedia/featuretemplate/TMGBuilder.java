@@ -274,6 +274,10 @@ public class TMGBuilder {
 
 			TemplateMethodGroup methodGroup = new TemplateMethodGroup();
 			for (CloneInstance instance : set) {
+				/*if(instance.getResidingMethod().toString().contains("void") && instance.getResidingMethod().toString().contains("ZoomAction")){
+					System.out.println();
+				}*/
+				
 				methodGroup.addMethod(instance.getResidingMethod());
 			}
 

@@ -413,11 +413,20 @@ public class MinerUtilforJava {
 
 		String methodName = methodBinding.getName();
 		ComplexType methodOwner = transferTypeToComplexType(methodBinding.getDeclaringClass(), project, cu, fetcher);
-		VarType returnType = getVariableType(methodBinding.getReturnType(), project, cu, fetcher);
+		
+		ITypeBinding returnTypeBinding = null;
+		if(!methodBinding.isConstructor()){
+			returnTypeBinding = methodBinding.getReturnType();
+		}
+		
+		VarType returnType = getVariableType(returnTypeBinding, project, cu, fetcher);
 		System.out.print("");
-		if(returnType instanceof NullType){
+		/*if(returnType instanceof NullType){
 			System.out.println();
 		}
+		if(returnType.toString().equals("void")){
+			System.out.println();
+		}*/
 		ArrayList<Variable> parameters = new ArrayList<Variable>();
 		if(null != methodBinding){
 			MethodDeclaration md = (MethodDeclaration) cu.findDeclaringNode(methodBinding);
