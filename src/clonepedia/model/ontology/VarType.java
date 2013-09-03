@@ -9,7 +9,8 @@ public interface VarType extends Serializable{
 	public static int InterfaceType	= 2;
 	public static int PrimiType = 3;
 	public static int TypeVariableType = 4;
-	public static int UnknownType = 5;
+	public static int NullType = 5;
+	public static int UnknownType = 6;
 	
 	
 	public abstract int getConcreteType();

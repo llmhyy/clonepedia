@@ -46,6 +46,7 @@ import clonepedia.model.ontology.EnumType;
 import clonepedia.model.ontology.Field;
 import clonepedia.model.ontology.Interface;
 import clonepedia.model.ontology.Method;
+import clonepedia.model.ontology.NullType;
 import clonepedia.model.ontology.PrimiType;
 import clonepedia.model.ontology.ProgrammingElement;
 import clonepedia.model.ontology.Project;
@@ -240,7 +241,7 @@ public class MinerUtilforJava {
 
 	public static VarType getVariableType(Type type, Project project, OntologicalDataFetcher fetcher) throws Exception {
 		if (type == null) {
-			return null;
+			return new NullType();
 		} else if (type.isPrimitiveType()) {
 			return new PrimiType(type.toString());
 		} else if (type.isSimpleType() || type.isQualifiedType()) {
@@ -278,7 +279,7 @@ public class MinerUtilforJava {
 
 	public static VarType getVariableType(ITypeBinding type, Project project, CompilationUnit compilationUnit, OntologicalDataFetcher fetcher) throws Exception {
 		if (type == null) {
-			return null;
+			return new NullType();
 		} else if (type.isPrimitive()) {
 			return new PrimiType(type.getName());
 		} else if (type.isClass()) {
@@ -389,6 +390,7 @@ public class MinerUtilforJava {
 		String methodName = md.getName().getIdentifier();
 		
 		VarType returnType = getVariableType(md.getReturnType2(), project, fetcher);
+		
 		ArrayList<Variable> parameterList = new ArrayList<Variable>();
 		List paramList = md.parameters();
 
@@ -413,7 +415,9 @@ public class MinerUtilforJava {
 		ComplexType methodOwner = transferTypeToComplexType(methodBinding.getDeclaringClass(), project, cu, fetcher);
 		VarType returnType = getVariableType(methodBinding.getReturnType(), project, cu, fetcher);
 		System.out.print("");
-		
+		if(returnType instanceof NullType){
+			System.out.println();
+		}
 		ArrayList<Variable> parameters = new ArrayList<Variable>();
 		if(null != methodBinding){
 			MethodDeclaration md = (MethodDeclaration) cu.findDeclaringNode(methodBinding);
