@@ -146,7 +146,9 @@ public class DetermineMethodWizardPage extends DetermineElementWizardPage {
 			}
 		}
 		
-		setMethodParameters(list, true);
+		ArrayList<MethodParameterWrapper> paramList = new ArrayList<DetermineElementWizardPage.MethodParameterWrapper>();
+		
+		setMethodParameters(paramList, true);
 	}
 
 	private void initPackage(String abstractPackage) {

@@ -272,13 +272,13 @@ public abstract class DetermineElementWizardPage extends NewContainerWizardPage 
 		}
 	}
 
-	private static class MethodParameterWrapper extends ElementWrapper {
+	public class MethodParameterWrapper extends ElementWrapper {
 		public String parameterType = "";
-		//public String parameterName = "";
+		public String parameterName = "";
 
-		public MethodParameterWrapper(String parameterType) {
+		public MethodParameterWrapper(String parameterType, String parameterName) {
 			this.parameterType = parameterType;
-			//this.parameterName = parameterName;
+			this.parameterName = parameterName;
 		}
 
 		@Override
@@ -292,12 +292,12 @@ public abstract class DetermineElementWizardPage extends NewContainerWizardPage 
 					&& getClass().equals(obj.getClass())
 					&& ((MethodParameterWrapper) obj).parameterType
 							.equals(parameterType)
-					/*&& ((MethodParameterWrapper) obj).parameterName
-							.equals(parameterName)*/;
+					&& ((MethodParameterWrapper) obj).parameterName
+							.equals(parameterName);
 		}
 
 		public String toString() {
-			return parameterType/* + ":" + parameterName*/;
+			return parameterType + ":" + parameterName;
 		}
 	}
 
@@ -1670,15 +1670,13 @@ public abstract class DetermineElementWizardPage extends NewContainerWizardPage 
 		return result;
 	}
 	
-	public void setMethodParameters(List<String> parameterNames,
+	public void setMethodParameters(List<MethodParameterWrapper> parameters,
 			boolean canBeModified){
-		ArrayList<MethodParameterWrapper> parameters = new ArrayList<MethodParameterWrapper>(
-				parameterNames.size());
-		for (Iterator<String> iter = parameterNames.iterator(); iter.hasNext();) {
-			String str = iter.next();
+		/*ArrayList<String> parameterTypes = new ArrayList<String>(parameters.size());
+		for (MethodParameterWrapper parameter: parameters) {
 			//String[] pair = str.split(":");
-			parameters.add(new MethodParameterWrapper(str));
-		}
+			parameterTypes.add(parameter.parameterType);
+		}*/
 		fMethodParametersDialogField.setElements(parameters);
 		fMethodParametersDialogField.setEnabled(canBeModified);
 	}
@@ -1698,8 +1696,8 @@ public abstract class DetermineElementWizardPage extends NewContainerWizardPage 
 				superInterface));
 	}
 	
-	public boolean addMethodParameter(String parameterType) {
-		return fMethodParametersDialogField.addElement(new MethodParameterWrapper(parameterType));
+	public boolean addMethodParameter(String parameterType, String parameterName) {
+		return fMethodParametersDialogField.addElement(new MethodParameterWrapper(parameterType, parameterName));
 	}
 
 	/**

@@ -171,7 +171,7 @@ public class SuperTypeSelectionDialog extends OpenTypeSelectionDialog {
 				String message;
 
 				boolean validate = isInterface? fTypeWizardPage.addSuperInterface(qualifiedName)
-						: fTypeWizardPage.addMethodParameter(qualifiedName);
+						: true/*fTypeWizardPage.addMethodParameter(qualifiedName)*/;
 				
 				if (validate) {
 					message= Messages.format(NewWizardMessages.SuperInterfaceSelectionDialog_interfaceadded_info, BasicElementLabels.getJavaElementName(qualifiedName));
