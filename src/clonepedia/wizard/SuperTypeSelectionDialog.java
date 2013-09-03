@@ -111,8 +111,10 @@ public class SuperTypeSelectionDialog extends OpenTypeSelectionDialog {
 	protected void updateButtonsEnableState(IStatus status) {
 		super.updateButtonsEnableState(status);
 		Button addButton= getButton(ADD_ID);
-		if (addButton != null && !addButton.isDisposed())
+		if (addButton != null && !addButton.isDisposed()){
 			addButton.setEnabled(!status.matches(IStatus.ERROR));
+			//addButton.setEnabled(true);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -171,7 +173,7 @@ public class SuperTypeSelectionDialog extends OpenTypeSelectionDialog {
 				String message;
 
 				boolean validate = isInterface? fTypeWizardPage.addSuperInterface(qualifiedName)
-						: fTypeWizardPage.addMethodParameter(qualifiedName, "");
+						: fTypeWizardPage.addMethodParameter(qualifiedName, "param");
 				
 				if (validate) {
 					message= Messages.format(NewWizardMessages.SuperInterfaceSelectionDialog_interfaceadded_info, BasicElementLabels.getJavaElementName(qualifiedName));

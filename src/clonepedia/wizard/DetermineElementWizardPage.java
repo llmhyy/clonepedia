@@ -1186,6 +1186,7 @@ public abstract class DetermineElementWizardPage extends NewContainerWizardPage 
 		}
 
 		public void doubleClicked(ListDialogField<MethodParameterWrapper> field) {
+			System.out.println();
 		}
 
 		// -------- IDialogFieldListener
