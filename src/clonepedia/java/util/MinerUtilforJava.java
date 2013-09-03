@@ -432,7 +432,7 @@ public class MinerUtilforJava {
 
 				for (int i = 0; i < paramList.length; i++) {
 					VarType paramType = getVariableType(paramList[i], project, cu, fetcher);
-					parameters.add(new Variable("", paramType, false));
+					parameters.add(new Variable("param", paramType, false));
 				}
 			}
 		}
@@ -686,7 +686,7 @@ public class MinerUtilforJava {
 					ArrayList<Variable> parameters = new ArrayList<Variable>();
 					for (int i = 0; i < paramList.length; i++) {
 						VarType paramType = getVariableTypeWithBasicInfoByBinding(paramList[i], project, cu);
-						parameters.add(new Variable("", paramType, false));
+						parameters.add(new Variable("param", paramType, false));
 					}
 
 					return new Method(methodOwner, methodName, returnType, parameters);
