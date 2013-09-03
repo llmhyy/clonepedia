@@ -1,6 +1,7 @@
 package clonepedia.java.visitor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 
 import org.eclipse.jdt.core.IPackageFragment;
@@ -189,14 +190,15 @@ public class GlobalTypeVisitor extends ASTVisitor {
 			if(null != md){
 				FindInvokingMethodsVistor visitor = new FindInvokingMethodsVistor();	
 				md.accept(visitor);
-				HashSet<IMethodBinding> invokedMethodBindings = visitor.getInvokedMethodBindings();
-				for(IMethodBinding imb: invokedMethodBindings){
+				HashMap<IMethodBinding, CompilationUnit> invokedMethodBindingMap = visitor.getInvokedMethodBindingMap();
+				for(IMethodBinding imb: invokedMethodBindingMap.keySet()){
 					
 					/*if(imb.toString().contains("clonepedia.model.ontology.VariableUseType valueOf(java.lang.String)")){
 						System.out.println();
 					}*/
 					
-					Method invokedMethod = MinerUtilforJava.getMethodfromBinding(imb, project, cu, fetcher);
+					Method invokedMethod = MinerUtilforJava.
+							getMethodfromBinding(imb, project, invokedMethodBindingMap.get(imb), fetcher);
 					
 					try{
 						invokedMethod = fetcher.getTheExistingMethodorCreateOne(invokedMethod);

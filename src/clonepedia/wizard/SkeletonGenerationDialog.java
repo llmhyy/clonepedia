@@ -107,6 +107,7 @@ import clonepedia.model.syntactic.ClonePatternGroup;
 import clonepedia.model.syntactic.PathPatternGroup;
 import clonepedia.model.viewer.ClonePatternGroupWrapper;
 import clonepedia.model.viewer.PathPatternGroupWrapper;
+import clonepedia.wizard.DetermineElementWizardPage.MethodParameterWrapper;
 
 public class SkeletonGenerationDialog extends TitleAreaDialog {
 	
@@ -434,10 +435,15 @@ public class SkeletonGenerationDialog extends TitleAreaDialog {
 				}
 			}
 			
-			Method m = targetClass.findMethod(location.methodName, location.methodParameterNames);
+			List<String> methodParameterTypes = new ArrayList<String>();
+			for(MethodParameterWrapper wrapper0: location.methodParameterNames){
+				methodParameterTypes.add(wrapper0.parameterType);
+			}
+			
+			Method m = targetClass.findMethod(location.methodName, methodParameterTypes);
 			if(null == m){
 				ArrayList<Variable> parameters = new ArrayList<Variable>();
-				for(String paramType: location.methodParameterNames){
+				for(String paramType: methodParameterTypes){
 					String paramName = paramType.substring(paramType.lastIndexOf(".")+1, paramType.length());
 					paramName = paramName.toLowerCase();
 					

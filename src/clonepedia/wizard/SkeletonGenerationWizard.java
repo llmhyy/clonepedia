@@ -12,6 +12,7 @@ import org.eclipse.jdt.internal.ui.wizards.NewElementWizard;
 import org.eclipse.jface.wizard.Wizard;
 
 import clonepedia.model.viewer.PathPatternGroupWrapper;
+import clonepedia.wizard.DetermineElementWizardPage.MethodParameterWrapper;
 
 
 @SuppressWarnings("restriction")
@@ -82,7 +83,7 @@ public class SkeletonGenerationWizard extends Wizard {
 		return this.determineMethodPage.getMethodName();
 	}
 	
-	public List<String> getMethodParamters(){
+	public List<MethodParameterWrapper> getMethodParamters(){
 		return this.determineMethodPage.getMethodParameters();
 	}
 

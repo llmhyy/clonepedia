@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import clonepedia.model.syntactic.PathPatternGroup;
+import clonepedia.wizard.DetermineElementWizardPage.MethodParameterWrapper;
 import clonepedia.wizard.SkeletonGenerationWizard;
 
 /**
@@ -23,11 +24,11 @@ public class PathPatternGroupWrapper extends PatternGroupWrapper{
 		
 		public String methodName;
 		public String methodReturnTypeName;
-		public List<String> methodParameterNames = new ArrayList<String>();
+		public List<MethodParameterWrapper> methodParameterNames = new ArrayList<MethodParameterWrapper>();
 		
 		public PotentialLocation(String packageName, String className, String superClassName,
 				List<String> interfaceNames, String methodName,
-				String methodReturnTypeName, List<String> methodParameterNames) {
+				String methodReturnTypeName, List<MethodParameterWrapper> methodParameterNames) {
 			super();
 			this.packageName = packageName;
 			this.className = className;

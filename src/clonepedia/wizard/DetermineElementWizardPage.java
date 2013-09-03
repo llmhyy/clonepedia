@@ -1181,6 +1181,8 @@ public abstract class DetermineElementWizardPage extends NewContainerWizardPage 
 
 		public void selectionChanged(
 				ListDialogField<MethodParameterWrapper> field) {
+			
+			System.out.println();
 		}
 
 		public void doubleClicked(ListDialogField<MethodParameterWrapper> field) {
@@ -1659,15 +1661,16 @@ public abstract class DetermineElementWizardPage extends NewContainerWizardPage 
 		fSuperInterfacesDialogField.setEnabled(canBeModified);
 	}
 	
-	public List<String> getMethodParameters(){
+	public List<MethodParameterWrapper> getMethodParameters(){
 		List<MethodParameterWrapper> parameters = fMethodParametersDialogField.getElements();
-		ArrayList<String> result = new ArrayList<String>(parameters.size());
+		return parameters;
+		/*ArrayList<String> result = new ArrayList<String>(parameters.size());
 		for (Iterator<MethodParameterWrapper> iter = parameters.iterator(); iter
 				.hasNext();) {
 			MethodParameterWrapper wrapper = iter.next();
 			result.add(wrapper.toString());
 		}
-		return result;
+		return result;*/
 	}
 	
 	public void setMethodParameters(List<MethodParameterWrapper> parameters,
@@ -2282,11 +2285,13 @@ public abstract class DetermineElementWizardPage extends NewContainerWizardPage 
 		fMethodParametersDialogField.enableButton(0, root != null);
 
 		if (root != null) {
-			List<MethodParameterWrapper> elements = fMethodParametersDialogField
-					.getElements();
+			List<MethodParameterWrapper> elements = fMethodParametersDialogField.getElements();
 			int nElements = elements.size();
 			for (int i = 0; i < nElements; i++) {
 				String intfname = elements.get(i).toString();
+				
+				intfname = intfname.substring(0, intfname.indexOf(":"));
+				
 				Type type = TypeContextChecker.parseSuperInterface(intfname);
 				if (type == null && !isPrimitiveType(intfname)) {
 					status.setError(Messages
@@ -2528,10 +2533,10 @@ public abstract class DetermineElementWizardPage extends NewContainerWizardPage 
 
 		FilteredTypesSelectionDialog dialog = new FilteredTypesSelectionDialog(
 				getShell(), false, getWizard().getContainer(), scope,
-				IJavaSearchConstants.TYPE);
-		dialog.setTitle("Choose Parmeter Type");
-		dialog.setMessage("Choose Parmeter Type");
-		//dialog.setInitialPattern(getSuperClass());
+				IJavaSearchConstants.CLASS);
+		dialog.setTitle(NewWizardMessages.NewTypeWizardPage_SuperClassDialog_title);
+		dialog.setMessage(NewWizardMessages.NewTypeWizardPage_SuperClassDialog_message);
+		dialog.setInitialPattern(getSuperClass());
 
 		if (dialog.open() == Window.OK) {
 			return (IType) dialog.getFirstResult();

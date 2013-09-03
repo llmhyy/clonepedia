@@ -163,7 +163,7 @@ public class Class extends ComplexType implements VarType, IClusterable{
 		if(element instanceof Class){
 			Class referClass = (Class)element;
 			try{
-				return referClass.getId().equals(this.getId());
+				return referClass.getFullName().equals(this.getFullName());
 			}
 			catch(NullPointerException e){
 				return false;

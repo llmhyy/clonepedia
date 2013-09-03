@@ -19,6 +19,7 @@ import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.Name;
 import org.eclipse.jdt.core.dom.NumberLiteral;
 import org.eclipse.jdt.core.dom.ParameterizedType;
 import org.eclipse.jdt.core.dom.PrimitiveType;
@@ -412,13 +413,31 @@ public class MinerUtilforJava {
 		ComplexType methodOwner = transferTypeToComplexType(methodBinding.getDeclaringClass(), project, cu, fetcher);
 		VarType returnType = getVariableType(methodBinding.getReturnType(), project, cu, fetcher);
 		System.out.print("");
-		ITypeBinding[] paramList = methodBinding.getParameterTypes();
-
+		
 		ArrayList<Variable> parameters = new ArrayList<Variable>();
-		for (int i = 0; i < paramList.length; i++) {
-			VarType paramType = getVariableType(paramList[i], project, cu, fetcher);
-			parameters.add(new Variable("", paramType, false));
+		if(null != methodBinding){
+			MethodDeclaration md = (MethodDeclaration) cu.findDeclaringNode(methodBinding);
+			if(null != md){
+				for(int k=0; k<md.parameters().size(); k++){
+					SingleVariableDeclaration svd = (SingleVariableDeclaration)md.parameters().get(k);
+					Type type = svd.getType();
+					Name name = svd.getName();
+					
+					VarType paramType = getVariableType(type.resolveBinding(), project, cu, fetcher);
+					parameters.add(new Variable(((SimpleName)name).getIdentifier(), paramType, false));
+				}				
+			}
+			else{
+				ITypeBinding[] paramList = methodBinding.getParameterTypes();
+
+				for (int i = 0; i < paramList.length; i++) {
+					VarType paramType = getVariableType(paramList[i], project, cu, fetcher);
+					parameters.add(new Variable("", paramType, false));
+				}
+			}
 		}
+		
+		
 		Method method = new Method(methodOwner, methodName, returnType, parameters);
 		
 		ASTNode node = cu.findDeclaringNode(methodBinding);
