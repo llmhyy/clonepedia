@@ -2293,6 +2293,10 @@ public abstract class DetermineElementWizardPage extends NewContainerWizardPage 
 				
 				intfname = intfname.substring(0, intfname.indexOf(":"));
 				
+				if(intfname.contains("[]")){
+					intfname = intfname.substring(0, intfname.indexOf("["));
+				}
+				
 				Type type = TypeContextChecker.parseSuperInterface(intfname);
 				if (type == null && !isPrimitiveType(intfname)) {
 					status.setError(Messages
