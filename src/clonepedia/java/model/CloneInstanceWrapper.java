@@ -22,6 +22,7 @@ import clonepedia.java.CompilationUnitPool;
 import clonepedia.java.visitor.MethodsDeclarationVisitor;
 import clonepedia.model.ontology.CloneInstance;
 import clonepedia.util.MinerProperties;
+import clonepedia.util.Settings;
 
 public class CloneInstanceWrapper{
 	
@@ -65,7 +66,7 @@ public class CloneInstanceWrapper{
 	
 	private void initializeCloneResidingMethod() throws CoreException{
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		IProject project = root.getProject(cloneInstance.getCloneSet().getProject().getProjectName());
+		IProject project = root.getProject(Settings.projectName);
 		if (project.isNatureEnabled(MinerProperties.javaNatureName)) {
 			IJavaProject javaProject = JavaCore.create(project);
 			IPath filePath = Path.fromPortableString(className);

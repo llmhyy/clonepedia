@@ -55,6 +55,7 @@ Bundle-ClassPath: lib/mysql-connector-java.jar,
  lib/jxl.jar
 Import-Package: org.eclipse.jdt.ui
 Export-Package: clonepedia,
+ clonepedia.businessdata,
  clonepedia.featuretemplate,
  clonepedia.java,
  clonepedia.java.model,
@@ -62,6 +63,9 @@ Export-Package: clonepedia,
  clonepedia.java.visitor,
  clonepedia.model.ontology,
  clonepedia.model.template,
+ clonepedia.perspective,
  clonepedia.util,
+ clonepedia.views.codesnippet,
+ clonepedia.views.util,
  clonepedia.wizard,
  clonepedia.wizard.printer

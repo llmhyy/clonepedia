@@ -187,7 +187,7 @@ public class CloneDiffView extends ViewPart {
 		/*labelLayoutData.grabExcessHorizontalSpace = true;
 		labelLayoutData.grabExcessVerticalSpace = true;*/
 		label.setLayoutData(labelLayoutData);
-		label.setText(instanceWrapper.getCloneInstance().getResidingMethod().getFullName());
+		label.setText(instanceWrapper.getCloneInstance().getFileLocation());
 		
 		GridData scrollCodeLayoutData = new GridData(GridData.FILL_BOTH);
 		scrollCodeLayoutData.heightHint = widgetHeight; 

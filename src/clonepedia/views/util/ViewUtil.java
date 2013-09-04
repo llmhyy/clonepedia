@@ -44,6 +44,7 @@ import clonepedia.model.viewer.CloneSetWrapper;
 import clonepedia.model.viewer.IContainer;
 import clonepedia.model.viewer.IContent;
 import clonepedia.util.MinerProperties;
+import clonepedia.util.Settings;
 import clonepedia.views.codesnippet.CloneCodeSnippetView;
 import clonepedia.views.codesnippet.SnippetInstanceRelation;
 
@@ -53,8 +54,7 @@ public class ViewUtil {
 		//instance.getResidingMethod().getOwner().getFullName();
 
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		IProject proj = root.getProject(instance.getCloneSet().getProject()
-				.getProjectName());
+		IProject proj = root.getProject(Settings.projectName);
 		try {
 			if (proj.isNatureEnabled(MinerProperties.javaNatureName)) {
 				IJavaProject javaProject = JavaCore.create(proj);
@@ -64,9 +64,10 @@ public class ViewUtil {
 					if (pack.getKind() == IPackageFragmentRoot.K_SOURCE) {
 						for (ICompilationUnit unit : pack.getCompilationUnits()) {
 							String packageName = unit.getParent().getElementName();
-							String unitName = unit.getElementName();
+							/*String unitName = unit.getElementName();
 							String fullName = packageName + "." + unitName;
-							fullName = fullName.substring(0, fullName.length() - 5);
+							fullName = fullName.substring(0, fullName.length() - 5);*/
+							
 							String instanceResidingClassFullName;
 							ComplexType type = instance.getResidingMethod().getOwner();
 							if(type instanceof Interface){
@@ -88,6 +89,41 @@ public class ViewUtil {
 									isContainedInCompilationUnit(unit, instanceResidingTypeName)) {
 								return unit;
 							}
+						}
+					}
+				}
+			}
+		} catch (JavaModelException e) {
+			e.printStackTrace();
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+	
+	public static ICompilationUnit getCorrespondingCompliationUnit(String typeFullName){
+		//instance.getResidingMethod().getOwner().getFullName();
+
+		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+		IProject proj = root.getProject(Settings.projectName);
+		try {
+			if (proj.isNatureEnabled(MinerProperties.javaNatureName)) {
+				IJavaProject javaProject = JavaCore.create(proj);
+
+				IPackageFragment[] packages = javaProject.getPackageFragments();
+				for (IPackageFragment pack : packages) {
+					if (pack.getKind() == IPackageFragmentRoot.K_SOURCE) {
+						for (ICompilationUnit unit : pack.getCompilationUnits()) {
+							String packageName = unit.getParent().getElementName();
+							String unitName = unit.getElementName();
+							String fullName = packageName + "." + unitName;
+							fullName = fullName.substring(0, fullName.length() - 5);
+							
+							if(fullName.equals(typeFullName)){
+								return unit;
+							}
+							
 						}
 					}
 				}
