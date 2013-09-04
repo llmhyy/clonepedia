@@ -15,6 +15,7 @@ import clonepedia.model.ontology.Interface;
 import clonepedia.model.ontology.Method;
 import clonepedia.model.ontology.ProgrammingElement;
 import clonepedia.model.ontology.PureVarType;
+import clonepedia.model.ontology.VarType;
 import clonepedia.model.ontology.Variable;
 import clonepedia.model.template.CandidateTemplate;
 import clonepedia.model.template.Template;
@@ -344,11 +345,11 @@ public class TemplateBuilder {
 	 * @param abstractedMethod
 	 */
 	private void abstractReturnTypeForMethod(Method abstractedMethod){
-		HashMap<PureVarType, Integer> returnTypeMap = new HashMap<PureVarType, Integer>();
+		HashMap<VarType, Integer> returnTypeMap = new HashMap<VarType, Integer>();
 		for(ProgrammingElement element: abstractedMethod.getSupportingElements()){
 			Method m = (Method)element; 
 			
-			PureVarType varType = m.getReturnType();
+			VarType varType = m.getReturnType();
 			if(varType != null){
 				Integer frequency = returnTypeMap.get(varType);
 				if(null == frequency){
@@ -360,9 +361,9 @@ public class TemplateBuilder {
 			}
 		}
 		
-		PureVarType abstractedReturnType = null;
+		VarType abstractedReturnType = null;
 		int highestFrequency = 0;
-		for(PureVarType type: returnTypeMap.keySet()){
+		for(VarType type: returnTypeMap.keySet()){
 			Integer frequency = returnTypeMap.get(type);
 			if(frequency > highestFrequency){
 				highestFrequency = frequency;

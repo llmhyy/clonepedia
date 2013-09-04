@@ -3,6 +3,7 @@ package clonepedia.syntactic.util.abstractor;
 import clonepedia.model.ontology.Field;
 import clonepedia.model.ontology.OntologicalElement;
 import clonepedia.model.ontology.PureVarType;
+import clonepedia.model.ontology.VarType;
 
 public class FieldAbstractor extends OntologicalElementAbstractor {
 
@@ -17,7 +18,7 @@ public class FieldAbstractor extends OntologicalElementAbstractor {
 		Field field1 = (Field)e1;
 		Field field2 = (Field)e2;
 		
-		PureVarType abType = abstractVarType(field1.getFieldType(), field2.getFieldType());
+		VarType abType = abstractVarType(field1.getFieldType(), field2.getFieldType());
 		String abName = abstractName(field1.getFieldName(), field2.getFieldName());
 		
 		Field abstractField = new Field(abName, abType, true);

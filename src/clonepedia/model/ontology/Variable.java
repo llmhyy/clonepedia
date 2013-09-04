@@ -8,19 +8,19 @@ public class Variable extends MergeableSimpleOntologicalElement{
 	 */
 	private static final long serialVersionUID = 2791145150546745177L;
 	private String variableName;
-	private PureVarType variableType;
+	private VarType variableType;
 
 	private VariableUseType useType;
 	private RegionalOwner owner;
 	
-	public Variable(String variableName, PureVarType variableType, boolean isMerged) {
+	public Variable(String variableName, VarType variableType, boolean isMerged) {
 		super();
 		this.variableName = variableName;
 		this.variableType = variableType;
 		this.isMerged = isMerged;
 	}
 
-	public Variable(String variableName, PureVarType variableType,
+	public Variable(String variableName, VarType variableType,
 			VariableUseType useType) {
 		super();
 		this.variableName = variableName;
@@ -30,7 +30,7 @@ public class Variable extends MergeableSimpleOntologicalElement{
 
 	
 
-	public Variable(String variableName, PureVarType variableType,
+	public Variable(String variableName, VarType variableType,
 			VariableUseType useType, RegionalOwner owner) {
 		super();
 		this.variableName = variableName;
@@ -80,11 +80,11 @@ public class Variable extends MergeableSimpleOntologicalElement{
 		this.variableName = variableName;
 	}
 
-	public PureVarType getVariableType() {
+	public VarType getVariableType() {
 		return variableType;
 	}
 
-	public void setVariableType(PureVarType variableType) {
+	public void setVariableType(VarType variableType) {
 		this.variableType = variableType;
 	}
 
@@ -113,14 +113,14 @@ public class Variable extends MergeableSimpleOntologicalElement{
 	public ArrayList<OntologicalElement> getSuccessors() {
 		ArrayList<OntologicalElement> successors = new ArrayList<OntologicalElement>();
 		
-		if(variableType instanceof ComplexType)
-			successors.add((ComplexType)variableType);
+		if(variableType.getPureVarType() instanceof ComplexType)
+			successors.add((ComplexType)(variableType.getPureVarType()));
 
 		return successors;
 	}
 
 	@Override
-	public PureVarType getVarType() {
+	public VarType getVarType() {
 		return this.variableType;
 	}
 

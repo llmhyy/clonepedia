@@ -4,6 +4,7 @@ import clonepedia.model.ontology.Constant;
 import clonepedia.model.ontology.OntologicalElement;
 import clonepedia.model.ontology.PrimiType;
 import clonepedia.model.ontology.PureVarType;
+import clonepedia.model.ontology.VarType;
 
 public class ConstantAbstractor extends OntologicalElementAbstractor {
 
@@ -18,10 +19,10 @@ public class ConstantAbstractor extends OntologicalElementAbstractor {
 		Constant constant1 = (Constant)e1;
 		Constant constant2 = (Constant)e2;
 		
-		PureVarType abType = abstractVarType(constant1.getConstantType(), constant2.getConstantType());
+		VarType abType = abstractVarType(new VarType(constant1.getConstantType(), 0), new VarType(constant2.getConstantType(), 0));
 		String abName = abstractName(constant1.getConstantName(), constant2.getConstantName());
 		
-		Constant abstractConstant = new Constant(abName, (PrimiType)abType, true);
+		Constant abstractConstant = new Constant(abName, (PrimiType)abType.getPureVarType(), true);
 		attachSupportingElements(abstractConstant, constant1, constant2);
 		
 		return abstractConstant;

@@ -4,6 +4,7 @@ import clonepedia.model.ontology.MergeableSimpleConcreteElement;
 import clonepedia.model.ontology.MergeableSimpleOntologicalElement;
 import clonepedia.model.ontology.OntologicalElement;
 import clonepedia.model.ontology.PureVarType;
+import clonepedia.model.ontology.VarType;
 import clonepedia.model.ontology.Variable;
 
 public class MergeableSimpleTypeAbstractor extends OntologicalElementAbstractor {
@@ -19,7 +20,7 @@ public class MergeableSimpleTypeAbstractor extends OntologicalElementAbstractor 
 		MergeableSimpleOntologicalElement st1 = (MergeableSimpleOntologicalElement)e1;
 		MergeableSimpleOntologicalElement st2 = (MergeableSimpleOntologicalElement)e2;
 		
-		PureVarType abType = abstractVarType(st1.getVarType(), st2.getVarType());
+		VarType abType = abstractVarType(st1.getVarType(), st2.getVarType());
 		String abName = abstractName(st1.getName(), st2.getName());
 		
 		MergeableSimpleConcreteElement mergConElement = new MergeableSimpleConcreteElement(abName, abType, true);

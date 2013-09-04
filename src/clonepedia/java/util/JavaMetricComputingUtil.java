@@ -10,6 +10,7 @@ import clonepedia.model.ontology.ComplexType;
 import clonepedia.model.ontology.Interface;
 import clonepedia.model.ontology.Method;
 import clonepedia.model.ontology.PureVarType;
+import clonepedia.model.ontology.VarType;
 import clonepedia.model.template.TemplateMethodGroup;
 import clonepedia.util.DefaultComparator;
 import clonepedia.util.MinerUtil;
@@ -87,7 +88,7 @@ public class JavaMetricComputingUtil {
 		return compareType(clazz1, clazz2);
 	}
 	
-	public static double compareReturnType(PureVarType varType1, PureVarType varType2){
+	public static double compareReturnType(VarType varType1, VarType varType2){
 		
 		/**
 		 * This means constructor
@@ -98,8 +99,11 @@ public class JavaMetricComputingUtil {
 		else if(!(varType1 != null && varType2 != null)){
 			return 0;
 		}
+		else if(varType1.getArrayLevel() != varType2.getArrayLevel()){
+			return 0;
+		}
 		
-		return compareType(varType1, varType2);
+		return compareType(varType1.getPureVarType(), varType2.getPureVarType());
 	}
 	
 	public static double compareParameterList(ArrayList<String> paramList1, ArrayList<String> paramList2){

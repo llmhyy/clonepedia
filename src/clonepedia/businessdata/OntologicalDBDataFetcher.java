@@ -40,6 +40,7 @@ import clonepedia.model.ontology.Project;
 import clonepedia.model.ontology.RegionalOwner;
 import clonepedia.model.ontology.TypeVariableType;
 import clonepedia.model.ontology.PureVarType;
+import clonepedia.model.ontology.VarType;
 import clonepedia.model.ontology.Variable;
 import clonepedia.model.ontology.VariableUseType;
 import clonepedia.model.semantic.Word;
@@ -560,11 +561,11 @@ public class OntologicalDBDataFetcher extends OntologicalDataFetcher{
 
 				PureVarType paramType = transferToVarType(parameterType,
 						parameterTypeCategory, project);
-				Variable variable = new Variable(parameterName, paramType, false);
+				Variable variable = new Variable(parameterName, new VarType(paramType, 0), false);
 				parameters.add(variable);
 			}
 			
-			Method method = new Method(methodId, owner, methodName, vType,
+			Method method = new Method(methodId, owner, methodName, new VarType(vType, 0),
 					parameters);
 			methodList.add(method);
 		}
@@ -590,7 +591,7 @@ public class OntologicalDBDataFetcher extends OntologicalDataFetcher{
 					project);
 			// ComplexType owner = getClassorInterfacebyId(ownerId);
 
-			Field field = new Field(fieldName, owner, fType);
+			Field field = new Field(fieldName, owner, new VarType(fType, 0));
 			fields.add(field);
 		}
 
@@ -612,7 +613,7 @@ public class OntologicalDBDataFetcher extends OntologicalDataFetcher{
 			
 			PureVarType vaType = transferToVarType(variableType, variableTypeCategory, project);
 			VariableUseType useT = VariableUseType.valueOf(useType);
-			Variable variable = new Variable(variableName, vaType, useT);
+			Variable variable = new Variable(variableName, new VarType(vaType, 0), useT);
 			
 			variables.add(variable);
 		}
@@ -636,7 +637,7 @@ public class OntologicalDBDataFetcher extends OntologicalDataFetcher{
 			
 			PureVarType vaType = transferToVarType(variableType, variableTypeCategory, project);
 			VariableUseType useT = VariableUseType.valueOf(useType);
-			variable = new Variable(variableName, vaType, useT);
+			variable = new Variable(variableName, new VarType(vaType, 0), useT);
 			
 			return variable;
 		}
@@ -919,7 +920,7 @@ public class OntologicalDBDataFetcher extends OntologicalDataFetcher{
 		Properties variableProperties = new Properties();
 		variableProperties.put("variableName", variable.getVariableName());
 		variableProperties = putTypeInformation("variable", variableProperties,
-				variable.getVariableType());
+				variable.getVariableType().getPureVarType());
 		variableProperties.put("useType", variable.getUseType().toString());
 		variableProperties.put("ownerId", owner.getId());
 
@@ -1326,8 +1327,8 @@ public class OntologicalDBDataFetcher extends OntologicalDataFetcher{
 		fieldProperties.put("ownerId", field.getOwnerType().getId());
 
 		Properties typeProperties = new Properties();
-		PureVarType varType = field.getFieldType();
-		typeProperties = putTypeInformation("field", typeProperties, varType);
+		VarType varType = field.getFieldType();
+		typeProperties = putTypeInformation("field", typeProperties, varType.getPureVarType());
 		if (typeProperties == null)
 			return;
 
@@ -1365,7 +1366,7 @@ public class OntologicalDBDataFetcher extends OntologicalDataFetcher{
 
 		if (method.getReturnType() != null) {
 			methodProperties = putTypeInformation("return", methodProperties,
-					method.getReturnType());
+					method.getReturnType().getPureVarType());
 			if (methodProperties == null)
 				return;
 		}
@@ -1385,7 +1386,7 @@ public class OntologicalDBDataFetcher extends OntologicalDataFetcher{
 			paramProperties.put("methodId", method.getMethodId());
 			paramProperties.put("parameterOrder", order.toString());
 			paramProperties = putTypeInformation("parameter", paramProperties,
-					parameter.getVariableType());
+					parameter.getVariableType().getPureVarType());
 
 			Properties paramValProperties = new Properties();
 			paramValProperties

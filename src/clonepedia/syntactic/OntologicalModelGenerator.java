@@ -19,6 +19,7 @@ import clonepedia.model.ontology.Method;
 import clonepedia.model.ontology.PrimiType;
 import clonepedia.model.ontology.Project;
 import clonepedia.model.ontology.PureVarType;
+import clonepedia.model.ontology.VarType;
 import clonepedia.model.ontology.Variable;
 import clonepedia.model.ontology.VariableUseType;
 import clonepedia.syntactic.pools.ClassPool;
@@ -77,13 +78,13 @@ public class OntologicalModelGenerator implements Serializable{
 	
 	private void buildRelationsforField() {
 		for(Field field: fieldPool){
-			PureVarType vType = field.getFieldType();
-			ComplexType fieldType = transferVarTypeToComplexType(vType);
+			VarType vType = field.getFieldType();
+			ComplexType fieldType = transferVarTypeToComplexType(vType.getPureVarType());
 			if(fieldType != null){
 				if(fieldType instanceof Class)
-					field.setFieldType((Class)fieldType);
+					field.setFieldType(new VarType((Class)fieldType, vType.getArrayLevel()));
 				else if(fieldType instanceof Interface)
-					field.setFieldType((Interface)fieldType);
+					field.setFieldType(new VarType((Interface)fieldType, vType.getArrayLevel()));
 			}
 		}
 		
@@ -91,13 +92,13 @@ public class OntologicalModelGenerator implements Serializable{
 
 	private void buildRelationsforMethod() {
 		for(Method method: methodPool){
-			PureVarType vType = method.getReturnType();
-			ComplexType returnType = transferVarTypeToComplexType(vType);
+			VarType vType = method.getReturnType();
+			ComplexType returnType = transferVarTypeToComplexType(vType.getPureVarType());
 			if(returnType != null){
 				if(returnType instanceof Class)
-					method.setReturnType((Class)returnType);
+					method.setReturnType(new VarType((Class)returnType, vType.getArrayLevel()));
 				else if(returnType instanceof Interface)
-					method.setReturnType((Interface)returnType);
+					method.setReturnType(new VarType((Interface)returnType, vType.getArrayLevel()));
 			}
 			
 			for(Variable parameter: method.getParameters()){
@@ -117,13 +118,13 @@ public class OntologicalModelGenerator implements Serializable{
 	
 	private void buildRelationforVariable(Variable variable){
 		
-		PureVarType vType = variable.getVariableType();
-		ComplexType variableType = transferVarTypeToComplexType(vType);
+		VarType vType = variable.getVariableType();
+		ComplexType variableType = transferVarTypeToComplexType(vType.getPureVarType());
 		if(variableType != null){
 			if(variableType instanceof Class)
-				variable.setVariableType((Class)variableType);
+				variable.setVariableType(new VarType((Class)variableType, vType.getArrayLevel()));
 			else if(variableType instanceof Interface)
-				variable.setVariableType((Interface)variableType);
+				variable.setVariableType(new VarType((Interface)variableType, vType.getArrayLevel()));
 		}
 	}
 	

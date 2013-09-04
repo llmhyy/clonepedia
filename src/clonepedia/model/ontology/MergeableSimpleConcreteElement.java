@@ -2,16 +2,21 @@ package clonepedia.model.ontology;
 
 import java.util.ArrayList;
 
+/**
+ * Field, Variable or Method
+ * @author linyun
+ *
+ */
 public class MergeableSimpleConcreteElement extends MergeableSimpleOntologicalElement {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -2086258912930192160L;
-	private PureVarType varType;
+	private VarType varType;
 	private String name;
 	
-	public MergeableSimpleConcreteElement(String name, PureVarType varType, boolean isMerged){
+	public MergeableSimpleConcreteElement(String name, VarType varType, boolean isMerged){
 		this.name = name;
 		this.varType = varType;
 	}
@@ -38,7 +43,7 @@ public class MergeableSimpleConcreteElement extends MergeableSimpleOntologicalEl
 	}
 
 	@Override
-	public PureVarType getVarType() {
+	public VarType getVarType() {
 		return this.varType;
 	}
 

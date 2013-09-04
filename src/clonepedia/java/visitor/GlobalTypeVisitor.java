@@ -26,6 +26,7 @@ import clonepedia.model.ontology.Interface;
 import clonepedia.model.ontology.Method;
 import clonepedia.model.ontology.Project;
 import clonepedia.model.ontology.PureVarType;
+import clonepedia.model.ontology.VarType;
 
 
 /**
@@ -223,7 +224,7 @@ public class GlobalTypeVisitor extends ASTVisitor {
 	 */
 	private void parseAndStoreFieldInformation(ITypeBinding binding, ComplexType complexType, CompilationUnit cu) throws Exception {
 		for(IVariableBinding fieldBinding: binding.getDeclaredFields()){
-			PureVarType varType = MinerUtilforJava.getVariableType(fieldBinding.getType(), project, cu, fetcher);
+			VarType varType = MinerUtilforJava.getVariableType(fieldBinding.getType(), project, cu, fetcher);
 			
 			if(null != varType){
 				Field field = new Field(fieldBinding.getName(), complexType, varType);

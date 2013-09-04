@@ -21,6 +21,7 @@ import clonepedia.model.ontology.Class;
 import clonepedia.model.ontology.Method;
 import clonepedia.model.ontology.OntologicalElement;
 import clonepedia.model.ontology.PureVarType;
+import clonepedia.model.ontology.VarType;
 import clonepedia.model.ontology.Variable;
 import clonepedia.model.syntactic.Path;
 import clonepedia.model.viewer.PathPatternGroupWrapper;
@@ -81,7 +82,7 @@ public class DetermineMethodWizardPage extends DetermineElementWizardPage {
 			OntologicalElement element = path.get(1);
 			if(element instanceof Method){
 				Method method = (Method)element;
-				PureVarType returnType = method.getReturnType();
+				VarType returnType = method.getReturnType();
 				
 				String returnTypeString;
 				

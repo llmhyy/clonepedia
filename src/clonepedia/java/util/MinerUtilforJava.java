@@ -53,6 +53,7 @@ import clonepedia.model.ontology.Project;
 import clonepedia.model.ontology.RegionalOwner;
 import clonepedia.model.ontology.TypeVariableType;
 import clonepedia.model.ontology.PureVarType;
+import clonepedia.model.ontology.VarType;
 import clonepedia.model.ontology.Variable;
 import clonepedia.model.ontology.VariableUseType;
 import clonepedia.util.Settings;
@@ -239,22 +240,22 @@ public class MinerUtilforJava {
 		return false;
 	}
 
-	public static PureVarType getVariableType(Type type, Project project, OntologicalDataFetcher fetcher) throws Exception {
+	public static VarType getVariableType(Type type, Project project, OntologicalDataFetcher fetcher) throws Exception {
 		if (type == null) {
-			return new NullType();
+			return new VarType(new NullType(), 0);
 		} else if (type.isPrimitiveType()) {
-			return new PrimiType(type.toString());
+			return new VarType(new PrimiType(type.toString()), 0);
 		} else if (type.isSimpleType() || type.isQualifiedType()) {
 			if (type.resolveBinding().isClass()) {
-				return (clonepedia.model.ontology.Class) transferTypeToComplexType(type,
-						project, (CompilationUnit)type.getRoot(), fetcher);
+				return new VarType((clonepedia.model.ontology.Class) transferTypeToComplexType(type,
+						project, (CompilationUnit)type.getRoot(), fetcher), 0);
 			} else if (type.resolveBinding().isInterface()) {
-				return (clonepedia.model.ontology.Interface) transferTypeToComplexType(
-						type, project, (CompilationUnit)type.getRoot(), fetcher);
+				return new VarType((clonepedia.model.ontology.Interface) transferTypeToComplexType(
+						type, project, (CompilationUnit)type.getRoot(), fetcher), 0);
 			} else if (type.resolveBinding().isEnum()){
-				return new EnumType(type.toString());
+				return new VarType(new EnumType(type.toString()), 0);
 			} else if (type.resolveBinding().isTypeVariable()){
-				return new TypeVariableType(type.toString());
+				return new VarType(new TypeVariableType(type.toString()), 0);
 			} else
 				throw new Exception("The type " + type.toString() + " cannot be handled");
 		}
@@ -268,8 +269,8 @@ public class MinerUtilforJava {
 		 */
 		else if (type.isArrayType()) {
 			ArrayType arrayType = (ArrayType) type;
-			PureVarType varType = getVariableType(arrayType.getElementType(), project, fetcher);
-			//varType.setArrayLevel(arrayType.getDimensions());
+			VarType varType = getVariableType(arrayType.getElementType(), project, fetcher);
+			varType.setArrayLevel(arrayType.getDimensions());
 			return varType;
 		} else if (type.isParameterizedType()) {
 			ParameterizedType paramType = (ParameterizedType) type;
@@ -279,19 +280,19 @@ public class MinerUtilforJava {
 		}
 	}
 	
-	public static PureVarType getVariableType(ITypeBinding type, Project project, CompilationUnit compilationUnit, OntologicalDataFetcher fetcher) throws Exception {
+	public static VarType getVariableType(ITypeBinding type, Project project, CompilationUnit compilationUnit, OntologicalDataFetcher fetcher) throws Exception {
 		if (type == null) {
-			return new NullType();
+			return new VarType(new NullType(), 0);
 		} else if (type.isPrimitive()) {
-			return new PrimiType(type.getName());
+			return new VarType(new PrimiType(type.getName()), 0);
 		} else if (type.isClass()) {
-			return (clonepedia.model.ontology.Class) transferTypeToComplexType(type, project, compilationUnit, fetcher);
+			return new VarType((clonepedia.model.ontology.Class) transferTypeToComplexType(type, project, compilationUnit, fetcher), 0);
 		} else if (type.isInterface()) {
-			return (clonepedia.model.ontology.Interface) transferTypeToComplexType(type, project, compilationUnit, fetcher);
+			return new VarType((clonepedia.model.ontology.Interface) transferTypeToComplexType(type, project, compilationUnit, fetcher), 0);
 		} else if (type.isEnum()) {
-			return new EnumType(type.getName());
+			return new VarType(new EnumType(type.getName()), 0);
 		} else if (type.isTypeVariable()){
-			return new TypeVariableType(type.getName());
+			return new VarType(new TypeVariableType(type.getName()), 0);
 		}
 		/**
 		 * The array type is simplified as its element type because of the
@@ -302,8 +303,8 @@ public class MinerUtilforJava {
 		 * I will come back to investigate or refine the problem in future work.
 		 */
 		else if (type.isArray()) {
-			PureVarType varType = getVariableType(type.getElementType(), project, compilationUnit, fetcher);
-			//varType.setArrayLevel(type.getDimensions());
+			VarType varType = getVariableType(type.getElementType(), project, compilationUnit, fetcher);
+			varType.setArrayLevel(type.getDimensions());
 			return varType;
 		} else if (type.isParameterizedType()) {
 			return getVariableType(type.getTypeDeclaration(), project, compilationUnit, fetcher);
@@ -312,6 +313,44 @@ public class MinerUtilforJava {
 			
 			System.out.print("");
 			return getVariableType(b, project, compilationUnit, fetcher);
+		} else {
+			throw new Exception("The type " + type.getName() + " cannot be handled");
+		}
+	}
+
+	public static VarType getVariableTypeWithBasicInfoByBinding(ITypeBinding type, Project project, CompilationUnit compilationUnit) throws Exception {
+		if (type == null) {
+			return new VarType(new NullType(), 0);
+		} else if (type.isPrimitive()) {
+			return new VarType(new PrimiType(type.getName()), 0);
+		} else if (type.isClass()) {
+			return new VarType((clonepedia.model.ontology.Class) getComplexTypeWithBasicInfoByBinding(type, compilationUnit, project), 0);
+		} else if (type.isInterface()) {
+			return new VarType((clonepedia.model.ontology.Interface) getComplexTypeWithBasicInfoByBinding(type, compilationUnit, project), 0);
+		} else if (type.isEnum()) {
+			return new VarType(new EnumType(type.getName()), 0);
+		} else if (type.isTypeVariable()){
+			return new VarType(new TypeVariableType(type.getName()), 0);
+		}
+		/**
+		 * The array type is simplified as its element type because of the
+		 * following reasons 1) The coding time is limited 2) In clone code,
+		 * there should be some relationship between a type and a list of its
+		 * type.
+		 * 
+		 * I will come back to investigate or refine the problem in future work.
+		 */
+		else if (type.isArray()) {
+			VarType varType = getVariableTypeWithBasicInfoByBinding(type.getElementType(), project, compilationUnit);
+			varType.setArrayLevel(type.getDimensions());
+			return varType;
+		} else if (type.isParameterizedType()) {
+			return getVariableTypeWithBasicInfoByBinding(type.getTypeDeclaration(), project, compilationUnit);
+		} else if (type.isCapture()){
+			ITypeBinding b = type.getWildcard().getGenericTypeOfWildcardType();
+			
+			System.out.print("");
+			return getVariableTypeWithBasicInfoByBinding(b, project, compilationUnit);
 		} else {
 			throw new Exception("The type " + type.getName() + " cannot be handled");
 		}
@@ -393,7 +432,7 @@ public class MinerUtilforJava {
 
 		String methodName = md.getName().getIdentifier();
 		
-		PureVarType returnType = getVariableType(md.getReturnType2(), project, fetcher);
+		VarType returnType = getVariableType(md.getReturnType2(), project, fetcher);
 		
 		ArrayList<Variable> parameterList = new ArrayList<Variable>();
 		List paramList = md.parameters();
@@ -403,7 +442,7 @@ public class MinerUtilforJava {
 					.get(j);
 
 			String paramName = svd.getName().getIdentifier();
-			PureVarType paramType = getVariableType(svd.getType(), project, fetcher);
+			VarType paramType = getVariableType(svd.getType(), project, fetcher);
 
 			Variable variable = new Variable(paramName, paramType, false);
 			parameterList.add(variable);
@@ -423,7 +462,7 @@ public class MinerUtilforJava {
 			returnTypeBinding = methodBinding.getReturnType();
 		}
 		
-		PureVarType returnType = getVariableType(returnTypeBinding, project, cu, fetcher);
+		VarType returnType = getVariableType(returnTypeBinding, project, cu, fetcher);
 		System.out.print("");
 		/*if(returnType instanceof NullType){
 			System.out.println();
@@ -440,7 +479,7 @@ public class MinerUtilforJava {
 					Type type = svd.getType();
 					Name name = svd.getName();
 					
-					PureVarType paramType = getVariableType(type.resolveBinding(), project, cu, fetcher);
+					VarType paramType = getVariableType(type.resolveBinding(), project, cu, fetcher);
 					parameters.add(new Variable(((SimpleName)name).getIdentifier(), paramType, false));
 				}				
 			}
@@ -448,7 +487,7 @@ public class MinerUtilforJava {
 				ITypeBinding[] paramList = methodBinding.getParameterTypes();
 
 				for (int i = 0; i < paramList.length; i++) {
-					PureVarType paramType = getVariableType(paramList[i], project, cu, fetcher);
+					VarType paramType = getVariableType(paramList[i], project, cu, fetcher);
 					parameters.add(new Variable("param", paramType, false));
 				}
 			}
@@ -473,13 +512,13 @@ public class MinerUtilforJava {
 		String fieldName = variableBinding.getName();
 		ComplexType type = transferTypeToComplexType(
 				variableBinding.getDeclaringClass(), project, cu, fetcher);
-		PureVarType fieldType = getVariableType(variableBinding.getType(), project, cu, fetcher);
+		VarType fieldType = getVariableType(variableBinding.getType(), project, cu, fetcher);
 		return new Field(fieldName, type, fieldType);
 	}
 	
 	public static Variable getVariablefromBinding(SimpleName name, IVariableBinding variableBinding, Project project, CompilationUnit cu, OntologicalDataFetcher fetcher) throws Exception{
 		String variableName = variableBinding.getName();
-		PureVarType variableType = getVariableType(variableBinding.getType(), project, cu, fetcher);
+		VarType variableType = getVariableType(variableBinding.getType(), project, cu, fetcher);
 		VariableUseType useType;
 		if(name.isDeclaration())
 			useType = VariableUseType.DEFINE;
@@ -619,42 +658,6 @@ public class MinerUtilforJava {
 		else return null;
 	}
 	
-	public static PureVarType getVariableTypeWithBasicInfoByBinding(ITypeBinding type, Project project, CompilationUnit compilationUnit) throws Exception {
-		if (type == null) {
-			return null;
-		} else if (type.isPrimitive()) {
-			return new PrimiType(type.getName());
-		} else if (type.isClass()) {
-			return (clonepedia.model.ontology.Class) getComplexTypeWithBasicInfoByBinding(type, compilationUnit, project);
-		} else if (type.isInterface()) {
-			return (clonepedia.model.ontology.Interface) getComplexTypeWithBasicInfoByBinding(type, compilationUnit, project);
-		} else if (type.isEnum()) {
-			return new EnumType(type.getName());
-		} else if (type.isTypeVariable()){
-			return new TypeVariableType(type.getName());
-		}
-		/**
-		 * The array type is simplified as its element type because of the
-		 * following reasons 1) The coding time is limited 2) In clone code,
-		 * there should be some relationship between a type and a list of its
-		 * type.
-		 * 
-		 * I will come back to investigate or refine the problem in future work.
-		 */
-		else if (type.isArray()) {
-			return getVariableTypeWithBasicInfoByBinding(type.getElementType(), project, compilationUnit);
-		} else if (type.isParameterizedType()) {
-			return getVariableTypeWithBasicInfoByBinding(type.getTypeDeclaration(), project, compilationUnit);
-		} else if (type.isCapture()){
-			ITypeBinding b = type.getWildcard().getGenericTypeOfWildcardType();
-			
-			System.out.print("");
-			return getVariableTypeWithBasicInfoByBinding(b, project, compilationUnit);
-		} else {
-			throw new Exception("The type " + type.getName() + " cannot be handled");
-		}
-	}
-	
 	public static ProgrammingElement transferASTNodesToProgrammingElementType(ASTNode node) throws Exception{
 		
 		Project project = new Project(Settings.projectName, "java", "");
@@ -696,13 +699,13 @@ public class MinerUtilforJava {
 					
 					String methodName = methodBinding.getName();
 					ComplexType methodOwner = getComplexTypeWithBasicInfoByBinding(methodBinding.getDeclaringClass(), cu, project);
-					PureVarType returnType = getVariableTypeWithBasicInfoByBinding(methodBinding.getReturnType(), project, cu);
+					VarType returnType = getVariableTypeWithBasicInfoByBinding(methodBinding.getReturnType(), project, cu);
 					
 					ITypeBinding[] paramList = methodBinding.getParameterTypes();
 
 					ArrayList<Variable> parameters = new ArrayList<Variable>();
 					for (int i = 0; i < paramList.length; i++) {
-						PureVarType paramType = getVariableTypeWithBasicInfoByBinding(paramList[i], project, cu);
+						VarType paramType = getVariableTypeWithBasicInfoByBinding(paramList[i], project, cu);
 						parameters.add(new Variable("param", paramType, false));
 					}
 
@@ -711,7 +714,7 @@ public class MinerUtilforJava {
 				else if(name.resolveBinding().getKind() == IBinding.VARIABLE){
 					IVariableBinding variableBinding = (IVariableBinding) name.resolveBinding();
 					String variableName = variableBinding.getName();
-					PureVarType variableType = getVariableTypeWithBasicInfoByBinding(variableBinding.getType(), project, cu);
+					VarType variableType = getVariableTypeWithBasicInfoByBinding(variableBinding.getType(), project, cu);
 					if(variableBinding.isField()){
 						ComplexType type = getComplexTypeWithBasicInfoByBinding(
 								variableBinding.getDeclaringClass(), cu, project);

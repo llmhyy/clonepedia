@@ -102,6 +102,7 @@ import clonepedia.model.ontology.Class;
 import clonepedia.model.ontology.Interface;
 import clonepedia.model.ontology.Method;
 import clonepedia.model.ontology.PureVarType;
+import clonepedia.model.ontology.VarType;
 import clonepedia.model.ontology.Variable;
 import clonepedia.model.syntactic.ClonePatternGroup;
 import clonepedia.model.syntactic.PathPatternGroup;
@@ -447,11 +448,11 @@ public class SkeletonGenerationDialog extends TitleAreaDialog {
 					String paramName = paramType.substring(paramType.lastIndexOf(".")+1, paramType.length());
 					paramName = paramName.toLowerCase();
 					
-					Variable var = new Variable(paramName, new Class(paramType, null, paramType), false);
+					Variable var = new Variable(paramName, new VarType(new Class(paramType, null, paramType), 0), false);
 					
 					parameters.add(var);
 				}
-				m = new Method(targetClass, location.methodName, new Class(location.methodReturnTypeName, null, location.methodReturnTypeName), 
+				m = new Method(targetClass, location.methodName, new VarType(new Class(location.methodReturnTypeName, null, location.methodReturnTypeName), 0), 
 						parameters);
 				targetClass.getMethods().add(m);
 			}

@@ -9,16 +9,16 @@ public class Field extends MergeableSimpleOntologicalElement{
 	private static final long serialVersionUID = 7812303279925050807L;
 	private String fieldName;
 	private ComplexType ownerType;
-	private PureVarType fieldType;
+	private VarType fieldType;
 
-	public Field(String fieldName, ComplexType ownerType, PureVarType fieldType) {
+	public Field(String fieldName, ComplexType ownerType, VarType fieldType) {
 		super();
 		this.fieldName = fieldName;
 		this.ownerType = ownerType;
 		this.fieldType = fieldType;
 	}
 	
-	public Field(String fieldName, PureVarType fieldType, boolean isMerged){
+	public Field(String fieldName, VarType fieldType, boolean isMerged){
 		this.fieldName = fieldName;
 		this.fieldType = fieldType;
 		this.isMerged = isMerged;
@@ -48,11 +48,11 @@ public class Field extends MergeableSimpleOntologicalElement{
 		this.ownerType = ownerType;
 	}
 
-	public PureVarType getFieldType() {
+	public VarType getFieldType() {
 		return fieldType;
 	}
 
-	public void setFieldType(PureVarType fieldType) {
+	public void setFieldType(VarType fieldType) {
 		this.fieldType = fieldType;
 	}
 
@@ -66,8 +66,8 @@ public class Field extends MergeableSimpleOntologicalElement{
 		ArrayList<OntologicalElement> successors = new ArrayList<OntologicalElement>();
 		successors.add(ownerType);
 		
-		if(fieldType instanceof ComplexType)
-			successors.add((ComplexType)fieldType);
+		if(fieldType.getPureVarType() instanceof ComplexType)
+			successors.add((ComplexType)(fieldType.getPureVarType()));
 
 		
 		return successors;
@@ -99,7 +99,7 @@ public class Field extends MergeableSimpleOntologicalElement{
 	}
 
 	@Override
-	public PureVarType getVarType() {
+	public VarType getVarType() {
 		return this.fieldType;
 	}
 
