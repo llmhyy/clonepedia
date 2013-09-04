@@ -49,22 +49,25 @@ public class StartFromCloneFileAction implements
 				CloneSets sets = step1.getCloneSets();
 				sets.setPathComparator(new LevenshteinPathComparator());
 				
-				GenerateIntraSetPatternStep step2 = new GenerateIntraSetPatternStep(sets);
-				monitor.beginTask("Generating Intra Clone Set Pattern", step2.getTotolEffort());
-				step2.run(monitor);
-				
-				if(monitor.isCanceled()){
-					return Status.CANCEL_STATUS;
+				if(Settings.skipPattern.equals("No")){
+					GenerateIntraSetPatternStep step2 = new GenerateIntraSetPatternStep(sets);
+					monitor.beginTask("Generating Intra Clone Set Pattern", step2.getTotolEffort());
+					step2.run(monitor);
+					
+					if(monitor.isCanceled()){
+						return Status.CANCEL_STATUS;
+					}
+					
+					GenerateInterSetPatternStep step3 = new GenerateInterSetPatternStep(sets);
+					monitor.beginTask("Generating Inter Clone Set Pattern", step3.getTotolEffort());
+					step3.run(monitor);
+					
+					
+					if(monitor.isCanceled()){
+						return Status.CANCEL_STATUS;
+					}
 				}
 				
-				GenerateInterSetPatternStep step3 = new GenerateInterSetPatternStep(sets);
-				monitor.beginTask("Generating Inter Clone Set Pattern", step3.getTotolEffort());
-				step3.run(monitor);
-				
-				
-				if(monitor.isCanceled()){
-					return Status.CANCEL_STATUS;
-				}
 				
 				GenerateCloneTopicStep step4 = new GenerateCloneTopicStep(sets);
 				monitor.beginTask("Generating Clone Topics", step4.getTotolEffort());
