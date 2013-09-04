@@ -3,7 +3,7 @@ package clonepedia.syntactic.util.comparator;
 import clonepedia.model.ontology.Method;
 import clonepedia.model.ontology.OntologicalElement;
 import clonepedia.model.ontology.OntologicalElementType;
-import clonepedia.model.ontology.VarType;
+import clonepedia.model.ontology.PureVarType;
 import clonepedia.model.ontology.Variable;
 import clonepedia.syntactic.util.SimilarPairDistanceMatrixComputer;
 
@@ -27,12 +27,12 @@ public class MethodComparator extends OntologicalElementComparator {
 		
 		double distance = 0.0d;
 		
-		VarType type1 = m1.getReturnType();
-		VarType type2 = m2.getReturnType();
+		PureVarType type1 = m1.getReturnType();
+		PureVarType type2 = m2.getReturnType();
 		if(type1==null)
-			type1 = (VarType) m1.getOwner();
+			type1 = (PureVarType) m1.getOwner();
 		if(type2==null)
-			type2 = (VarType) m2.getOwner();
+			type2 = (PureVarType) m2.getOwner();
 		distance = returnTypeProportion * computeVarTypeDistance(type1, type2)
 				+ parameterTypeProportion * computeParameterTypesDistance(m1, m2)
 				+ methodNameProportion * computeStringDistance(m1.getMethodName(), m2.getMethodName());

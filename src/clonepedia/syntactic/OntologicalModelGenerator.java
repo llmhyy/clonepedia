@@ -18,7 +18,7 @@ import clonepedia.model.ontology.Interface;
 import clonepedia.model.ontology.Method;
 import clonepedia.model.ontology.PrimiType;
 import clonepedia.model.ontology.Project;
-import clonepedia.model.ontology.VarType;
+import clonepedia.model.ontology.PureVarType;
 import clonepedia.model.ontology.Variable;
 import clonepedia.model.ontology.VariableUseType;
 import clonepedia.syntactic.pools.ClassPool;
@@ -77,7 +77,7 @@ public class OntologicalModelGenerator implements Serializable{
 	
 	private void buildRelationsforField() {
 		for(Field field: fieldPool){
-			VarType vType = field.getFieldType();
+			PureVarType vType = field.getFieldType();
 			ComplexType fieldType = transferVarTypeToComplexType(vType);
 			if(fieldType != null){
 				if(fieldType instanceof Class)
@@ -91,7 +91,7 @@ public class OntologicalModelGenerator implements Serializable{
 
 	private void buildRelationsforMethod() {
 		for(Method method: methodPool){
-			VarType vType = method.getReturnType();
+			PureVarType vType = method.getReturnType();
 			ComplexType returnType = transferVarTypeToComplexType(vType);
 			if(returnType != null){
 				if(returnType instanceof Class)
@@ -117,7 +117,7 @@ public class OntologicalModelGenerator implements Serializable{
 	
 	private void buildRelationforVariable(Variable variable){
 		
-		VarType vType = variable.getVariableType();
+		PureVarType vType = variable.getVariableType();
 		ComplexType variableType = transferVarTypeToComplexType(vType);
 		if(variableType != null){
 			if(variableType instanceof Class)
@@ -127,7 +127,7 @@ public class OntologicalModelGenerator implements Serializable{
 		}
 	}
 	
-	private ComplexType transferVarTypeToComplexType(VarType vType){
+	private ComplexType transferVarTypeToComplexType(PureVarType vType){
 		
 		if(vType instanceof Class){
 			Class returnClass = (Class)vType;

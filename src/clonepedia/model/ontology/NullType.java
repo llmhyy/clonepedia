@@ -1,6 +1,6 @@
 package clonepedia.model.ontology;
 
-public class NullType implements VarType {
+public class NullType implements PureVarType {
 
 	/**
 	 * 
@@ -10,7 +10,7 @@ public class NullType implements VarType {
 	@Override
 	public int getConcreteType() {
 		// TODO Auto-generated method stub
-		return VarType.NullType;
+		return PureVarType.NullType;
 	}
 
 	@Override

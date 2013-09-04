@@ -101,7 +101,7 @@ import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 import clonepedia.model.ontology.Class;
 import clonepedia.model.ontology.Interface;
 import clonepedia.model.ontology.Method;
-import clonepedia.model.ontology.VarType;
+import clonepedia.model.ontology.PureVarType;
 import clonepedia.model.ontology.Variable;
 import clonepedia.model.syntactic.ClonePatternGroup;
 import clonepedia.model.syntactic.PathPatternGroup;

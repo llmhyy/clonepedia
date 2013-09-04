@@ -7,7 +7,7 @@ import java.util.List;
 import clonepedia.java.util.JavaMetricComputingUtil;
 import clonepedia.model.cluster.IClusterable;
 
-public class Class extends ComplexType implements VarType, IClusterable{
+public class Class extends ComplexType implements PureVarType, IClusterable{
 	/**
 	 * 
 	 */
@@ -175,7 +175,7 @@ public class Class extends ComplexType implements VarType, IClusterable{
 
 	@Override
 	public int getConcreteType() {
-		return VarType.ClassType;
+		return PureVarType.ClassType;
 	}
 
 	@Override

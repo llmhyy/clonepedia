@@ -9,7 +9,7 @@ import clonepedia.model.ontology.CloneSet;
 import clonepedia.model.ontology.ComplexType;
 import clonepedia.model.ontology.Interface;
 import clonepedia.model.ontology.Method;
-import clonepedia.model.ontology.VarType;
+import clonepedia.model.ontology.PureVarType;
 import clonepedia.model.template.TemplateMethodGroup;
 import clonepedia.util.DefaultComparator;
 import clonepedia.util.MinerUtil;
@@ -87,7 +87,7 @@ public class JavaMetricComputingUtil {
 		return compareType(clazz1, clazz2);
 	}
 	
-	public static double compareReturnType(VarType varType1, VarType varType2){
+	public static double compareReturnType(PureVarType varType1, PureVarType varType2){
 		
 		/**
 		 * This means constructor
@@ -151,10 +151,10 @@ public class JavaMetricComputingUtil {
 		return packList;
 	}
 	
-	private static double compareType(VarType varType1, VarType varType2){
+	private static double compareType(PureVarType varType1, PureVarType varType2){
 		if(varType1.getConcreteType() == varType2.getConcreteType()){
-			if(varType1.getConcreteType() != VarType.ClassType && 
-					varType1.getConcreteType() != VarType.InterfaceType){
+			if(varType1.getConcreteType() != PureVarType.ClassType && 
+					varType1.getConcreteType() != PureVarType.InterfaceType){
 				return (varType1.getFullName().equals(varType2.getFullName()))? maxSimilarScore : 0;
 			}
 			else{
@@ -196,7 +196,7 @@ public class JavaMetricComputingUtil {
 		return 0;
 	}
 	
-	private static ComplexType convertVarTypeToComplexType(VarType varType){
+	private static ComplexType convertVarTypeToComplexType(PureVarType varType){
 		if(varType instanceof Class)
 			return (Class)varType;
 		else

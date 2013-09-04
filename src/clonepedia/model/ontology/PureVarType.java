@@ -2,7 +2,7 @@ package clonepedia.model.ontology;
 
 import java.io.Serializable;
 
-public interface VarType extends Serializable{
+public interface PureVarType extends Serializable{
 	
 	public static int ClassType = 0;
 	public static int EnumType = 1;

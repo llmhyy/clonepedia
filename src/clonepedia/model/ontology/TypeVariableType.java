@@ -1,6 +1,6 @@
 package clonepedia.model.ontology;
 
-public class TypeVariableType implements VarType {
+public class TypeVariableType implements PureVarType {
 	/**
 	 * 
 	 */
@@ -17,8 +17,8 @@ public class TypeVariableType implements VarType {
 	}
 	
 	public boolean equals(Object obj){
-		if(obj instanceof VarType){
-			VarType vt = (VarType)obj;
+		if(obj instanceof PureVarType){
+			PureVarType vt = (PureVarType)obj;
 			return vt.getFullName().equals(this.fullName);
 		}
 		return false;
@@ -34,6 +34,6 @@ public class TypeVariableType implements VarType {
 
 	@Override
 	public int getConcreteType() {
-		return VarType.TypeVariableType;
+		return PureVarType.TypeVariableType;
 	}
 }

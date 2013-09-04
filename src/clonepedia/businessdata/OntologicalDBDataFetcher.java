@@ -39,7 +39,7 @@ import clonepedia.model.ontology.ProgrammingElement;
 import clonepedia.model.ontology.Project;
 import clonepedia.model.ontology.RegionalOwner;
 import clonepedia.model.ontology.TypeVariableType;
-import clonepedia.model.ontology.VarType;
+import clonepedia.model.ontology.PureVarType;
 import clonepedia.model.ontology.Variable;
 import clonepedia.model.ontology.VariableUseType;
 import clonepedia.model.semantic.Word;
@@ -543,7 +543,7 @@ public class OntologicalDBDataFetcher extends OntologicalDataFetcher{
 			String returnType = methodRecord.getProperty("returnType");
 			String returnTypeCategory = methodRecord.getProperty("returnTypeCategory");
 
-			VarType vType = transferToVarType(returnType,
+			PureVarType vType = transferToVarType(returnType,
 					returnTypeCategory, project);
 
 			ArrayList<Variable> parameters = new ArrayList<Variable>();
@@ -558,7 +558,7 @@ public class OntologicalDBDataFetcher extends OntologicalDataFetcher{
 				String parameterName = paramRecord.getProperty("parameterName");
 				String parameterTypeCategory = paramRecord.getProperty("parameterTypeCategory");
 
-				VarType paramType = transferToVarType(parameterType,
+				PureVarType paramType = transferToVarType(parameterType,
 						parameterTypeCategory, project);
 				Variable variable = new Variable(parameterName, paramType, false);
 				parameters.add(variable);
@@ -586,7 +586,7 @@ public class OntologicalDBDataFetcher extends OntologicalDataFetcher{
 			String fieldType = record.getProperty("fieldType");
 			String fieldTypeCategory = record.getProperty("fieldTypeCategory");
 
-			VarType fType = transferToVarType(fieldType, fieldTypeCategory,
+			PureVarType fType = transferToVarType(fieldType, fieldTypeCategory,
 					project);
 			// ComplexType owner = getClassorInterfacebyId(ownerId);
 
@@ -610,7 +610,7 @@ public class OntologicalDBDataFetcher extends OntologicalDataFetcher{
 			String variableTypeCategory = record.getProperty("variableTypeCategory");
 			String useType = record.getProperty("useType");
 			
-			VarType vaType = transferToVarType(variableType, variableTypeCategory, project);
+			PureVarType vaType = transferToVarType(variableType, variableTypeCategory, project);
 			VariableUseType useT = VariableUseType.valueOf(useType);
 			Variable variable = new Variable(variableName, vaType, useT);
 			
@@ -634,7 +634,7 @@ public class OntologicalDBDataFetcher extends OntologicalDataFetcher{
 			String variableTypeCategory = record.getProperty("variableTypeCategory");
 			String useType = record.getProperty("useType");
 			
-			VarType vaType = transferToVarType(variableType, variableTypeCategory, project);
+			PureVarType vaType = transferToVarType(variableType, variableTypeCategory, project);
 			VariableUseType useT = VariableUseType.valueOf(useType);
 			variable = new Variable(variableName, vaType, useT);
 			
@@ -692,10 +692,10 @@ public class OntologicalDBDataFetcher extends OntologicalDataFetcher{
 		return owner;
 	}
 
-	private VarType transferToVarType(String typeName, String typeCategory,
+	private PureVarType transferToVarType(String typeName, String typeCategory,
 			Project project) throws Exception {
 
-		VarType vType = null;
+		PureVarType vType = null;
 		if(null == typeName || null == typeCategory)
 			return null;
 
@@ -1326,7 +1326,7 @@ public class OntologicalDBDataFetcher extends OntologicalDataFetcher{
 		fieldProperties.put("ownerId", field.getOwnerType().getId());
 
 		Properties typeProperties = new Properties();
-		VarType varType = field.getFieldType();
+		PureVarType varType = field.getFieldType();
 		typeProperties = putTypeInformation("field", typeProperties, varType);
 		if (typeProperties == null)
 			return;
@@ -1445,7 +1445,7 @@ public class OntologicalDBDataFetcher extends OntologicalDataFetcher{
 	}
 
 	private Properties putTypeInformation(String commonString,
-			Properties originalProperties, VarType varType) throws Exception {
+			Properties originalProperties, PureVarType varType) throws Exception {
 
 		String type = commonString + "Type";
 		String typeCategory = commonString + "TypeCategory";

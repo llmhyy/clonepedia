@@ -9,6 +9,6 @@ public abstract class MergeableSimpleOntologicalElement extends ProgrammingEleme
 	 * 
 	 */
 	private static final long serialVersionUID = -8768948477169008720L;
-	public abstract VarType getVarType();
+	public abstract PureVarType getVarType();
 	public abstract String getName();
 }

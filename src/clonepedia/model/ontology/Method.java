@@ -16,7 +16,7 @@ public class Method extends MergeableSimpleOntologicalElement implements  IClust
 	private String methodId;
 	private ComplexType owner;
 	private String methodName;
-	private VarType returnType;
+	private PureVarType returnType;
 	private ArrayList<Variable> parameters = new ArrayList<Variable>();
 	private HashSet<CloneInstance> cloneInstances = new HashSet<CloneInstance>();
 	
@@ -30,7 +30,7 @@ public class Method extends MergeableSimpleOntologicalElement implements  IClust
 		this.methodId = methodId;
 	}
 	
-	public Method(ComplexType owner, String methodName, VarType returnType,
+	public Method(ComplexType owner, String methodName, PureVarType returnType,
 			ArrayList<Variable> parameters) {
 		super();
 		this.owner = owner;
@@ -39,7 +39,7 @@ public class Method extends MergeableSimpleOntologicalElement implements  IClust
 		this.parameters = parameters;
 	}
 	
-	public Method(String methodName, VarType returnType,
+	public Method(String methodName, PureVarType returnType,
 			ArrayList<Variable> parameters, boolean isMerged) {
 		super();
 		this.methodName = methodName;
@@ -49,7 +49,7 @@ public class Method extends MergeableSimpleOntologicalElement implements  IClust
 	}
 
 	public Method(String methodId, ComplexType owner, String methodName,
-			VarType returnType, ArrayList<Variable> parameters) {
+			PureVarType returnType, ArrayList<Variable> parameters) {
 		super();
 		this.methodId = methodId;
 		this.owner = owner;
@@ -147,11 +147,11 @@ public class Method extends MergeableSimpleOntologicalElement implements  IClust
 		this.owner = owner;
 	}
 
-	public VarType getReturnType() {
+	public PureVarType getReturnType() {
 		return returnType;
 	}
 
-	public void setReturnType(VarType returnType) {
+	public void setReturnType(PureVarType returnType) {
 		this.returnType = returnType;
 	}
 
@@ -182,8 +182,8 @@ public class Method extends MergeableSimpleOntologicalElement implements  IClust
 		this.parameters = parameters;
 	}
 
-	public ArrayList<VarType> getParameterTypes(){
-		ArrayList<VarType> types = new ArrayList<VarType>();
+	public ArrayList<PureVarType> getParameterTypes(){
+		ArrayList<PureVarType> types = new ArrayList<PureVarType>();
 		for(Variable v: this.getParameters()){
 			types.add(v.getVarType());
 		}
@@ -205,7 +205,7 @@ public class Method extends MergeableSimpleOntologicalElement implements  IClust
 			successors.add((ComplexType)returnType);
 
 		for(Variable v: parameters){
-			VarType vType = v.getVariableType();
+			PureVarType vType = v.getVariableType();
 			if(vType instanceof ComplexType){
 				successors.add((ComplexType)vType);
 			}
@@ -228,7 +228,7 @@ public class Method extends MergeableSimpleOntologicalElement implements  IClust
 	}
 
 	@Override
-	public VarType getVarType() {
+	public PureVarType getVarType() {
 		return this.returnType;
 	}
 

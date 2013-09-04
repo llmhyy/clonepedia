@@ -7,7 +7,7 @@ import clonepedia.model.ontology.MergeableSimpleConcreteElement;
 import clonepedia.model.ontology.Method;
 import clonepedia.model.ontology.OntologicalElement;
 import clonepedia.model.ontology.OntologicalRelationType;
-import clonepedia.model.ontology.VarType;
+import clonepedia.model.ontology.PureVarType;
 import clonepedia.model.ontology.Variable;
 import clonepedia.syntactic.util.abstractor.PathAbstractor;
 

@@ -8,10 +8,10 @@ public class MergeableSimpleConcreteElement extends MergeableSimpleOntologicalEl
 	 * 
 	 */
 	private static final long serialVersionUID = -2086258912930192160L;
-	private VarType varType;
+	private PureVarType varType;
 	private String name;
 	
-	public MergeableSimpleConcreteElement(String name, VarType varType, boolean isMerged){
+	public MergeableSimpleConcreteElement(String name, PureVarType varType, boolean isMerged){
 		this.name = name;
 		this.varType = varType;
 	}
@@ -38,7 +38,7 @@ public class MergeableSimpleConcreteElement extends MergeableSimpleOntologicalEl
 	}
 
 	@Override
-	public VarType getVarType() {
+	public PureVarType getVarType() {
 		return this.varType;
 	}
 

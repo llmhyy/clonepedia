@@ -15,7 +15,7 @@ import clonepedia.model.ontology.Method;
 import clonepedia.model.ontology.OntologicalElement;
 import clonepedia.model.ontology.OntologicalRelationType;
 import clonepedia.model.ontology.PrimiType;
-import clonepedia.model.ontology.VarType;
+import clonepedia.model.ontology.PureVarType;
 import clonepedia.model.ontology.Variable;
 import clonepedia.model.ontology.VariableUseType;
 import clonepedia.model.syntactic.ClonePatternGroup;
@@ -167,7 +167,7 @@ public class SyntacticUtil implements Serializable{
 			if(method.getOwner().getId().equals(type.getId()))
 				return OntologicalRelationType.declaredIn;
 			else{
-				VarType returnType = method.getReturnType();
+				PureVarType returnType = method.getReturnType();
 				if(returnType instanceof ComplexType){
 					if(((ComplexType)returnType).getId().equals(type.getId()))
 						return OntologicalRelationType.hasType;
@@ -178,7 +178,7 @@ public class SyntacticUtil implements Serializable{
 			}
 			
 			for(Variable parameter: method.getParameters()){
-				VarType paramType = parameter.getVariableType();
+				PureVarType paramType = parameter.getVariableType();
 				if(paramType instanceof ComplexType
 						&& ((ComplexType)paramType).getId().equals(type.getId()))
 					return OntologicalRelationType.hasParameterType;
@@ -195,7 +195,7 @@ public class SyntacticUtil implements Serializable{
 			if(field.getOwnerType().getId().equals(type.getId()))
 				return OntologicalRelationType.declaredIn;
 			else{
-				VarType fType = field.getFieldType();
+				PureVarType fType = field.getFieldType();
 				if(fType instanceof ComplexType){
 					if(((ComplexType)fType).getId().equals(type.getId()))
 						return OntologicalRelationType.hasType;
@@ -349,8 +349,8 @@ public class SyntacticUtil implements Serializable{
 		
 		//System.out.println(getVarConcreteTypeOfOntologicalElement(e1) + " " + getVarConcreteTypeOfOntologicalElement(e2));
 		
-		VarType vType1 = getVarConcreteTypeOfOntologicalElement(e1);
-		VarType vType2 = getVarConcreteTypeOfOntologicalElement(e2);
+		PureVarType vType1 = getVarConcreteTypeOfOntologicalElement(e1);
+		PureVarType vType2 = getVarConcreteTypeOfOntologicalElement(e2);
 		
 		if(vType1 == null && vType1 == null)
 			return true;
@@ -361,7 +361,7 @@ public class SyntacticUtil implements Serializable{
 		}
 	}
 	
-	public static boolean isCompatibleType(VarType vType1, VarType vType2){
+	public static boolean isCompatibleType(PureVarType vType1, PureVarType vType2){
 		if(vType1.getConcreteType() == vType2.getConcreteType()){
 			if((vType1 instanceof Class) || (vType1 instanceof Interface)){
 				ComplexType ct1 = (ComplexType)vType1;
@@ -386,7 +386,7 @@ public class SyntacticUtil implements Serializable{
 		return false;
 	}
 	
-	public static VarType getVarConcreteTypeOfOntologicalElement(OntologicalElement element){
+	public static PureVarType getVarConcreteTypeOfOntologicalElement(OntologicalElement element){
 		
 		if(element instanceof Method){
 			return ((Method)element).getReturnType();
@@ -405,10 +405,10 @@ public class SyntacticUtil implements Serializable{
 			//return (null == vType)? VarType.UnknownType : vType.getConcreteType();
 		}
 		else if(element instanceof Interface){
-			return (VarType)element;
+			return (PureVarType)element;
 		}
 		else if(element instanceof Class){
-			return (VarType)element;
+			return (PureVarType)element;
 		}
 		
 		return null;

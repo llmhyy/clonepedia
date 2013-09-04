@@ -2,7 +2,7 @@ package clonepedia.model.ontology;
 
 import java.util.ArrayList;
 
-public class PrimiType extends ProgrammingElement implements VarType{
+public class PrimiType extends ProgrammingElement implements PureVarType{
 	
 	/**
 	 * 
@@ -15,8 +15,8 @@ public class PrimiType extends ProgrammingElement implements VarType{
 	}
 	
 	public boolean equals(Object obj){
-		if(obj instanceof VarType){
-			VarType vt = (VarType)obj;
+		if(obj instanceof PureVarType){
+			PureVarType vt = (PureVarType)obj;
 			return vt.getFullName().equals(this.fullName);
 		}
 		return false;
@@ -32,7 +32,7 @@ public class PrimiType extends ProgrammingElement implements VarType{
 
 	@Override
 	public int getConcreteType() {
-		return VarType.PrimiType;
+		return PureVarType.PrimiType;
 	}
 
 	@Override

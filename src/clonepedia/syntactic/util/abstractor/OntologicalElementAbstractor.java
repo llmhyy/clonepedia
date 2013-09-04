@@ -7,7 +7,7 @@ import java.util.Collection;
 import clonepedia.model.ontology.MergeableSimpleOntologicalElement;
 import clonepedia.model.ontology.OntologicalElement;
 import clonepedia.model.ontology.ProgrammingElement;
-import clonepedia.model.ontology.VarType;
+import clonepedia.model.ontology.PureVarType;
 import clonepedia.syntactic.util.SimilarPairDistanceMatrixComputer;
 import clonepedia.syntactic.util.SimilarPairDistanceMatrixComputer.Distance;
 import clonepedia.syntactic.util.comparator.OntologicalElementComparator;
@@ -33,7 +33,7 @@ public abstract class OntologicalElementAbstractor implements Serializable{
 	
 	protected abstract OntologicalElement abstractOntologicalElement(OntologicalElement e1, OntologicalElement e2) throws Exception;
 
-	protected VarType abstractVarType(VarType type1, VarType type2){
+	protected PureVarType abstractVarType(PureVarType type1, PureVarType type2){
 		if (type1 == null || type2 == null)
 			return null;
 

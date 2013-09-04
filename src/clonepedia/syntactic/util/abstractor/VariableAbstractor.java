@@ -1,7 +1,7 @@
 package clonepedia.syntactic.util.abstractor;
 
 import clonepedia.model.ontology.OntologicalElement;
-import clonepedia.model.ontology.VarType;
+import clonepedia.model.ontology.PureVarType;
 import clonepedia.model.ontology.Variable;
 
 public class VariableAbstractor extends OntologicalElementAbstractor{
@@ -18,7 +18,7 @@ public class VariableAbstractor extends OntologicalElementAbstractor{
 		Variable variable1 = (Variable)e1;
 		Variable variable2 = (Variable)e2;
 		
-		VarType abType = abstractVarType(variable1.getVariableType(), variable2.getVariableType());
+		PureVarType abType = abstractVarType(variable1.getVariableType(), variable2.getVariableType());
 		String abName = abstractName(variable1.getVariableName(), variable2.getVariableName());
 		
 		Variable abstractVariable = new Variable(abName, abType, true);

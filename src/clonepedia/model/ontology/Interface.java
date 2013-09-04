@@ -3,7 +3,7 @@ package clonepedia.model.ontology;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public class Interface extends ComplexType implements VarType{
+public class Interface extends ComplexType implements PureVarType{
 	/**
 	 * 
 	 */
@@ -120,7 +120,7 @@ public class Interface extends ComplexType implements VarType{
 
 	@Override
 	public int getConcreteType() {
-		return VarType.InterfaceType;
+		return PureVarType.InterfaceType;
 	}
 
 	@Override

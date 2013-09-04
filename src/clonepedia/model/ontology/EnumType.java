@@ -1,6 +1,6 @@
 package clonepedia.model.ontology;
 
-public class EnumType implements VarType {
+public class EnumType implements PureVarType {
 	/**
 	 * 
 	 */
@@ -19,8 +19,8 @@ public class EnumType implements VarType {
 	}
 	
 	public boolean equals(Object obj){
-		if(obj instanceof VarType){
-			VarType vt = (VarType)obj;
+		if(obj instanceof PureVarType){
+			PureVarType vt = (PureVarType)obj;
 			return vt.getFullName().equals(this.fullName);
 		}
 		return false;
@@ -35,6 +35,6 @@ public class EnumType implements VarType {
 
 	@Override
 	public int getConcreteType() {
-		return VarType.EnumType;
+		return PureVarType.EnumType;
 	}
 }

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import clonepedia.model.ontology.Method;
 import clonepedia.model.ontology.OntologicalElement;
-import clonepedia.model.ontology.VarType;
+import clonepedia.model.ontology.PureVarType;
 import clonepedia.model.ontology.Variable;
 import clonepedia.syntactic.util.comparator.VariableComparator;
 
@@ -21,14 +21,14 @@ public class MethodAbstractor extends OntologicalElementAbstractor {
 		Method method1 = (Method)e1;
 		Method method2 = (Method)e2;
 		
-		VarType type1 = method1.getReturnType();
-		VarType type2 = method2.getReturnType();
+		PureVarType type1 = method1.getReturnType();
+		PureVarType type2 = method2.getReturnType();
 		if(type1==null)
-			type1 = (VarType) method1.getOwner();
+			type1 = (PureVarType) method1.getOwner();
 		if(type2==null)
-			type2 = (VarType) method2.getOwner();
+			type2 = (PureVarType) method2.getOwner();
 		
-		VarType abReturnType = abstractVarType(type1, type2);
+		PureVarType abReturnType = abstractVarType(type1, type2);
 		ArrayList<Variable> parameters = abstractParameters(method1.getParameters(), method2.getParameters());
 		String abName = abstractName(method1.getMethodName(), method2.getMethodName());
 		

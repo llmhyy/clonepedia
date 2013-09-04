@@ -8,19 +8,19 @@ public class Variable extends MergeableSimpleOntologicalElement{
 	 */
 	private static final long serialVersionUID = 2791145150546745177L;
 	private String variableName;
-	private VarType variableType;
+	private PureVarType variableType;
 
 	private VariableUseType useType;
 	private RegionalOwner owner;
 	
-	public Variable(String variableName, VarType variableType, boolean isMerged) {
+	public Variable(String variableName, PureVarType variableType, boolean isMerged) {
 		super();
 		this.variableName = variableName;
 		this.variableType = variableType;
 		this.isMerged = isMerged;
 	}
 
-	public Variable(String variableName, VarType variableType,
+	public Variable(String variableName, PureVarType variableType,
 			VariableUseType useType) {
 		super();
 		this.variableName = variableName;
@@ -30,7 +30,7 @@ public class Variable extends MergeableSimpleOntologicalElement{
 
 	
 
-	public Variable(String variableName, VarType variableType,
+	public Variable(String variableName, PureVarType variableType,
 			VariableUseType useType, RegionalOwner owner) {
 		super();
 		this.variableName = variableName;
@@ -80,11 +80,11 @@ public class Variable extends MergeableSimpleOntologicalElement{
 		this.variableName = variableName;
 	}
 
-	public VarType getVariableType() {
+	public PureVarType getVariableType() {
 		return variableType;
 	}
 
-	public void setVariableType(VarType variableType) {
+	public void setVariableType(PureVarType variableType) {
 		this.variableType = variableType;
 	}
 
@@ -120,7 +120,7 @@ public class Variable extends MergeableSimpleOntologicalElement{
 	}
 
 	@Override
-	public VarType getVarType() {
+	public PureVarType getVarType() {
 		return this.variableType;
 	}
 

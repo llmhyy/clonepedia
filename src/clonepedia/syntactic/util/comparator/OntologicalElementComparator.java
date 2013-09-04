@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 import clonepedia.model.ontology.OntologicalElement;
-import clonepedia.model.ontology.VarType;
+import clonepedia.model.ontology.PureVarType;
 import clonepedia.syntactic.util.DistanceComputationPool;
 import clonepedia.util.DefaultComparator;
 import clonepedia.util.MinerUtil;
@@ -75,13 +75,13 @@ public abstract class OntologicalElementComparator implements Serializable{
 		return 1-(commonChars.length/((name1.length + name2.length)/2.0d));
 	}
 	
-	protected double computeVarTypeDistance(VarType type1, VarType type2) throws Exception{
+	protected double computeVarTypeDistance(PureVarType type1, PureVarType type2) throws Exception{
 		
 		if(type1 == null || type2 == null)return 1;
 		
 		if(type1.getConcreteType() != type2.getConcreteType())
 			return 1;
-		else if(type1.getConcreteType() != VarType.ClassType && type1.getConcreteType() != VarType.InterfaceType){
+		else if(type1.getConcreteType() != PureVarType.ClassType && type1.getConcreteType() != PureVarType.InterfaceType){
 			if(type1.equals(type2))
 				return 0;	
 		}
