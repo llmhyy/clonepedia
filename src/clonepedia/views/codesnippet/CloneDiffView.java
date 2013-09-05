@@ -92,7 +92,10 @@ public class CloneDiffView extends ViewPart {
 					diffIndex++;
 				}
 				
-				if(diffIndex >= 0){					
+				if(diffIndex >= 0){	
+					if(diffIndex > list.size()-1){
+						diffIndex = 0;
+					}
 					relationGroup = list.get(diffIndex);
 				}
 				
@@ -232,8 +235,8 @@ public class CloneDiffView extends ViewPart {
 			parser.setResolveBindings(true);
 			CompilationUnit cu = (CompilationUnit) parser.createAST(null);
 			
-			int startClonePosition = cu.getPosition(instance.getStartLine(), 0);
-			int endClonePosition = cu.getPosition(instance.getEndLine()+1, 0);
+			int startClonePosition = cu.getPosition(instance.getStartLine()-1, 0);
+			int endClonePosition = cu.getPosition(instance.getEndLine(), 0);
 			
 			MethodDeclaration methodDeclaration = instanceWrapper.getMethodDeclaration();
 			int methodStartPosition = methodDeclaration.getStartPosition();
@@ -245,7 +248,7 @@ public class CloneDiffView extends ViewPart {
 				e.printStackTrace();
 			}
 			
-			content = content.substring(methodStartPosition, methodEndPosition);
+			////content = content.substring(methodStartPosition, methodEndPosition);
 			text.setText(content);
 			//cloneStyleRange.fontStyle = SWT.BOLD;
 			
@@ -255,7 +258,13 @@ public class CloneDiffView extends ViewPart {
 			cloneStyleRange.foreground = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_YELLOW);
 			text.setStyleRange(cloneStyleRange);*/
 			
-			int startCloneLineNumber = cu.getLineNumber(startClonePosition) - cu.getLineNumber(methodStartPosition);
+			//int startCloneLineNumber = cu.getLineNumber(startClonePosition) - cu.getLineNumber(methodStartPosition);
+			//int lineCount =  cu.getLineNumber(endClonePosition) - cu.getLineNumber(startClonePosition);
+			
+			////int startCloneLineNumber = cu.getLineNumber(startClonePosition) - cu.getLineNumber(methodStartPosition);
+			////int lineCount =  cu.getLineNumber(endClonePosition) - cu.getLineNumber(startClonePosition);
+			
+			int startCloneLineNumber = cu.getLineNumber(startClonePosition);
 			int lineCount =  cu.getLineNumber(endClonePosition) - cu.getLineNumber(startClonePosition);
 
 			text.setTopIndex(startCloneLineNumber - 3);
@@ -303,7 +312,9 @@ public class CloneDiffView extends ViewPart {
 						generateStyleRangeFromASTNode(text, node,
 								methodStartPosition, CloneDiffView.COUNTER_DIFF_STYLE, relationGroup.getElements().size(), true);
 						
-						text.setTopIndex(cu.getLineNumber(node.getStartPosition()) - cu.getLineNumber(methodStartPosition) - 3);
+						////text.setTopIndex(cu.getLineNumber(node.getStartPosition()) - cu.getLineNumber(methodStartPosition) - 3);
+						////text.setHorizontalIndex(cu.getColumnNumber(node.getStartPosition()) - 20);
+						text.setTopIndex(cu.getLineNumber(node.getStartPosition()) - 3);
 						text.setHorizontalIndex(cu.getColumnNumber(node.getStartPosition()) - 20);
 					}
 				}
@@ -333,7 +344,7 @@ public class CloneDiffView extends ViewPart {
 		
 		switch(codeTextStyle){
 		case DOC_STYLE:
-			color = Display.getCurrent().getSystemColor(SWT.COLOR_GRAY);
+			color = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GREEN);
 			break;
 		case GAP_DIFF_STYLE:
 			color = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_BLUE);
@@ -355,8 +366,10 @@ public class CloneDiffView extends ViewPart {
 		if(MinerUtilforJava.isComplexStatement(node)){
 			StyleRange styleRange1 = new StyleRange();
 			StyleRange styleRange2 = new StyleRange();
-			styleRange1.start = startNodePosition - methodStartPosition;
-			styleRange2.start = startNodePosition - methodStartPosition + length -1;
+			////styleRange1.start = startNodePosition - methodStartPosition;
+			////styleRange2.start = startNodePosition - methodStartPosition + length -1;
+			styleRange1.start = startNodePosition;
+			styleRange2.start = startNodePosition + length -1;
 			
 			switch(node.getNodeType()){
 			case ASTNode.BLOCK: 
@@ -399,7 +412,8 @@ public class CloneDiffView extends ViewPart {
 		}
 		else{
 			StyleRange styleRange = new StyleRange();
-			styleRange.start = startNodePosition - methodStartPosition;
+			////styleRange.start = startNodePosition - methodStartPosition;
+			styleRange.start = startNodePosition;
 			styleRange.length = length;
 			styleRange.foreground = color;
 			styleRange.fontStyle = style;	

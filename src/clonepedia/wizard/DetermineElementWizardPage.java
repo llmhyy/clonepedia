@@ -175,7 +175,7 @@ public abstract class DetermineElementWizardPage extends NewContainerWizardPage 
 	public final static String method_name = "Name: ";
 	public final static String method_parameters = "Parameters: ";
 	
-	private final String[] primitiveTypes = {"int", "float", "double", "long", "short", "char"};
+	private final String[] primitiveTypes = {"int", "float", "double", "long", "short", "char", "boolean"};
 
 	/**
 	 * Public access flag. See The Java Virtual Machine Specification for more
@@ -2289,20 +2289,24 @@ public abstract class DetermineElementWizardPage extends NewContainerWizardPage 
 			List<MethodParameterWrapper> elements = fMethodParametersDialogField.getElements();
 			int nElements = elements.size();
 			for (int i = 0; i < nElements; i++) {
-				String intfname = elements.get(i).toString();
+				String paramTypeName = elements.get(i).toString();
 				
-				intfname = intfname.substring(0, intfname.indexOf(":"));
+				paramTypeName = paramTypeName.substring(0, paramTypeName.indexOf(":"));
 				
-				if(intfname.contains("[]")){
-					intfname = intfname.substring(0, intfname.indexOf("["));
+				if(paramTypeName.contains("[]")){
+					paramTypeName = paramTypeName.substring(0, paramTypeName.indexOf("["));
 				}
 				
-				Type type = TypeContextChecker.parseSuperInterface(intfname);
-				if (type == null && !isPrimitiveType(intfname)) {
+				if(isPrimitiveType(paramTypeName)){
+					return status;
+				}
+				
+				Type type = TypeContextChecker.parseSuperInterface(paramTypeName);
+				if (type == null && !isPrimitiveType(paramTypeName)) {
 					status.setError(Messages
 							.format(NewWizardMessages.NewTypeWizardPage_error_InvalidSuperInterfaceName,
 									BasicElementLabels
-											.getJavaElementName(intfname)));
+											.getJavaElementName(paramTypeName)));
 					return status;
 				}
 				if (type instanceof ParameterizedType
@@ -2310,7 +2314,7 @@ public abstract class DetermineElementWizardPage extends NewContainerWizardPage 
 					status.setError(Messages
 							.format(NewWizardMessages.NewTypeWizardPage_error_SuperInterfaceNotParameterized,
 									BasicElementLabels
-											.getJavaElementName(intfname)));
+											.getJavaElementName(paramTypeName)));
 					return status;
 				}
 			}
