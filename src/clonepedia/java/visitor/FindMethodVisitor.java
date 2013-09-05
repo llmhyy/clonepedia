@@ -24,7 +24,13 @@ public class FindMethodVisitor extends ASTVisitor {
 	
 	public boolean visit(MethodDeclaration md){
 		Type returnType = md.getReturnType2();
-		String returnTypeString = returnType.toString();
+		String returnTypeString;
+		if(returnType != null){
+			returnTypeString = returnType.toString();
+		}
+		else{
+			returnTypeString = "";
+		}
 		
 		if(!this.returnType.contains(returnTypeString))return true;
 		
@@ -42,14 +48,19 @@ public class FindMethodVisitor extends ASTVisitor {
 			String paramType = svd.getType().toString();
 			
 			tobeComparedList[j] = paramType;
-			System.out.println();
+			//System.out.println();
+		}
+		
+		String[] simpleList = new String[this.params.length];
+		for(int i=0; i<this.params.length; i++){
+			simpleList[i] = this.params[i].substring(this.params[i].lastIndexOf(".")+1, this.params[i].length());
 		}
 		
 		Arrays.sort(tobeComparedList);
-		Arrays.sort(this.params);
+		Arrays.sort(simpleList);
 		
 		for(int i=0; i<paramList.size(); i++){
-			if(!this.params[i].contains(tobeComparedList[i])){
+			if(!simpleList[i].equals(tobeComparedList[i])){
 				return true;
 			}
 		}
