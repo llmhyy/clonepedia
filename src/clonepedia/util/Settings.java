@@ -8,19 +8,24 @@ public class Settings {
 	static{
 		//Preferences preferences = ConfigurationScope.INSTANCE.getNode("Clonepedia");
 		if(Activator.getDefault() != null){
-			projectName = Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.TARGET_PORJECT);
-			inputCloneFile = Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.CLONE_PATH);
-			ontologyFile = Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.ONTOLOGY_PATH);
-			intraSetFile = Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.INTRA_SET_PATH);
-			interSetFile = Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.INTER_SET_PATH);
-			diffComparisonMode = Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.DIFF_LEVEL);
-			skipPattern = Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.SKIP_PATTERN);
-			
-			templateMethodGroupCallingStrength = Integer.valueOf(Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.TEMPLATE_METHOD_STRENGTH));
-			abstractMethodGroupCallingStrength = Integer.valueOf(Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.ABSTRACT_METHOD_STRENGTH));
-			thresholdDistanceForTMGFilteringAndSplitting = Double.valueOf(Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.THRESHOLD_FOR_TMG_FORMING));
-			thresholdDistanceForTMGLocationClustering = Double.valueOf(Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.THRESHOLD_FOR_TMG_LOCATION));
-			thresholdDistanceForDeclaringClassClustering = Double.valueOf(Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.THRESHOLD_FOR_TCG_FORMING));
+			try{
+				projectName = Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.TARGET_PORJECT);
+				inputCloneFile = Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.CLONE_PATH);
+				ontologyFile = Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.ONTOLOGY_PATH);
+				intraSetFile = Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.INTRA_SET_PATH);
+				interSetFile = Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.INTER_SET_PATH);
+				diffComparisonMode = Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.DIFF_LEVEL);
+				skipPattern = Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.SKIP_PATTERN);
+				
+				templateMethodGroupCallingStrength = Integer.valueOf(Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.TEMPLATE_METHOD_STRENGTH));
+				abstractMethodGroupCallingStrength = Integer.valueOf(Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.ABSTRACT_METHOD_STRENGTH));
+				thresholdDistanceForTMGFilteringAndSplitting = Double.valueOf(Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.THRESHOLD_FOR_TMG_FORMING));
+				thresholdDistanceForTMGLocationClustering = Double.valueOf(Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.THRESHOLD_FOR_TMG_LOCATION));
+				thresholdDistanceForDeclaringClassClustering = Double.valueOf(Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.THRESHOLD_FOR_TCG_FORMING));				
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
 		}
 	}
 	
