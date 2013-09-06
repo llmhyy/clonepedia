@@ -135,7 +135,7 @@ public class PlainCloneSetView extends SummaryView {
 						instanceString = instanceString.substring(instanceString.indexOf("(")+1, instanceString.lastIndexOf(")"));
 						if(instanceString.equals(content)){
 							//openNewTab(instance);
-							ViewUtil.openJavaEditorForCloneInstace(instance);
+							ViewUtil.openJavaEditorForCloneInstance(instance);
 							CloneCodeSnippetView viewpart = (CloneCodeSnippetView)getSite().getWorkbenchWindow().getActivePage().findView(CloneSummaryPerspective.CODE_SNIPPET_VIEW);
 							if(viewpart != null){
 								viewpart.createCodeSections((CloneInstance)instance);								

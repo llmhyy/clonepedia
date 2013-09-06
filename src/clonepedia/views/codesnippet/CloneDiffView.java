@@ -3,6 +3,7 @@ package clonepedia.views.codesnippet;
 import java.util.ArrayList;
 
 import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -11,6 +12,7 @@ import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
+import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.swt.SWT;
@@ -18,6 +20,8 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
@@ -28,8 +32,12 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 
 import clonepedia.Activator;
@@ -223,12 +231,18 @@ public class CloneDiffView extends ViewPart {
 		StyledText text = new StyledText(parent, SWT.V_SCROLL | SWT.H_SCROLL);
 		text.setLayoutData(scrollCodeLayoutData);
 		
+		Menu menu = new Menu(parent);
+		MenuItem menuItem = new MenuItem(menu, SWT.PUSH);
+		menuItem.setText("Show in java editor");
+		text.setMenu(menu);
+		
 		String content = null;
 		
 		CloneInstance instance = instanceWrapper.getCloneInstance();
 		
-		ICompilationUnit iunit = ViewUtil.getCorrespondingCompliationUnit(instance);
+		final ICompilationUnit iunit = ViewUtil.getCorrespondingCompliationUnit(instance);
 		if(iunit != null){
+			
 			ASTParser parser = ASTParser.newParser(AST.JLS3);
 			parser.setKind(ASTParser.K_COMPILATION_UNIT);
 			parser.setSource(iunit);
@@ -264,9 +278,21 @@ public class CloneDiffView extends ViewPart {
 			////int startCloneLineNumber = cu.getLineNumber(startClonePosition) - cu.getLineNumber(methodStartPosition);
 			////int lineCount =  cu.getLineNumber(endClonePosition) - cu.getLineNumber(startClonePosition);
 			
-			int startCloneLineNumber = cu.getLineNumber(startClonePosition);
-			int lineCount =  cu.getLineNumber(endClonePosition) - cu.getLineNumber(startClonePosition);
+			final int startCloneLineNumber = cu.getLineNumber(startClonePosition);
+			final int lineCount =  cu.getLineNumber(endClonePosition) - cu.getLineNumber(startClonePosition);
 
+			menuItem.addSelectionListener(new SelectionListener() {
+				
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					ViewUtil.openJavaEditorForCloneInstace(iunit, startCloneLineNumber, startCloneLineNumber+lineCount);
+				}
+				
+				@Override
+				public void widgetDefaultSelected(SelectionEvent e) {
+				}
+			});
+			
 			text.setTopIndex(startCloneLineNumber - 3);
 			
 			Color disposableColoar = new Color(Display.getCurrent(), 150, 250, 250);

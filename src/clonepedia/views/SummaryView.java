@@ -116,7 +116,7 @@ public abstract class SummaryView extends ViewPart {
 			Object element = selection.getFirstElement();
 			if (element instanceof CloneInstance) {
 				CloneInstance instance = (CloneInstance) element;
-				ViewUtil.openJavaEditorForCloneInstace(instance);
+				ViewUtil.openJavaEditorForCloneInstance(instance);
 			}
 			else if(element instanceof CloneSet){
 				/*for(CloneInstance instance: (CloneSet)element)
@@ -298,7 +298,7 @@ public abstract class SummaryView extends ViewPart {
 					if(domainObj instanceof Path){
 						Path path = (Path)domainObj;
 						CloneInstance instance = (CloneInstance)path.get(0);
-						ViewUtil.openJavaEditorForCloneInstace(instance);
+						ViewUtil.openJavaEditorForCloneInstance(instance);
 					}
 				}
 				

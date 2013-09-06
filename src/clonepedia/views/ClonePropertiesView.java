@@ -163,7 +163,7 @@ public class ClonePropertiesView extends ViewPart {
 				if(domainObj instanceof Path){
 					Path path = (Path)domainObj;
 					CloneInstance instance = (CloneInstance)path.get(0);
-					ViewUtil.openJavaEditorForCloneInstace(instance);
+					ViewUtil.openJavaEditorForCloneInstance(instance);
 				}
 			}
 

@@ -203,7 +203,7 @@ public class ViewUtil {
 		return null;
 	}
 	
-	public static void openJavaEditorForCloneInstace(CloneInstance instance) {
+	public static void openJavaEditorForCloneInstance(CloneInstance instance) {
 		
 		ICompilationUnit unit = getCorrespondingCompliationUnit(instance);
 		if(unit != null){
@@ -212,7 +212,7 @@ public class ViewUtil {
 				javaEditor = JavaUI.openInEditor(unit);
 				JavaUI.revealInEditor(javaEditor,
 						(IJavaElement) unit);
-				goToLine(javaEditor, instance);
+				goToLine(javaEditor, instance.getStartLine(), instance.getEndLine());
 			} catch (PartInitException e) {
 				e.printStackTrace();
 			} catch (JavaModelException e) {
@@ -231,9 +231,24 @@ public class ViewUtil {
 		IEditorPart editor = JavaUI.openInEditor(cu);*/
 	}
 	
-	
+	public static void openJavaEditorForCloneInstace(ICompilationUnit unit, int startLine, int endLine) {
+		if(unit != null){
+			IEditorPart javaEditor;
+			try {
+				javaEditor = JavaUI.openInEditor(unit);
+				JavaUI.revealInEditor(javaEditor,
+						(IJavaElement) unit);
+				goToLine(javaEditor, startLine, endLine);
+			} catch (PartInitException e) {
+				e.printStackTrace();
+			} catch (JavaModelException e) {
+				e.printStackTrace();
+			}
+			
+		}
+	}
 
-	private static void goToLine(IEditorPart editorPart, CloneInstance instance) {
+	private static void goToLine(IEditorPart editorPart, int startLine, int endLine) {
 
 		if (!(editorPart instanceof ITextEditor)) {
 			return;
@@ -249,8 +264,8 @@ public class ViewUtil {
 			try {
 				// line count internally starts with 0, and not with 1 like in
 				// GUI
-				startLineInfo = document.getLineInformation(instance.getStartLine() - 1);
-				endLineInfo = document.getLineInformation(instance.getEndLine() - 1);
+				startLineInfo = document.getLineInformation(startLine - 1);
+				endLineInfo = document.getLineInformation(endLine - 1);
 			} catch (BadLocationException e) {
 				// ignored because line number may not really exist in document,
 				// we guess this...
