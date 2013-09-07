@@ -52,6 +52,11 @@ public class TMGBuilder {
 		
 		ArrayList<TemplateMethodGroup> list = new ArrayList<TemplateMethodGroup>();
 		for(TemplateMethodGroup tmg: methodGroupList){
+			
+			/*if(tmg.toString().contains("main") || tmg.toString().contains("ApplicationModel")){
+				System.out.println();
+			}*/
+			
 			list.add(tmg);
 		}
 		
@@ -60,6 +65,10 @@ public class TMGBuilder {
 		list = new ArrayList<TemplateMethodGroup>();
 		for(TemplateMethodGroup tmg: methodGroupList){
 			list.add(tmg);
+			
+			/*if(tmg.toString().contains("main") || tmg.toString().contains("ApplicationModel")){
+				System.out.println();
+			}*/
 		}
 		
 		sanitize();

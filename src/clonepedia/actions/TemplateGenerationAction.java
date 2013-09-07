@@ -50,6 +50,11 @@ public class TemplateGenerationAction implements IWorkbenchWindowActionDelegate 
 				
 				ArrayList<TemplateMethodGroup> sigificantTMGList = new ArrayList<TemplateMethodGroup>();
 				for(TemplateMethodGroup tmg: templateMethodGroupList){
+					
+					if(tmg.toString().contains("main")){
+						System.out.println();
+					}
+					
 					list.add(tmg);
 					if(tmg.getMethods().size() > 2){
 						sigificantTMGList.add(tmg);
