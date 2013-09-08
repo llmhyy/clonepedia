@@ -81,7 +81,7 @@ public class CloneDiffView extends ViewPart {
 	@Override
 	public void createPartControl(Composite parent) {
 		parent.setLayout(new FillLayout());
-		this.scrolledComposite = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL);
+		this.scrolledComposite = new ScrolledComposite(parent, SWT.H_SCROLL /*| SWT.V_SCROLL*/);
 		
 		hookActionsOnToolBar();
 	}
@@ -171,7 +171,7 @@ public class CloneDiffView extends ViewPart {
 		}
 		
 		scrolledComposite.setContent(sashForm);
-		scrolledComposite.setMinSize(sashForm.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		//scrolledComposite.setMinSize(sashForm.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		scrolledComposite.layout();
 	}
 
