@@ -48,6 +48,13 @@ public class FindMethodVisitor extends ASTVisitor {
 			String paramType = svd.getType().toString();
 			
 			tobeComparedList[j] = paramType;
+			
+			/**
+			 * Simplified way to handle inner class
+			 */
+			if(paramType.contains(".")){
+				tobeComparedList[j] = tobeComparedList[j].substring(tobeComparedList[j].lastIndexOf(".")+1, tobeComparedList[j].length());				
+			}
 			//System.out.println();
 		}
 		
