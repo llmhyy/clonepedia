@@ -40,6 +40,9 @@ public class FindCloneDifferenceVisitor extends ASTVisitor {
 	
 	public void preVisit(ASTNode targetNode){
 		for(DiffCounterRelationGroupEmulator diff: setWrapper.getRelationGroups()){
+			
+			if(diff.getElements().size() != setWrapper.size())continue;
+			
 			for(DiffInstanceElementRelationEmulator diffElement: diff.getElements()){
 				ASTNode node = diffElement.getNode();
 				
