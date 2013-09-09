@@ -600,6 +600,9 @@ public class MinerUtilforJava {
 	 */
 
 	public static ASTNode[] convertASTNode(Object[] objectList) {
+		
+		if(objectList.length == 0)return new ASTNode[0];
+		
 		ASTNode[] nodeList = new ASTNode[objectList.length];
 		for (int i = 0; i < objectList.length; i++)
 			nodeList[i] = (ASTNode) objectList[i];
@@ -608,6 +611,8 @@ public class MinerUtilforJava {
 	}
 	
 	public static Statement[] convertStatement(Object[] objectList){
+		if(objectList.length == 0)return new Statement[0];
+		
 		Statement[] statList = new Statement[objectList.length];
 		for (int i = 0; i < objectList.length; i++)
 			statList[i] = (Statement) objectList[i];

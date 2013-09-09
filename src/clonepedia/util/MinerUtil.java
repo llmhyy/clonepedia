@@ -214,7 +214,7 @@ public class MinerUtil {
 	
 	public static Object[] generateCommonNodeListFromMultiSequence(ArrayList<? extends Object>[] lists, BoolComparator comparator){
 		if(lists.length < 1){
-			return null;
+			return new Object[0];
 		}
 		if(lists.length == 1){
 			return lists[0].toArray(new Object[0]);
