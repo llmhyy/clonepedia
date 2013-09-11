@@ -41,6 +41,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 
 import clonepedia.Activator;
+import clonepedia.java.ASTComparator;
 import clonepedia.java.CloneInformationExtractor;
 import clonepedia.java.CompilationUnitPool;
 import clonepedia.java.model.CloneInstanceWrapper;
@@ -310,8 +311,11 @@ public class CloneDiffView extends ViewPart {
 				for(DiffInstanceElementRelationEmulator relation: relationGroup.getElements()){
 					CloneInstanceWrapper referInstance = relation.getInstanceWrapper();
 					if(referInstance.equals(instanceWrapper)){
+						
+						
+						
 						generateStyleRangeFromASTNode(text, relation.getNode(), 
-								methodStartPosition, CloneDiffView.COUNTER_DIFF_STYLE, relationGroup.getElements().size(), false);
+								methodStartPosition, getDiffStyle(relationGroup), relationGroup.getElements().size(), false);
 						
 						
 					}
@@ -336,7 +340,7 @@ public class CloneDiffView extends ViewPart {
 						ASTNode node = relation.getNode();
 						
 						generateStyleRangeFromASTNode(text, node,
-								methodStartPosition, CloneDiffView.COUNTER_DIFF_STYLE, relationGroup.getElements().size(), true);
+								methodStartPosition, getDiffStyle(relationGroup), relationGroup.getElements().size(), true);
 						
 						////text.setTopIndex(cu.getLineNumber(node.getStartPosition()) - cu.getLineNumber(methodStartPosition) - 3);
 						////text.setHorizontalIndex(cu.getColumnNumber(node.getStartPosition()) - 20);
@@ -358,9 +362,41 @@ public class CloneDiffView extends ViewPart {
 		text.setLayoutData(gData);*/
 	}
 	
+	private int getDiffStyle(DiffCounterRelationGroupEmulator relationGroup){
+		
+		ASTNode[] nodeList = new ASTNode[relationGroup.getElements().size()];
+		int count = 0;
+		for(DiffInstanceElementRelationEmulator relation: relationGroup.getElements()){
+			ASTNode node = relation.getNode();
+			nodeList[count++] = node;
+		}
+		
+		if(relationGroup.getElements().size() == set.size()){
+			return isAllTheElementDifferent(nodeList)? COUNTER_EVEN_DIFF_STYLE : COUNTER_PARTIAL_DIFF_STYLE;
+		}
+		else{
+			return isAllTheElementDifferent(nodeList)? COUNTER_GAP_DIFF_STYPE : COUNTER_GAP_STYLE;
+		}
+	}
+	
+	private boolean isAllTheElementDifferent(ASTNode[] nodeList){
+		for(int i=0; i<nodeList.length; i++){
+			for(int j=i+1; j<nodeList.length; j++){
+				if(new ASTComparator().isMatch(nodeList[i], nodeList[j])){
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
 	private final static int DOC_STYLE = 1;
 	private final static int GAP_DIFF_STYLE = 2;
-	private final static int COUNTER_DIFF_STYLE = 3;
+	//private final static int COUNTER_DIFF_STYLE = 3;
+	private static final int COUNTER_EVEN_DIFF_STYLE = 3;
+	private static final int COUNTER_PARTIAL_DIFF_STYLE = 4;
+	private static final int COUNTER_GAP_STYLE = 5;
+	private static final int COUNTER_GAP_DIFF_STYPE = 6;
 	
 	private void generateStyleRangeFromASTNode(StyledText text, ASTNode node, 
 			int methodStartPosition, int codeTextStyle, int relationGroupSize, boolean highlight){
@@ -375,9 +411,18 @@ public class CloneDiffView extends ViewPart {
 		case GAP_DIFF_STYLE:
 			color = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_BLUE);
 			break;
-		case COUNTER_DIFF_STYLE:
-			int s = (relationGroupSize < set.size())? SWT.COLOR_MAGENTA : SWT.COLOR_RED;
-			color = Display.getCurrent().getSystemColor(s);
+		case COUNTER_EVEN_DIFF_STYLE:
+			//int s = (relationGroupSize < set.size())? SWT.COLOR_MAGENTA : SWT.COLOR_RED;
+			color = Display.getCurrent().getSystemColor(SWT.COLOR_RED);
+			break;
+		case COUNTER_PARTIAL_DIFF_STYLE:
+			color = Display.getCurrent().getSystemColor(SWT.COLOR_MAGENTA);
+			break;
+		case COUNTER_GAP_STYLE:
+			color = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GREEN);
+			break;
+		case COUNTER_GAP_DIFF_STYPE:
+			color = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_MAGENTA);
 			break;
 		}
 		
