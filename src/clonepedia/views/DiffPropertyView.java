@@ -406,7 +406,7 @@ public class DiffPropertyView extends ViewPart {
 	
 	private String generateOverallDiffDescription(){
 		String word1 = "<form>There are "; 
-		String word2 = " counter difference in this clone set.";
+		String word2 = " differential multisets in this clone set.";
 		String word3 = "The differences are ";; 
 		String word4 = "generally regular</form>";
 		
@@ -471,7 +471,7 @@ public class DiffPropertyView extends ViewPart {
 		content.append("</p>");
 		
 		String totalNumString = String.valueOf(totalSize);
-		if(type.equals("even")){	
+		if(type.equals("all-parameterized")){	
 			int average = diff.getElements().size()/bucketSet.size();
 			content.append("Each ");
 			content.append(String.valueOf(average));
@@ -527,7 +527,7 @@ public class DiffPropertyView extends ViewPart {
 		double standardDeviation = getStandardDeviation(list);
 		
 		if(standardDeviation == Settings.thresholdForEvenDistribution){
-			return "even";
+			return "all-parameterized";
 		}
 		else if(standardDeviation > Settings.thresholdForSlightPartial){
 			return "partial";

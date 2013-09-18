@@ -136,6 +136,11 @@ public class TemplateBuilder {
 	
 	private void abstractClass(Class abstractedClass){
 		if(abstractedClass.getSupportingElements().size() > 1){
+			
+			/*if(abstractedClass.getSupportingElements().toString().contains("MinimizeAction")){
+				System.out.println();
+			}*/
+			
 			mergeName(abstractedClass);
 			
 			mergeSuperType(abstractedClass);
@@ -164,7 +169,7 @@ public class TemplateBuilder {
 		Method[] methodArray = methodList.toArray(new Method[0]);
 		
 		HierarchyClusterAlgorithm algorithm = new HierarchyClusterAlgorithm(methodArray, 
-				Settings.thresholdDistanceForTMGFilteringAndSplitting, HierarchyClusterAlgorithm.CompleteLinkage);
+				Settings.thresholdDistanceForSimilarLocationedMethodsClusterng, HierarchyClusterAlgorithm.CompleteLinkage);
 		
 		try {
 			ArrayList<NormalCluster> list = algorithm.doClustering();
