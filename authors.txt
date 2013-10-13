@@ -1,2 +1,0 @@
-linyun = Lin Yun <llmhyy@gmail.com>
-(no author) = Lin Yun <llmhyy@gmail.com>
