@@ -300,6 +300,9 @@ public class CloneDiffView extends ViewPart {
 			text.setLineBackground(startCloneLineNumber, lineCount, disposableColoar);
 			
 			ASTNode doc = methodDeclaration.getJavadoc();
+			
+			generateKeywordsStyle(text);
+			
 			if(doc != null){
 				generateStyleRangeFromASTNode(text, doc, methodStartPosition, 
 						CloneDiffView.DOC_STYLE, 0, false);
@@ -389,6 +392,42 @@ public class CloneDiffView extends ViewPart {
 		}
 		return true;
 	}
+	
+	private void generateKeywordsStyle(StyledText text){
+		Color color = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_MAGENTA);
+		int style = SWT.BOLD;
+		
+		String codeText = text.getText();
+		
+		int startPosition = 0;
+		int length = 0;
+		
+		for(String keyword: this.keywords){
+			
+			startPosition = codeText.indexOf(keyword);
+			
+			while(startPosition != -1){
+				length = keyword.length();
+				
+				StyleRange styleRange = new StyleRange();
+				////styleRange.start = startNodePosition - methodStartPosition;
+				styleRange.start = startPosition;
+				styleRange.length = length;
+				styleRange.foreground = color;
+				styleRange.fontStyle = style;	
+				
+				text.setStyleRange(styleRange);
+
+				startPosition = codeText.indexOf(keyword, startPosition+length);
+			}
+			
+		}
+	}
+	
+	private String[] keywords = {"package ", "import ", "private ", "public ", "protected ", "class ", "interface ", "new ", 
+			"final ", "static ", "int ", "double ", "short ", "long ", "char ", "boolean ", "void ", "instanceof ", 
+			"switch", "case", "for(", "for ", "if(", "if ", "else", "while(", "try{", "catch(", "finally",
+			"return", "throw", "throws", "null"};
 	
 	private final static int DOC_STYLE = 1;
 	private final static int GAP_DIFF_STYLE = 2;
