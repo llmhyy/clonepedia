@@ -426,7 +426,7 @@ public class CloneDiffView extends ViewPart {
 	
 	private String[] keywords = {"package ", "import ", "private ", "public ", "protected ", "class ", "interface ", "new ", 
 			"final ", "static ", "int ", "double ", "short ", "long ", "char ", "boolean ", "void ", "instanceof ", 
-			"switch", "case", "for(", "for ", "if(", "if ", "else", "while(", "try{", "catch(", "finally",
+			"switch", "case", "for(", "for ", "if(", "if ", "else", "while(", "try{", "try ", "catch(", "catch ", "finally",
 			"return", "throw", "throws", "null"};
 	
 	private final static int DOC_STYLE = 1;
