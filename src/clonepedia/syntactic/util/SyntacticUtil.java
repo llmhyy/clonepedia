@@ -362,6 +362,12 @@ public class SyntacticUtil implements Serializable{
 		}
 	}
 	
+	/**
+	 * It is compatible if the types of two variables are 1) similar in names or 2) has common super class 
+	 * @param vType1
+	 * @param vType2
+	 * @return
+	 */
 	public static boolean isCompatibleType(VarType vType1, VarType vType2){
 		if(vType1.getPureVarType().getConcreteType() == vType2.getPureVarType().getConcreteType()){
 			if((vType1.getPureVarType() instanceof Class) || (vType1.getPureVarType() instanceof Interface)){
