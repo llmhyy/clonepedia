@@ -32,8 +32,16 @@ public class GenerateInterSetPatternStep implements Step {
 			
 			ArrayList<PathPatternGroup> locationPatterns = clusteringer.
 					getPatternsFromCloneSets(sets.getCloneList(), SyntacticClusteringer0.locationPatternClustering);
+			ArrayList<PathPatternGroup> diffTypePatterns = clusteringer.
+					getPatternsFromCloneSets(sets.getCloneList(), SyntacticClusteringer0.complexTypeDiffPatternClustering);
+			ArrayList<PathPatternGroup> diffMemberPatterns = clusteringer.
+					getPatternsFromCloneSets(sets.getCloneList(), SyntacticClusteringer0.methodFieldVariableDiffPatternClustering);
+			
 			
 			clusteringer.clusterSpecificStyleOfClonePattern(locationPatterns, PathSequence.LOCATION, monitor);
+			clusteringer.clusterSpecificStyleOfClonePattern(diffTypePatterns, PathSequence.DIFF_USAGE, monitor);
+			clusteringer.clusterSpecificStyleOfClonePattern(diffMemberPatterns, PathSequence.DIFF_USAGE, monitor);
+			
 			
 			if(monitor.isCanceled()){
 				return;
@@ -54,8 +62,12 @@ public class GenerateInterSetPatternStep implements Step {
 			SyntacticClusteringer0 clusteringer = new SyntacticClusteringer0(sets.getCloneList());
 			ArrayList<PathPatternGroup> locationPatterns = clusteringer.
 					getPatternsFromCloneSets(sets.getCloneList(), SyntacticClusteringer0.locationPatternClustering);
+			ArrayList<PathPatternGroup> diffTypePatterns = clusteringer.
+					getPatternsFromCloneSets(sets.getCloneList(), SyntacticClusteringer0.complexTypeDiffPatternClustering);
+			ArrayList<PathPatternGroup> diffMemberPatterns = clusteringer.
+					getPatternsFromCloneSets(sets.getCloneList(), SyntacticClusteringer0.methodFieldVariableDiffPatternClustering);
 			
-			return locationPatterns.size();
+			return locationPatterns.size() + diffTypePatterns.size() + diffMemberPatterns.size();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
