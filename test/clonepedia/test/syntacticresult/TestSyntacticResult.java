@@ -6,7 +6,7 @@ import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.util.ArrayList;
 
-import clonepedia.featuretemplate.TemplateBuilder;
+//import clonepedia.featuretemplate.TemplateBuilder;
 import clonepedia.model.cluster.SyntacticCluster;
 import clonepedia.model.template.CandidateTemplate;
 import clonepedia.model.template.CandidateTemplateList;
@@ -53,11 +53,11 @@ public class TestSyntacticResult {
 					System.out.println();
 				}
 				
-				TemplateBuilder templateBuilder = new TemplateBuilder(feature);
-				Template template = templateBuilder.buildTemplate();
-				
-				feature.setTemplate(template);
-				significantGroups.add(feature);
+//				TemplateBuilder templateBuilder = new TemplateBuilder(feature);
+//				Template template = templateBuilder.buildTemplate();
+//				
+//				feature.setTemplate(template);
+//				significantGroups.add(feature);
 			}
 		}
 		

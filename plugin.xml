@@ -29,9 +29,6 @@
             <separator
                   name="separator3">
             </separator>
-            <groupMarker
-                  name="template">
-            </groupMarker>
          </menu>
          <action
                class="clonepedia.actions.StartFromIntraSetPatternAction"
@@ -95,15 +92,6 @@
                menubarPath="Clonepedia/output"
                style="push"
                toolbarPath="output">
-         </action>
-         <action
-               class="clonepedia.actions.TemplateGenerationAction"
-               icon="icons/action/template.gif"
-               id="Clonepedia.TemplateGenerationAction"
-               label="Template Generation"
-               menubarPath="Clonepedia/template"
-               style="push"
-               toolbarPath="template">
          </action>
       </actionSet>
    </extension>

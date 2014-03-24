@@ -7,8 +7,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.JavaModelException;
 
 import clonepedia.businessdata.OntologicalModelDataFetcher;
-import clonepedia.featuretemplate.CandidateTemplateBuilder;
-import clonepedia.featuretemplate.TMGBuilder;
 import clonepedia.filepraser.CloneDetectionFileParser;
 import clonepedia.java.CloneInformationExtractor;
 import clonepedia.java.StructureExtractor;

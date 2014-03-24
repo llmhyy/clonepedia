@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.TreeSet;
 
-import clonepedia.featuretemplate.CandidateTemplateBuilder;
-import clonepedia.featuretemplate.TMGBuilder;
+//import clonepedia.featuretemplate.CandidateTemplateBuilder;
+//import clonepedia.featuretemplate.TMGBuilder;
 import clonepedia.model.cluster.SyntacticCluster;
 import clonepedia.model.ontology.CloneSet;
 import clonepedia.model.ontology.CloneSets;
@@ -41,8 +41,8 @@ public class TestStructuralClusteringResult extends TestCase {
 		CloneSets sets = (CloneSets)MinerUtil.deserialize("D://linyun//eclipse_for_clone//configurations//JHotDraw7_0_6//ontological_model", true);
 		sets.setPathComparator(new LevenshteinPathComparator());
 		
-		TMGBuilder builder = new TMGBuilder(sets);
-		builder.build(null);
+		//TMGBuilder builder = new TMGBuilder(sets);
+		//builder.build(null);
 		/*TreeSet<TemplateMethodGroup> templateMethodGroupList = builder.getMethodGroupList();
 		
 		sets.setTemplateMethodGroup(templateMethodGroupList);*/
