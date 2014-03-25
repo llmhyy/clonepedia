@@ -61,6 +61,15 @@
                tooltip="Generate the final results start from the clone file you configure">
          </action>
          <action
+               class="clonepedia.actions.CloneDetectionAction"
+               icon="icons/action/clone_detection.gif"
+               id="Clonepedia.clonedetection"
+               label="Clone Detection"
+               menubarPath="Clonepedia/run"
+               style="push"
+               toolbarPath="run">
+         </action>
+         <action
                class="clonepedia.actions.ProgramStructureExtractionAction"
                icon="icons/action/program_structure.gif"
                id="Clonepedia.ProgramStructureExtractionAction"

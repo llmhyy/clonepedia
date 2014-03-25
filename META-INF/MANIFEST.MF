@@ -52,7 +52,10 @@ Bundle-ClassPath: lib/mysql-connector-java.jar,
  lib/org.eclipse.ui.workbench.texteditor_3.4.1.r341_v20080827-1100.jar,
  lib/org.eclipse.jface.text_3.6.0.v20100526-0800.jar,
  lib/org.eclipse.ui.ide_3.7.0.v20110928-1505.jar,
- lib/jxl.jar
+ lib/jxl.jar,
+ lib/antlr-3.0.1.jar,
+ lib/jccd-1.0.6.jar,
+ lib/log4j-1.2.8.jar
 Import-Package: org.eclipse.jdt.ui
 Export-Package: clonepedia,
  clonepedia.businessdata,
