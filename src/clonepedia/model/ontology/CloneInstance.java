@@ -10,6 +10,12 @@ public class CloneInstance implements RegionalOwner{
 	private String cloneInstanceId;
 	private CloneSet cloneSet;
 	private Method residingMethod;
+	
+	/**
+	 * The file location is in the form like "D:\doc\JHotDraw7\src\net\...".
+	 * In addition, we heuristically regard the string follow "src" as the project path
+	 * of a Java file.
+	 */
 	private String fileLocation;
 	private int startLine;
 	private int endLine;
