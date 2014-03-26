@@ -65,8 +65,12 @@ public class CloneDetectionAction implements IWorkbenchWindowActionDelegate {
 						
 						ArrayList<JCCDFile> fileList = new ArrayList<JCCDFile>();
 						
+						/*fileList.add(new JCCDFile(("F:\\git_space\\JHotDraw7\\jhotdraw7\\src\\main\\java\\"
+								+ "org\\jhotdraw\\gui\\plaf\\palette\\PaletteToolBarBorder.java")));*/
+						
 						for(IPackageFragment pack: packages){
-							if(pack.getKind() == IPackageFragmentRoot.K_SOURCE && pack.getHandleIdentifier().contains("sample")){
+							if(pack.getKind() == IPackageFragmentRoot.K_SOURCE 
+									&& pack.getHandleIdentifier().contains("sample")){
 								for(ICompilationUnit iunit: pack.getCompilationUnits()){
 									IResource resource = iunit.getResource();
 									

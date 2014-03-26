@@ -82,11 +82,12 @@ public class CloneDetectionFileWriter{
 				dir.mkdirs();
 			}
 			
-			if(cloneFile.createNewFile()){
-				StreamResult result = new StreamResult(cloneFile);
-				transformer.transform(source, result);	
-				
+			if(!cloneFile.exists()){
+				cloneFile.createNewFile();
 			}
+			
+			StreamResult result = new StreamResult(cloneFile);
+			transformer.transform(source, result);
 			
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
