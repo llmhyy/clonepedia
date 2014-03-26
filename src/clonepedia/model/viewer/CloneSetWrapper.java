@@ -167,7 +167,13 @@ public class CloneSetWrapper implements IContent{
 	
 	public double differenceInCodeFragments(){
 		NumberFormat format = new DecimalFormat("#0.000");
-		String diffNumString = format.format((double)this.getCloneSet().getCounterRelationGroups().size()/this.computeAverageCodeFragmentLength());
+		
+		if(this.computeAverageCodeFragmentLength() == 0){
+			return 0;
+		}
+		
+		double value = (double)this.getCloneSet().getCounterRelationGroups().size()/this.computeAverageCodeFragmentLength();
+		String diffNumString = format.format(value);
 		return Double.valueOf(diffNumString);
 	}
 	

@@ -1,5 +1,10 @@
 package clonepedia.java.model;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -13,9 +18,13 @@ import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.ASTParser;
+import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.PackageDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
 
 import clonepedia.java.CompilationUnitPool;
@@ -53,8 +62,28 @@ public class CloneInstanceWrapper{
 		this.pool = pool;
 		
 		String filePath = cloneInstance.getFileLocation();
+		File javaFile = new File(filePath);
+		String javaFileContent = getFileConent(javaFile);
 		
-		className = filePath.substring(filePath.indexOf("\\src\\")+5);
+		ASTParser parser = ASTParser.newParser(AST.JLS4);
+		parser.setSource(javaFileContent.toCharArray());
+		parser.setKind(ASTParser.K_COMPILATION_UNIT);
+		
+		final StringBuffer packageNameBuffer = new StringBuffer();
+		final CompilationUnit cu = (CompilationUnit) parser.createAST(null);
+		cu.accept(new ASTVisitor() {
+			public boolean visit(PackageDeclaration packageDeclaration){
+				String packageName = packageDeclaration.getName().getFullyQualifiedName();
+				packageNameBuffer.append(packageName);
+				return false;
+			}
+			
+		});
+		
+		String packageName = packageNameBuffer.toString();
+		String packagePrefix = packageName.substring(0, packageName.indexOf("."));
+		className = filePath.substring(filePath.indexOf(packagePrefix));
+		//className = filePath.substring(beginIndex)
 		className = className.replace("\\", "/");
 		
 		try{
@@ -62,6 +91,28 @@ public class CloneInstanceWrapper{
 		}catch(CoreException e){
 			e.printStackTrace();
 		}
+	}
+	
+	private String getFileConent(File file){
+		try {
+			BufferedReader reader = new BufferedReader( new FileReader (file));
+			String         line = null;
+		    StringBuilder  stringBuilder = new StringBuilder();
+		    String         ls = System.getProperty("line.separator");
+
+		    while( ( line = reader.readLine() ) != null ) {
+		        stringBuilder.append( line );
+		        stringBuilder.append( ls );
+		    }
+
+		    return stringBuilder.toString();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	    
+		return null;
 	}
 	
 	private void initializeCloneResidingMethod() throws CoreException{

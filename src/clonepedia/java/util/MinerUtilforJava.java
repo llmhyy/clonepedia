@@ -457,6 +457,10 @@ public class MinerUtilforJava {
 		String methodName = methodBinding.getName();
 		ComplexType methodOwner = transferTypeToComplexType(methodBinding.getDeclaringClass(), project, cu, fetcher);
 		
+		if(methodOwner == null){
+			System.currentTimeMillis();
+		}
+		
 		ITypeBinding returnTypeBinding = null;
 		if(!methodBinding.isConstructor()){
 			returnTypeBinding = methodBinding.getReturnType();

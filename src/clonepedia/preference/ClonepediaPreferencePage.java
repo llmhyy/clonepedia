@@ -169,10 +169,12 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 			public void modifyText(ModifyEvent e) {
 				String projectName = projectCombo.getText();
 				
+				String cloneFileName = getPersistentFileName(projectName, "clones.xml"); 
 				String ontologyFileName = getPersistentFileName(projectName, "ontological_model");
 				String intraSetFileName = getPersistentFileName(projectName, "intra_pattern_sets");
 				String interSetFileName = getPersistentFileName(projectName, "inter_pattern_sets");
 				
+				cloneFileText.setText(cloneFileName);
 				ontologyFileText.setText(ontologyFileName);
 				intraSetFileText.setText(intraSetFileName);
 				interSetFileText.setText(interSetFileName);

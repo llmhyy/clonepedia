@@ -242,8 +242,8 @@ public abstract class OntologicalDataFetcher implements Serializable {
 					return null;
 			} else {
 				SimpleName name = (SimpleName) node;
-
-				if (name.resolveBinding() == null)
+				
+				if (name.resolveBinding() == null || name.getParent() == null)
 					return null;
 
 				if (name.resolveBinding().getKind() == IBinding.TYPE) {
@@ -251,6 +251,9 @@ public abstract class OntologicalDataFetcher implements Serializable {
 					ASTNode parentNode = name.getParent();
 					while(!((parentNode instanceof Statement) || (parentNode instanceof ClassInstanceCreation))){
 						parentNode = parentNode.getParent();
+						if(parentNode == null){
+							return null;
+						}
 					}
 					
 					ITypeBinding typeBinding = (ITypeBinding) name.resolveBinding();

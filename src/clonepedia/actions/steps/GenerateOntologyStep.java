@@ -35,8 +35,10 @@ public class GenerateOntologyStep implements Step{
 			OntologicalModelDataFetcher modelFetcher = 
 					(OntologicalModelDataFetcher)extractor.extractProjectContent(monitor);
 			
+			CloneSets cloneSets = parser.getCloneSets();
+			
 			modelFetcher = (OntologicalModelDataFetcher) new CloneInformationExtractor(
-					parser, project, modelFetcher).extract(monitor);
+					cloneSets, project, modelFetcher).extract(monitor);
 			
 			
 			CloneSets sets = new CloneSets();

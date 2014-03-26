@@ -44,11 +44,14 @@ public class CloneInformationExtractor {
 
 	private OntologicalDataFetcher fetcher;
 	private Project project;
-	private CloneDetectionFileParser cloneFileParser;
+	
+	private CloneSets cloneSets;
+	
+	//private CloneDetectionFileParser cloneFileParser;
 	private ArrayList<CloneSetWrapper> setWrapperList = new ArrayList<CloneSetWrapper>();
 
-	public CloneInformationExtractor(CloneDetectionFileParser cloneFileParser, Project project, OntologicalDataFetcher fetcher) {
-		this.cloneFileParser = cloneFileParser;
+	public CloneInformationExtractor(CloneSets sets, Project project, OntologicalDataFetcher fetcher) {
+		this.cloneSets = sets;
 		this.project = project;
 		
 		this.fetcher = fetcher;
@@ -63,7 +66,7 @@ public class CloneInformationExtractor {
 		
 		CompilationUnitPool pool = new CompilationUnitPool();
 		
-		CloneSets cloneSets = cloneFileParser.getCloneSets();
+		//CloneSets cloneSets = cloneFileParser.getCloneSets();
 		for (CloneSet cloneSet : cloneSets.getCloneList()) {
 			try{
 				/**

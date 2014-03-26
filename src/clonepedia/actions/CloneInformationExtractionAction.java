@@ -12,6 +12,7 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import clonepedia.businessdata.OntologicalDBDataFetcher;
 import clonepedia.filepraser.CloneDetectionFileParser;
 import clonepedia.java.CloneInformationExtractor;
+import clonepedia.model.ontology.CloneSets;
 import clonepedia.model.ontology.Project;
 import clonepedia.util.Settings;
 
@@ -26,9 +27,11 @@ public class CloneInformationExtractionAction implements
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				Project project = new Project(Settings.projectName, "java", "");
+				
+				CloneSets sets = new CloneDetectionFileParser(false, "").getCloneSets();
+				
 				CloneInformationExtractor extractor = 
-						new CloneInformationExtractor(new CloneDetectionFileParser(false, ""), 
-								project, new OntologicalDBDataFetcher());
+						new CloneInformationExtractor(sets, project, new OntologicalDBDataFetcher());
 				extractor.extract(null);
 				return Status.OK_STATUS;
 			}
