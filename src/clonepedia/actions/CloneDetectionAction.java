@@ -52,72 +52,186 @@ public class CloneDetectionAction implements IWorkbenchWindowActionDelegate {
 	@Override
 	public void run(IAction action) {
 		
+		
+		
 		Job job = new Job("detecting code clones"){
 
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-				IProject proj = root.getProject(Settings.projectName);
-				try {
-					if (proj.isNatureEnabled(MinerProperties.javaNatureName)) {
-						IJavaProject javaProject = JavaCore.create(proj);
-						IPackageFragment[] packages = javaProject.getPackageFragments();
-						
-						ArrayList<JCCDFile> fileList = new ArrayList<JCCDFile>();
-						
-						/*fileList.add(new JCCDFile(("F:\\git_space\\JHotDraw7\\jhotdraw7\\src\\main\\java\\"
-								+ "org\\jhotdraw\\gui\\plaf\\palette\\PaletteToolBarBorder.java")));*/
-						
-						for(IPackageFragment pack: packages){
-							if(pack.getKind() == IPackageFragmentRoot.K_SOURCE 
-									/*&& pack.getHandleIdentifier().contains("sample")*/){
-								for(ICompilationUnit iunit: pack.getCompilationUnits()){
-									IResource resource = iunit.getResource();
-									
-									fileList.add(new JCCDFile(resource.getRawLocation().toFile()));
-									
-									System.currentTimeMillis();
-								}
-							}
-						}
-						
-						APipeline detector = new ASTDetector();
-						JCCDFile[] files = fileList.toArray(new JCCDFile[0]);
-						detector.setSourceFiles(files);
-						
-						detector.addOperator(new GeneralizeArrayInitializers());
-						detector.addOperator(new GeneralizeClassDeclarationNames());
-						detector.addOperator(new GeneralizeMethodArgumentTypes());
-						detector.addOperator(new GeneralizeMethodReturnTypes());
-						detector.addOperator(new GeneralizeVariableDeclarationTypes());
-						detector.addOperator(new GeneralizeMethodCallNames());
-						detector.addOperator(new GeneralizeVariableDeclarationTypes());
-						detector.addOperator(new GeneralizeVariableNames());
-						
-						SimilarityGroupManager manager = detector.process();
-						SimilarityGroup[] simGroups = manager.getSimilarityGroups();
-						
-						CloneSets sets = convertToCloneSets(simGroups);
-						
-						CloneDetectionFileWriter writer = new CloneDetectionFileWriter();
-						writer.writeToXML(sets);
-						
-						System.currentTimeMillis();
-					}
-				} catch (JavaModelException e) {
-					e.printStackTrace();
-				} catch (CoreException e) {
-					e.printStackTrace();
-				}
+				detectClone();
+				//detectMultiProjectClone();
+				
 				
 				return Status.OK_STATUS;
 			}
 			
 		};
 		job.schedule();
+	}
+	
+	private void detectMultiProjectClone(){
+		String[] projects = new String[]{"jarp", "joone"};
+		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+		ArrayList<JCCDFile> fileList = new ArrayList<JCCDFile>();
+		for(int i=0; i<projects.length; i++){
+			IProject proj = root.getProject(projects[i]);
+			try {
+				if (proj.isNatureEnabled(MinerProperties.javaNatureName)) {
+					IJavaProject javaProject = JavaCore.create(proj);
+					IPackageFragment[] packages = javaProject.getPackageFragments();
+					
+					
+					for(IPackageFragment pack: packages){
+						if(pack.getKind() == IPackageFragmentRoot.K_SOURCE 
+								/*&& pack.getHandleIdentifier().contains("sample")*/){
+							for(ICompilationUnit iunit: pack.getCompilationUnits()){
+								IResource resource = iunit.getResource();
+								
+								fileList.add(new JCCDFile(resource.getRawLocation().toFile()));
+							}
+						}
+					}
+				}
+			} catch (JavaModelException e) {
+				e.printStackTrace();
+			} catch (CoreException e) {
+				e.printStackTrace();
+			}
+		}
 		
+		APipeline detector = new ASTDetector();
+		JCCDFile[] files = fileList.toArray(new JCCDFile[0]);
+		detector.setSourceFiles(files);
 		
+		detector.addOperator(new GeneralizeArrayInitializers());
+		detector.addOperator(new GeneralizeClassDeclarationNames());
+		detector.addOperator(new GeneralizeMethodArgumentTypes());
+		detector.addOperator(new GeneralizeMethodReturnTypes());
+		detector.addOperator(new GeneralizeVariableDeclarationTypes());
+		detector.addOperator(new GeneralizeMethodCallNames());
+		detector.addOperator(new GeneralizeVariableDeclarationTypes());
+		detector.addOperator(new GeneralizeVariableNames());
+		
+		SimilarityGroupManager manager = detector.process();
+		SimilarityGroup[] simGroups = manager.getSimilarityGroups();
+		
+		CloneSets sets = convertToCloneSets0(simGroups);
+		
+		CloneDetectionFileWriter writer = new CloneDetectionFileWriter();
+		writer.writeToXML(sets);
+	}
+	
+	private CloneSets convertToCloneSets0(SimilarityGroup[] simGroups){
+		CloneSets sets = new CloneSets();
+		
+		for (int i = 0; i < simGroups.length; i++) {
+			final ASourceUnit[] nodes = simGroups[i].getNodes();
+			
+			CloneSet set = new CloneSet(String.valueOf(simGroups[i].getGroupId()));
+			
+			
+			for (int j = 0; j < nodes.length; j++) {
+				
+				final SourceUnitPosition minPos = APipeline.getFirstNodePosition((ANode) nodes[j]);
+				final SourceUnitPosition maxPos = APipeline.getLastNodePosition((ANode) nodes[j]);
 
+				ANode fileNode = (ANode) nodes[j];
+				while (fileNode.getType() != NodeTypes.FILE.getType()) {
+					fileNode = fileNode.getParent();
+				}
+				
+				CloneInstance cloneInstance = new CloneInstance(set, fileNode.getText(), 
+						minPos.getLine(), maxPos.getLine());
+				
+				if(cloneInstance.getLength() >= 5 && !containsCloneInstanceInSameProject(set, cloneInstance)){
+					set.add(cloneInstance);					
+				}
+				
+			}
+			
+			if(set.size() >= 2){
+				sets.add(set);				
+			}
+		}
+		
+		return sets;
+	}
+	
+	private boolean containsCloneInstanceInSameProject(CloneSet set, CloneInstance instance){
+		if(set.size() == 0){
+			return false;
+		}
+		else{
+			for(CloneInstance ins: set){
+				if(ins.getFileLocation().contains("jarp") && instance.getFileLocation().contains("joone")){
+					return false;
+				}
+				else if(ins.getFileLocation().contains("joone") && instance.getFileLocation().contains("jarp")){
+					return false;
+				}
+				else{
+					return true;					
+				}
+			}
+			
+		}
+		
+		return true;
+	}
+	
+	private void detectClone(){
+		try {
+			IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+			IProject proj = root.getProject(Settings.projectName);
+			if (proj.isNatureEnabled(MinerProperties.javaNatureName)) {
+				IJavaProject javaProject = JavaCore.create(proj);
+				IPackageFragment[] packages = javaProject.getPackageFragments();
+				
+				ArrayList<JCCDFile> fileList = new ArrayList<JCCDFile>();
+				
+				/*fileList.add(new JCCDFile(("F:\\git_space\\JHotDraw7\\jhotdraw7\\src\\main\\java\\"
+						+ "org\\jhotdraw\\gui\\plaf\\palette\\PaletteToolBarBorder.java")));*/
+				
+				for(IPackageFragment pack: packages){
+					if(pack.getKind() == IPackageFragmentRoot.K_SOURCE 
+							/*&& pack.getHandleIdentifier().contains("sample")*/){
+						for(ICompilationUnit iunit: pack.getCompilationUnits()){
+							IResource resource = iunit.getResource();
+							
+							fileList.add(new JCCDFile(resource.getRawLocation().toFile()));
+							
+							System.currentTimeMillis();
+						}
+					}
+				}
+				
+				APipeline detector = new ASTDetector();
+				JCCDFile[] files = fileList.toArray(new JCCDFile[0]);
+				detector.setSourceFiles(files);
+				
+				detector.addOperator(new GeneralizeArrayInitializers());
+				detector.addOperator(new GeneralizeClassDeclarationNames());
+				detector.addOperator(new GeneralizeMethodArgumentTypes());
+				detector.addOperator(new GeneralizeMethodReturnTypes());
+				detector.addOperator(new GeneralizeVariableDeclarationTypes());
+				detector.addOperator(new GeneralizeMethodCallNames());
+				detector.addOperator(new GeneralizeVariableDeclarationTypes());
+				detector.addOperator(new GeneralizeVariableNames());
+				
+				SimilarityGroupManager manager = detector.process();
+				SimilarityGroup[] simGroups = manager.getSimilarityGroups();
+				
+				CloneSets sets = convertToCloneSets(simGroups);
+				
+				CloneDetectionFileWriter writer = new CloneDetectionFileWriter();
+				writer.writeToXML(sets);
+				
+			}
+		} catch (JavaModelException e) {
+			e.printStackTrace();
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private CloneSets convertToCloneSets(SimilarityGroup[] simGroups){

@@ -45,6 +45,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 
 
+
 import clonepedia.model.ontology.Class;
 import clonepedia.model.ontology.CloneInstance;
 import clonepedia.model.ontology.ComplexType;
@@ -62,10 +63,16 @@ import clonepedia.views.codesnippet.SnippetInstanceRelation;
 public class ViewUtil {
 	
 	public static ICompilationUnit getCorrespondingCompliationUnit(CloneInstance instance){
-		//instance.getResidingMethod().getOwner().getFullName();
+		String projectName = Settings.projectName;
+		/*if(instance.getFileLocation().contains("jarp")){
+			projectName = "jarp";
+		}
+		else if(instance.getFileLocation().contains("joone")){
+			projectName = "joone";
+		}*/
 
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		IProject proj = root.getProject(Settings.projectName);
+		IProject proj = root.getProject(projectName);
 		try {
 			if (proj.isNatureEnabled(MinerProperties.javaNatureName)) {
 				IJavaProject javaProject = JavaCore.create(proj);

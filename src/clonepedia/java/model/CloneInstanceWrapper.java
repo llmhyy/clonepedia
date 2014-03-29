@@ -100,7 +100,16 @@ public class CloneInstanceWrapper{
 	
 	private void initializeCloneResidingMethod() throws CoreException{
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		IProject project = root.getProject(Settings.projectName);
+		
+		String projectName = Settings.projectName;
+		/*if(this.getCloneInstance().getFileLocation().contains("jarp")){
+			projectName = "jarp";
+		}
+		else if(this.getCloneInstance().getFileLocation().contains("joone")){
+			projectName = "joone";
+		}*/
+		
+		IProject project = root.getProject(projectName);
 		if (project.isNatureEnabled(MinerProperties.javaNatureName)) {
 			IJavaProject javaProject = JavaCore.create(project);
 			IPath filePath = Path.fromPortableString(className);
