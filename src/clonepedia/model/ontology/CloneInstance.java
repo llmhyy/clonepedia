@@ -90,6 +90,10 @@ public class CloneInstance implements RegionalOwner{
 	public CloneInstance() {
 		// TODO Auto-generated constructor stub
 	}
+	
+	public int getLength(){
+		return this.endLine - this.startLine + 1;
+	}
 
 	public boolean equals(Object object) {
 

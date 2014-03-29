@@ -217,7 +217,15 @@ public class Method extends MergeableSimpleOntologicalElement implements  IClust
 	public String getFullName(){
 		if(this.fullName == null){
 			ComplexType type = getOwner();
-			this.fullName = type.getFullName() + "$" + this.returnType.toString() + " " + this.getMethodName() + "(";
+			String ownerName = "";
+			if(type == null){
+				System.out.println("The method " + this.getSimpleElementName() + " has no owner");
+			}
+			else{
+				ownerName = type.getFullName();
+			}
+			
+			this.fullName = ownerName + "$" + this.returnType.toString() + " " + this.getMethodName() + "(";
 			for(Variable v: this.getParameters()){
 				this.fullName += v.getVarType().getFullName() + " ";
 			}

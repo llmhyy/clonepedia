@@ -70,7 +70,7 @@ public class CloneDetectionAction implements IWorkbenchWindowActionDelegate {
 						
 						for(IPackageFragment pack: packages){
 							if(pack.getKind() == IPackageFragmentRoot.K_SOURCE 
-									&& pack.getHandleIdentifier().contains("sample")){
+									/*&& pack.getHandleIdentifier().contains("sample")*/){
 								for(ICompilationUnit iunit: pack.getCompilationUnits()){
 									IResource resource = iunit.getResource();
 									
@@ -145,10 +145,15 @@ public class CloneDetectionAction implements IWorkbenchWindowActionDelegate {
 				System.out.println(minPos.getLine());
 				System.out.println(maxPos.getLine());*/
 				
-				set.add(cloneInstance);
+				if(cloneInstance.getLength() >= 5){
+					set.add(cloneInstance);					
+				}
+				
 			}
 			
-			sets.add(set);
+			if(set.size() >= 2){
+				sets.add(set);				
+			}
 		}
 		
 		return sets;
