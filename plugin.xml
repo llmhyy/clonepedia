@@ -172,6 +172,14 @@
             id="Clonepedia.view_category"
             name="Clonepedia">
       </category>
+      <view
+            category="Clonepedia.view_category"
+            class="clonepedia.views.CloneReportView"
+            icon="icons/view/clone_report.gif"
+            id="Clonepedia.cloneReportView"
+            name="Clone Report View"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.perspectives">
