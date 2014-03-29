@@ -1,5 +1,10 @@
 package clonepedia.views.util;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashSet;
 
 import org.eclipse.core.resources.IFile;
@@ -20,10 +25,11 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTParser;
+import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.PackageDeclaration;
 import org.eclipse.jdt.internal.corext.refactoring.structure.ASTNodeSearchUtil;
-
 import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -35,6 +41,10 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 
+
+
+
+
 import clonepedia.model.ontology.Class;
 import clonepedia.model.ontology.CloneInstance;
 import clonepedia.model.ontology.ComplexType;
@@ -44,6 +54,7 @@ import clonepedia.model.viewer.CloneSetWrapper;
 import clonepedia.model.viewer.IContainer;
 import clonepedia.model.viewer.IContent;
 import clonepedia.util.MinerProperties;
+import clonepedia.util.MinerUtil;
 import clonepedia.util.Settings;
 import clonepedia.views.codesnippet.CloneCodeSnippetView;
 import clonepedia.views.codesnippet.SnippetInstanceRelation;
@@ -69,16 +80,45 @@ public class ViewUtil {
 							fullName = fullName.substring(0, fullName.length() - 5);*/
 							
 							String instanceResidingClassFullName;
-							ComplexType type = instance.getResidingMethod().getOwner();
-							if(type instanceof Interface){
-								instanceResidingClassFullName = type.getFullName();
+							
+							if(instance.getResidingMethod() != null){
+								ComplexType type = instance.getResidingMethod().getOwner();
+								if(type instanceof Interface){
+									instanceResidingClassFullName = type.getFullName();
+								}
+								else{
+									Class clas = (Class)type;
+									while(clas.getOuterClass() != null)
+										clas = clas.getOuterClass();
+									
+									instanceResidingClassFullName = clas.getFullName();
+								}
 							}
 							else{
-								Class clas = (Class)type;
-								while(clas.getOuterClass() != null)
-									clas = clas.getOuterClass();
+								String filePath = instance.getFileLocation();
+								File javaFile = new File(filePath);
+								String javaFileContent = MinerUtil.getFileConent(javaFile);
+								int packageStartIndex = javaFileContent.indexOf("package ")+8;
+								int packageEndIndex = javaFileContent.indexOf(";", packageStartIndex);
+								String packageNameString = javaFileContent.substring(packageStartIndex, packageEndIndex);
+								/*ASTParser parser = ASTParser.newParser(AST.JLS4);
+								parser.setSource(javaFileContent.toCharArray());
+								parser.setKind(ASTParser.K_COMPILATION_UNIT);
 								
-								instanceResidingClassFullName = clas.getFullName();
+								final StringBuffer packageNameBuffer = new StringBuffer();
+								final CompilationUnit cu = (CompilationUnit) parser.createAST(null);
+								cu.accept(new ASTVisitor() {
+									public boolean visit(PackageDeclaration packageDeclaration){
+										String packageName = packageDeclaration.getName().getFullyQualifiedName();
+										packageNameBuffer.append(packageName);
+										return false;
+									}
+									
+								});*/
+								
+								instanceResidingClassFullName = packageNameString + "." + instance.getSimpleFileName();
+								instanceResidingClassFullName = instanceResidingClassFullName.substring(0, instanceResidingClassFullName.indexOf(".java"));
+								//System.currentTimeMillis();
 							}
 							
 							String instanceResidingPackageName = instanceResidingClassFullName.substring(0, 
@@ -96,6 +136,8 @@ public class ViewUtil {
 		} catch (JavaModelException e) {
 			e.printStackTrace();
 		} catch (CoreException e) {
+			e.printStackTrace();
+		} catch (NullPointerException e){
 			e.printStackTrace();
 		}
 		

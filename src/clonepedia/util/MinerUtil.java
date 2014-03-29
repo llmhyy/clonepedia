@@ -1,10 +1,12 @@
 package clonepedia.util;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -27,6 +29,28 @@ public class MinerUtil {
 
 	public final static int CamelSplitting = 0;
 	public final static int DotSplitting = 1;
+	
+	public static String getFileConent(File file){
+		try {
+			BufferedReader reader = new BufferedReader( new FileReader (file));
+			String         line = null;
+		    StringBuilder  stringBuilder = new StringBuilder();
+		    String         ls = System.getProperty("line.separator");
+
+		    while( ( line = reader.readLine() ) != null ) {
+		        stringBuilder.append( line );
+		        stringBuilder.append( ls );
+		    }
+
+		    return stringBuilder.toString();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	    
+		return null;
+	}
 	
 	public static void logMessage(String log, String fileName) {
 		try {

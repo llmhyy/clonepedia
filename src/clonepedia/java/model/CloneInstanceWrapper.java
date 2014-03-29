@@ -31,6 +31,7 @@ import clonepedia.java.CompilationUnitPool;
 import clonepedia.java.visitor.MethodsDeclarationVisitor;
 import clonepedia.model.ontology.CloneInstance;
 import clonepedia.util.MinerProperties;
+import clonepedia.util.MinerUtil;
 import clonepedia.util.Settings;
 
 public class CloneInstanceWrapper{
@@ -63,9 +64,13 @@ public class CloneInstanceWrapper{
 		
 		String filePath = cloneInstance.getFileLocation();
 		File javaFile = new File(filePath);
-		String javaFileContent = getFileConent(javaFile);
+		String javaFileContent = MinerUtil.getFileConent(javaFile);
 		
-		ASTParser parser = ASTParser.newParser(AST.JLS4);
+		int packageStartIndex = javaFileContent.indexOf("package ")+8;
+		int packageEndIndex = javaFileContent.indexOf(";", packageStartIndex);
+		String packageName = javaFileContent.substring(packageStartIndex, packageEndIndex);
+		
+		/*ASTParser parser = ASTParser.newParser(AST.JLS4);
 		parser.setSource(javaFileContent.toCharArray());
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
 		
@@ -80,7 +85,7 @@ public class CloneInstanceWrapper{
 			
 		});
 		
-		String packageName = packageNameBuffer.toString();
+		String packageName = packageNameBuffer.toString();*/
 		String packagePrefix = packageName.substring(0, packageName.indexOf("."));
 		className = filePath.substring(filePath.indexOf(packagePrefix));
 		//className = filePath.substring(beginIndex)
@@ -91,28 +96,6 @@ public class CloneInstanceWrapper{
 		}catch(CoreException e){
 			e.printStackTrace();
 		}
-	}
-	
-	private String getFileConent(File file){
-		try {
-			BufferedReader reader = new BufferedReader( new FileReader (file));
-			String         line = null;
-		    StringBuilder  stringBuilder = new StringBuilder();
-		    String         ls = System.getProperty("line.separator");
-
-		    while( ( line = reader.readLine() ) != null ) {
-		        stringBuilder.append( line );
-		        stringBuilder.append( ls );
-		    }
-
-		    return stringBuilder.toString();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	    
-		return null;
 	}
 	
 	private void initializeCloneResidingMethod() throws CoreException{

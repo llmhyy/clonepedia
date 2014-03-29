@@ -284,7 +284,7 @@ public abstract class SummaryView extends ViewPart {
 		titleColumn.setResizable(true);
 		contentColumn.setResizable(true);
 		
-		createTreeDetails(propertyTree, targetObject);
+		//createTreeDetails(propertyTree, targetObject);
 		
 		//parent.setWeights(new int[]{3,1});
 		

@@ -1,6 +1,8 @@
 package clonepedia.views;
 
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -41,9 +43,11 @@ import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 
 import clonepedia.Activator;
+import clonepedia.filepraser.CloneDetectionFileParser;
 import clonepedia.java.CloneInformationExtractor;
 import clonepedia.java.CompilationUnitPool;
 import clonepedia.model.ontology.CloneInstance;
+import clonepedia.model.ontology.CloneSets;
 import clonepedia.model.viewer.CloneSetWrapper;
 import clonepedia.model.viewer.CloneSetWrapperList;
 import clonepedia.perspective.CloneDiffPerspective;
@@ -117,8 +121,8 @@ public class CloneReportView extends SummaryView {
 		viewer.setComparator(comparator);
 		
 		createColumns(viewer);
-		
-		cloneSets = SummaryUtil.wrapCloneSets(Activator.getCloneSets().getCloneList());
+		CloneSets sets = new CloneDetectionFileParser(false, "").getCloneSets();
+		cloneSets = SummaryUtil.wrapCloneSets(sets.getCloneList());
 		viewer.setInput(cloneSets);
 		viewer.addDoubleClickListener(cloneInstanceDoubleClickListener);
 		viewer.addDoubleClickListener(new IDoubleClickListener(){
@@ -275,21 +279,24 @@ public class CloneReportView extends SummaryView {
 		IToolBarManager toolBar = actionBars.getToolBarManager();
 		
 		
-		/*Action sortCloneSetsByInstanceNumberAction = new Action("Sort By Instance Number", IAction.AS_CHECK_BOX){
+		Action loadAllCloneSetAction = new Action(){
 			public void run(){
-				CloneSetWrapperList list = (CloneSetWrapperList)viewer.getInput();
-				if(this.isChecked())
-					Collections.sort(list, new CloneSetWrapperInstanceNumberAscComparator());
-				else
-					Collections.sort(list, new CloneSetWrapperInstanceNumberDescComparator());
-				viewer.setInput(list);
+				
+				CloneSets sets = new CloneDetectionFileParser(false, "").getCloneSets();
+				cloneSets = SummaryUtil.wrapCloneSets(sets.getCloneList());
+				viewer.setInput(cloneSets);
+				
+				
 				viewer.refresh();
 			}
 		};
+		loadAllCloneSetAction.setText("Refresh");
+		loadAllCloneSetAction.setImageDescriptor(
+				ImageDescriptor.createFromImage(PlatformUI.getWorkbench().
+						getSharedImages().getImage(ISharedImages.IMG_ELCL_SYNCED))
+				);
 		
-		toolBar.add(new Separator());
 		toolBar.add(loadAllCloneSetAction);
-		toolBar.add(removeSelectedCloneSetAction);*/
 	}
 
 	@Override
