@@ -58,12 +58,12 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 	private Text intraSetFileText;
 	private Text interSetFileText;
 	
-	private Text templateMethodCallStrengthText;
+	/*private Text templateMethodCallStrengthText;
 	private Text abstractMethodCallStrengthText;
 	
 	private Text thresholdForTMGFormingText;
 	private Text thresholdForTMGLocationText;
-	private Text thresholdForTCGFormingText;
+	private Text thresholdForTCGFormingText;*/
 	
 	private Combo levelCombo;
 	private Combo skipPatternCombo;
@@ -77,12 +77,12 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 	private String defaultDiffLevel;
 	private String defaultSkipPattern;
 	
-	private String defaultTemplateMethodCallStrength;
+	/*private String defaultTemplateMethodCallStrength;
 	private String defaultAbstractMethodCallStrength;
 	
 	private String defaultThresholdForTMGForming;
 	private String defaultThresholdForTMGLocation;
-	private String defaultThresholdForTCGForming;
+	private String defaultThresholdForTCGForming;*/
 	
 	
 	public static final String TARGET_PORJECT = "targetProjectName";
@@ -94,12 +94,12 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 	public static final String DIFF_LEVEL = "diffLevel";
 	public static final String SKIP_PATTERN = "skipPattern";
 	
-	public static final String TEMPLATE_METHOD_STRENGTH = "templateMethodCallStrength";
+	/*public static final String TEMPLATE_METHOD_STRENGTH = "templateMethodCallStrength";
 	public static final String ABSTRACT_METHOD_STRENGTH = "abstractMethodCallStrength";
 	
 	public static final String THRESHOLD_FOR_TMG_FORMING = "thresholdForTMGForming";
 	public static final String THRESHOLD_FOR_TMG_LOCATION = "thresholdForTMGLocation";
-	public static final String THRESHOLD_FOR_TCG_FORMING = "hresholdForTCGForming";
+	public static final String THRESHOLD_FOR_TCG_FORMING = "hresholdForTCGForming";*/
 	
 	public ClonepediaPreferencePage() {
 		// TODO Auto-generated constructor stub
@@ -117,13 +117,13 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 		this.defaultDiffLevel = Activator.getDefault().getPreferenceStore().getString(DIFF_LEVEL);
 		this.defaultSkipPattern = Activator.getDefault().getPreferenceStore().getString(SKIP_PATTERN);
 		
-		this.defaultTemplateMethodCallStrength = Activator.getDefault().getPreferenceStore().getString(TEMPLATE_METHOD_STRENGTH);
+		/*this.defaultTemplateMethodCallStrength = Activator.getDefault().getPreferenceStore().getString(TEMPLATE_METHOD_STRENGTH);
 		this.defaultAbstractMethodCallStrength = Activator.getDefault().getPreferenceStore().getString(ABSTRACT_METHOD_STRENGTH);
 		
 		this.defaultThresholdForTMGForming = Activator.getDefault().getPreferenceStore().getString(THRESHOLD_FOR_TMG_FORMING);
 		this.defaultThresholdForTMGLocation = Activator.getDefault().getPreferenceStore().getString(THRESHOLD_FOR_TMG_LOCATION);
 		this.defaultThresholdForTCGForming = Activator.getDefault().getPreferenceStore().getString(THRESHOLD_FOR_TCG_FORMING);
-		
+		*/
 		//this.defaultTargetProject = preferences.get(TARGET_PORJECT, "");
 		//this.defaultCloneFilePath = preferences.get(CLONE_PATH, "");
 		//Activator.setCloneSets((CloneSets) MinerUtil.deserialize("sets"));
@@ -190,7 +190,7 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 		
 		createDiffGroup(composite);
 		
-		createTemplateGroup(composite);
+		//createTemplateGroup(composite);
 		
 		return composite;
 	}
@@ -318,7 +318,7 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 		levelCombo.setLayoutData(comboData);
 	}
 	
-	private void createTemplateGroup(Composite parent){
+	/*private void createTemplateGroup(Composite parent){
 		Group templateGroup = new Group(parent, SWT.NONE);
 		templateGroup.setText("parameters for template generation");
 		GridData diffGroupData = new GridData(SWT.FILL, SWT.FILL, true, true);
@@ -335,7 +335,7 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 		createThresholdForTMGFormingText(templateGroup);
 		createThresholdForTMGLocationText(templateGroup);
 		createThresholdForTCGFormingText(templateGroup);
-	}
+	}*/
 	
 	/*private void createTemplateGenerationText(Group group, Text text, String labelString, String defaultString){
 		Label label = new Label(group, SWT.NONE);
@@ -347,7 +347,7 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 		text.setLayoutData(gridData);
 	}*/
 	
-	private void createTemplateMethodCallStrengthText(Group group){
+	/*private void createTemplateMethodCallStrengthText(Group group){
 		Label templateMethodCallStrengthLabel = new Label(group, SWT.NONE);
 		templateMethodCallStrengthLabel.setText("TMG call strength");
 		
@@ -400,7 +400,7 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 		GridData data = new GridData(SWT.FILL, SWT.FILL, true, false);
 		data.horizontalSpan = 2;
 		thresholdForTCGFormingText.setLayoutData(data);
-	}
+	}*/
 	
 	
 	
@@ -413,11 +413,11 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 		preferences.put(INTER_SET_PATH, this.interSetFileText.getText());
 		preferences.put(DIFF_LEVEL, this.levelCombo.getText());
 		preferences.put(SKIP_PATTERN, this.skipPatternCombo.getText());
-		preferences.put(TEMPLATE_METHOD_STRENGTH, this.templateMethodCallStrengthText.getText());
+		/*preferences.put(TEMPLATE_METHOD_STRENGTH, this.templateMethodCallStrengthText.getText());
 		preferences.put(ABSTRACT_METHOD_STRENGTH, this.abstractMethodCallStrengthText.getText());
 		preferences.put(THRESHOLD_FOR_TMG_FORMING, this.thresholdForTMGFormingText.getText());
 		preferences.put(THRESHOLD_FOR_TMG_LOCATION, this.thresholdForTMGLocationText.getText());
-		preferences.put(THRESHOLD_FOR_TCG_FORMING, this.thresholdForTCGFormingText.getText());
+		preferences.put(THRESHOLD_FOR_TCG_FORMING, this.thresholdForTCGFormingText.getText());*/
 		
 		Activator.getDefault().getPreferenceStore().putValue(TARGET_PORJECT, this.projectCombo.getText());
 		Activator.getDefault().getPreferenceStore().putValue(CLONE_PATH, this.cloneFileText.getText());
@@ -426,12 +426,12 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 		Activator.getDefault().getPreferenceStore().putValue(INTER_SET_PATH, this.interSetFileText.getText());
 		Activator.getDefault().getPreferenceStore().putValue(DIFF_LEVEL, this.levelCombo.getText());
 		Activator.getDefault().getPreferenceStore().putValue(SKIP_PATTERN, this.skipPatternCombo.getText());
-		Activator.getDefault().getPreferenceStore().putValue(TEMPLATE_METHOD_STRENGTH, this.templateMethodCallStrengthText.getText());
+		/*Activator.getDefault().getPreferenceStore().putValue(TEMPLATE_METHOD_STRENGTH, this.templateMethodCallStrengthText.getText());
 		Activator.getDefault().getPreferenceStore().putValue(ABSTRACT_METHOD_STRENGTH, this.abstractMethodCallStrengthText.getText());
 		Activator.getDefault().getPreferenceStore().putValue(THRESHOLD_FOR_TMG_FORMING, this.thresholdForTMGFormingText.getText());
 		Activator.getDefault().getPreferenceStore().putValue(THRESHOLD_FOR_TMG_LOCATION, this.thresholdForTMGLocationText.getText());
 		Activator.getDefault().getPreferenceStore().putValue(THRESHOLD_FOR_TCG_FORMING, this.thresholdForTCGFormingText.getText());
-		
+		*/
 		if(!Settings.projectName.equals(this.projectCombo.getText()) ){
 			UIRefresh();			
 		}
@@ -504,12 +504,12 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 		Settings.diffComparisonMode = this.levelCombo.getText();
 		Settings.skipPattern = this.skipPatternCombo.getText();
 		
-		Settings.templateMethodGroupCallingStrength = Integer.valueOf(this.templateMethodCallStrengthText.getText());
+		/*Settings.templateMethodGroupCallingStrength = Integer.valueOf(this.templateMethodCallStrengthText.getText());
 		Settings.abstractMethodGroupCallingStrength = Integer.valueOf(this.abstractMethodCallStrengthText.getText());
 		
 		Settings.thresholdDistanceForTMGFilteringAndSplitting = Double.valueOf(this.thresholdForTMGFormingText.getText());
 		Settings.thresholdDistanceForTMGLocationClustering = Double.valueOf(this.thresholdForTMGLocationText.getText());
-		Settings.thresholdDistanceForDeclaringClassClustering = Double.valueOf(this.thresholdForTCGFormingText.getText());
+		Settings.thresholdDistanceForDeclaringClassClustering = Double.valueOf(this.thresholdForTCGFormingText.getText());*/
 	}
 	
 	public ClonepediaPreferencePage(String title) {
