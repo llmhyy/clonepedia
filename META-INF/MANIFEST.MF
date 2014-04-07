@@ -59,6 +59,7 @@ Bundle-ClassPath: lib/mysql-connector-java.jar,
 Import-Package: org.eclipse.jdt.ui
 Export-Package: clonepedia,
  clonepedia.businessdata,
+ clonepedia.filepraser,
  clonepedia.java,
  clonepedia.java.model,
  clonepedia.java.util,
