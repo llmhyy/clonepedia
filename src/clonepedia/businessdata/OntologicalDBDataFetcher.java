@@ -10,6 +10,7 @@ import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.PrimitiveType;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.TypeLiteral;
@@ -774,7 +775,7 @@ public class OntologicalDBDataFetcher extends OntologicalDataFetcher{
 					ProgrammingElement element = transferASTNodesToProgrammingElement(node, set, set.getProject());
 					CloneInstanceWrapper instanceWrapper = relation.getInstanceWrapper();
 					CloneInstance instance = instanceWrapper.getCloneInstance();
-					Method residingMethod = MinerUtilforJava.getMethodfromASTNode(instanceWrapper.getMethodDeclaration(), set.getProject(), this);
+					Method residingMethod = MinerUtilforJava.getMethodfromASTNode((MethodDeclaration)instanceWrapper.getMinimumContainingASTNode(), set.getProject(), this);
 					instance.setResidingMethod(residingMethod);
 					if(null != element){
 						storeInstanceDiffRelation(groupId, instance, element);								

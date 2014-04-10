@@ -66,7 +66,7 @@ public class FindCloneDifferenceVisitor extends ASTVisitor {
 		if(targetNode instanceof Statement){
 			Statement stat = (Statement)targetNode;
 			
-			CompilationUnit unit = MinerUtilforJava.getCompilationUnit(insWrapper.getMethodDeclaration());
+			CompilationUnit unit = MinerUtilforJava.getCompilationUnit(insWrapper.getMinimumContainingASTNode());
 			if(!CodeSkeletonGenerationUtil.isCloneRelatedStatement(stat, insWrapper, unit)){
 				stat.setLeadingComment("//not clone");
 			}

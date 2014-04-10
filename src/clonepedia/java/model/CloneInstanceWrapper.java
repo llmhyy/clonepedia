@@ -39,7 +39,7 @@ public class CloneInstanceWrapper{
 	private CompilationUnitPool pool;
 	
 	private CloneInstance cloneInstance;
-	private MethodDeclaration methodDeclaration;
+	private ASTNode minimumContainingASTNode;
 	private ArrayList<ASTNode> uncounterRelationalDifferenceNodes = new ArrayList<ASTNode>();
 	
 	private String className;
@@ -56,8 +56,8 @@ public class CloneInstanceWrapper{
 	public int endStatementContextIndex = 0;
 	public int compareStatementPointer = 0;
 	//private HashSet<Integer> markedStatementIndexes = new HashSet<Integer>();
-
-	public CloneInstanceWrapper(CloneInstance cloneInstance, CompilationUnitPool pool) {
+	
+	public CloneInstanceWrapper(CloneInstance cloneInstance, CompilationUnitPool pool, boolean isLimitToMethod, ASTNode node) {
 		
 		this.cloneInstance = cloneInstance;
 		this.pool = pool;
@@ -70,31 +70,19 @@ public class CloneInstanceWrapper{
 		int packageEndIndex = javaFileContent.indexOf(";", packageStartIndex);
 		String packageName = javaFileContent.substring(packageStartIndex, packageEndIndex);
 		
-		/*ASTParser parser = ASTParser.newParser(AST.JLS4);
-		parser.setSource(javaFileContent.toCharArray());
-		parser.setKind(ASTParser.K_COMPILATION_UNIT);
-		
-		final StringBuffer packageNameBuffer = new StringBuffer();
-		final CompilationUnit cu = (CompilationUnit) parser.createAST(null);
-		cu.accept(new ASTVisitor() {
-			public boolean visit(PackageDeclaration packageDeclaration){
-				String packageName = packageDeclaration.getName().getFullyQualifiedName();
-				packageNameBuffer.append(packageName);
-				return false;
-			}
-			
-		});
-		
-		String packageName = packageNameBuffer.toString();*/
 		String packagePrefix = packageName.substring(0, packageName.indexOf("."));
 		className = filePath.substring(filePath.indexOf(packagePrefix));
-		//className = filePath.substring(beginIndex)
 		className = className.replace("\\", "/");
 		
-		try{
-			initializeCloneResidingMethod();
-		}catch(CoreException e){
-			e.printStackTrace();
+		if(isLimitToMethod){
+			try{
+				initializeCloneResidingMethod();
+			}catch(CoreException e){
+				e.printStackTrace();
+			}			
+		}
+		else{
+			minimumContainingASTNode = node;
 		}
 	}
 	
@@ -132,7 +120,7 @@ public class CloneInstanceWrapper{
 			MethodsDeclarationVisitor visitor = new MethodsDeclarationVisitor(getStartLine(), getEndLine(), cu);
 			cu.accept(visitor);
 			//System.out.println();
-			this.methodDeclaration = visitor.getCloneResidingMethod();
+			this.minimumContainingASTNode = visitor.getCloneResidingMethod();
 			
 		}
 	}
@@ -178,12 +166,12 @@ public class CloneInstanceWrapper{
 		this.cloneInstance = cloneInstance;
 	}
 
-	public MethodDeclaration getMethodDeclaration() {
-		return methodDeclaration;
+	public ASTNode getMinimumContainingASTNode() {
+		return minimumContainingASTNode;
 	}
 
-	public void setMethodDeclaration(MethodDeclaration methodDeclaration) {
-		this.methodDeclaration = methodDeclaration;
+	public void setMinimumContainingASTNode(ASTNode containingASTNode) {
+		this.minimumContainingASTNode = containingASTNode;
 	}
 
 	public ASTNode[] getAstNodeList() {

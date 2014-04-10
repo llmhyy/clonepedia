@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import org.carrot2.util.preprocessor.shaded.apache.velocity.runtime.parser.node.GetExecutor;
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
 
 import clonepedia.db.DBOperator;
 import clonepedia.db.schema.Entity;
@@ -223,7 +224,7 @@ public class OntologicalModelDataFetcher extends OntologicalDataFetcher{
 					
 					Method residingMethod = instance.getResidingMethod();
 					if(null == residingMethod){
-						residingMethod = MinerUtilforJava.getMethodfromASTNode(instanceWrapper.getMethodDeclaration(), set.getProject(), this);
+						residingMethod = MinerUtilforJava.getMethodfromASTNode((MethodDeclaration)instanceWrapper.getMinimumContainingASTNode(), set.getProject(), this);
 					}
 					instance.setResidingMethod(residingMethod);
 					if(null != element){

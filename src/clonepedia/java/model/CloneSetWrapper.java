@@ -57,10 +57,16 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 	 * @param pool
 	 */
 	public CloneSetWrapper(CloneSet cloneSet, CompilationUnitPool pool){
+		this(cloneSet, pool, true, null);
+	}
+	
+	public CloneSetWrapper(CloneSet cloneSet, CompilationUnitPool pool, boolean isLimitToMethod, ArrayList<ASTNode> nodeList){
 		this.pool = pool;
 		this.cloneSet = cloneSet;
+		int i=0;
 		for(CloneInstance ci: cloneSet){
-			add(new CloneInstanceWrapper(ci, this.pool));
+			ASTNode node = (isLimitToMethod)? null : nodeList.get(i++);
+			add(new CloneInstanceWrapper(ci, this.pool, isLimitToMethod, node));
 		}
 	}
 	
@@ -97,7 +103,7 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 
 			ArrayList<ASTNode> astNodeList = new ArrayList<ASTNode>();
 
-			ASTNode cu = instanceWrapper.getMethodDeclaration().getRoot();
+			ASTNode cu = instanceWrapper.getMinimumContainingASTNode().getRoot();
 			/*if (!(cu instanceof CompilationUnit))
 				cu = cu.getParent();*/
 
@@ -106,7 +112,7 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 					instanceWrapper.getEndLine(), astNodeList,
 					(CompilationUnit) cu);
 
-			instanceWrapper.getMethodDeclaration().accept(visitor);
+			instanceWrapper.getMinimumContainingASTNode().accept(visitor);
 
 			//filterComplicatedASTNodeforList(astNodeList);
 
@@ -539,7 +545,7 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 
 			ArrayList<Statement> statementList = new ArrayList<Statement>();
 
-			ASTNode cu = instanceWrapper.getMethodDeclaration().getRoot();
+			ASTNode cu = instanceWrapper.getMinimumContainingASTNode().getRoot();
 			/*if (!(cu instanceof CompilationUnit))
 				cu = cu.getParent();*/
 
@@ -548,7 +554,7 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 					instanceWrapper.getEndLine(), statementList,
 					(CompilationUnit) cu);
 
-			instanceWrapper.getMethodDeclaration().accept(visitor);
+			instanceWrapper.getMinimumContainingASTNode().accept(visitor);
 
 			//filterComplicatedASTNodeforList(astNodeList);
 
@@ -862,7 +868,7 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 		for(CloneInstanceWrapper instance: this){
 			ArrayList<ASTNode> instanceList = new ArrayList<ASTNode>();
 			CloneASTStatementNodeVisitor visitor = new CloneASTStatementNodeVisitor(instance.getStartLine(), instance.getEndLine(), 
-					instanceList, (CompilationUnit)instance.getMethodDeclaration().getRoot(), null);
+					instanceList, (CompilationUnit)instance.getMinimumContainingASTNode().getRoot(), null);
 			
 			int startIndex;
 			if(isForThePrefixCondition){

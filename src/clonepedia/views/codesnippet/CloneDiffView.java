@@ -1,18 +1,21 @@
 package clonepedia.views.codesnippet;
 
+import java.io.File;
 import java.util.ArrayList;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTParser;
-import org.eclipse.jdt.core.dom.Block;
+import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.Statement;
-import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.swt.SWT;
@@ -23,37 +26,24 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowData;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 
 import clonepedia.Activator;
 import clonepedia.java.ASTComparator;
-import clonepedia.java.CloneInformationExtractor;
-import clonepedia.java.CompilationUnitPool;
 import clonepedia.java.model.CloneInstanceWrapper;
-import clonepedia.java.model.CloneSetWrapper;
 import clonepedia.java.model.DiffCounterRelationGroupEmulator;
 import clonepedia.java.model.DiffInstanceElementRelationEmulator;
 import clonepedia.java.util.MinerUtilforJava;
 import clonepedia.model.ontology.CloneInstance;
-import clonepedia.model.ontology.CloneSet;
-import clonepedia.model.ontology.ComplexType;
-import clonepedia.model.ontology.CounterRelationGroup;
-import clonepedia.model.ontology.Method;
 import clonepedia.perspective.CloneDiffPerspective;
 import clonepedia.util.ImageUI;
 import clonepedia.views.DiffPropertyView;
@@ -248,8 +238,12 @@ public class CloneDiffView extends ViewPart {
 		String content = null;
 		
 		CloneInstance instance = instanceWrapper.getCloneInstance();
+		File file = new File(instance.getFileLocation());
+		IWorkspace workspace= ResourcesPlugin.getWorkspace();    
+		IPath location = Path.fromOSString(file.getAbsolutePath());
+		IFile ifile= workspace.getRoot().getFileForLocation(location);
 		
-		final ICompilationUnit iunit = ViewUtil.getCorrespondingCompliationUnit(instance);
+		final ICompilationUnit iunit = JavaCore.createCompilationUnitFrom(ifile);
 		if(iunit != null){
 			
 			ASTParser parser = ASTParser.newParser(AST.JLS3);
@@ -261,9 +255,9 @@ public class CloneDiffView extends ViewPart {
 			int startClonePosition = cu.getPosition(instance.getStartLine()-1, 0);
 			int endClonePosition = cu.getPosition(instance.getEndLine(), 0);
 			
-			MethodDeclaration methodDeclaration = instanceWrapper.getMethodDeclaration();
-			int methodStartPosition = methodDeclaration.getStartPosition();
-			int methodEndPosition = methodStartPosition + methodDeclaration.getLength();
+			ASTNode containingNode = instanceWrapper.getMinimumContainingASTNode();
+			int methodStartPosition = containingNode.getStartPosition();
+			int methodEndPosition = methodStartPosition + containingNode.getLength();
 			
 			try {
 				content = iunit.getSource();
@@ -307,7 +301,10 @@ public class CloneDiffView extends ViewPart {
 			Color disposableColoar = new Color(Display.getCurrent(), 150, 250, 250);
 			text.setLineBackground(startCloneLineNumber, lineCount, disposableColoar);
 			
-			ASTNode doc = methodDeclaration.getJavadoc();
+			ASTNode doc = null;
+			if(containingNode instanceof BodyDeclaration){
+				doc = ((BodyDeclaration)containingNode).getJavadoc();				
+			}
 			
 			generateKeywordsStyle(text);
 			
@@ -363,7 +360,7 @@ public class CloneDiffView extends ViewPart {
 		}
 		
 		if(content == null){
-			content = instanceWrapper.getMethodDeclaration().toString();
+			content = instanceWrapper.getMinimumContainingASTNode().toString();
 			text.setText(content);
 		}
 		

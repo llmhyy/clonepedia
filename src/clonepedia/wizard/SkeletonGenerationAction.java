@@ -632,7 +632,7 @@ public class SkeletonGenerationAction {
 		
 		CloneInstanceWrapper insWrapper = setWrapper.findLongestCloneInstance();
 		
-		MethodDeclaration md = insWrapper.getMethodDeclaration();
+		MethodDeclaration md = (MethodDeclaration)insWrapper.getMinimumContainingASTNode();
 		
 		CompilationUnit unit = MinerUtilforJava.getCompilationUnit(md);
 		
