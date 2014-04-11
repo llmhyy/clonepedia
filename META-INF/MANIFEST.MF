@@ -71,6 +71,4 @@ Export-Package: clonepedia,
  clonepedia.perspective,
  clonepedia.util,
  clonepedia.views.codesnippet,
- clonepedia.views.util,
- clonepedia.wizard,
- clonepedia.wizard.printer
+ clonepedia.views.util
