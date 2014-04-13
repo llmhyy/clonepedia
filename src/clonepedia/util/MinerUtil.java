@@ -16,14 +16,12 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.ui.internal.handlers.WizardHandler.New;
 
-import clonepedia.java.ASTComparator;
-import clonepedia.java.util.MinerUtilforJava;
 import clonepedia.model.Placeholder;
-import clonepedia.util.BoolComparator;
 
 public class MinerUtil {
 
@@ -423,7 +421,20 @@ public class MinerUtil {
 			abstractName = abString;
 		}
 		
+		abstractName = removeDuplicatedAsteroid(abstractName);
+		
 		return abstractName;
+	}
+	
+	public static String removeDuplicatedAsteroid(String name){
+		if(name.contains("***")){
+			System.currentTimeMillis();
+		}
+		
+		Pattern p = Pattern.compile("\\*{2,}");
+		Matcher matcher = p.matcher(name);
+		String newName = matcher.replaceAll("*");
+		return newName;
 	}
 	
 	public static boolean isTwoStringSetEqual(List<String> stringList1, List<String> stringList2){
