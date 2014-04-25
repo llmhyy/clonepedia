@@ -157,7 +157,7 @@
             class="clonepedia.views.codesnippet.CloneDiffView"
             icon="icons/view/clone_diff.gif"
             id="Clonepedia.CloneDiffView"
-            name="Clone Diff"
+            name="MCIDiff"
             restorable="true">
       </view>
       <view
