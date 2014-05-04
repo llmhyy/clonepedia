@@ -212,7 +212,7 @@ public class ViewUtil {
 			CompilationUnit cu = (CompilationUnit) parser.createAST(null);
 			
 			
-			int startPosition = cu.getPosition(instance.getStartLine(), 0);
+			int startPosition = cu.getPosition(instance.getStartLine()+1, 0);
 			int endPosition = cu.getPosition(instance.getEndLine()+1, 0);
 			
 			int upperDistant = 0;
@@ -232,8 +232,8 @@ public class ViewUtil {
 				int methodStartLine = cu.getLineNumber(methodStartPosition);
 				int methodEndLine = cu.getLineNumber(methodEndPosition);
 				
-				upperDistant = instance.getStartLine() - (methodStartLine + 1);
-				lowerDistant = methodEndLine - (instance.getEndLine() + 1);
+				upperDistant = instance.getStartLine() - (methodStartLine-1/* + 1*/);
+				lowerDistant = methodEndLine - (instance.getEndLine()/* + 1*/);
 				//System.out.println(methodStartLine + " " + methodEndLine);
 			} catch (JavaModelException e1) {
 				// TODO Auto-generated catch block

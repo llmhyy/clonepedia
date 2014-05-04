@@ -102,7 +102,7 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 		for (CloneInstanceWrapper instanceWrapper : this) {
 
 			ArrayList<ASTNode> astNodeList = new ArrayList<ASTNode>();
-
+			
 			ASTNode cu = instanceWrapper.getMinimumContainingASTNode().getRoot();
 			/*if (!(cu instanceof CompilationUnit))
 				cu = cu.getParent();*/

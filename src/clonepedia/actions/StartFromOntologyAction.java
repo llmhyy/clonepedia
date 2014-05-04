@@ -11,6 +11,7 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
@@ -109,7 +110,14 @@ public class StartFromOntologyAction implements
 		job.addJobChangeListener(new JobChangeAdapter(){
 			public void done(IJobChangeEvent e){
 				if(e.getResult().isOK()){
-					MessageDialog.openConfirm(shell, "progress", "pattern generation sucess");
+					Display.getDefault().asyncExec(new Runnable() {
+						
+						@Override
+						public void run() {
+							MessageDialog.openConfirm(shell, "progress", "pattern generation sucess");
+						}
+					});
+					
 				}
 				else{
 					

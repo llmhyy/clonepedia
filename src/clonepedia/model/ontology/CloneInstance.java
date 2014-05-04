@@ -64,8 +64,14 @@ public class CloneInstance implements RegionalOwner{
 			return this.fullName;
 		}
 		catch(NullPointerException e){
-			String fileName = fileLocation.substring(fileLocation.lastIndexOf("\\")+1, fileLocation.lastIndexOf("."));
-			return "@" + cloneSet.getId()+ "(" + fileName + "[" + startLine + "," + endLine + "])";
+			try{
+				String fileName = fileLocation.substring(fileLocation.lastIndexOf("\\")+1, fileLocation.lastIndexOf("."));
+				return "@" + cloneSet.getId()+ "(" + fileName + "[" + startLine + "," + endLine + "])";				
+			}
+			catch(NullPointerException npe){
+				//npe.printStackTrace();
+				return "instance";
+			}
 		}
 		catch(StringIndexOutOfBoundsException e){
 			e.printStackTrace();
