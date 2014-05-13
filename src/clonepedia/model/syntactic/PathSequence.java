@@ -11,9 +11,9 @@ public class PathSequence extends ArrayList<Object> {
 	 */
 	private static final long serialVersionUID = -701511380513530626L;
 	
-	public static final String LOCATION = "location";
-	public static final String DIFF_USAGE = "diffUsage";
-	public static final String COMMON_USAGE = "commonUsage";
+	public static final String LOCATION = "reside_in";
+	public static final String DIFF_USAGE = "diff_usage";
+	public static final String COMMON_USAGE = "common_usage";
 	
 	public String toString(){
 		return super.toString();

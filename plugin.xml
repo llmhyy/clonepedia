@@ -187,7 +187,7 @@
             class="clonepedia.perspective.CloneSummaryPerspective"
             icon="icons/perspective/summary_perspective.gif"
             id="Clonepedia.CloneSummaryPerspective"
-            name="Clone Summary">
+            name="Clonepedia">
       </perspective>
       <perspective
             class="clonepedia.perspective.CloneDiffPerspective"

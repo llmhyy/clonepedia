@@ -28,7 +28,7 @@ public class ClonePatternGroup extends ArrayList<PathPatternGroup>{
 	private String uniqueId;
 	
 	/**
-	 * "location", "diffUsage" and "commonUsage" are the valid options for
+	 * "reside_in", "diff_usage" and "common_usage" are the valid options for
 	 * style in clone pattern.
 	 */
 	private String style;
