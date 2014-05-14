@@ -32,7 +32,8 @@ public class ClonePatternGroupWrapper extends PatternGroupWrapper implements ICo
 	
 	public String toString(){
 		try {
-			return getEpitomise3(/*10*/);
+			//return getEpitomise3(/*10*/);
+			return getEpitomise(/*10*/);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -213,6 +214,35 @@ public class ClonePatternGroupWrapper extends PatternGroupWrapper implements ICo
 	}
 	
 	public String getEpitomise(/*int epitomizingNumber*/) throws Exception{
+		PathSequence abSeq = clonePattern.getAbstractPathSequence();
+		StringBuffer epitomise = new StringBuffer();
+		epitomise.append("clones ");
+		
+		int index = 1;
+		/*if(clonePattern.isLocationPattern() && !showRelationForLocation)
+			index++;*/
+		
+		for(int i=index; i<abSeq.size() /*&& i<(index + epitomizingNumber - 1)*/; i++){
+			Object element = abSeq.get(i);
+			if(element instanceof OntologicalElement){
+				OntologicalElement ontoEle = (OntologicalElement)element; 
+				String type = ontoEle.getOntologicalType().toString();
+				epitomise.append(ontoEle.getSimpleElementName() + " ");
+			}	
+			else if(element instanceof OntologicalRelationType){
+				OntologicalRelationType relation = (OntologicalRelationType)element;
+				epitomise.append(ViewUtil.getString(relation) + " ");
+			}
+		}
+		
+		//epitomise += "...";
+		/*epitomise = epitomise.replace("<", "[");
+		epitomise = epitomise.replace(">", "]");*/
+		String label = MinerUtil.xmlStringProcess(epitomise.toString());
+		return label;
+	}
+	
+	public String getEpitomiseBak(/*int epitomizingNumber*/) throws Exception{
 		PathSequence abSeq = clonePattern.getAbstractPathSequence();
 		String epitomise = "";
 		

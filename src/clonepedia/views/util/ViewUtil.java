@@ -232,8 +232,8 @@ public class ViewUtil {
 				int methodStartLine = cu.getLineNumber(methodStartPosition);
 				int methodEndLine = cu.getLineNumber(methodEndPosition);
 				
-				upperDistant = instance.getStartLine() - (methodStartLine-1/* + 1*/);
-				lowerDistant = methodEndLine - (instance.getEndLine()/* + 1*/);
+				/*upperDistant = instance.getStartLine() - (methodStartLine-1 + 1);
+				lowerDistant = methodEndLine - (instance.getEndLine() + 1);*/
 				//System.out.println(methodStartLine + " " + methodEndLine);
 			} catch (JavaModelException e1) {
 				// TODO Auto-generated catch block
@@ -349,6 +349,37 @@ public class ViewUtil {
 			return "@";
 		else if((relationType.equals(OntologicalRelationType.hasParameterType)))
 			return "$";
+		return null;
+	}
+	
+	public static String getString(OntologicalRelationType relationType){
+		if((relationType.equals(OntologicalRelationType.call)) ||
+				(relationType.equals(OntologicalRelationType.access))||
+				(relationType.equals(OntologicalRelationType.define))||
+						(relationType.equals(OntologicalRelationType.refer))||
+						(relationType.equals(OntologicalRelationType.useConstant))||
+						(relationType.equals(OntologicalRelationType.useClass))||
+						(relationType.equals(OntologicalRelationType.useInterface)) ||
+						(relationType.equals(OntologicalRelationType.use)))
+						return "-}";
+		else if((relationType.equals(OntologicalRelationType.extendClass))||
+				(relationType.equals(OntologicalRelationType.extendInterface)))
+			return "extend";
+		else if ((relationType.equals(OntologicalRelationType.hasType))){
+			return "has type";
+		}
+		else if((relationType.equals(OntologicalRelationType.implement)))
+			return "implement";
+		else if((relationType.equals(OntologicalRelationType.isInnerClassOf))){
+			return "is inner class of";
+		}
+		else if((relationType.equals(OntologicalRelationType.declaredIn))){
+			return "declared in";
+		}
+		else if((relationType.equals(OntologicalRelationType.resideIn)))
+			return "reside in";
+		else if((relationType.equals(OntologicalRelationType.hasParameterType)))
+			return "has parameter type";
 		return null;
 	}
 }

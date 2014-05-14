@@ -522,15 +522,15 @@ public class PatternOrientedView extends MultiOrientedView {
 		
 		ClonePatternGroupWrapper clonePattern = (ClonePatternGroupWrapper)targetObject;
 		
-		String sectionTitle = "";
+		String sectionTitle = "Common Syntactic Context of Clones";
+		/*String sectionTitle = "";
 		String style = clonePattern.getClonePattern().getStyle(); 
-		
 		if(style.equals(PathSequence.LOCATION)){
 			sectionTitle = "Where are Clones?";			
 		}
 		else if(style.equals(PathSequence.DIFF_USAGE) || style.equals(PathSequence.COMMON_USAGE)){
 			sectionTitle = "What do Clones Use?";			
-		}
+		}*/
 		section.setText(sectionTitle);
 		
 		FormText text = toolkit.createFormText(section, true);

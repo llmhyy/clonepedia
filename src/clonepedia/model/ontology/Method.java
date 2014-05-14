@@ -248,9 +248,9 @@ public class Method extends MergeableSimpleOntologicalElement implements  IClust
 	@Override
 	public String getSimpleElementName() {
 		if(this.methodName != null)
-			return /*"m:" +*/ this.methodName;
+			return /*"m:" +*/ this.methodName + "(..)";
 		else
-			return "*";
+			return "*(..)";
 	}
 
 	public void addCloneInstance(CloneInstance instance){

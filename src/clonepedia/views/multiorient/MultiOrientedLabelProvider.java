@@ -90,7 +90,8 @@ public class MultiOrientedLabelProvider implements ILabelProvider {
 			return ((TopicWrapper)element).getTopic().getTopicString();
 		else if(element instanceof PatternGroupWrapper){
 			try {
-				return ((PatternGroupWrapper)element).getEpitomise3();
+				//return ((PatternGroupWrapper)element).getEpitomise3();
+				return ((PatternGroupWrapper)element).getEpitomise();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -107,8 +108,8 @@ public class MultiOrientedLabelProvider implements ILabelProvider {
 			return ((PatternGroupCategory)element).getName();
 		else if(element instanceof ProgrammingElementWrapper)
 			return ((ProgrammingElementWrapper) element).getName() + 
-					NaturalLanguateTemplate.getSupportingElementDescription(((ProgrammingElementWrapper) element).getElement()) + 
-					"  (" + String.valueOf(((ProgrammingElementWrapper)element).getContainedClonePatternNumber()) + ")";
+					NaturalLanguateTemplate.getSupportingElementDescription(((ProgrammingElementWrapper) element).getElement())
+					/*+ "  (" + String.valueOf(((ProgrammingElementWrapper)element).getContainedClonePatternNumber()) + ")"*/;
 		
 		return null;
 	}
