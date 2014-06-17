@@ -19,11 +19,11 @@ public class MethodsDeclarationVisitor extends ASTVisitor {
 	
 	
 	public boolean visit(MethodDeclaration m){
-		
+		int tolerence = 3;
 		int start = m.getStartPosition();
 		//unit.getPosition(line, column)
-		if(unit.getLineNumber(start) <= startLine
-				&& unit.getLineNumber(start+m.getLength()) >= endLine){
+		if(unit.getLineNumber(start) <= startLine+tolerence
+				&& unit.getLineNumber(start+m.getLength()) >= endLine-tolerence){
 			
 			methodDeclaration = m;
 		}
