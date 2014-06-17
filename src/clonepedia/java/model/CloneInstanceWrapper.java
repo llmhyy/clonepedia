@@ -70,7 +70,13 @@ public class CloneInstanceWrapper{
 		int packageEndIndex = javaFileContent.indexOf(";", packageStartIndex);
 		String packageName = javaFileContent.substring(packageStartIndex, packageEndIndex);
 		
-		String packagePrefix = packageName.substring(0, packageName.indexOf("."));
+		String packagePrefix = null;
+		if(packageName.contains(".")){
+			packagePrefix = packageName.substring(0, packageName.indexOf("."));			
+		}
+		else{
+			packagePrefix = packageName;
+		}
 		className = filePath.substring(filePath.indexOf(packagePrefix));
 		className = className.replace("\\", "/");
 		

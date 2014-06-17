@@ -60,6 +60,13 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 		this(cloneSet, pool, true, null);
 	}
 	
+	/**
+	 * Each AST node in {@nodeList} represents exact AST code fragment standing for a clone instance
+	 * @param cloneSet
+	 * @param pool
+	 * @param isLimitToMethod
+	 * @param nodeList
+	 */
 	public CloneSetWrapper(CloneSet cloneSet, CompilationUnitPool pool, boolean isLimitToMethod, ArrayList<ASTNode> nodeList){
 		this.pool = pool;
 		this.cloneSet = cloneSet;
