@@ -126,7 +126,15 @@ public class CloneInstanceWrapper{
 			MethodsDeclarationVisitor visitor = new MethodsDeclarationVisitor(getStartLine(), getEndLine(), cu);
 			cu.accept(visitor);
 			//System.out.println();
-			this.minimumContainingASTNode = visitor.getCloneResidingMethod();
+			
+			ASTNode node = visitor.getCloneResidingMethod();
+			
+			if(node != null){
+				this.minimumContainingASTNode = node;				
+			}
+			else{
+				this.minimumContainingASTNode = cu;
+			}
 			
 		}
 	}
