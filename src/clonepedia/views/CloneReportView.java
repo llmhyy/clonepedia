@@ -42,7 +42,6 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 
-import clonepedia.Activator;
 import clonepedia.filepraser.CloneDetectionFileParser;
 import clonepedia.java.CloneInformationExtractor;
 import clonepedia.java.CompilationUnitPool;
@@ -169,18 +168,17 @@ public class CloneReportView extends SummaryView {
 		folder.setSimple(false);
 		
 		Menu menu = new Menu(folder);
-		MenuItem item = new MenuItem(menu, SWT.NONE);
-		item.setText("Close All");
-		item.addSelectionListener(new SelectionAdapter(){
-
+		MenuItem closeAllItem = new MenuItem(menu, SWT.NONE);
+		closeAllItem.setText("Close All");
+		closeAllItem.addSelectionListener(new SelectionAdapter(){
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				for(CTabItem item: folder.getItems()){
 					item.dispose();
 				}
 			}
-			
 		});
+		
 		folder.setMenu(menu);
 		
 		hookActionsOnBars();

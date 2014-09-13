@@ -19,6 +19,10 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.Bullet;
+import org.eclipse.swt.custom.LineStyleEvent;
+import org.eclipse.swt.custom.LineStyleListener;
+import org.eclipse.swt.custom.ST;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.custom.StyleRange;
@@ -26,6 +30,7 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.GlyphMetrics;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -227,7 +232,8 @@ public class CloneDiffView extends ViewPart {
 	}
 	
 	private void generateCodeText(CloneInstanceWrapper instanceWrapper, Composite parent, GridData scrollCodeLayoutData){
-		StyledText text = new StyledText(parent, SWT.V_SCROLL | SWT.H_SCROLL);
+		final StyledText text = new StyledText(parent, SWT.V_SCROLL | SWT.H_SCROLL);
+		
 		text.setLayoutData(scrollCodeLayoutData);
 		
 		Menu menu = new Menu(parent);
@@ -246,7 +252,7 @@ public class CloneDiffView extends ViewPart {
 		final ICompilationUnit iunit = JavaCore.createCompilationUnitFrom(ifile);
 		if(iunit != null){
 			
-			ASTParser parser = ASTParser.newParser(AST.JLS3);
+			ASTParser parser = ASTParser.newParser(AST.JLS4);
 			parser.setKind(ASTParser.K_COMPILATION_UNIT);
 			parser.setSource(iunit);
 			parser.setResolveBindings(true);
@@ -257,7 +263,6 @@ public class CloneDiffView extends ViewPart {
 			
 			ASTNode containingNode = instanceWrapper.getMinimumContainingASTNode();
 			int methodStartPosition = containingNode.getStartPosition();
-			int methodEndPosition = methodStartPosition + containingNode.getLength();
 			
 			try {
 				content = iunit.getSource();
@@ -265,21 +270,7 @@ public class CloneDiffView extends ViewPart {
 				e.printStackTrace();
 			}
 			
-			////content = content.substring(methodStartPosition, methodEndPosition);
 			text.setText(content);
-			//cloneStyleRange.fontStyle = SWT.BOLD;
-			
-			/*StyleRange cloneStyleRange = new StyleRange();
-			cloneStyleRange.start = startClonePosition - methodStartPosition;
-			cloneStyleRange.length = endClonePosition - startClonePosition;
-			cloneStyleRange.foreground = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_YELLOW);
-			text.setStyleRange(cloneStyleRange);*/
-			
-			//int startCloneLineNumber = cu.getLineNumber(startClonePosition) - cu.getLineNumber(methodStartPosition);
-			//int lineCount =  cu.getLineNumber(endClonePosition) - cu.getLineNumber(startClonePosition);
-			
-			////int startCloneLineNumber = cu.getLineNumber(startClonePosition) - cu.getLineNumber(methodStartPosition);
-			////int lineCount =  cu.getLineNumber(endClonePosition) - cu.getLineNumber(startClonePosition);
 			
 			final int startCloneLineNumber = cu.getLineNumber(startClonePosition);
 			final int lineCount =  cu.getLineNumber(endClonePosition) - cu.getLineNumber(startClonePosition);
@@ -306,11 +297,15 @@ public class CloneDiffView extends ViewPart {
 				doc = ((BodyDeclaration)containingNode).getJavadoc();				
 			}
 			
-			generateKeywordsStyle(text);
+			final ArrayList<StyleRange> rangeList = new ArrayList<>();
+			
+			ArrayList<StyleRange> keywordList = generateKeywordsStyle(text);
+			rangeList.addAll(keywordList);
 			
 			if(doc != null){
-				generateStyleRangeFromASTNode(text, doc, methodStartPosition, 
+				ArrayList<StyleRange> list = generateStyleRangeFromASTNode(text, doc, methodStartPosition, 
 						CloneDiffView.DOC_STYLE, 0, false);
+				rangeList.addAll(list);
 			}
 			/**
 			 * for counter relationally difference
@@ -319,13 +314,9 @@ public class CloneDiffView extends ViewPart {
 				for(DiffInstanceElementRelationEmulator relation: relationGroup.getElements()){
 					CloneInstanceWrapper referInstance = relation.getInstanceWrapper();
 					if(referInstance.equals(instanceWrapper)){
-						
-						
-						
-						generateStyleRangeFromASTNode(text, relation.getNode(), 
+						ArrayList<StyleRange> list = generateStyleRangeFromASTNode(text, relation.getNode(), 
 								methodStartPosition, getDiffStyle(relationGroup), relationGroup.getElements().size(), false);
-						
-						
+						rangeList.addAll(list);
 					}
 				}
 			}
@@ -334,9 +325,9 @@ public class CloneDiffView extends ViewPart {
 			 * for uncounter relationally difference
 			 */
 			for(ASTNode node: instanceWrapper.getUncounterRelationalDifferenceNodes()){
-				generateStyleRangeFromASTNode(text, node, methodStartPosition, 
+				ArrayList<StyleRange> list = generateStyleRangeFromASTNode(text, node, methodStartPosition, 
 						CloneDiffView.GAP_DIFF_STYLE, 1, false);
-				
+				rangeList.addAll(list);
 			}
 			
 			/**
@@ -347,16 +338,34 @@ public class CloneDiffView extends ViewPart {
 					if(relation.getInstanceWrapper().equals(instanceWrapper)){
 						ASTNode node = relation.getNode();
 						
-						generateStyleRangeFromASTNode(text, node,
+						ArrayList<StyleRange> list = generateStyleRangeFromASTNode(text, node,
 								methodStartPosition, getDiffStyle(relationGroup), relationGroup.getElements().size(), true);
+						rangeList.addAll(list);
 						
-						////text.setTopIndex(cu.getLineNumber(node.getStartPosition()) - cu.getLineNumber(methodStartPosition) - 3);
-						////text.setHorizontalIndex(cu.getColumnNumber(node.getStartPosition()) - 20);
 						text.setTopIndex(cu.getLineNumber(node.getStartPosition()) - 3);
 						text.setHorizontalIndex(cu.getColumnNumber(node.getStartPosition()) - 20);
 					}
 				}
 			}
+			
+			text.addLineStyleListener(new LineStyleListener()
+			{
+			    public void lineGetStyle(LineStyleEvent e)
+			    {
+			    	
+			    	e.styles = rangeList.toArray(new StyleRange[0]);
+			        //Set the line number
+			        e.bulletIndex = text.getLineAtOffset(e.lineOffset);
+
+			        //Set the style, 12 pixles wide for each digit
+			        StyleRange style = new StyleRange();
+			        style.foreground = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GRAY);
+			        style.metrics = new GlyphMetrics(0, 0, Integer.toString(text.getLineCount()+1).length()*12);
+
+			        //Create and set the bullet
+			        e.bullet = new Bullet(ST.BULLET_NUMBER, style);
+			    }
+			});
 		}
 		
 		if(content == null){
@@ -364,10 +373,6 @@ public class CloneDiffView extends ViewPart {
 			text.setText(content);
 		}
 		
-		/*GridData gData = new GridData();
-		gData.heightHint = 600;
-		gData.widthHint = 600;
-		text.setLayoutData(gData);*/
 	}
 	
 	private int getDiffStyle(DiffCounterRelationGroupEmulator relationGroup){
@@ -398,7 +403,9 @@ public class CloneDiffView extends ViewPart {
 		return true;
 	}
 	
-	private void generateKeywordsStyle(StyledText text){
+	private ArrayList<StyleRange> generateKeywordsStyle(StyledText text){
+		ArrayList<StyleRange> rangeList = new ArrayList<>();
+		
 		Color color = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_MAGENTA);
 		int style = SWT.BOLD;
 		
@@ -421,12 +428,15 @@ public class CloneDiffView extends ViewPart {
 				styleRange.foreground = color;
 				styleRange.fontStyle = style;	
 				
+				rangeList.add(styleRange);
 				text.setStyleRange(styleRange);
 
 				startPosition = codeText.indexOf(keyword, startPosition+length);
 			}
 			
 		}
+		
+		return rangeList;
 	}
 	
 	private String[] keywords = {"package ", "import ", "private ", "public ", "protected ", "class ", "interface ", "new ", 
@@ -442,8 +452,9 @@ public class CloneDiffView extends ViewPart {
 	private static final int COUNTER_GAP_STYLE = 5;
 	private static final int COUNTER_GAP_DIFF_STYPE = 6;
 	
-	private void generateStyleRangeFromASTNode(StyledText text, ASTNode node, 
+	private ArrayList<StyleRange> generateStyleRangeFromASTNode(StyledText text, ASTNode node, 
 			int methodStartPosition, int codeTextStyle, int relationGroupSize, boolean highlight){
+		ArrayList<StyleRange> rangeList = new ArrayList<>();
 		
 		Color color = Display.getCurrent().getSystemColor(SWT.COLOR_GRAY);
 		int style = SWT.NORMAL;
@@ -522,19 +533,23 @@ public class CloneDiffView extends ViewPart {
 			styleRange1.foreground = styleRange2.foreground = color;
 			styleRange1.fontStyle = styleRange2.fontStyle = style;
 			
+			rangeList.add(styleRange1);
+			rangeList.add(styleRange2);
 			text.setStyleRange(styleRange1);
 			text.setStyleRange(styleRange2);
 		}
 		else{
 			StyleRange styleRange = new StyleRange();
-			////styleRange.start = startNodePosition - methodStartPosition;
 			styleRange.start = startNodePosition;
 			styleRange.length = length;
 			styleRange.foreground = color;
 			styleRange.fontStyle = style;	
 			
+			rangeList.add(styleRange);
 			text.setStyleRange(styleRange);
 		}
+		
+		return rangeList;
 	}
 	
 	@Override
