@@ -297,7 +297,7 @@ public class CloneDiffView extends ViewPart {
 				doc = ((BodyDeclaration)containingNode).getJavadoc();				
 			}
 			
-			final ArrayList<StyleRange> rangeList = new ArrayList<>();
+			ArrayList<StyleRange> rangeList = new ArrayList<>();
 			
 			ArrayList<StyleRange> keywordList = generateKeywordsStyle(text);
 			rangeList.addAll(keywordList);
@@ -383,10 +383,14 @@ public class CloneDiffView extends ViewPart {
 	        e.bullet = new Bullet(ST.BULLET_NUMBER, style);
 	    }
 		
+		/**
+		 * Bubble sort
+		 * @return
+		 */
 		private StyleRange[] sortList(){
 			StyleRange[] rangeArray = this.rangeList.toArray(new StyleRange[0]);
 			for(int i=0; i<rangeArray.length; i++){
-				for(int j=i+1; j<rangeArray.length; j++){
+				for(int j=1; j<rangeArray.length-i; j++){
 					int prev = rangeArray[j-1].start;
 					int post = rangeArray[j].start;
 					if(prev > post){
