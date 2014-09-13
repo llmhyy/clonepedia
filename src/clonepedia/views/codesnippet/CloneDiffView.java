@@ -348,24 +348,7 @@ public class CloneDiffView extends ViewPart {
 				}
 			}
 			
-			text.addLineStyleListener(new LineStyleListener()
-			{
-			    public void lineGetStyle(LineStyleEvent e)
-			    {
-			    	
-			    	e.styles = rangeList.toArray(new StyleRange[0]);
-			        //Set the line number
-			        e.bulletIndex = text.getLineAtOffset(e.lineOffset);
-
-			        //Set the style, 12 pixles wide for each digit
-			        StyleRange style = new StyleRange();
-			        style.foreground = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GRAY);
-			        style.metrics = new GlyphMetrics(0, 0, Integer.toString(text.getLineCount()+1).length()*12);
-
-			        //Create and set the bullet
-			        e.bullet = new Bullet(ST.BULLET_NUMBER, style);
-			    }
-			});
+			text.addLineStyleListener(new CustomizedLineStyleListener(text, rangeList));
 		}
 		
 		if(content == null){
@@ -373,6 +356,51 @@ public class CloneDiffView extends ViewPart {
 			text.setText(content);
 		}
 		
+	}
+	
+	public class CustomizedLineStyleListener implements LineStyleListener{
+		private ArrayList<StyleRange> rangeList;
+		private StyledText text;
+		
+		public CustomizedLineStyleListener(StyledText text, ArrayList<StyleRange> rangeList){
+			this.rangeList = rangeList;
+			this.text = text;
+		}
+		
+		public void lineGetStyle(LineStyleEvent e)
+	    {
+	    	
+	    	e.styles = sortList();
+	        //Set the line number
+	        e.bulletIndex = text.getLineAtOffset(e.lineOffset);
+
+	        //Set the style, 12 pixles wide for each digit
+	        StyleRange style = new StyleRange();
+	        style.foreground = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GRAY);
+	        style.metrics = new GlyphMetrics(0, 0, Integer.toString(text.getLineCount()+1).length()*12);
+
+	        //Create and set the bullet
+	        e.bullet = new Bullet(ST.BULLET_NUMBER, style);
+	    }
+		
+		private StyleRange[] sortList(){
+			StyleRange[] rangeArray = this.rangeList.toArray(new StyleRange[0]);
+			for(int i=0; i<rangeArray.length; i++){
+				for(int j=i+1; j<rangeArray.length; j++){
+					int prev = rangeArray[j-1].start;
+					int post = rangeArray[j].start;
+					if(prev > post){
+						StyleRange temp = rangeArray[j];
+						rangeArray[j] = rangeArray[j-1];
+						rangeArray[j-1] = temp;
+					}
+				}
+			}
+			
+			System.currentTimeMillis();
+			
+			return rangeArray;
+		}
 	}
 	
 	private int getDiffStyle(DiffCounterRelationGroupEmulator relationGroup){
