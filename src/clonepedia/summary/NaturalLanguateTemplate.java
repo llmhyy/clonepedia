@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 
-
 import clonepedia.model.ontology.Class;
 import clonepedia.model.ontology.CloneInstance;
 import clonepedia.model.ontology.CloneSet;
@@ -29,17 +28,14 @@ import clonepedia.model.viewer.ClonePatternGroupWrapper;
 import clonepedia.model.viewer.ClonePatternGroupWrapperList;
 import clonepedia.model.viewer.CloneSetWrapper;
 import clonepedia.model.viewer.IContainer;
-import clonepedia.model.viewer.IContent;
 import clonepedia.model.viewer.PatternGroupWrapper;
 import clonepedia.model.viewer.TopicWrapper;
 import clonepedia.model.viewer.comparator.AverageCodeFragmentLengthDescComparator;
 import clonepedia.model.viewer.comparator.CloneSetWrapperDiffInCodeDescComparator;
-import clonepedia.model.viewer.comparator.CloneSetWrapperInstanceNumberAscComparator;
 import clonepedia.model.viewer.comparator.CloneSetWrapperInstanceNumberDescComparator;
 import clonepedia.model.viewer.comparator.ContainedClonePatternNumberDescComparator;
 import clonepedia.model.viewer.comparator.ContainedTopicNumberDescComparator;
 import clonepedia.model.viewer.comparator.DefaultValueDescComparator;
-import clonepedia.views.util.ViewUtil;
 
 public class NaturalLanguateTemplate {
 	

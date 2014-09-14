@@ -28,6 +28,15 @@ public class MinerUtil {
 	public final static int CamelSplitting = 0;
 	public final static int DotSplitting = 1;
 	
+	public static boolean checkNumber(String string){
+		try{
+			Double.parseDouble(string);
+		}catch(NumberFormatException e){
+			return false;
+		}
+		return true;
+	}
+	
 	public static String getFileConent(File file){
 		try {
 			BufferedReader reader = new BufferedReader( new FileReader (file));

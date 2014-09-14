@@ -1,13 +1,21 @@
 package clonepedia.views;
 
+import java.util.ArrayList;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
@@ -28,6 +36,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -38,9 +48,7 @@ import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
-import org.eclipse.ui.forms.widgets.TableWrapLayout;
 
 import clonepedia.filepraser.CloneDetectionFileParser;
 import clonepedia.java.CloneInformationExtractor;
@@ -53,6 +61,7 @@ import clonepedia.perspective.CloneDiffPerspective;
 import clonepedia.perspective.CloneSummaryPerspective;
 import clonepedia.summary.NaturalLanguateTemplate;
 import clonepedia.summary.SummaryUtil;
+import clonepedia.util.MinerUtil;
 import clonepedia.util.Settings;
 import clonepedia.views.codesnippet.CloneCodeSnippetView;
 import clonepedia.views.codesnippet.CloneDiffView;
@@ -367,28 +376,160 @@ public class CloneReportView extends SummaryView {
 
 	@Override
 	protected void createSections(ScrolledForm form, Object targetObject) {
-		createCloneInstanceInformationSections(form.getBody(), targetObject);
-	}
-	
-	
-	protected void createCloneInstanceInformationSections(Composite parent, Object targetObject){
-		Section section = toolkit.createSection(parent, Section.TWISTIE|Section.EXPANDED|Section.TITLE_BAR);
+		CloneSetWrapper setWrapper = (CloneSetWrapper)targetObject;
+		ArrayList<CloneInstance> instanceList = new ArrayList<>();
+		for(CloneInstance instance: setWrapper.getCloneSet()){
+			instanceList.add(instance);
+		}
+		
+		/*Section section = toolkit.createSection(form, Section.TWISTIE|Section.EXPANDED|Section.TITLE_BAR);
 		section.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 		section.setExpanded(true);
 		section.setLayout(new TableWrapLayout());
-		section.setText("Clone Instances");
+		section.setText("Clone Instances");*/
 		
-		FormText text = toolkit.createFormText(section, true);
-		setFormTextColorAndFont(text);
-		text.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
-		createCloneInstanceDescription(text, targetObject);
-		section.setClient(text);
+		Table cloneTable = toolkit.createTable(form.getBody(), SWT.MULTI | SWT.H_SCROLL
+				| SWT.FULL_SELECTION | SWT.BORDER);
+		cloneTable.setHeaderVisible(true);
+		cloneTable.setLinesVisible(true);
+		
+		TableViewer tableViewer = new TableViewer(cloneTable);
+		createColumns(tableViewer);
+		
+		tableViewer.setContentProvider(new ArrayContentProvider());
+		//tableViewer.setLabelProvider(new StructureLabelProvider());
+		tableViewer.setInput(instanceList);
+		
+		cloneTable.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+		//section.setClient(cloneTable);
 	}
+	
+	private void createColumns(TableViewer viewer) {
 
-	private void createCloneInstanceDescription(FormText text,
-			Object targetObject) {
-		text.setText(NaturalLanguateTemplate.generateCloneInstancesDescription(targetObject), true, false);
-		text.addHyperlinkListener(adapter);
+		String[] titles = new String[]{"file name", "start line", "end line"};
+		int[] bounds = new int[]{150, 80, 80};
+
+		/**
+		 * create column for describing file name.
+		 */
+		TableViewerColumn col = createTableViewerColumn(titles[0], bounds[0], 0, viewer);
+		col.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				CloneInstance instance = (CloneInstance) element;
+				return instance.getSimpleFileName();
+			}
+		});
+
+		/**
+		 * create column for start line.
+		 */
+		col = createTableViewerColumn(titles[1], bounds[1], 1, viewer);
+		col.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				CloneInstance instance = (CloneInstance) element;
+				return String.valueOf(instance.getStartLine());
+			}
+		});
+		
+		/**
+		 * create column for end line.
+		 */
+		col = createTableViewerColumn(titles[2], bounds[2], 2, viewer);
+		col.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				CloneInstance instance = (CloneInstance) element;
+				return String.valueOf(instance.getEndLine());
+			}
+		});
+	}
+	
+	private TableViewerColumn createTableViewerColumn(String title, int bound,
+			final int colNumber, TableViewer tableViewer) {
+		final TableViewerColumn viewerColumn = new TableViewerColumn(tableViewer, SWT.NONE);
+		final TableColumn column = viewerColumn.getColumn();
+		column.setText(title);
+		column.setWidth(bound);
+		column.setResizable(true);
+		column.setMoveable(true);
+
+		viewerColumn.setEditingSupport(new TableEditingSupport(tableViewer, colNumber));
+
+		return viewerColumn;
+	}
+	
+	public class TableEditingSupport extends EditingSupport {
+		private CellEditor editor;
+		private TableViewer viewer;
+		private int columnNo;
+
+		public TableEditingSupport(TableViewer viewer, int columnNo) {
+			super(viewer);
+			this.columnNo = columnNo;
+			this.viewer = viewer;
+			this.editor = new TextCellEditor(viewer.getTable());
+		}
+
+		@Override
+		protected CellEditor getCellEditor(Object element) {
+			return editor;
+		}
+
+		/**
+		 * if column number is 0, it stands for the name of module which cannot
+		 * be edited.
+		 */
+		@Override
+		protected boolean canEdit(Object element) {
+			return columnNo != 0;
+		}
+
+		@Override
+		protected Object getValue(Object element) {
+			if (element instanceof CloneInstance) {
+				CloneInstance instance = (CloneInstance) element;
+
+				if (0 == columnNo) {
+					return instance.getSimpleFileName();
+				} 
+				else if(1 == columnNo){
+					return String.valueOf(instance.getStartLine());
+				}
+				else if(2 == columnNo){
+					return String.valueOf(instance.getEndLine());
+				}
+			}
+
+			return null;
+		}
+
+		@Override
+		protected void setValue(Object element, Object value) {
+			if (element instanceof CloneInstance) {
+				CloneInstance instance = (CloneInstance) element;
+				
+				if (columnNo > 0) {
+					/**
+					 * need a check for string value.
+					 */
+					String numberStr = (String) value;
+					if (MinerUtil.checkNumber(numberStr)) {
+						double line = Double.valueOf(numberStr);
+						if(1 == columnNo){
+							instance.setStartLine((int)line);
+						}
+						else if(2 == columnNo){
+							instance.setEndLine((int) line);
+						}
+						viewer.update(element, null);
+					}
+					viewer.refresh();
+				}
+			}
+		}
+
 	}
 
 	@Override
