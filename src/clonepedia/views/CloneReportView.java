@@ -27,6 +27,7 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -38,6 +39,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -382,26 +384,41 @@ public class CloneReportView extends SummaryView {
 			instanceList.add(instance);
 		}
 		
-		/*Section section = toolkit.createSection(form, Section.TWISTIE|Section.EXPANDED|Section.TITLE_BAR);
-		section.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
-		section.setExpanded(true);
-		section.setLayout(new TableWrapLayout());
-		section.setText("Clone Instances");*/
-		
 		Table cloneTable = toolkit.createTable(form.getBody(), SWT.MULTI | SWT.H_SCROLL
 				| SWT.FULL_SELECTION | SWT.BORDER);
 		cloneTable.setHeaderVisible(true);
 		cloneTable.setLinesVisible(true);
 		
-		TableViewer tableViewer = new TableViewer(cloneTable);
+		final TableViewer tableViewer = new TableViewer(cloneTable);
 		createColumns(tableViewer);
-		
 		tableViewer.setContentProvider(new ArrayContentProvider());
-		//tableViewer.setLabelProvider(new StructureLabelProvider());
 		tableViewer.setInput(instanceList);
 		
 		cloneTable.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
-		//section.setClient(cloneTable);
+		
+		Menu contextMenu = new Menu(cloneTable);
+		MenuItem openItem = new MenuItem(contextMenu, SWT.NONE);
+		openItem.setText("Open Source Code");
+		openItem.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Object o = e.getSource();
+				if (o instanceof MenuItem) {
+					TableItem[] items = tableViewer.getTable().getSelection();
+					TableItem item = items[0];
+					CloneInstance instance = (CloneInstance)item.getData();
+					ViewUtil.openJavaEditorForCloneInstance(instance);
+					//System.currentTimeMillis();
+				}
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+			}
+		});
+		
+		cloneTable.setMenu(contextMenu);
 	}
 	
 	private void createColumns(TableViewer viewer) {
