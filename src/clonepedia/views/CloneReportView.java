@@ -53,6 +53,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 
 import clonepedia.filepraser.CloneDetectionFileParser;
+import clonepedia.filepraser.CloneDetectionFileWriter;
 import clonepedia.java.CloneInformationExtractor;
 import clonepedia.java.CompilationUnitPool;
 import clonepedia.model.ontology.CloneInstance;
@@ -76,6 +77,7 @@ import clonepedia.views.util.ViewUtil;
 public class CloneReportView extends SummaryView {
 	
 	private CloneSetWrapperList cloneSets;
+	private CloneSets plainSets;
 	private PlainCloneSetViewComarator comparator;
 	
 	
@@ -131,8 +133,8 @@ public class CloneReportView extends SummaryView {
 		viewer.setComparator(comparator);
 		
 		createColumns(viewer);
-		CloneSets sets = new CloneDetectionFileParser(false, "").getCloneSets();
-		cloneSets = SummaryUtil.wrapCloneSets(sets.getCloneList());
+		plainSets = new CloneDetectionFileParser(false, "").getCloneSets();
+		cloneSets = SummaryUtil.wrapCloneSets(plainSets.getCloneList());
 		viewer.setInput(cloneSets);
 		viewer.addDoubleClickListener(cloneInstanceDoubleClickListener);
 		viewer.addDoubleClickListener(new IDoubleClickListener(){
@@ -291,10 +293,10 @@ public class CloneReportView extends SummaryView {
 		Action loadAllCloneSetAction = new Action(){
 			public void run(){
 				
-				CloneSets sets = new CloneDetectionFileParser(false, "").getCloneSets();
-				cloneSets = SummaryUtil.wrapCloneSets(sets.getCloneList());
-				viewer.setInput(cloneSets);
+				plainSets = new CloneDetectionFileParser(false, "").getCloneSets();
+				cloneSets = SummaryUtil.wrapCloneSets(plainSets.getCloneList());
 				
+				viewer.setInput(cloneSets);
 				
 				viewer.refresh();
 			}
@@ -540,6 +542,10 @@ public class CloneReportView extends SummaryView {
 						else if(2 == columnNo){
 							instance.setEndLine((int) line);
 						}
+						
+						CloneDetectionFileWriter writer = new CloneDetectionFileWriter();
+						writer.writeToXML(plainSets);
+						
 						viewer.update(element, null);
 					}
 					viewer.refresh();

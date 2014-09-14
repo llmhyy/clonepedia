@@ -144,7 +144,7 @@ public class CloneDetectionAction implements IWorkbenchWindowActionDelegate {
 				}
 				
 				CloneInstance cloneInstance = new CloneInstance(set, fileNode.getText(), 
-						minPos.getLine()+1, maxPos.getLine()+1);
+						minPos.getLine(), maxPos.getLine());
 				/*System.out.println(cloneInstance.getFileLocation());
 				System.out.println(minPos.getLine());
 				System.out.println(maxPos.getLine());*/

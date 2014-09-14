@@ -58,9 +58,10 @@ public class CloneDetectionFileWriter{
 				cloneSetElement.setAttributeNode(idAttr);
 				
 				for(CloneInstance instance: set){
+					
 					Element cloneInstanceElement = doc.createElement("clone");
 					cloneInstanceElement.setAttribute("startLine", String.valueOf(instance.getStartLine()-1));
-					cloneInstanceElement.setAttribute("lineCount", String.valueOf(instance.getEndLine()-instance.getStartLine()));
+					cloneInstanceElement.setAttribute("lineCount", String.valueOf(instance.getEndLine()-instance.getStartLine()+1));
 					cloneInstanceElement.setAttribute("sourceFileId", 
 							String.valueOf(getIndexInList(filePathList, instance.getFileLocation())));
 					cloneSetElement.appendChild(cloneInstanceElement);
