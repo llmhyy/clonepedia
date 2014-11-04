@@ -62,13 +62,15 @@ public class TokenSequence {
 	 * move cursor to the nearest following token equal to commonToken.
 	 * @param commonToken
 	 */
-	public void moveCursorTo(Token commonToken) {
+	public Token moveCursorTo(Token commonToken) {
 		for(int i=startIndex+1; i<getLength(); i++){
 			if(getTokenList().get(i).equals(commonToken)){
 				this.cursorIndex = i;
-				break;
+				return getTokenList().get(i);
 			}
 		}
+		
+		return null;
 	}
 	
 	public Token get(int index){

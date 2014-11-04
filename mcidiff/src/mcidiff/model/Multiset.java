@@ -4,7 +4,23 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 public class Multiset{
+	
 	private ArrayList<Token> tokens = new ArrayList<>();
+	private boolean isCommon = false;
+	
+	/**
+	 * @return the isCommon
+	 */
+	public boolean isCommon() {
+		return isCommon;
+	}
+
+	/**
+	 * @param isCommon the isCommon to set
+	 */
+	public void setCommon(boolean isCommon) {
+		this.isCommon = isCommon;
+	}
 
 	/**
 	 * @return the tokens
@@ -46,6 +62,51 @@ public class Multiset{
 		}
 		
 		return null;
+	}
+	
+	public boolean isParamertized(){
+		for(int i=0; i<getTokens().size(); i++){
+			Token token1 = getTokens().get(i);
+			if(!token1.isEpisolon()){
+				for(int j=i+1; j<getTokens().size(); j++){
+					Token token2 = getTokens().get(j);
+					if(!token2.isEpisolon()){
+						if(!token1.equals(token2)){
+							return true;
+						}
+					}
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	public boolean isGapped(){
+		for(Token token: getTokens()){
+			if(token.isEpisolon()){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean isPartiallySame(){
+		for(int i=0; i<getTokens().size(); i++){
+			Token token1 = getTokens().get(i);
+			if(!token1.isEpisolon()){
+				for(int j=i+1; j<getTokens().size(); j++){
+					Token token2 = getTokens().get(j);
+					if(!token2.isEpisolon()){
+						if(token1.equals(token2)){
+							return true;
+						}
+					}
+				}
+			}
+		}
+		
+		return false;
 	}
 
 	public static Comparator<Multiset> MultisetPositionComparator =

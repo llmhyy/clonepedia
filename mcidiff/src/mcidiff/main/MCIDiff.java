@@ -2,6 +2,7 @@ package mcidiff.main;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 
 import mcidiff.action.Tokenizer;
 import mcidiff.model.CloneInstance;
@@ -30,11 +31,87 @@ public class MCIDiff {
 		ArrayList<Multiset> results = computeDiff(commonList, sequences);
 		
 		Collections.sort(results, Multiset.MultisetPositionComparator);
+		identifyEpsilonTokenPosition(results);
 		
+		filterCommonSet(results);
 		
 		return results;
 	}
 	
+	private void filterCommonSet(ArrayList<Multiset> results){
+		Iterator<Multiset> iterator = results.iterator();
+		while(iterator.hasNext()){
+			Multiset set = iterator.next();
+			if(set.isCommon()){
+				iterator.remove();
+			}
+		}
+	}
+	
+	/**
+	 * results is a sorted multisets w.r.t position.
+	 * @param results
+	 */
+	private void identifyEpsilonTokenPosition(ArrayList<Multiset> results){
+		for(int i=0; i<results.size(); i++){
+			Multiset set = results.get(i);
+			for(Token token: set.getTokens()){
+				if(token.isEpisolon()){
+					/**
+					 * set episolon's previous token
+					 */
+					if(i != 0){
+						Token prevToken = findPreviousNonEpisolonToken(i, results, token);
+						if(prevToken != null){
+							token.setPreviousToken(prevToken);
+							//token.setStartPosition(prevToken.getEndPosition());
+													
+						}
+					}
+					
+					/**
+					 * set episolon's post token
+					 */
+					if(i != results.size()-1){
+						Token postToken = findPostNonEpisolonToken(i, results, token);
+						if(postToken != null){
+							token.setPostToken(postToken);		
+							//token.setEndPosition(postToken.getStartPosition());	
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	private Token findPreviousNonEpisolonToken(int index, ArrayList<Multiset> results, Token episolonToken) {
+		int cursor = index-1;
+		while(cursor >= 0){
+			Multiset prevSet = results.get(cursor);
+			Token previousToken = prevSet.findToken(episolonToken.getCloneInstance());
+			if(!previousToken.isEpisolon()){
+				return previousToken;
+			}
+			cursor--;
+		}
+		
+		return null;
+	}
+	
+	private Token findPostNonEpisolonToken(int index, ArrayList<Multiset> results, Token episolonToken) {
+		int cursor = index+1;
+		while(cursor < results.size()){
+			Multiset postSet = results.get(cursor);
+			Token postToken = postSet.findToken(episolonToken.getCloneInstance());
+			if(!postToken.isEpisolon()){
+				return postToken;
+			}
+			cursor++;
+		}
+		
+		return null;
+	}
+
 	private TokenSequence[] transferToModel(CloneSet set){
 		TokenSequence[] sequence = new TokenSequence[set.getInstances().size()];
 		for(int i=0; i<sequence.length; i++){
@@ -54,14 +131,16 @@ public class MCIDiff {
 				System.currentTimeMillis();
 			}*/
 			
+			Multiset commonSet = new Multiset();
+			commonSet.setCommon(true);
 			for(int j=0; j<sequences.length; j++){
-				sequences[j].moveCursorTo(commonToken);				
+				Token cToken = sequences[j].moveCursorTo(commonToken);
+				commonSet.add(cToken);
 			}
+			multisetList.add(commonSet);
 			
 			ArrayList<Multiset> partialSet = computeInDiffRange(sequences);
 			if(partialSet.size() != 0){
-				//set the position of episolon tokens in partialSet;
-				//buildSequentialRelationForEpisolonToken(partialSet, sequences);
 				multisetList.addAll(partialSet);
 			}
 			
@@ -69,94 +148,8 @@ public class MCIDiff {
 				sequences[j].moveStartToCursor();
 			}
 		}
-		
-		
+
 		return multisetList;
-	}
-	
-	
-	
-	private void buildSequentialRelationForEpisolonToken(ArrayList<Multiset> partialSet, 
-			TokenSequence[] sequences){
-		for(Multiset set: partialSet){
-			for(Token token: set.getTokens()){
-				if(token.isEpisolon()){
-					ArrayList<Token> correspondingTokens = set.findOtherTokens(token);
-					for(Token correspondingToken: correspondingTokens){
-						Token corresPrevious = correspondingToken.getPreviousToken();
-						TokenSequence seq = findOwnerSequence(token, sequences);
-
-						if(corresPrevious != null){
-							TokenSequence corresSeq = findOwnerSequence(corresPrevious, sequences);
-							if(corresSeq.get(corresSeq.getStartIndex()) == corresPrevious){
-								Token previousToken = seq.getTokenList().get(seq.getStartIndex());
-								setPreviousToken(token, previousToken);
-							}
-							else{
-								Token ancestorToken = findCorrespondingToken(seq, corresPrevious, set);
-								if(ancestorToken.getPreviousToken() == null){
-									Token previousToken = seq.getTokenList().get(seq.getStartIndex());
-									setPreviousToken(token, previousToken);
-								}
-								else{
-									setPreviousToken(token, ancestorToken);
-								}
-							}
-						}
-						else{
-							Token previousToken = seq.getTokenList().get(seq.getStartIndex());
-							setPreviousToken(token, previousToken);
-						}
-					}
-				}
-			}
-		}
-	}
-
-	private Token findCorrespondingToken(TokenSequence seq, Token token, Multiset set) {
-		ArrayList<Token> otherTokens = set.findOtherTokens(token);
-		for(Token t: otherTokens){
-			if(t.getCloneInstance().equals(seq.getCloneInstance())){
-				return t;
-			}
-		}
-		
-		return null;
-	}
-
-	/**
-	 * @param token
-	 * @param previousToken
-	 */
-	private void setPreviousToken(Token token, Token previousToken) {
-		if(token.getPreviousToken() != null){
-			if(previousToken.getStartPosition() > token.getPreviousToken().getStartPosition()){
-				token.setPreviousToken(previousToken);									
-			}									
-		}
-		else{
-			token.setPreviousToken(previousToken);
-		}
-	}
-	
-	private Multiset findOwnerMultiset(Token token, ArrayList<Multiset> setList){
-		for(Multiset set: setList){
-			for(Token t: set.getTokens()){
-				if(t == token){
-					return set;
-				}
-			}
-		}
-		return null;
-	}
-	
-	private TokenSequence findOwnerSequence(Token token, TokenSequence[] sequences){
-		for(int i=0; i<sequences.length; i++){
-			if(sequences[i].getCloneInstance() == token.getCloneInstance()){
-				return sequences[i];
-			}
-		}
-		return null;
 	}
 
 	/**
