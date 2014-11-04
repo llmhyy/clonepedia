@@ -167,12 +167,25 @@ public class Token {
 	}
 
 	public double compareWith(Token seedToken) {
-		if(seedToken.getNode().getNodeType() != getNode().getNodeType()){
-			return 0;			
+		ASTNode seedNode = seedToken.getNode();
+		ASTNode thisNode = getNode();
+		if(seedNode.getNodeType() != thisNode.getNodeType()){
+			return 0;
 		}
 		else{
+			if(seedNode.getNodeType() == ASTNode.SIMPLE_NAME 
+					&& thisNode.getNodeType() == ASTNode.SIMPLE_NAME){
+				ASTNode seedParent = seedNode.getParent();
+				ASTNode thisParent = thisNode.getParent();
+				
+				if(seedParent.getNodeType() != thisParent.getNodeType()){
+					return 0;
+				}
+			}
+			
 			return 0.1 + DiffUtil.compareStringSimilarity(seedToken.getTokenName(), getTokenName());
 		}
+		
 	}
 	
 	public boolean isEpisolon(){

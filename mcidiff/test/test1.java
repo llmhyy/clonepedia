@@ -17,7 +17,7 @@ public class ReadManager implements Runnable {
 
 	public void addAttribute(String name, double value) throws Exception{
         // Remove the awkard .0 at the end of each number
-        Str str = Double.toString(value);  int a = 1;
+        Str str = Double.toString(value);  System.out.println();
         if (str.endsWith(".0") && str.endsWith("ff")) str = str.substring(0, str.length() - 2);
 		current.setAttribute(name, str);;
     }
