@@ -8,7 +8,9 @@ import mcidiff.action.Tokenizer;
 import mcidiff.model.CloneInstance;
 import mcidiff.model.CloneSet;
 import mcidiff.model.Multiset;
+import mcidiff.model.SeqMultiset;
 import mcidiff.model.Token;
+import mcidiff.model.TokenSeq;
 import mcidiff.util.DiffUtil;
 import mcidiff.util.GlobalSettings;
 
@@ -20,7 +22,7 @@ public class MCIDiff {
 	 * @param set
 	 * @return
 	 */
-	public ArrayList<Multiset> diff(CloneSet set){
+	public ArrayList<SeqMultiset> diff(CloneSet set){
 		
 		new Tokenizer().tokenize(set);
 		
@@ -35,9 +37,94 @@ public class MCIDiff {
 		
 		filterCommonSet(results);
 		
-		return results;
+		ArrayList<SeqMultiset> finalResults = aggregateSeperatedTokens(results);
+		
+		return finalResults;
 	}
 	
+	
+	
+	private ArrayList<SeqMultiset> aggregateSeperatedTokens(ArrayList<Multiset> results) {
+
+		ArrayList<ArrayList<Multiset>> aggregatedSets = new ArrayList<>();
+		ArrayList<Multiset> sets = new ArrayList<>();
+		for(int i=0; i<results.size(); i++){
+			Multiset set = results.get(i);
+			if(sets.size() == 0){
+				sets.add(set);
+			}
+			else{
+				Multiset previousSet = results.get(i-1);
+				if(isConsecutive(set, previousSet)
+						&& (set.isGapped() && !set.isParamertized())){
+					sets.add(set);
+				}
+				else{
+					aggregatedSets.add(sets);
+					sets = new ArrayList<>();
+					sets.add(set);
+				}
+			}
+		}
+		
+		ArrayList<SeqMultiset> seqMultisets = transferToSeqMultiset(aggregatedSets);
+		
+		return seqMultisets;
+	}
+
+
+
+	/**
+	 * @param aggregatedSets
+	 * @return
+	 */
+	private ArrayList<SeqMultiset> transferToSeqMultiset(
+			ArrayList<ArrayList<Multiset>> aggregatedSets) {
+		ArrayList<SeqMultiset> seqMultisets = new ArrayList<>();
+		for(ArrayList<Multiset> setList: aggregatedSets){
+			SeqMultiset seqMultiset = new SeqMultiset();
+			
+			Multiset set = setList.get(0);
+			/**
+			 * for each clone instance, I build a token sequence.
+			 */
+			for(Token t: set.getTokens()){
+				CloneInstance instance = t.getCloneInstance();
+				TokenSeq sequence = new TokenSeq();
+				
+				for(Multiset s: setList){
+					Token token = s.findToken(instance);
+					sequence.addToken(token);
+				}
+				
+				seqMultiset.addTokenSeq(sequence);
+			}
+			
+			seqMultisets.add(seqMultiset);
+		}
+		return seqMultisets;
+	}
+	
+	private boolean isConsecutive(Multiset set, Multiset previousSet) {
+		for(Token prevToken: previousSet.getTokens()){
+			Token currentCorrspondingToken = set.findToken(prevToken.getCloneInstance());
+			
+			if(prevToken.isEpisolon() && currentCorrspondingToken.isEpisolon()){
+				if(!prevToken.getPreviousToken().equals(currentCorrspondingToken.getPreviousToken()) ||
+						!prevToken.getPostToken().equals(currentCorrspondingToken.getPostToken())){
+					return false;
+				}
+			}
+			
+			else if(!prevToken.getPostToken().equals(currentCorrspondingToken)){
+				return false;
+			}
+		}
+		return true;
+	}
+
+
+
 	private void filterCommonSet(ArrayList<Multiset> results){
 		Iterator<Multiset> iterator = results.iterator();
 		while(iterator.hasNext()){
