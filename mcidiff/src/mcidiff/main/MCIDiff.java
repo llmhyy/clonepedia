@@ -1,6 +1,7 @@
 package mcidiff.main;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import mcidiff.action.Tokenizer;
 import mcidiff.model.CloneInstance;
@@ -27,6 +28,9 @@ public class MCIDiff {
 		
 		TokenSequence[] sequences = transferToModel(set);
 		ArrayList<Multiset> results = computeDiff(commonList, sequences);
+		
+		Collections.sort(results, Multiset.MultisetPositionComparator);
+		
 		
 		return results;
 	}
@@ -57,7 +61,7 @@ public class MCIDiff {
 			ArrayList<Multiset> partialSet = computeInDiffRange(sequences);
 			if(partialSet.size() != 0){
 				//set the position of episolon tokens in partialSet;
-				buildSequentialRelationForEpisolonToken(partialSet, sequences);
+				//buildSequentialRelationForEpisolonToken(partialSet, sequences);
 				multisetList.addAll(partialSet);
 			}
 			
@@ -66,13 +70,6 @@ public class MCIDiff {
 			}
 		}
 		
-		/*for(int j=0; j<sequences.length; j++){
-			sequences[j].moveCursorToEnd();
-		}
-		ArrayList<Multiset> partialSet = computeInDiffRange(sequences);
-		if(partialSet.size() != 0){
-			multisetList.addAll(partialSet);
-		}*/
 		
 		return multisetList;
 	}

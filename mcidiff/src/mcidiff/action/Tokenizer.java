@@ -64,6 +64,10 @@ public class Tokenizer {
 				}
 				String tokenName = new String(scanner.getCurrentTokenSource());
 				
+				/*if(tokenName.equals("b")){
+					System.currentTimeMillis();
+				}*/
+				
 				int startPosition = baseLinePosition + scanner.getCurrentTokenStartPosition();
 				int endPosition = baseLinePosition + scanner.getCurrentTokenEndPosition()+1;
 				
@@ -218,7 +222,7 @@ public class Tokenizer {
 					setNode(node);
 				}
 				else{
-					if(bias > currentBias){
+					if(bias >= currentBias){
 						bias = currentBias;
 						setNode(node);
 					}

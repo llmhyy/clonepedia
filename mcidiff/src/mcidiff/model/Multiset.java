@@ -1,8 +1,9 @@
 package mcidiff.model;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
-public class Multiset {
+public class Multiset{
 	private ArrayList<Token> tokens = new ArrayList<>();
 
 	/**
@@ -36,4 +37,39 @@ public class Multiset {
 		}
 		return otherList;
 	}
+	
+	public Token findToken(CloneInstance instance){
+		for(Token token: getTokens()){
+			if(token.getCloneInstance().equals(instance)){
+				return token;
+			}
+		}
+		
+		return null;
+	}
+
+	public static Comparator<Multiset> MultisetPositionComparator =
+			new Comparator<Multiset>() {
+
+			@Override
+			public int compare(Multiset prev, Multiset post) {
+				if(prev != null && post != null){
+					int sum = 0;
+					
+					for(Token token: prev.getTokens()){
+						CloneInstance instance = token.getCloneInstance();
+						Token corresToken = post.findToken(instance);
+						
+						if(!corresToken.isEpisolon() && !token.isEpisolon()){
+							sum += token.getStartPosition() - corresToken.getStartPosition();;							
+						}
+					}
+					
+					return sum;
+				}
+				
+				return 0;
+			}
+	};
+	
 }
