@@ -10,5 +10,6 @@
 	<classpathentry kind="lib" path="lib/org.eclipse.equinox.preferences_3.5.200.v20140224-1527.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.osgi_3.9.1.v20140110-1610.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.jdt.core_3.9.2.v20140114-1555.jar" sourcepath="lib/org.eclipse.jdt.core.source_3.9.2.v20140114-1555.jar"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
