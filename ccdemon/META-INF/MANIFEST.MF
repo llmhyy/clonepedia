@@ -10,6 +10,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.editors;bundle-version="3.8.100",
  org.eclipse.jdt.ui;bundle-version="3.9.2",
  Clonepedia;bundle-version="1.0.0",
- mcidiff;bundle-version="1.0.0"
+ mcidiff;bundle-version="1.0.0",
+ org.eclipse.core.resources,
+ org.eclipse.ui.ide;bundle-version="3.10.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
