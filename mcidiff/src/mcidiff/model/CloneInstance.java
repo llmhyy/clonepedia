@@ -4,6 +4,23 @@ import java.util.ArrayList;
 
 
 public class CloneInstance {
+	
+	private CloneSet set;
+	
+	/**
+	 * @return the set
+	 */
+	public CloneSet getSet() {
+		return set;
+	}
+
+	/**
+	 * @param set the set to set
+	 */
+	public void setSet(CloneSet set) {
+		this.set = set;
+	}
+
 	private String fileName;
 	private int startLine;
 	private int endLine;
@@ -31,6 +48,14 @@ public class CloneInstance {
 	 */
 	public CloneInstance(String fileName, int startLine, int endLine) {
 		super();
+		this.fileName = fileName;
+		this.startLine = startLine;
+		this.endLine = endLine;
+	}
+	
+	public CloneInstance(CloneSet set, String fileName, int startLine, int endLine) {
+		super();
+		this.set = set;
 		this.fileName = fileName;
 		this.startLine = startLine;
 		this.endLine = endLine;

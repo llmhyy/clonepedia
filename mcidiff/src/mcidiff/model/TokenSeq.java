@@ -44,4 +44,11 @@ public class TokenSeq {
 		}
 	}
 	
+	public CloneInstance getCloneInstance(){
+		if(getTokens().size() != 0){
+			return getTokens().get(0).getCloneInstance();
+		}
+		
+		return null;
+	}
 }

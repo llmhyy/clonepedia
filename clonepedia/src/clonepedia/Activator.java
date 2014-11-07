@@ -10,9 +10,6 @@ import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-
-import clonepedia.model.ontology.CloneInstance;
-import clonepedia.model.ontology.CloneSet;
 import clonepedia.model.ontology.CloneSets;
 import clonepedia.util.ImageUI;
 import clonepedia.util.MinerUtil;
@@ -26,7 +23,8 @@ public class Activator extends AbstractUIPlugin {
 	public static final String PLUGIN_ID = "Clonepedia"; //$NON-NLS-1$
 	
 	private static CloneSets sets;
-
+	public static CloneSets plainSets;
+	
 	// The shared instance
 	private static Activator plugin;
 	

@@ -1,5 +1,9 @@
 package ccdemon.model;
 
+import mcidiff.util.ASTUtil;
+
+import org.eclipse.jdt.core.dom.CompilationUnit;
+
 public class SelectedCodeRange {
 	private String fileName;
 	private int startPosition;
@@ -16,6 +20,21 @@ public class SelectedCodeRange {
 		this.startPosition = startPosition;
 		this.endPosition = endPosition;
 	}
+	
+	public int getStartLine(){
+		//CompilationUnit cu = ASTUtil.generateCompilationUnit(getFileName());
+		//return cu.getLineNumber(getStartPosition());
+		
+		return 166;
+	}
+	
+	public int getEndLine(){
+		//CompilationUnit cu = ASTUtil.generateCompilationUnit(getFileName());
+		//return cu.getLineNumber(getEndPosition());
+				
+		return 171;
+	}
+	
 	/**
 	 * @return the fileName
 	 */

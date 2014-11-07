@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import clonepedia.db.DBOperator;
 import clonepedia.model.cluster.ICluster;
 import clonepedia.model.cluster.ISemanticClusterable;
 import clonepedia.model.semantic.Topic;

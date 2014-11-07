@@ -25,33 +25,6 @@ public class CloneSets implements Serializable{
 	//private ArrayList<TemplateMethodGroup> templateMethodGroupList = new ArrayList<TemplateMethodGroup>();
 	//private ArrayList<ArrayList<TemplateFeatureGroup>> featureGroupList = new ArrayList<ArrayList<TemplateFeatureGroup>>();
 	
-	/**
-	 * Whenever a clone instance overlapping with the given code fragment, its clone set
-	 * will be returned.
-	 * @param fileName
-	 * @param startLine
-	 * @param endLine
-	 * @return
-	 */
-	public ArrayList<CloneSet> findCloneSets(String fileName, int startLine, int endLine){
-		ArrayList<CloneSet> setsInNeed = new ArrayList<>();
-		for(CloneSet set: this.cloneList){
-			for(CloneInstance instance: set){
-				
-				//if(instance.)
-				
-				if(instance.getFileLocation().equals(fileName)){
-					if(instance.getStartLine()<=endLine && instance.getEndLine()>=startLine){
-						setsInNeed.add(set);
-						continue;
-					}
-				}
-			}
-		}
-		
-		return setsInNeed;
-	}
-	
 	public void buildPatternforCloneSets() throws Exception{
 		int setsNum = this.getCloneList().size();
 		int i = 0;

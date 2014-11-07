@@ -66,6 +66,7 @@ public class MCIDiff {
 				}
 			}
 		}
+		aggregatedSets.add(sets);
 		
 		ArrayList<SeqMultiset> seqMultisets = transferToSeqMultiset(aggregatedSets);
 		

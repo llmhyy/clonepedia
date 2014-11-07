@@ -52,12 +52,12 @@ import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 
+import clonepedia.Activator;
 import clonepedia.filepraser.CloneDetectionFileParser;
 import clonepedia.filepraser.CloneDetectionFileWriter;
 import clonepedia.java.CloneInformationExtractor;
 import clonepedia.java.CompilationUnitPool;
 import clonepedia.model.ontology.CloneInstance;
-import clonepedia.model.ontology.CloneSets;
 import clonepedia.model.viewer.CloneSetWrapper;
 import clonepedia.model.viewer.CloneSetWrapperList;
 import clonepedia.perspective.CloneDiffPerspective;
@@ -77,7 +77,7 @@ import clonepedia.views.util.ViewUtil;
 public class CloneReportView extends SummaryView {
 	
 	private CloneSetWrapperList cloneSets;
-	private CloneSets plainSets;
+	
 	private PlainCloneSetViewComarator comparator;
 	
 	
@@ -133,8 +133,8 @@ public class CloneReportView extends SummaryView {
 		viewer.setComparator(comparator);
 		
 		createColumns(viewer);
-		plainSets = new CloneDetectionFileParser(false, "").getCloneSets();
-		cloneSets = SummaryUtil.wrapCloneSets(plainSets.getCloneList());
+		Activator.plainSets = new CloneDetectionFileParser(false, "").getCloneSets();
+		cloneSets = SummaryUtil.wrapCloneSets(Activator.plainSets.getCloneList());
 		viewer.setInput(cloneSets);
 		viewer.addDoubleClickListener(cloneInstanceDoubleClickListener);
 		viewer.addDoubleClickListener(new IDoubleClickListener(){
@@ -293,8 +293,8 @@ public class CloneReportView extends SummaryView {
 		Action loadAllCloneSetAction = new Action(){
 			public void run(){
 				
-				plainSets = new CloneDetectionFileParser(false, "").getCloneSets();
-				cloneSets = SummaryUtil.wrapCloneSets(plainSets.getCloneList());
+				Activator.plainSets = new CloneDetectionFileParser(false, "").getCloneSets();
+				cloneSets = SummaryUtil.wrapCloneSets(Activator.plainSets.getCloneList());
 				
 				viewer.setInput(cloneSets);
 				
@@ -544,7 +544,7 @@ public class CloneReportView extends SummaryView {
 						}
 						
 						CloneDetectionFileWriter writer = new CloneDetectionFileWriter();
-						writer.writeToXML(plainSets);
+						writer.writeToXML(Activator.plainSets);
 						
 						viewer.update(element, null);
 					}
