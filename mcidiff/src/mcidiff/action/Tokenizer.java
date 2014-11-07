@@ -1,21 +1,17 @@
 package mcidiff.action;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import mcidiff.model.CloneInstance;
 import mcidiff.model.CloneSet;
 import mcidiff.model.Token;
+import mcidiff.util.ASTUtil;
 
 import org.eclipse.jdt.core.ToolFactory;
 import org.eclipse.jdt.core.compiler.IScanner;
 import org.eclipse.jdt.core.compiler.ITerminalSymbols;
 import org.eclipse.jdt.core.compiler.InvalidInputException;
-import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
@@ -46,10 +42,10 @@ public class Tokenizer {
 		ArrayList<Token> tokenList = new ArrayList<>();
 		tokenList.add(new Token("e*", null, instance, -1, -1));
 		
-		String fileContent = retrieveContent(instance.getFileName(), 
+		String fileContent = ASTUtil.retrieveContent(instance.getFileName(), 
 				instance.getStartLine(), instance.getEndLine());
 		
-		CompilationUnit cu = generateCompilationUnit(instance.getFileName());
+		CompilationUnit cu = ASTUtil.generateCompilationUnit(instance.getFileName());
 		int baseLinePosition = cu.getPosition(instance.getStartLine(), 0);
 		
 		IScanner scanner = ToolFactory.createScanner(false, false, false, false);
@@ -94,89 +90,7 @@ public class Tokenizer {
 		return tokenList;
 	}
 	
-	private String retrieveContent(String absolutePath){
-		String everything = null;
-		BufferedReader br = null;
-		try {
-			br = new BufferedReader(new FileReader(absolutePath));
-	        StringBuilder sb = new StringBuilder();
-	        String line = br.readLine();
-
-	        while (line != null) {
-	            sb.append(line);
-	            sb.append(System.lineSeparator());
-	            line = br.readLine();
-	        }
-	        everything = sb.toString();
-	    } catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-	        try {
-				br.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-	    }
-		
-		return everything;
-	}
 	
-	private String retrieveContent(String absolutePath, int startLine, int endLine){
-		
-		if(startLine > endLine){
-			System.err.print("start line is larger than end line");
-			return null;
-		}
-		
-		 int count = 1;
-		String everything = null;
-		BufferedReader br = null;
-		try {
-			br = new BufferedReader(new FileReader(absolutePath));
-	        StringBuilder sb = new StringBuilder();
-	        String line = br.readLine();
-	        
-	        while (line != null) {
-	        	
-	        	if(count >= startLine && count <= endLine){
-	        		sb.append(line);
-	        		sb.append(System.lineSeparator());
-	        	}
-	        	
-	        	line = br.readLine();
-	        	count++;
-	        }
-	        everything = sb.toString();
-	    } catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-	        try {
-				br.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-	    }
-		
-		if(startLine > count || endLine > count){
-			System.err.print("start line or end line is larger the total line number");
-			return null;
-		}
-		
-		return everything;
-	}
-	
-	private CompilationUnit generateCompilationUnit(String path){
-		
-		String content = retrieveContent(path);
-		
-		ASTParser parser = ASTParser.newParser(AST.JLS4);
-		parser.setSource(content.toCharArray());
-		parser.setKind(ASTParser.K_COMPILATION_UNIT);
-		
-		CompilationUnit cu = (CompilationUnit) parser.createAST(null);
-		
-		return cu;
-	}
 	
 	public class NodeVisitor extends ASTVisitor {
 		private ASTNode node;

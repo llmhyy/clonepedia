@@ -1,9 +1,12 @@
 package ccdemon.handlers;
 
+import mcidiff.util.ASTUtil;
+
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.graphics.Point;
@@ -34,7 +37,11 @@ public class CopyHandler extends AbstractHandler{
 		SelectedCodeRange range = new SelectedCodeRange(file.getRawLocation().toOSString(), point.x, point.x + point.y);
 		SharedData.range = range;
 		
-		System.out.println("copy");
+		CompilationUnit cu = ASTUtil.generateCompilationUnit(range.getFileName());
+		System.out.println("startline: " + cu.getLineNumber(range.getStartPosition()) + ", endline: " + cu.getLineNumber(range.getEndPosition()));
+		System.out.println("startPosition: " + point.x);
+		System.out.println("length: " + point.y);
+		System.out.println("startPosition: " + point.x);
 		return null;
 	}
 
