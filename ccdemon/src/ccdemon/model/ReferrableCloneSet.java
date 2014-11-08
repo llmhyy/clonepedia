@@ -3,7 +3,7 @@ package ccdemon.model;
 import clonepedia.model.ontology.CloneInstance;
 import clonepedia.model.ontology.CloneSet;
 
-public class CodeTemplateMaterial {
+public class ReferrableCloneSet {
 	private CloneSet cloneSet;
 	private CloneInstance referredCloneInstance;
 	
@@ -12,7 +12,7 @@ public class CodeTemplateMaterial {
 	 * @param cloneSet
 	 * @param referredCloneInstance
 	 */
-	public CodeTemplateMaterial(CloneSet cloneSet,
+	public ReferrableCloneSet(CloneSet cloneSet,
 			CloneInstance referredCloneInstance) {
 		super();
 		this.cloneSet = cloneSet;

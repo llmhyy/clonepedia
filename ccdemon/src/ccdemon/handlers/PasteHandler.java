@@ -21,7 +21,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 
-import ccdemon.model.CodeTemplateMaterial;
+import ccdemon.model.ReferrableCloneSet;
 import ccdemon.model.ConfigurationPoint;
 import ccdemon.model.SelectedCodeRange;
 import ccdemon.util.CCDemonUtil;
@@ -54,16 +54,16 @@ public class PasteHandler extends AbstractHandler {
 		if(range != null){
 			CloneSets sets = clonepedia.Activator.plainSets;
 			
-			ArrayList<CodeTemplateMaterial> materials = CCDemonUtil.findCodeTemplateMaterials(sets, range);
+			ArrayList<ReferrableCloneSet> referrableCloneSets = CCDemonUtil.findCodeTemplateMaterials(sets, range);
 			
-			if(materials.size() != 0){
-				CodeTemplateMaterial material = materials.get(0);
-				mcidiff.model.CloneSet set = CCDemonUtil.adaptClonepediaModel(material.getCloneSet()); 
+			if(referrableCloneSets.size() != 0){
+				ReferrableCloneSet rcs = referrableCloneSets.get(0);
+				mcidiff.model.CloneSet set = CCDemonUtil.adaptClonepediaModel(rcs.getCloneSet()); 
 				MCIDiff diff = new MCIDiff();
 				ArrayList<SeqMultiset> diffList = diff.diff(set);
 
 				ArrayList<ConfigurationPoint> configurationPoints = 
-						constructConfigurationPoints(material.getReferredCloneInstance(), diffList);
+						constructConfigurationPoints(rcs.getReferredCloneInstance(), diffList);
 				
 				/**
 				 * At this time, we need to match the token sequence in copied clone instance to

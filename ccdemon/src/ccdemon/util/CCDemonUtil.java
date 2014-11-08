@@ -8,7 +8,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.ui.internal.handlers.WidgetMethodHandler;
 
-import ccdemon.model.CodeTemplateMaterial;
+import ccdemon.model.ReferrableCloneSet;
 import ccdemon.model.SelectedCodeRange;
 import clonepedia.model.ontology.CloneSet;
 import clonepedia.model.ontology.CloneSets;
@@ -30,13 +30,13 @@ public class CCDemonUtil {
 	 * @param endLine
 	 * @return
 	 */
-	public static ArrayList<CodeTemplateMaterial> findCodeTemplateMaterials(CloneSets cloneSets, SelectedCodeRange range){
-		ArrayList<CodeTemplateMaterial> materials = new ArrayList<>();
+	public static ArrayList<ReferrableCloneSet> findCodeTemplateMaterials(CloneSets cloneSets, SelectedCodeRange range){
+		ArrayList<ReferrableCloneSet> materials = new ArrayList<>();
 		for(CloneSet set: cloneSets.getCloneList()){
 			for(clonepedia.model.ontology.CloneInstance instance: set){
 				if(instance.getFileLocation().equals(range.getFileName())){
 					if(instance.getStartLine()<=range.getEndLine() && instance.getEndLine()>=range.getStartLine()){
-						CodeTemplateMaterial material = new CodeTemplateMaterial(set, instance);
+						ReferrableCloneSet material = new ReferrableCloneSet(set, instance);
 						
 						materials.add(material);
 						continue;
