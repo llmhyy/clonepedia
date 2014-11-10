@@ -13,7 +13,10 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.e4.core.commands.ExpressionContext;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextOperationTarget;
+import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.IEditorInput;
@@ -34,6 +37,21 @@ public class PasteHandler extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
+
+//		AbstractTextEditor activeEditor = (AbstractTextEditor) HandlerUtil.getActiveEditor(event);
+//		ISourceViewer sourceViewer = (ISourceViewer) activeEditor.getAdapter(ITextOperationTarget.class);	
+//		IDocument document= sourceViewer.getDocument();
+		ITextSelection textSelection = (ITextSelection) HandlerUtil.getActivePart(event).getSite().getSelectionProvider().getSelection();
+		int cursorOffset = textSelection.getOffset();
+//		try {
+//			int lineNumber = document.getLineOfOffset(cursorOffset) + 1;
+//			System.out.println("start line" + lineNumber);
+//		} catch (BadLocationException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		System.out.println("start position" + cursorOffset);
+		
 		CCDemonUtil.callBackDefaultEvent("paste", event);
 		
 		/*AbstractTextEditor activeEditor = (AbstractTextEditor) HandlerUtil.getActiveEditor(event);
@@ -76,6 +94,7 @@ public class PasteHandler extends AbstractHandler {
 		}
 		
 		System.out.println("paste");
+		
 		return null;
 	}
 
