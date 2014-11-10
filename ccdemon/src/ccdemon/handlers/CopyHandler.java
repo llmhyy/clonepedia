@@ -7,7 +7,9 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextOperationTarget;
+import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.IEditorInput;
@@ -41,7 +43,7 @@ public class CopyHandler extends AbstractHandler{
 		System.out.println("startline: " + cu.getLineNumber(range.getStartPosition()) + ", endline: " + cu.getLineNumber(range.getEndPosition()));
 		System.out.println("startPosition: " + point.x);
 		System.out.println("length: " + point.y);
-		System.out.println("startPosition: " + point.x);
+		
 		return null;
 	}
 
