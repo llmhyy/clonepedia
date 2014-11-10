@@ -22,17 +22,17 @@ public class SelectedCodeRange {
 	}
 	
 	public int getStartLine(){
-		//CompilationUnit cu = ASTUtil.generateCompilationUnit(getFileName());
-		//return cu.getLineNumber(getStartPosition());
+		CompilationUnit cu = ASTUtil.generateCompilationUnit(getFileName());
+		return cu.getLineNumber(getStartPosition());
 		
-		return 166;
+		//return 166;
 	}
 	
 	public int getEndLine(){
-		//CompilationUnit cu = ASTUtil.generateCompilationUnit(getFileName());
-		//return cu.getLineNumber(getEndPosition());
+		CompilationUnit cu = ASTUtil.generateCompilationUnit(getFileName());
+		return cu.getLineNumber(getEndPosition());
 				
-		return 171;
+		//return 171;
 	}
 	
 	/**
