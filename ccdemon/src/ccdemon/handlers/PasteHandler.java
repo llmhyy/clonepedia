@@ -80,7 +80,7 @@ public class PasteHandler extends AbstractHandler {
 			CustomLinkedModeUI ui = new CustomLinkedModeUI(model, sourceViewer);
 			CustomLinkedModeUIFocusListener listener = new CustomLinkedModeUIFocusListener();
 			ui.setPositionListener(listener);
-			ui.setExitPosition(sourceViewer, startPositionInPastedFile, copiedRange.getPositionLength(), Integer.MAX_VALUE);
+			//ui.setExitPosition(sourceViewer, startPositionInPastedFile, copiedRange.getPositionLength(), Integer.MAX_VALUE);
 			ui.enter();
 			//listener.setTestPosition(model.get);
 		}
