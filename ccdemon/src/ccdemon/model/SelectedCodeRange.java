@@ -35,6 +35,10 @@ public class SelectedCodeRange {
 		//return 171;
 	}
 	
+	public int getPositionLength(){
+		return getEndPosition()-getStartPosition();
+	}
+	
 	/**
 	 * @return the fileName
 	 */

@@ -38,6 +38,17 @@ public class CloneSet {
 		this.instances = instances;
 	}
 	
+	public CloneInstance findCloneInstance(String fileName, int startLine, int endLine){
+		for(CloneInstance instance: getInstances()){
+			if(instance.getFileName().equals(fileName) && instance.getStartLine() == startLine
+					&& instance.getEndLine() == endLine){
+				return instance;
+			}
+		}
+		
+		return null;
+	}
+	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public ArrayList<Token>[] getTokenLists(){
 		ArrayList[] lists = new ArrayList[this.instances.size()];

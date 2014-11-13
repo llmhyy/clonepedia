@@ -21,6 +21,20 @@ public class TokenSeq {
 		return buffer.toString();
 	}
 	
+	public boolean isEpisolonTokenSeq(){
+		if(getTokens().size() > 0){
+			for(Token t: getTokens()){
+				if(!t.isEpisolon()){
+					return false;
+				}
+			}
+			
+			return true;
+		}
+		
+		return true;
+	}
+	
 	/**
 	 * @return the tokens
 	 */
@@ -50,5 +64,21 @@ public class TokenSeq {
 		}
 		
 		return null;
+	}
+	
+	public int getStartPosition(){
+		if(getTokens().size() != 0){
+			return getTokens().get(0).getStartPosition();
+		}
+		
+		return -1;
+	}
+	
+	public int getEndPosition(){
+		if(getTokens().size() != 0){
+			return getTokens().get(getTokens().size()-1).getEndPosition();
+		}
+		
+		return -1;
 	}
 }

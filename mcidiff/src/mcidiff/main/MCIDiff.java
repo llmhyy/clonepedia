@@ -152,8 +152,8 @@ public class MCIDiff {
 						Token prevToken = findPreviousNonEpisolonToken(i, results, token);
 						if(prevToken != null){
 							token.setPreviousToken(prevToken);
-							//token.setStartPosition(prevToken.getEndPosition());
-													
+							token.setStartPosition(prevToken.getEndPosition());
+							token.setEndPosition(prevToken.getEndPosition());		
 						}
 					}
 					

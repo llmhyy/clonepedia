@@ -23,6 +23,13 @@ public class Tokenizer {
 	public void tokenize(CloneSet set){
 		for(CloneInstance instance: set.getInstances()){
 			ArrayList<Token> tokenList = parseTokens(instance);
+			/**
+			 * assign an empty token at head and another one at end to simplify the general process.
+			 */
+			Token eStart = new Token("e*", null, instance, -1, -1);
+			tokenList.add(0, eStart);
+			Token eEnd = new Token("e*", null, instance, -1, -1);
+			tokenList.add(tokenList.size(), eEnd);
 			
 			System.currentTimeMillis();
 			
@@ -38,9 +45,9 @@ public class Tokenizer {
 	 * @param endLine
 	 * @return
 	 */
-	private ArrayList<Token> parseTokens(CloneInstance instance) {
+	public ArrayList<Token> parseTokens(CloneInstance instance) {
 		ArrayList<Token> tokenList = new ArrayList<>();
-		tokenList.add(new Token("e*", null, instance, -1, -1));
+		//tokenList.add(new Token("e*", null, instance, -1, -1));
 		
 		String fileContent = ASTUtil.retrieveContent(instance.getFileName(), 
 				instance.getStartLine(), instance.getEndLine());
@@ -85,12 +92,10 @@ public class Tokenizer {
 			
 		}
 		
-		tokenList.add(new Token("e*", null, instance, -1, -1));
+		//tokenList.add(new Token("e*", null, instance, -1, -1));
 		
 		return tokenList;
 	}
-	
-	
 	
 	public class NodeVisitor extends ASTVisitor {
 		private ASTNode node;
