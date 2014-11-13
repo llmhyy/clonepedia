@@ -26,9 +26,9 @@ public class Tokenizer {
 			/**
 			 * assign an empty token at head and another one at end to simplify the general process.
 			 */
-			Token eStart = new Token("e*", null, instance, -1, -1);
+			Token eStart = new Token(Token.episolonSymbol, null, instance, -1, -1);
 			tokenList.add(0, eStart);
-			Token eEnd = new Token("e*", null, instance, -1, -1);
+			Token eEnd = new Token(Token.episolonSymbol, null, instance, -1, -1);
 			tokenList.add(tokenList.size(), eEnd);
 			
 			System.currentTimeMillis();
@@ -47,7 +47,7 @@ public class Tokenizer {
 	 */
 	public ArrayList<Token> parseTokens(CloneInstance instance) {
 		ArrayList<Token> tokenList = new ArrayList<>();
-		//tokenList.add(new Token("e*", null, instance, -1, -1));
+		//tokenList.add(new Token(Token.episolonSymbol, null, instance, -1, -1));
 		
 		String fileContent = ASTUtil.retrieveContent(instance.getFileName(), 
 				instance.getStartLine(), instance.getEndLine());
@@ -92,7 +92,7 @@ public class Tokenizer {
 			
 		}
 		
-		//tokenList.add(new Token("e*", null, instance, -1, -1));
+		//tokenList.add(new Token(Token.episolonSymbol, null, instance, -1, -1));
 		
 		return tokenList;
 	}

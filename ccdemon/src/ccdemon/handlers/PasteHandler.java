@@ -150,7 +150,7 @@ public class PasteHandler extends AbstractHandler {
 			
 			TokenSeq pastedSeq = constructTokenSeqInPastedCode(pastedTokenList, startPosInPasted, endPosInPasted);
 			if(pastedSeq.isEpisolonTokenSeq()){
-				Token epsolonToken = new Token("e*", null, null, startPosInPasted, endPosInPasted);
+				Token epsolonToken = new Token(Token.episolonSymbol, null, null, startPosInPasted, endPosInPasted);
 				pastedSeq.addToken(epsolonToken);
 			}
 			

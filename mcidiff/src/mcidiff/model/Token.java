@@ -6,6 +6,9 @@ import org.eclipse.jdt.core.dom.ASTNode;
 
 
 public class Token {
+	
+	public static String episolonSymbol = "e*";
+	
 	private String tokenName;
 	/**
 	 * the minimum AST node which encloses the token.
@@ -189,6 +192,6 @@ public class Token {
 	}
 	
 	public boolean isEpisolon(){
-		return getTokenName().equals("e*");
+		return getTokenName().equals(Token.episolonSymbol);
 	}
 }

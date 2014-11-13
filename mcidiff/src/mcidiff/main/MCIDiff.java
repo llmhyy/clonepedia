@@ -306,7 +306,7 @@ public class MCIDiff {
 		}
 		
 		if(bestMatcher == null){
-			bestMatcher = new Token("e*", null, otherSeq.getCloneInstance(), -1, -1);
+			bestMatcher = new Token(Token.episolonSymbol, null, otherSeq.getCloneInstance(), -1, -1);
 		}
 		
 		return bestMatcher;
