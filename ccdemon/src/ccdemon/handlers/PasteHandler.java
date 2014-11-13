@@ -3,31 +3,32 @@ package ccdemon.handlers;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import mcidiff.action.Tokenizer.NodeVisitor;
 import mcidiff.main.MCIDiff;
 import mcidiff.model.SeqMultiset;
 import mcidiff.model.Token;
 import mcidiff.model.TokenSeq;
-import mcidiff.util.ASTUtil;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.jdt.core.ToolFactory;
 import org.eclipse.jdt.core.compiler.IScanner;
 import org.eclipse.jdt.core.compiler.ITerminalSymbols;
 import org.eclipse.jdt.core.compiler.InvalidInputException;
-import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.jface.text.ITextSelection;
+import org.eclipse.jface.text.Region;
+import org.eclipse.jface.text.contentassist.CompletionProposal;
+import org.eclipse.jface.text.contentassist.ICompletionProposal;
+import org.eclipse.jface.text.link.LinkedModeModel;
+import org.eclipse.jface.text.link.LinkedPosition;
+import org.eclipse.jface.text.link.LinkedPositionGroup;
+import org.eclipse.jface.text.link.ProposalPosition;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 
 import ccdemon.model.ConfigurationPoint;
@@ -43,12 +44,58 @@ public class PasteHandler extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		ITextSelection textSelection = (ITextSelection) HandlerUtil.getActivePart(event).getSite().getSelectionProvider().getSelection();
-		int startPositionInPastedFile = textSelection.getOffset();
+		
 		/**
 		 * search related clone instances in project's clone set.
 		 */
 		SelectedCodeRange copiedRange = SharedData.range;
+		
+		ITextSelection textSelection = (ITextSelection) HandlerUtil.getActivePart(event).getSite().getSelectionProvider().getSelection();
+		int startPositionInPastedFile = textSelection.getOffset();
+		
+		ArrayList<ConfigurationPoint> configurationPoints = 
+				identifyConfigurationPoints(event, startPositionInPastedFile, copiedRange);
+		
+		AbstractTextEditor activeEditor = (AbstractTextEditor) HandlerUtil.getActiveEditor(event);
+		ISourceViewer sourceViewer = (ISourceViewer) activeEditor.getAdapter(ITextOperationTarget.class);
+		IDocument document= sourceViewer.getDocument();
+		//IRegion region = new Region(startPositionInPastedFile, copiedRange.getPositionLength());
+		
+		try{
+			LinkedModeModel model = new LinkedModeModel();
+			for(ConfigurationPoint cp: configurationPoints){
+				LinkedPositionGroup group = new LinkedPositionGroup();
+				ICompletionProposal[] proposals = new ICompletionProposal[cp.getCandidates().size()]; 
+				for(int i=0; i<proposals.length; i++){
+					proposals[i] = new CompletionProposal(cp.getCandidates().get(i).getTokenSeq().getText(), cp.getModifiedTokenSeq().getStartPosition(),
+							cp.getModifiedTokenSeq().getPositionLength(), 0);
+				}
+				
+				LinkedPosition lp = new ProposalPosition(document, cp.getModifiedTokenSeq().getStartPosition(), 
+						cp.getModifiedTokenSeq().getPositionLength(), proposals);
+				group.addPosition(lp);
+				model.addGroup(group);
+			}
+			model.forceInstall();
+			CustomLinkedModeUI ui = new CustomLinkedModeUI(model, sourceViewer);
+			CustomLinkedModeUIFocusListener listener = new CustomLinkedModeUIFocusListener();
+			ui.setPositionListener(listener);
+			ui.setExitPosition(sourceViewer, startPositionInPastedFile, copiedRange.getPositionLength(), Integer.MAX_VALUE);
+			ui.enter();
+			//listener.setTestPosition(model.get);
+		}
+		catch(BadLocationException e){
+			e.printStackTrace();
+		}
+		
+		
+		System.out.println("paste");
+		
+		return null;
+	}
+	
+	private ArrayList<ConfigurationPoint> identifyConfigurationPoints(ExecutionEvent event, 
+			int startPositionInPastedFile, SelectedCodeRange copiedRange) throws ExecutionException {
 		
 		if(copiedRange != null){
 			CloneSets sets = clonepedia.Activator.plainSets;
@@ -73,14 +120,13 @@ public class PasteHandler extends AbstractHandler {
 				 */
 				appendConfigurationPointsWithPastedSeq(event, copiedRange, configurationPoints, startPositionInPastedFile);
 				
-				System.out.println(diffList);
+				return configurationPoints;
+				//System.out.println(diffList);
 			}
 			
 		}
 		
-		System.out.println("paste");
-		
-		return null;
+		return new ArrayList<>();
 	}
 
 	/**

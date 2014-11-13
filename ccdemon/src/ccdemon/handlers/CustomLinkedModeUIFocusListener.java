@@ -8,7 +8,7 @@ import org.eclipse.jface.text.link.LinkedPosition;
 public class CustomLinkedModeUIFocusListener implements
 		ILinkedModeUIFocusListener {
 	
-	public LinkedPosition testPosition;
+	private LinkedPosition testPosition;
 
 	@Override
 	public void linkingFocusLost(LinkedPosition position,
@@ -16,7 +16,8 @@ public class CustomLinkedModeUIFocusListener implements
 		try {
 			System.out.println("lost: " + position.getContent());		
 			if(position.getContent().equals("stati")){
-				target.getViewer().getDocument().replace(testPosition.getOffset(), testPosition.getLength(), position.getContent() + "Test");
+				target.getViewer().getDocument().replace(testPosition.getOffset(), 
+						testPosition.getLength(), position.getContent() + "Test");
 			}
 		} catch (BadLocationException e) {
 			// TODO Auto-generated catch block
@@ -34,5 +35,21 @@ public class CustomLinkedModeUIFocusListener implements
 			e.printStackTrace();
 		}
 	}
+
+	/**
+	 * @return the testPosition
+	 */
+	public LinkedPosition getTestPosition() {
+		return testPosition;
+	}
+
+	/**
+	 * @param testPosition the testPosition to set
+	 */
+	public void setTestPosition(LinkedPosition testPosition) {
+		this.testPosition = testPosition;
+	}
+	
+	
 
 }
