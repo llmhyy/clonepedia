@@ -189,6 +189,6 @@ public class Token {
 	}
 	
 	public boolean isEpisolon(){
-		return getNode() == null;
+		return getTokenName().equals("e*");
 	}
 }
