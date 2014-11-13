@@ -2,6 +2,16 @@ package mcidiff.model;
 
 import java.util.ArrayList;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.ui.editors.text.TextFileDocumentProvider;
+
 /**
  * TokenSeq contains consecutive differential tokens.
  * 
@@ -10,6 +20,7 @@ import java.util.ArrayList;
  */
 public class TokenSeq {
 	private ArrayList<Token> tokens = new ArrayList<>();
+	private String text;
 
 	@Override
 	public String toString(){
@@ -21,6 +32,54 @@ public class TokenSeq {
 		return buffer.toString();
 	}
 	
+	public void retrieveTextFromDoc(){
+		if(isEpisolonTokenSeq()){
+			setText("");
+		}
+		else{
+			Token token = getTokens().get(0);
+			IWorkspace workspace = ResourcesPlugin.getWorkspace();
+			IPath location = Path.fromOSString(token.getCloneInstance().getFileName());
+			IFile file = workspace.getRoot().getFileForLocation(location);
+			TextFileDocumentProvider provider = new TextFileDocumentProvider();
+			
+			try {
+				provider.connect(file);
+				IDocument doc = provider.getDocument(file);
+				String content = doc.get(getStartPosition(), getPositionLength());
+				this.text = content;
+			} catch (BadLocationException e) {
+				e.printStackTrace();
+			} catch (CoreException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public String getText(){
+		return text;
+	}
+	
+	public void setText(String text){
+		this.text = text;
+	}
+
+	@Override
+	public int hashCode() {
+		return getTokens().toString().hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof TokenSeq){
+			TokenSeq seq = (TokenSeq)obj;
+			if(seq.toString().equals(toString())){
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public boolean isEpisolonTokenSeq(){
 		if(getTokens().size() > 0){
 			for(Token t: getTokens()){
@@ -33,6 +92,10 @@ public class TokenSeq {
 		}
 		
 		return true;
+	}
+	
+	public int getPositionLength(){
+		return getEndPosition() - getStartPosition();
 	}
 	
 	/**

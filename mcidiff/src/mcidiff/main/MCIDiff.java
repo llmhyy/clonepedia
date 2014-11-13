@@ -98,6 +98,7 @@ public class MCIDiff {
 					sequence.addToken(token);
 				}
 				
+				sequence.retrieveTextFromDoc();
 				seqMultiset.addTokenSeq(sequence);
 			}
 			
@@ -152,8 +153,8 @@ public class MCIDiff {
 						Token prevToken = findPreviousNonEpisolonToken(i, results, token);
 						if(prevToken != null){
 							token.setPreviousToken(prevToken);
-							token.setStartPosition(prevToken.getEndPosition());
-							token.setEndPosition(prevToken.getEndPosition());		
+							//token.setStartPosition(prevToken.getEndPosition()+3);
+							//token.setEndPosition(prevToken.getEndPosition()+3);		
 						}
 					}
 					
@@ -164,7 +165,8 @@ public class MCIDiff {
 						Token postToken = findPostNonEpisolonToken(i, results, token);
 						if(postToken != null){
 							token.setPostToken(postToken);		
-							//token.setEndPosition(postToken.getStartPosition());	
+							token.setStartPosition(postToken.getStartPosition());
+							token.setEndPosition(postToken.getStartPosition());	
 						}
 					}
 				}

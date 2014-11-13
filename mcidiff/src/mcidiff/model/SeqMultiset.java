@@ -28,4 +28,7 @@ public class SeqMultiset {
 		this.sequences.add(seq);
 	}
 	
+	public int getSize(){
+		return getSequences().size();
+	}
 }
