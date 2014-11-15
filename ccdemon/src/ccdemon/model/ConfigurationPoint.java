@@ -52,7 +52,7 @@ public class ConfigurationPoint {
 		}
 		
 		for(TokenSeq seq: map.keySet()){
-			Candidate candidate = new Candidate(seq, map.get(seq));
+			Candidate candidate = new Candidate(seq.getText(), map.get(seq));
 			candidates.add(candidate);
 		}
 	}

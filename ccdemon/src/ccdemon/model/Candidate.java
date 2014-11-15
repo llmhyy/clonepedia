@@ -1,32 +1,34 @@
 package ccdemon.model;
 
-import mcidiff.model.TokenSeq;
 
 public class Candidate {
-	private TokenSeq tokenSeq;
+	private String text;
 	private double score;
 	
 	/**
-	 * @param tokenSeq
+	 * @param text
 	 * @param score
 	 */
-	public Candidate(TokenSeq tokenSeq, double score) {
+	public Candidate(String text, double score) {
 		super();
-		this.tokenSeq = tokenSeq;
+		this.text = text;
 		this.score = score;
 	}
+	
 	/**
-	 * @return the tokenSeq
+	 * @return the text
 	 */
-	public TokenSeq getTokenSeq() {
-		return tokenSeq;
+	public String getText() {
+		return text;
 	}
+
 	/**
-	 * @param tokenSeq the tokenSeq to set
+	 * @param text the text to set
 	 */
-	public void setTokenSeq(TokenSeq tokenSeq) {
-		this.tokenSeq = tokenSeq;
+	public void setText(String text) {
+		this.text = text;
 	}
+
 	/**
 	 * @return the score
 	 */
@@ -42,6 +44,6 @@ public class Candidate {
 	
 	@Override
 	public String toString(){
-		return getTokenSeq().toString();
+		return text;
 	}
 }

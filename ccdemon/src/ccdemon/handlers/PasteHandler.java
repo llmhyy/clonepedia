@@ -65,7 +65,7 @@ public class PasteHandler extends AbstractHandler {
 				LinkedPositionGroup group = new LinkedPositionGroup();
 				ICompletionProposal[] proposals = new ICompletionProposal[cp.getCandidates().size()]; 
 				for(int i=0; i<proposals.length; i++){
-					proposals[i] = new CompletionProposal(cp.getCandidates().get(i).getTokenSeq().getText(), cp.getModifiedTokenSeq().getStartPosition(),
+					proposals[i] = new CompletionProposal(cp.getCandidates().get(i).getText(), cp.getModifiedTokenSeq().getStartPosition(),
 							cp.getModifiedTokenSeq().getPositionLength(), 0);
 				}
 				
