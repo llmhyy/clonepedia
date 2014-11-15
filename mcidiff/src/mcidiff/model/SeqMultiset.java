@@ -10,6 +10,17 @@ public class SeqMultiset {
 		return this.sequences.toString();
 	}
 	
+	public TokenSeq findTokenSeqByCloneInstance(String fileName, int startLine, int endLine){
+		for(TokenSeq seq: getSequences()){
+			CloneInstance ins = seq.getCloneInstance();
+			if(ins.getFileName().equals(fileName) && ins.getStartLine()==startLine
+					&& ins.getEndLine()==endLine){
+				return seq;
+			}
+		}
+		return null;
+	}
+	
 	/**
 	 * @return the sequences
 	 */

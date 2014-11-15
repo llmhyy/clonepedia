@@ -30,6 +30,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 
 import ccdemon.model.ConfigurationPoint;
+import ccdemon.model.OccurrenceTable;
 import ccdemon.model.ReferrableCloneSet;
 import ccdemon.model.SelectedCodeRange;
 import ccdemon.util.CCDemonUtil;
@@ -46,82 +47,99 @@ public class PasteHandler extends AbstractHandler {
 		/**
 		 * search related clone instances in project's clone set.
 		 */
-		SelectedCodeRange copiedRange = SharedData.range;
+		SelectedCodeRange copiedRange = SharedData.copiedRange;
 		
 		ITextSelection textSelection = (ITextSelection) HandlerUtil.getActivePart(event).getSite().getSelectionProvider().getSelection();
 		int startPositionInPastedFile = textSelection.getOffset();
 		
-		ArrayList<ConfigurationPoint> configurationPoints = 
-				identifyConfigurationPoints(event, startPositionInPastedFile, copiedRange);
+		CloneSets sets = clonepedia.Activator.plainSets;
+		ArrayList<ReferrableCloneSet> referrableCloneSets = CCDemonUtil.findCodeTemplateMaterials(sets, copiedRange);
 		
-		AbstractTextEditor activeEditor = (AbstractTextEditor) HandlerUtil.getActiveEditor(event);
-		ISourceViewer sourceViewer = (ISourceViewer) activeEditor.getAdapter(ITextOperationTarget.class);
-		IDocument document= sourceViewer.getDocument();
-		//IRegion region = new Region(startPositionInPastedFile, copiedRange.getPositionLength());
-		
-		try{
-			LinkedModeModel model = new LinkedModeModel();
-			for(ConfigurationPoint cp: configurationPoints){
-				LinkedPositionGroup group = new LinkedPositionGroup();
-				ICompletionProposal[] proposals = new ICompletionProposal[cp.getCandidates().size()]; 
-				for(int i=0; i<proposals.length; i++){
-					proposals[i] = new CompletionProposal(cp.getCandidates().get(i).getText(), cp.getModifiedTokenSeq().getStartPosition(),
-							cp.getModifiedTokenSeq().getPositionLength(), 0);
+		if(referrableCloneSets.size() != 0){
+			ArrayList<ConfigurationPoint> configurationPoints = 
+					identifyConfigurationPoints(event, startPositionInPastedFile, copiedRange, referrableCloneSets);
+			
+			OccurrenceTable occurrences = constructCandidateOccurrences(configurationPoints, referrableCloneSets);
+			//TODO may leverage the occurances to compute scores of candidates.
+			
+			AbstractTextEditor activeEditor = (AbstractTextEditor) HandlerUtil.getActiveEditor(event);
+			ISourceViewer sourceViewer = (ISourceViewer) activeEditor.getAdapter(ITextOperationTarget.class);
+			IDocument document= sourceViewer.getDocument();
+			
+			try{
+				LinkedModeModel model = new LinkedModeModel();
+				for(ConfigurationPoint cp: configurationPoints){
+					LinkedPositionGroup group = new LinkedPositionGroup();
+					ICompletionProposal[] proposals = new ICompletionProposal[cp.getCandidates().size()]; 
+					for(int i=0; i<proposals.length; i++){
+						proposals[i] = new CompletionProposal(cp.getCandidates().get(i).getText(), cp.getModifiedTokenSeq().getStartPosition(),
+								cp.getModifiedTokenSeq().getPositionLength(), 0);
+					}
+					
+					LinkedPosition lp = new ProposalPosition(document, cp.getModifiedTokenSeq().getStartPosition(), 
+							cp.getModifiedTokenSeq().getPositionLength(), proposals);
+					group.addPosition(lp);
+					model.addGroup(group);
 				}
-				
-				LinkedPosition lp = new ProposalPosition(document, cp.getModifiedTokenSeq().getStartPosition(), 
-						cp.getModifiedTokenSeq().getPositionLength(), proposals);
-				group.addPosition(lp);
-				model.addGroup(group);
+				model.forceInstall();
+				CustomLinkedModeUI ui = new CustomLinkedModeUI(model, sourceViewer);
+				CustomLinkedModeUIFocusListener listener = new CustomLinkedModeUIFocusListener();
+				ui.setPositionListener(listener);
+				//ui.setExitPosition(sourceViewer, startPositionInPastedFile, copiedRange.getPositionLength(), Integer.MAX_VALUE);
+				ui.enter();
+				//listener.setTestPosition(model.get);
 			}
-			model.forceInstall();
-			CustomLinkedModeUI ui = new CustomLinkedModeUI(model, sourceViewer);
-			CustomLinkedModeUIFocusListener listener = new CustomLinkedModeUIFocusListener();
-			ui.setPositionListener(listener);
-			//ui.setExitPosition(sourceViewer, startPositionInPastedFile, copiedRange.getPositionLength(), Integer.MAX_VALUE);
-			ui.enter();
-			//listener.setTestPosition(model.get);
+			catch(BadLocationException e){
+				e.printStackTrace();
+			}
 		}
-		catch(BadLocationException e){
-			e.printStackTrace();
-		}
-		
-		
-		System.out.println("paste");
 		
 		return null;
 	}
 	
-	private ArrayList<ConfigurationPoint> identifyConfigurationPoints(ExecutionEvent event, 
-			int startPositionInPastedFile, SelectedCodeRange copiedRange) throws ExecutionException {
+	private OccurrenceTable constructCandidateOccurrences(ArrayList<ConfigurationPoint> configurationPoints,
+			ArrayList<ReferrableCloneSet> referrableCloneSets) {
+		ReferrableCloneSet rcs = referrableCloneSets.get(0);
+		String[][] occurrenceTable = new String[rcs.getCloneSet().size()][configurationPoints.size()];
+		CloneInstance[] instanceArray = rcs.getCloneSet().toArray(new CloneInstance[0]);
 		
-		if(copiedRange != null){
-			CloneSets sets = clonepedia.Activator.plainSets;
+		for(int i=0; i<instanceArray.length; i++){
+			CloneInstance instance = instanceArray[i];
 			
-			ArrayList<ReferrableCloneSet> referrableCloneSets = CCDemonUtil.findCodeTemplateMaterials(sets, copiedRange);
-			
-			if(referrableCloneSets.size() != 0){
-				ReferrableCloneSet rcs = referrableCloneSets.get(0);
-				mcidiff.model.CloneSet set = CCDemonUtil.adaptClonepediaModel(rcs.getCloneSet()); 
-				MCIDiff diff = new MCIDiff();
-				ArrayList<SeqMultiset> diffList = diff.diff(set);
-
-				ArrayList<ConfigurationPoint> configurationPoints = 
-						constructConfigurationPoints(rcs.getReferredCloneInstance(), diffList);
-				/**
-				 * filter out those configuration points which are not copied.
-				 */
-				filterUnrelevantConfigurationPoints(configurationPoints, copiedRange);
-				/**
-				 * At this time, we need to match the token sequence in copied clone instance to
-				 * the pasted code fragments. Then the configuration point can be identified.
-				 */
-				appendConfigurationPointsWithPastedSeq(event, copiedRange, configurationPoints, startPositionInPastedFile);
-				
-				return configurationPoints;
-				//System.out.println(diffList);
+			for(int j=0; j<configurationPoints.size(); j++){
+				ConfigurationPoint cp = configurationPoints.get(j);
+				TokenSeq tokenSeq = cp.getSeqMultiset().findTokenSeqByCloneInstance(instance.getFileLocation(), 
+						instance.getStartLine(), instance.getEndLine());
+				if(tokenSeq != null){
+					occurrenceTable[i][j] = tokenSeq.getText();
+				}
 			}
+		}
+		
+		return new OccurrenceTable(occurrenceTable);
+	}
+
+	private ArrayList<ConfigurationPoint> identifyConfigurationPoints(ExecutionEvent event, int startPositionInPastedFile, 
+			SelectedCodeRange copiedRange, ArrayList<ReferrableCloneSet> referrableCloneSets ) throws ExecutionException {
+		if(copiedRange != null){
+			ReferrableCloneSet rcs = referrableCloneSets.get(0);
+			mcidiff.model.CloneSet set = CCDemonUtil.adaptClonepediaModel(rcs.getCloneSet()); 
+			MCIDiff diff = new MCIDiff();
+			ArrayList<SeqMultiset> diffList = diff.diff(set);
+
+			ArrayList<ConfigurationPoint> configurationPoints = 
+					constructConfigurationPoints(rcs.getReferredCloneInstance(), diffList);
+			/**
+			 * filter out those configuration points which are not copied.
+			 */
+			filterUnrelevantConfigurationPoints(configurationPoints, copiedRange);
+			/**
+			 * At this time, we need to match the token sequence in copied clone instance to
+			 * the pasted code fragments. Then the configuration point can be identified.
+			 */
+			appendConfigurationPointsWithPastedSeq(event, copiedRange, configurationPoints, startPositionInPastedFile);
 			
+			return configurationPoints;
 		}
 		
 		return new ArrayList<>();

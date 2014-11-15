@@ -35,7 +35,7 @@ public class CopyHandler extends AbstractHandler{
 		Point point = sourceViewer.getSelectedRange();
 		
 		SelectedCodeRange range = new SelectedCodeRange(file.getRawLocation().toOSString(), point.x, point.x + point.y);
-		SharedData.range = range;
+		SharedData.copiedRange = range;
 		
 		CompilationUnit cu = ASTUtil.generateCompilationUnit(range.getFileName());
 		System.out.println("startline: " + cu.getLineNumber(range.getStartPosition()) + ", endline: " + cu.getLineNumber(range.getEndPosition()));

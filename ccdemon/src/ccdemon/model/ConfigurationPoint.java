@@ -32,11 +32,10 @@ public class ConfigurationPoint {
 		this.copiedTokenSeq = tokenSeq;
 		this.seqMultiset = seqMultiset;
 		
-		organizeCandidate(getCopiedTokenSeq(), getSeqMultiset());
+		organizeCandidate(getSeqMultiset());
 	}
 
-	private void organizeCandidate(TokenSeq copiedTokenSeq,
-			SeqMultiset seqMultiset) {
+	private void organizeCandidate(SeqMultiset seqMultiset) {
 		// TODO may need to collect more information to adjust the score of candidate to indidate candidate ranking.
 		HashMap<TokenSeq, Integer> map = new HashMap<>();
 		for(TokenSeq seq: seqMultiset.getSequences()){
