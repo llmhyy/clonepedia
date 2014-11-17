@@ -60,8 +60,9 @@ public class PasteHandler extends AbstractHandler {
 					identifyConfigurationPoints(event, startPositionInPastedFile, copiedRange, referrableCloneSets);
 			
 			cps.prepareForInstallation(referrableCloneSets);
-			
-			installConfigurationPointsOnCode(event, cps);
+
+			CCDemonUtil.setActiveEditor(event);
+			installConfigurationPointsOnCode(cps);
 		}
 		
 		return null;
@@ -70,12 +71,10 @@ public class PasteHandler extends AbstractHandler {
 
 
 	/**
-	 * @param event
 	 * @param cps
 	 */
-	private void installConfigurationPointsOnCode(ExecutionEvent event,
-			ConfigurationPointSet cps) {
-		AbstractTextEditor activeEditor = (AbstractTextEditor) HandlerUtil.getActiveEditor(event);
+	public static void installConfigurationPointsOnCode(ConfigurationPointSet cps) {
+		AbstractTextEditor activeEditor = CCDemonUtil.getActiveEditor();
 		ISourceViewer sourceViewer = (ISourceViewer) activeEditor.getAdapter(ITextOperationTarget.class);
 		IDocument document= sourceViewer.getDocument();
 		
@@ -97,6 +96,7 @@ public class PasteHandler extends AbstractHandler {
 			model.forceInstall();
 			CustomLinkedModeUI ui = new CustomLinkedModeUI(model, sourceViewer);
 			CustomLinkedModeUIFocusListener listener = new CustomLinkedModeUIFocusListener();
+			listener.setCps(cps);
 			ui.setPositionListener(listener);
 			//ui.setExitPosition(sourceViewer, startPositionInPastedFile, copiedRange.getPositionLength(), Integer.MAX_VALUE);
 			ui.enter();

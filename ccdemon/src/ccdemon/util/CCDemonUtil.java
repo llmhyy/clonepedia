@@ -6,7 +6,9 @@ import mcidiff.model.CloneInstance;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.internal.handlers.WidgetMethodHandler;
+import org.eclipse.ui.texteditor.AbstractTextEditor;
 
 import ccdemon.model.ReferrableCloneSet;
 import ccdemon.model.SelectedCodeRange;
@@ -15,6 +17,16 @@ import clonepedia.model.ontology.CloneSets;
 
 @SuppressWarnings("restriction")
 public class CCDemonUtil {
+	
+	private static AbstractTextEditor activeEditor;
+
+	public static AbstractTextEditor getActiveEditor() {
+		return activeEditor;
+	}
+
+	public static void setActiveEditor(ExecutionEvent event) {
+		activeEditor = (AbstractTextEditor) HandlerUtil.getActiveEditor(event);
+	}
 	
 	public static void callBackDefaultEvent(String name, ExecutionEvent event) throws ExecutionException{
 		WidgetMethodHandler handler = new WidgetMethodHandler();
@@ -68,4 +80,5 @@ public class CCDemonUtil {
 		}
 		return set;
 	}
+
 }
