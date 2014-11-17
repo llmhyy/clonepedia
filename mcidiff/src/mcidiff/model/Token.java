@@ -3,6 +3,8 @@ package mcidiff.model;
 import mcidiff.util.DiffUtil;
 
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.SimpleName;
+import org.eclipse.jdt.core.dom.Type;
 
 
 public class Token {
@@ -178,12 +180,20 @@ public class Token {
 		else{
 			if(seedNode.getNodeType() == ASTNode.SIMPLE_NAME 
 					&& thisNode.getNodeType() == ASTNode.SIMPLE_NAME){
-				ASTNode seedParent = seedNode.getParent();
-				ASTNode thisParent = thisNode.getParent();
+				SimpleName seedName = (SimpleName)seedNode;
+				SimpleName thisName = (SimpleName)thisNode;
 				
-				if(seedParent.getNodeType() != thisParent.getNodeType()){
-					return 0;
+				ASTNode seedParent = seedName.getParent();
+				ASTNode thisParent = thisName.getParent();
+				/**
+				 * type should not be matched to method/field/variable
+				 */
+				if(seedParent instanceof Type || thisParent instanceof Type){
+					if(seedParent.getNodeType() != thisParent.getNodeType()){
+						return 0;
+					}
 				}
+				
 			}
 			
 			return 0.1 + DiffUtil.compareStringSimilarity(seedToken.getTokenName(), getTokenName());

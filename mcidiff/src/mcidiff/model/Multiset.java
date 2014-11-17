@@ -114,6 +114,12 @@ public class Multiset{
 
 			@Override
 			public int compare(Multiset prev, Multiset post) {
+				
+				if(prev.getTokens().get(0).toString().contains("urrent")
+						|| post.getTokens().get(0).toString().contains("urrent")){
+					System.currentTimeMillis();
+				}
+				
 				if(prev != null && post != null){
 					int sum = 0;
 					

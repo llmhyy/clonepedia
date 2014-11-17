@@ -87,6 +87,7 @@ public class ASTUtil {
 		ASTParser parser = ASTParser.newParser(AST.JLS4);
 		parser.setSource(content.toCharArray());
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
+		//parser.setResolveBindings(isNeedBinding);
 		
 		CompilationUnit cu = (CompilationUnit) parser.createAST(null);
 		
