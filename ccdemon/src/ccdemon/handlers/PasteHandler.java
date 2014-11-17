@@ -30,7 +30,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 
 import ccdemon.model.ConfigurationPoint;
-import ccdemon.model.OccurrenceTable;
+import ccdemon.model.ConfigurationPointSet;
 import ccdemon.model.ReferrableCloneSet;
 import ccdemon.model.SelectedCodeRange;
 import ccdemon.util.CCDemonUtil;
@@ -56,70 +56,60 @@ public class PasteHandler extends AbstractHandler {
 		ArrayList<ReferrableCloneSet> referrableCloneSets = CCDemonUtil.findCodeTemplateMaterials(sets, copiedRange);
 		
 		if(referrableCloneSets.size() != 0){
-			ArrayList<ConfigurationPoint> configurationPoints = 
+			ConfigurationPointSet cps = 
 					identifyConfigurationPoints(event, startPositionInPastedFile, copiedRange, referrableCloneSets);
 			
-			OccurrenceTable occurrences = constructCandidateOccurrences(configurationPoints, referrableCloneSets);
-			//TODO may leverage the occurances to compute scores of candidates.
+			cps.prepareForInstallation(referrableCloneSets);
 			
-			AbstractTextEditor activeEditor = (AbstractTextEditor) HandlerUtil.getActiveEditor(event);
-			ISourceViewer sourceViewer = (ISourceViewer) activeEditor.getAdapter(ITextOperationTarget.class);
-			IDocument document= sourceViewer.getDocument();
-			
-			try{
-				LinkedModeModel model = new LinkedModeModel();
-				for(ConfigurationPoint cp: configurationPoints){
-					LinkedPositionGroup group = new LinkedPositionGroup();
-					ICompletionProposal[] proposals = new ICompletionProposal[cp.getCandidates().size()]; 
-					for(int i=0; i<proposals.length; i++){
-						proposals[i] = new CompletionProposal(cp.getCandidates().get(i).getText(), cp.getModifiedTokenSeq().getStartPosition(),
-								cp.getModifiedTokenSeq().getPositionLength(), 0);
-					}
-					
-					LinkedPosition lp = new ProposalPosition(document, cp.getModifiedTokenSeq().getStartPosition(), 
-							cp.getModifiedTokenSeq().getPositionLength(), proposals);
-					group.addPosition(lp);
-					model.addGroup(group);
-				}
-				model.forceInstall();
-				CustomLinkedModeUI ui = new CustomLinkedModeUI(model, sourceViewer);
-				CustomLinkedModeUIFocusListener listener = new CustomLinkedModeUIFocusListener();
-				ui.setPositionListener(listener);
-				//ui.setExitPosition(sourceViewer, startPositionInPastedFile, copiedRange.getPositionLength(), Integer.MAX_VALUE);
-				ui.enter();
-				//listener.setTestPosition(model.get);
-			}
-			catch(BadLocationException e){
-				e.printStackTrace();
-			}
+			installConfigurationPointsOnCode(event, cps);
 		}
 		
 		return null;
 	}
-	
-	private OccurrenceTable constructCandidateOccurrences(ArrayList<ConfigurationPoint> configurationPoints,
-			ArrayList<ReferrableCloneSet> referrableCloneSets) {
-		ReferrableCloneSet rcs = referrableCloneSets.get(0);
-		String[][] occurrenceTable = new String[rcs.getCloneSet().size()][configurationPoints.size()];
-		CloneInstance[] instanceArray = rcs.getCloneSet().toArray(new CloneInstance[0]);
-		
-		for(int i=0; i<instanceArray.length; i++){
-			CloneInstance instance = instanceArray[i];
-			
-			for(int j=0; j<configurationPoints.size(); j++){
-				ConfigurationPoint cp = configurationPoints.get(j);
-				TokenSeq tokenSeq = cp.getSeqMultiset().findTokenSeqByCloneInstance(instance.getFileLocation(), 
-						instance.getStartLine(), instance.getEndLine());
-				if(tokenSeq != null){
-					occurrenceTable[i][j] = tokenSeq.getText();
-				}
-			}
-		}
-		
-		return new OccurrenceTable(occurrenceTable);
-	}
 
-	private ArrayList<ConfigurationPoint> identifyConfigurationPoints(ExecutionEvent event, int startPositionInPastedFile, 
+
+
+	/**
+	 * @param event
+	 * @param cps
+	 */
+	private void installConfigurationPointsOnCode(ExecutionEvent event,
+			ConfigurationPointSet cps) {
+		AbstractTextEditor activeEditor = (AbstractTextEditor) HandlerUtil.getActiveEditor(event);
+		ISourceViewer sourceViewer = (ISourceViewer) activeEditor.getAdapter(ITextOperationTarget.class);
+		IDocument document= sourceViewer.getDocument();
+		
+		try{
+			LinkedModeModel model = new LinkedModeModel();
+			for(ConfigurationPoint cp: cps.getConfigurationPoints()){
+				LinkedPositionGroup group = new LinkedPositionGroup();
+				ICompletionProposal[] proposals = new ICompletionProposal[cp.getCandidates().size()]; 
+				for(int i=0; i<proposals.length; i++){
+					proposals[i] = new CompletionProposal(cp.getCandidates().get(i).getText(), cp.getModifiedTokenSeq().getStartPosition(),
+							cp.getModifiedTokenSeq().getPositionLength(), 0);
+				}
+				
+				LinkedPosition lp = new ProposalPosition(document, cp.getModifiedTokenSeq().getStartPosition(), 
+						cp.getModifiedTokenSeq().getPositionLength(), proposals);
+				group.addPosition(lp);
+				model.addGroup(group);
+			}
+			model.forceInstall();
+			CustomLinkedModeUI ui = new CustomLinkedModeUI(model, sourceViewer);
+			CustomLinkedModeUIFocusListener listener = new CustomLinkedModeUIFocusListener();
+			ui.setPositionListener(listener);
+			//ui.setExitPosition(sourceViewer, startPositionInPastedFile, copiedRange.getPositionLength(), Integer.MAX_VALUE);
+			ui.enter();
+			//listener.setTestPosition(model.get);
+		}
+		catch(BadLocationException e){
+			e.printStackTrace();
+		}
+	}
+	
+	
+
+	private ConfigurationPointSet identifyConfigurationPoints(ExecutionEvent event, int startPositionInPastedFile, 
 			SelectedCodeRange copiedRange, ArrayList<ReferrableCloneSet> referrableCloneSets ) throws ExecutionException {
 		if(copiedRange != null){
 			ReferrableCloneSet rcs = referrableCloneSets.get(0);
@@ -139,10 +129,10 @@ public class PasteHandler extends AbstractHandler {
 			 */
 			appendConfigurationPointsWithPastedSeq(event, copiedRange, configurationPoints, startPositionInPastedFile);
 			
-			return configurationPoints;
+			return new ConfigurationPointSet(configurationPoints);
 		}
 		
-		return new ArrayList<>();
+		return new ConfigurationPointSet();
 	}
 
 	/**
