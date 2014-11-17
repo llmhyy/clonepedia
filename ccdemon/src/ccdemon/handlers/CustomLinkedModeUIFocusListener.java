@@ -6,12 +6,15 @@ import mcidiff.model.Token;
 import mcidiff.model.TokenSeq;
 
 import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.link.LinkedModeUI.ILinkedModeUIFocusListener;
 import org.eclipse.jface.text.link.LinkedModeUI.LinkedModeUITarget;
 import org.eclipse.jface.text.link.LinkedPosition;
+import org.eclipse.jface.text.link.ProposalPosition;
 
 import ccdemon.model.ConfigurationPoint;
 import ccdemon.model.ConfigurationPointSet;
+import ccdemon.proposal.RankedCompletionProposal;
 
 public class CustomLinkedModeUIFocusListener implements
 		ILinkedModeUIFocusListener {
@@ -21,10 +24,6 @@ public class CustomLinkedModeUIFocusListener implements
 	int formerLength;
 	int currentLength;
 	
-	public ConfigurationPointSet getCps() {
-		return cps;
-	}
-
 	public void setCps(ConfigurationPointSet cps) {
 		this.cps = cps;
 	}
@@ -40,6 +39,8 @@ public class CustomLinkedModeUIFocusListener implements
 			if(currentLength != formerLength){
 				ArrayList<ConfigurationPoint> configurationPoints = cps.getConfigurationPoints();
 				int index = configurationPoints.indexOf(currentCP);
+				ProposalPosition currentPosition = (ProposalPosition) PasteHandler.positions.get(index);
+				currentPosition.setLength(currentLength);
 				for(int i = index + 1; i < configurationPoints.size(); i++){
 					ConfigurationPoint cp = configurationPoints.get(i);
 					TokenSeq modifiedTokenSeq = cp.getModifiedTokenSeq();
@@ -48,9 +49,15 @@ public class CustomLinkedModeUIFocusListener implements
 						token.setStartPosition(token.getStartPosition() + currentLength - formerLength);
 						token.setEndPosition(token.getEndPosition() + currentLength - formerLength);
 					}
+					
+					ProposalPosition lp = (ProposalPosition) PasteHandler.positions.get(i);
+					for(ICompletionProposal proposal : lp.getChoices()){
+						RankedCompletionProposal rankedProposal = (RankedCompletionProposal) proposal;
+						rankedProposal.setOffset(rankedProposal.getOffset() + currentLength - formerLength);
+					}
 				}
 				
-				PasteHandler.installConfigurationPointsOnCode(cps);
+				//PasteHandler.installConfigurationPointsOnCode(cps);
 			}
 		} catch (BadLocationException e) {
 			// TODO Auto-generated catch block

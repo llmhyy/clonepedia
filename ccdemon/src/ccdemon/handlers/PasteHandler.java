@@ -33,6 +33,7 @@ import ccdemon.model.ConfigurationPoint;
 import ccdemon.model.ConfigurationPointSet;
 import ccdemon.model.ReferrableCloneSet;
 import ccdemon.model.SelectedCodeRange;
+import ccdemon.proposal.RankedCompletionProposal;
 import ccdemon.util.CCDemonUtil;
 import ccdemon.util.SharedData;
 import clonepedia.model.ontology.CloneInstance;
@@ -40,6 +41,8 @@ import clonepedia.model.ontology.CloneSets;
 
 
 public class PasteHandler extends AbstractHandler {
+	
+	public static ArrayList<LinkedPosition> positions = new ArrayList<LinkedPosition>();
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
@@ -92,6 +95,7 @@ public class PasteHandler extends AbstractHandler {
 						cp.getModifiedTokenSeq().getPositionLength(), proposals);
 				group.addPosition(lp);
 				model.addGroup(group);
+				positions.add(lp);
 			}
 			model.forceInstall();
 			CustomLinkedModeUI ui = new CustomLinkedModeUI(model, sourceViewer);
@@ -100,7 +104,6 @@ public class PasteHandler extends AbstractHandler {
 			ui.setPositionListener(listener);
 			//ui.setExitPosition(sourceViewer, startPositionInPastedFile, copiedRange.getPositionLength(), Integer.MAX_VALUE);
 			ui.enter();
-			//listener.setTestPosition(model.get);
 		}
 		catch(BadLocationException e){
 			e.printStackTrace();

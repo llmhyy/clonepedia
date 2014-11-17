@@ -72,7 +72,7 @@ public final class RankedCompletionProposal implements ICompletionProposal {
 		fDisplayString= displayString;
 		fContextInformation= contextInformation;
 		fAdditionalProposalInfo= additionalProposalInfo;
-		this.setRank(rank);
+		this.rank = rank;
 	}
 
 	/*
@@ -123,6 +123,9 @@ public final class RankedCompletionProposal implements ICompletionProposal {
 		return fAdditionalProposalInfo;
 	}
 
+	public int getOffset() {
+		return this.fReplacementOffset;
+	}
 	
 	public void setOffset(int fReplacementOffset) {
 		this.fReplacementOffset = fReplacementOffset;
