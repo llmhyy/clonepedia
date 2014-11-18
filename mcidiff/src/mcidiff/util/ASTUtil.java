@@ -3,6 +3,10 @@ package mcidiff.util;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
+
+import mcidiff.model.Multiset;
 
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
@@ -92,5 +96,17 @@ public class ASTUtil {
 		CompilationUnit cu = (CompilationUnit) parser.createAST(null);
 		
 		return cu;
+	}
+	
+	public static void sort(ArrayList<Multiset> list, Comparator<Multiset> comparator){
+		for(int i=0; i<list.size(); i++){
+			for(int j=1; j<list.size()-i; j++){
+				if(comparator.compare(list.get(j), list.get(j-1))<0){
+					Multiset tmp = list.get(j);
+					list.set(j, list.get(j-1));
+					list.set(j-1, tmp);
+				}
+			}
+		}
 	}
 }

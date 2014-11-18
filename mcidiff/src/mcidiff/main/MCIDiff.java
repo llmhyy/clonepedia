@@ -8,6 +8,7 @@ import mcidiff.action.Tokenizer;
 import mcidiff.model.CloneInstance;
 import mcidiff.model.CloneSet;
 import mcidiff.model.Multiset;
+import mcidiff.model.MultisetPositionComparator;
 import mcidiff.model.SeqMultiset;
 import mcidiff.model.Token;
 import mcidiff.model.TokenSeq;
@@ -32,7 +33,8 @@ public class MCIDiff {
 		TokenSequence[] sequences = transferToModel(set);
 		ArrayList<Multiset> results = computeDiff(commonList, sequences);
 		
-		Collections.sort(results, Multiset.MultisetPositionComparator);
+		Collections.sort(results, new MultisetPositionComparator(results));
+		//ASTUtil.sort(results, Multiset.MultisetPositionComparator);
 		identifyEpsilonTokenPosition(results);
 		
 		filterCommonSet(results);
