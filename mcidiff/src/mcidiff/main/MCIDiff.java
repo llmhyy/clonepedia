@@ -58,7 +58,7 @@ public class MCIDiff {
 			else{
 				Multiset previousSet = results.get(i-1);
 				if(isConsecutive(set, previousSet)
-						&& (set.isGapped() && !set.isParamertized())){
+						/*&& (set.isGapped() && !set.isParamertized())*/){
 					sets.add(set);
 				}
 				else{
@@ -120,7 +120,8 @@ public class MCIDiff {
 				}
 			}
 			
-			else if(!prevToken.getPostToken().equals(currentCorrspondingToken)){
+			else if(!(prevToken.getPostToken().equals(currentCorrspondingToken) 
+					|| currentCorrspondingToken.getPreviousToken().equals(prevToken))){
 				return false;
 			}
 		}
