@@ -15,6 +15,7 @@ import org.eclipse.jface.text.link.ProposalPosition;
 import ccdemon.model.ConfigurationPoint;
 import ccdemon.model.ConfigurationPointSet;
 import ccdemon.proposal.RankedCompletionProposal;
+import ccdemon.util.CCDemonUtil;
 
 public class CustomLinkedModeUIFocusListener implements
 		ILinkedModeUIFocusListener {
@@ -65,6 +66,21 @@ public class CustomLinkedModeUIFocusListener implements
 //						
 //						System.out.println("2: " + rankedProposal.getDisplayString() + " " + rankedProposal.getOffset());
 //					}
+				}
+				
+				int positionIndex = CCDemonUtil.positions.indexOf(position);
+				for(int i = positionIndex + 1; i < CCDemonUtil.positions.size(); i++){
+					ProposalPosition pp = (ProposalPosition) CCDemonUtil.positions.get(i);
+					
+					for(ICompletionProposal proposal : pp.getChoices()){
+						RankedCompletionProposal rankedProposal = (RankedCompletionProposal) proposal;
+
+						System.out.println("1: " + rankedProposal.getDisplayString() + " " + rankedProposal.getfReplacementString() + " " + rankedProposal.getOffset());
+						
+						rankedProposal.setfReplacementString("test" + i);
+
+						System.out.println("2: " + rankedProposal.getDisplayString() + " " + rankedProposal.getfReplacementString() + " " + rankedProposal.getOffset());
+					}
 				}
 				
 				//PasteHandler.installConfigurationPointsOnCode(cps);

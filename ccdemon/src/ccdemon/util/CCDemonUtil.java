@@ -6,6 +6,7 @@ import mcidiff.model.CloneInstance;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.text.link.LinkedPosition;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.internal.handlers.WidgetMethodHandler;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
@@ -17,6 +18,8 @@ import clonepedia.model.ontology.CloneSets;
 
 @SuppressWarnings("restriction")
 public class CCDemonUtil {
+	
+	public static ArrayList<LinkedPosition> positions = new ArrayList<LinkedPosition>();
 	
 	private static AbstractTextEditor activeEditor;
 

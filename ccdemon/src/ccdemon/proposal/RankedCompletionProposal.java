@@ -91,6 +91,8 @@ public final class RankedCompletionProposal implements ICompletionProposal {
 //			System.out.println("fReplacementOffset: " + fReplacementOffset + " fReplacementLength: " + fReplacementLength);
 			
 			document.replace(position.offset, position.length, fReplacementString);
+			fReplacementOffset = position.offset;
+			fReplacementLength = position.length;
 			
 			System.out.println("position.offset: " + position.offset + " position.length: " + position.length);
 			
@@ -167,4 +169,13 @@ public final class RankedCompletionProposal implements ICompletionProposal {
 	public void setPosition(Position position) {
 		this.position = position;
 	}
+
+	public String getfReplacementString() {
+		return fReplacementString;
+	}
+
+	public void setfReplacementString(String fReplacementString) {
+		this.fReplacementString = fReplacementString;
+	}
+
 }

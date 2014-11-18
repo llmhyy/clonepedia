@@ -41,8 +41,6 @@ import clonepedia.model.ontology.CloneSets;
 
 
 public class PasteHandler extends AbstractHandler {
-	
-	public static ArrayList<LinkedPosition> positions = new ArrayList<LinkedPosition>();
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
@@ -65,6 +63,7 @@ public class PasteHandler extends AbstractHandler {
 			cps.prepareForInstallation(referrableCloneSets);
 
 			CCDemonUtil.setActiveEditor(event);
+			CCDemonUtil.positions.clear();
 			installConfigurationPointsOnCode(cps);
 		}
 		
@@ -100,7 +99,7 @@ public class PasteHandler extends AbstractHandler {
 				
 				group.addPosition(lp);
 				model.addGroup(group);
-				positions.add(lp);
+				CCDemonUtil.positions.add(lp);
 			}
 			model.forceInstall();
 			CustomLinkedModeUI ui = new CustomLinkedModeUI(model, sourceViewer);
