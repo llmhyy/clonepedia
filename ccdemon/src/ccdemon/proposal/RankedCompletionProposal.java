@@ -5,7 +5,9 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.contentassist.*;
+import org.eclipse.jface.text.link.ProposalPosition;
 
 
 /**
@@ -31,6 +33,8 @@ public final class RankedCompletionProposal implements ICompletionProposal {
 	private String fAdditionalProposalInfo;
 	
 	private int rank;
+	
+	private Position position;
 
 	/**
 	 * Creates a new completion proposal based on the provided information. The replacement string is
@@ -80,7 +84,22 @@ public final class RankedCompletionProposal implements ICompletionProposal {
 	 */
 	public void apply(IDocument document) {
 		try {
-			document.replace(fReplacementOffset, fReplacementLength, fReplacementString);
+			
+			//why not working!!
+//			document.replace(fReplacementOffset, fReplacementLength, fReplacementString);
+//			
+//			System.out.println("fReplacementOffset: " + fReplacementOffset + " fReplacementLength: " + fReplacementLength);
+			
+			document.replace(position.offset, position.length, fReplacementString);
+			
+			System.out.println("position.offset: " + position.offset + " position.length: " + position.length);
+			
+			this.position.setLength(fReplacementString.length());
+			ProposalPosition pp = (ProposalPosition) position;
+			for(ICompletionProposal icp : pp.getChoices()){
+				RankedCompletionProposal rcp = (RankedCompletionProposal) icp;
+				rcp.setLength(position.length);
+			}
 		} catch (BadLocationException x) {
 			// ignore
 		}
@@ -139,5 +158,13 @@ public final class RankedCompletionProposal implements ICompletionProposal {
 	}
 	public void setRank(int rank) {
 		this.rank = rank;
+	}
+
+	public Position getPosition() {
+		return position;
+	}
+
+	public void setPosition(Position position) {
+		this.position = position;
 	}
 }

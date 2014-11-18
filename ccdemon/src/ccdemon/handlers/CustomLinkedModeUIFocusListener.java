@@ -39,26 +39,39 @@ public class CustomLinkedModeUIFocusListener implements
 			if(currentLength != formerLength){
 				ArrayList<ConfigurationPoint> configurationPoints = cps.getConfigurationPoints();
 				int index = configurationPoints.indexOf(currentCP);
-				ProposalPosition currentPosition = (ProposalPosition) PasteHandler.positions.get(index);
-				currentPosition.setLength(currentLength);
+//				ProposalPosition currentPosition = (ProposalPosition) PasteHandler.positions.get(index);
+//				currentPosition.setLength(currentLength);
+				
 				for(int i = index + 1; i < configurationPoints.size(); i++){
 					ConfigurationPoint cp = configurationPoints.get(i);
 					TokenSeq modifiedTokenSeq = cp.getModifiedTokenSeq();
 					ArrayList<Token> tokens = modifiedTokenSeq.getTokens();
 					for(Token token : tokens){
+//						System.out.println("1: " + token.toString() + " " + token.getStartPosition());
+//						System.out.println("1: " + token.toString() + " " + token.getEndPosition());
 						token.setStartPosition(token.getStartPosition() + currentLength - formerLength);
 						token.setEndPosition(token.getEndPosition() + currentLength - formerLength);
+//						System.out.println("2: " + token.toString() + " " + token.getStartPosition());
+//						System.out.println("2: " + token.toString() + " " + token.getEndPosition());
 					}
 					
-					ProposalPosition lp = (ProposalPosition) PasteHandler.positions.get(i);
-					for(ICompletionProposal proposal : lp.getChoices()){
-						RankedCompletionProposal rankedProposal = (RankedCompletionProposal) proposal;
-						rankedProposal.setOffset(rankedProposal.getOffset() + currentLength - formerLength);
-					}
+//					ProposalPosition lp = (ProposalPosition) PasteHandler.positions.get(i);
+//					for(ICompletionProposal proposal : lp.getChoices()){
+//						RankedCompletionProposal rankedProposal = (RankedCompletionProposal) proposal;
+//
+//						System.out.println("1: " + rankedProposal.getDisplayString() + " " + rankedProposal.getOffset());
+//						
+//						rankedProposal.setOffset(rankedProposal.getOffset() + currentLength - formerLength);
+//						
+//						System.out.println("2: " + rankedProposal.getDisplayString() + " " + rankedProposal.getOffset());
+//					}
 				}
 				
 				//PasteHandler.installConfigurationPointsOnCode(cps);
 			}
+			
+
+			System.out.println("currentLength: " + currentLength);
 		} catch (BadLocationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -80,6 +93,8 @@ public class CustomLinkedModeUIFocusListener implements
 					break;
 				}
 			}
+			
+			System.out.println("formerLength: " + formerLength);
 			
 		} catch (BadLocationException e) {
 			// TODO Auto-generated catch block

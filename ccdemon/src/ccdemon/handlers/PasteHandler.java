@@ -87,12 +87,17 @@ public class PasteHandler extends AbstractHandler {
 				LinkedPositionGroup group = new LinkedPositionGroup();
 				ICompletionProposal[] proposals = new ICompletionProposal[cp.getCandidates().size()]; 
 				for(int i=0; i<proposals.length; i++){
-					proposals[i] = new CompletionProposal(cp.getCandidates().get(i).getText(), cp.getModifiedTokenSeq().getStartPosition(),
-							cp.getModifiedTokenSeq().getPositionLength(), 0);
+					proposals[i] = new RankedCompletionProposal(cp.getCandidates().get(i).getText(), cp.getModifiedTokenSeq().getStartPosition(),
+							cp.getModifiedTokenSeq().getPositionLength(), 0, 0);
 				}
 				
 				LinkedPosition lp = new ProposalPosition(document, cp.getModifiedTokenSeq().getStartPosition(), 
 						cp.getModifiedTokenSeq().getPositionLength(), proposals);
+				for(ICompletionProposal icp : proposals){
+					RankedCompletionProposal rcp = (RankedCompletionProposal) icp;
+					rcp.setPosition(lp);
+				}
+				
 				group.addPosition(lp);
 				model.addGroup(group);
 				positions.add(lp);
