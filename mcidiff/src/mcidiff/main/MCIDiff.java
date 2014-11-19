@@ -44,8 +44,6 @@ public class MCIDiff {
 		return finalResults;
 	}
 	
-	
-	
 	private ArrayList<SeqMultiset> aggregateSeperatedTokens(ArrayList<Multiset> results) {
 
 		ArrayList<ArrayList<Multiset>> aggregatedSets = new ArrayList<>();
