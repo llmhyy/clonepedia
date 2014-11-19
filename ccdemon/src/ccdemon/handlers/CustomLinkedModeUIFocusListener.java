@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import mcidiff.model.Token;
 import mcidiff.model.TokenSeq;
 
-import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.link.LinkedModeUI.ILinkedModeUIFocusListener;
 import org.eclipse.jface.text.link.LinkedModeUI.LinkedModeUITarget;
@@ -15,6 +14,7 @@ import org.eclipse.jface.text.link.ProposalPosition;
 import ccdemon.model.ConfigurationPoint;
 import ccdemon.model.ConfigurationPointSet;
 import ccdemon.proposal.RankedCompletionProposal;
+import ccdemon.proposal.RankedProposalPosition;
 import ccdemon.util.CCDemonUtil;
 
 public class CustomLinkedModeUIFocusListener implements
@@ -30,91 +30,54 @@ public class CustomLinkedModeUIFocusListener implements
 	}
 
 	@Override
-	public void linkingFocusLost(LinkedPosition position,
-			LinkedModeUITarget target) {
-		try {
-			System.out.println("lost: " + position.getContent() + ", length: " + position.length + ", offset: " + position.offset);		
-
-			currentLength = position.length;
+	public void linkingFocusLost(LinkedPosition position, LinkedModeUITarget target) {
+		
+		currentLength = position.length;
+		
+		if(currentLength != formerLength){
+			ArrayList<ConfigurationPoint> configurationPoints = cps.getConfigurationPoints();
+			int index = configurationPoints.indexOf(currentCP);
 			
-			if(currentLength != formerLength){
-				ArrayList<ConfigurationPoint> configurationPoints = cps.getConfigurationPoints();
-				int index = configurationPoints.indexOf(currentCP);
-//				ProposalPosition currentPosition = (ProposalPosition) PasteHandler.positions.get(index);
-//				currentPosition.setLength(currentLength);
-				
-				for(int i = index + 1; i < configurationPoints.size(); i++){
-					ConfigurationPoint cp = configurationPoints.get(i);
-					TokenSeq modifiedTokenSeq = cp.getModifiedTokenSeq();
-					ArrayList<Token> tokens = modifiedTokenSeq.getTokens();
-					for(Token token : tokens){
-//						System.out.println("1: " + token.toString() + " " + token.getStartPosition());
-//						System.out.println("1: " + token.toString() + " " + token.getEndPosition());
-						token.setStartPosition(token.getStartPosition() + currentLength - formerLength);
-						token.setEndPosition(token.getEndPosition() + currentLength - formerLength);
-//						System.out.println("2: " + token.toString() + " " + token.getStartPosition());
-//						System.out.println("2: " + token.toString() + " " + token.getEndPosition());
-					}
-					
-//					ProposalPosition lp = (ProposalPosition) PasteHandler.positions.get(i);
-//					for(ICompletionProposal proposal : lp.getChoices()){
-//						RankedCompletionProposal rankedProposal = (RankedCompletionProposal) proposal;
-//
-//						System.out.println("1: " + rankedProposal.getDisplayString() + " " + rankedProposal.getOffset());
-//						
-//						rankedProposal.setOffset(rankedProposal.getOffset() + currentLength - formerLength);
-//						
-//						System.out.println("2: " + rankedProposal.getDisplayString() + " " + rankedProposal.getOffset());
-//					}
+			for(int i = index + 1; i < configurationPoints.size(); i++){
+				ConfigurationPoint cp = configurationPoints.get(i);
+				TokenSeq modifiedTokenSeq = cp.getModifiedTokenSeq();
+				ArrayList<Token> tokens = modifiedTokenSeq.getTokens();
+				for(Token token : tokens){
+					token.setStartPosition(token.getStartPosition() + currentLength - formerLength);
+					token.setEndPosition(token.getEndPosition() + currentLength - formerLength);
 				}
-				
-				/*int positionIndex = CCDemonUtil.positions.indexOf(position);
-				for(int i = positionIndex + 1; i < CCDemonUtil.positions.size(); i++){
-					ProposalPosition pp = (ProposalPosition) CCDemonUtil.positions.get(i);
-					
-					for(ICompletionProposal proposal : pp.getChoices()){
-						RankedCompletionProposal rankedProposal = (RankedCompletionProposal) proposal;
-
-						System.out.println("1: " + rankedProposal.getDisplayString() + " " + rankedProposal.getfReplacementString() + " " + rankedProposal.getOffset());
-						
-						rankedProposal.setfReplacementString("test" + i);
-
-						System.out.println("2: " + rankedProposal.getDisplayString() + " " + rankedProposal.getfReplacementString() + " " + rankedProposal.getOffset());
-					}
-				}*/
-				
-				//PasteHandler.installConfigurationPointsOnCode(cps);
 			}
 			
-
-			System.out.println("currentLength: " + currentLength);
-		} catch (BadLocationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//the way to modify proposals' content
+			/*int positionIndex = CCDemonUtil.positions.indexOf(position);
+			for(int i = positionIndex + 1; i < CCDemonUtil.positions.size(); i++){
+				RankedProposalPosition pp = (RankedProposalPosition) CCDemonUtil.positions.get(i);
+				ICompletionProposal[] proposals = new ICompletionProposal[3]; 
+				proposals[0] = new RankedCompletionProposal("test1", pp.offset, pp.length, 0 , 0);
+				((RankedCompletionProposal) proposals[0]).setPosition(pp);
+				proposals[1] = new RankedCompletionProposal("test2", pp.offset, pp.length, 0 , 0);
+				((RankedCompletionProposal) proposals[1]).setPosition(pp);
+				proposals[2] = new RankedCompletionProposal("test3", pp.offset, pp.length, 0 , 0);
+				((RankedCompletionProposal) proposals[2]).setPosition(pp);
+				
+				pp.setChoices(proposals);
+			}*/
 		}
 	}
 
 	@Override
-	public void linkingFocusGained(LinkedPosition position,
-			LinkedModeUITarget target) {
-		try {
-			System.out.println("gained: " + position.getContent() + ", length: " + position.length + ", offset: " + position.offset);
-			
-			int offset = position.offset;
-			formerLength = position.length;
-			ArrayList<ConfigurationPoint> configurationPoints = cps.getConfigurationPoints();
-			for(ConfigurationPoint cp : configurationPoints){
-				if(cp.getModifiedTokenSeq().getStartPosition() == offset && cp.getModifiedTokenSeq().getPositionLength() == formerLength){
-					currentCP = cp;
-					break;
-				}
+	public void linkingFocusGained(LinkedPosition position, LinkedModeUITarget target) {
+		
+		formerLength = position.length;
+		
+		//find current configuration point that has the same offset and length
+		int offset = position.offset;
+		ArrayList<ConfigurationPoint> configurationPoints = cps.getConfigurationPoints();
+		for(ConfigurationPoint cp : configurationPoints){
+			if(cp.getModifiedTokenSeq().getStartPosition() == offset && cp.getModifiedTokenSeq().getPositionLength() == formerLength){
+				currentCP = cp;
+				break;
 			}
-			
-			System.out.println("formerLength: " + formerLength);
-			
-		} catch (BadLocationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	}
 

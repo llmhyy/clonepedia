@@ -19,7 +19,6 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.jface.text.ITextSelection;
-import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.link.LinkedModeModel;
 import org.eclipse.jface.text.link.LinkedPosition;
@@ -34,6 +33,7 @@ import ccdemon.model.ConfigurationPointSet;
 import ccdemon.model.ReferrableCloneSet;
 import ccdemon.model.SelectedCodeRange;
 import ccdemon.proposal.RankedCompletionProposal;
+import ccdemon.proposal.RankedProposalPosition;
 import ccdemon.util.CCDemonUtil;
 import ccdemon.util.SharedData;
 import clonepedia.model.ontology.CloneInstance;
@@ -75,7 +75,7 @@ public class PasteHandler extends AbstractHandler {
 	/**
 	 * @param cps
 	 */
-	public static void installConfigurationPointsOnCode(ConfigurationPointSet cps) {
+	public void installConfigurationPointsOnCode(ConfigurationPointSet cps) {
 		AbstractTextEditor activeEditor = CCDemonUtil.getActiveEditor();
 		ISourceViewer sourceViewer = (ISourceViewer) activeEditor.getAdapter(ITextOperationTarget.class);
 		IDocument document= sourceViewer.getDocument();
@@ -90,7 +90,7 @@ public class PasteHandler extends AbstractHandler {
 							cp.getModifiedTokenSeq().getPositionLength(), 0, 0);
 				}
 				
-				LinkedPosition lp = new ProposalPosition(document, cp.getModifiedTokenSeq().getStartPosition(), 
+				LinkedPosition lp = new RankedProposalPosition(document, cp.getModifiedTokenSeq().getStartPosition(), 
 						cp.getModifiedTokenSeq().getPositionLength(), proposals);
 				for(ICompletionProposal icp : proposals){
 					RankedCompletionProposal rcp = (RankedCompletionProposal) icp;
