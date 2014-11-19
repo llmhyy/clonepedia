@@ -1,7 +1,6 @@
 package mcidiff.main;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 
 import mcidiff.action.Tokenizer;
@@ -12,6 +11,7 @@ import mcidiff.model.MultisetPositionComparator;
 import mcidiff.model.SeqMultiset;
 import mcidiff.model.Token;
 import mcidiff.model.TokenSeq;
+import mcidiff.util.ASTUtil;
 import mcidiff.util.DiffUtil;
 import mcidiff.util.GlobalSettings;
 
@@ -33,8 +33,8 @@ public class MCIDiff {
 		TokenSequence[] sequences = transferToModel(set);
 		ArrayList<Multiset> results = computeDiff(commonList, sequences);
 		
-		Collections.sort(results, new MultisetPositionComparator(results));
-		//ASTUtil.sort(results, Multiset.MultisetPositionComparator);
+		//Collections.sort(results, new MultisetPositionComparator(results));
+		ASTUtil.sort(results, new MultisetPositionComparator(results));
 		identifyEpsilonTokenPosition(results);
 		
 		filterCommonSet(results);
@@ -242,6 +242,9 @@ public class MCIDiff {
 			}
 		}
 
+		//multisetList.remove(0);
+		multisetList.remove(multisetList.size()-1);
+		
 		return multisetList;
 	}
 

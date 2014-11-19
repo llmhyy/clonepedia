@@ -45,6 +45,7 @@ public class MultisetPositionComparator implements Comparator<Multiset>{
 					}
 				}
 				
+				//System.out.println(set1.toString() + "is not comparable with " + set2.toString());
 			}
 			
 			return sum;
