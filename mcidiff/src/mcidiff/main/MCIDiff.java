@@ -6,6 +6,7 @@ import java.util.Iterator;
 import mcidiff.action.Tokenizer;
 import mcidiff.model.CloneInstance;
 import mcidiff.model.CloneSet;
+import mcidiff.model.CorrespondentListAndSet;
 import mcidiff.model.Multiset;
 import mcidiff.model.MultisetPositionComparator;
 import mcidiff.model.SeqMultiset;
@@ -29,6 +30,9 @@ public class MCIDiff {
 		
 		ArrayList<Token>[] lists = set.getTokenLists();
 		Object[] commonList = DiffUtil.generateCommonNodeListFromMultiSequence(lists);
+		
+		CorrespondentListAndSet cls = DiffUtil.generateMatchedTokenListFromMultiSequence(lists);
+		//DiffUtil.generateMatchedTokenList(lists[1].toArray(new Token[0]), lists[2].toArray(new Token[0]));
 		
 		TokenSequence[] sequences = transferToModel(set);
 		ArrayList<Multiset> results = computeDiff(commonList, sequences);

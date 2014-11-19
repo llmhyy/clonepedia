@@ -39,6 +39,10 @@ public class Multiset{
 		this.tokens.add(token);
 	}
 	
+	public void addAll(Multiset set){
+		this.tokens.addAll(set.getTokens());
+	}
+	
 	public String toString(){
 		return tokens.toString();
 	}
