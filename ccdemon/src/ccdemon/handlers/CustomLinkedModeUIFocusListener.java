@@ -25,7 +25,7 @@ public class CustomLinkedModeUIFocusListener implements
 	int formerLength;
 	int currentLength;
 	
-	public void setCps(ConfigurationPointSet cps) {
+	public void setConfigurationPointSet(ConfigurationPointSet cps) {
 		this.cps = cps;
 	}
 
@@ -68,7 +68,7 @@ public class CustomLinkedModeUIFocusListener implements
 //					}
 				}
 				
-				int positionIndex = CCDemonUtil.positions.indexOf(position);
+				/*int positionIndex = CCDemonUtil.positions.indexOf(position);
 				for(int i = positionIndex + 1; i < CCDemonUtil.positions.size(); i++){
 					ProposalPosition pp = (ProposalPosition) CCDemonUtil.positions.get(i);
 					
@@ -81,7 +81,7 @@ public class CustomLinkedModeUIFocusListener implements
 
 						System.out.println("2: " + rankedProposal.getDisplayString() + " " + rankedProposal.getfReplacementString() + " " + rankedProposal.getOffset());
 					}
-				}
+				}*/
 				
 				//PasteHandler.installConfigurationPointsOnCode(cps);
 			}
