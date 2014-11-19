@@ -64,7 +64,7 @@ public class TokenSequence {
 	 */
 	public Token moveCursorTo(Token commonToken) {
 		for(int i=startIndex+1; i<getLength(); i++){
-			if(getTokenList().get(i).equals(commonToken)){
+			if(getTokenList().get(i) == commonToken){
 				this.cursorIndex = i;
 				return getTokenList().get(i);
 			}

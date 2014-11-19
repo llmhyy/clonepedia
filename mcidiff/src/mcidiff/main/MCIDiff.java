@@ -29,15 +29,14 @@ public class MCIDiff {
 		new Tokenizer().tokenize(set);
 		
 		ArrayList<Token>[] lists = set.getTokenLists();
-		Object[] commonList = DiffUtil.generateCommonNodeListFromMultiSequence(lists);
+		//Object[] commonList = DiffUtil.generateCommonNodeListFromMultiSequence(lists);
 		
 		CorrespondentListAndSet cls = DiffUtil.generateMatchedTokenListFromMultiSequence(lists);
 		//DiffUtil.generateMatchedTokenList(lists[1].toArray(new Token[0]), lists[2].toArray(new Token[0]));
 		
 		TokenSequence[] sequences = transferToModel(set);
-		ArrayList<Multiset> results = computeDiff(commonList, sequences);
+		ArrayList<Multiset> results = computeDiff(cls, sequences);
 		
-		//Collections.sort(results, new MultisetPositionComparator(results));
 		ASTUtil.sort(results, new MultisetPositionComparator(results));
 		identifyEpsilonTokenPosition(results);
 		
@@ -216,21 +215,17 @@ public class MCIDiff {
 		return sequence;
 	}
 
-	private ArrayList<Multiset> computeDiff(Object[] commonList, TokenSequence[] sequences) {
+	private ArrayList<Multiset> computeDiff(CorrespondentListAndSet cls, TokenSequence[] sequences) {
 		ArrayList<Multiset> multisetList = new ArrayList<>();
 		
-		for(int i=1; i<commonList.length; i++){
-			Token commonToken = (Token) commonList[i];
+		for(int i=1; i<cls.getCommonTokenList().length; i++){
 			
-			/*if(i == 1086){
-				System.currentTimeMillis();
-			}*/
-			
-			Multiset commonSet = new Multiset();
+			Multiset commonSet = cls.getMultisetList()[i];
 			commonSet.setCommon(true);
 			for(int j=0; j<sequences.length; j++){
-				Token cToken = sequences[j].moveCursorTo(commonToken);
-				commonSet.add(cToken);
+				CloneInstance instance = sequences[j].getCloneInstance();
+				Token cToken = commonSet.findToken(instance);
+				sequences[j].moveCursorTo(cToken);
 			}
 			multisetList.add(commonSet);
 			
@@ -244,7 +239,6 @@ public class MCIDiff {
 			}
 		}
 
-		//multisetList.remove(0);
 		multisetList.remove(multisetList.size()-1);
 		
 		return multisetList;
