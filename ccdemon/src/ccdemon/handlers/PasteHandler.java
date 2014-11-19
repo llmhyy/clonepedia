@@ -33,6 +33,7 @@ import ccdemon.model.ConfigurationPoint;
 import ccdemon.model.ConfigurationPointSet;
 import ccdemon.model.ReferrableCloneSet;
 import ccdemon.model.SelectedCodeRange;
+import ccdemon.proposal.RankedCompletionProposal;
 import ccdemon.util.CCDemonUtil;
 import ccdemon.util.SharedData;
 import clonepedia.model.ontology.CloneInstance;
@@ -60,8 +61,10 @@ public class PasteHandler extends AbstractHandler {
 					identifyConfigurationPoints(event, startPositionInPastedFile, copiedRange, referrableCloneSets);
 			
 			cps.prepareForInstallation(referrableCloneSets);
-			
-			installConfigurationPointsOnCode(event, cps);
+
+			CCDemonUtil.setActiveEditor(event);
+			CCDemonUtil.positions.clear();
+			installConfigurationPointsOnCode(cps);
 		}
 		
 		return null;
@@ -70,12 +73,10 @@ public class PasteHandler extends AbstractHandler {
 
 
 	/**
-	 * @param event
 	 * @param cps
 	 */
-	private void installConfigurationPointsOnCode(ExecutionEvent event,
-			ConfigurationPointSet cps) {
-		AbstractTextEditor activeEditor = (AbstractTextEditor) HandlerUtil.getActiveEditor(event);
+	public static void installConfigurationPointsOnCode(ConfigurationPointSet cps) {
+		AbstractTextEditor activeEditor = CCDemonUtil.getActiveEditor();
 		ISourceViewer sourceViewer = (ISourceViewer) activeEditor.getAdapter(ITextOperationTarget.class);
 		IDocument document= sourceViewer.getDocument();
 		
@@ -85,22 +86,28 @@ public class PasteHandler extends AbstractHandler {
 				LinkedPositionGroup group = new LinkedPositionGroup();
 				ICompletionProposal[] proposals = new ICompletionProposal[cp.getCandidates().size()]; 
 				for(int i=0; i<proposals.length; i++){
-					proposals[i] = new CompletionProposal(cp.getCandidates().get(i).getText(), cp.getModifiedTokenSeq().getStartPosition(),
-							cp.getModifiedTokenSeq().getPositionLength(), 0);
+					proposals[i] = new RankedCompletionProposal(cp.getCandidates().get(i).getText(), cp.getModifiedTokenSeq().getStartPosition(),
+							cp.getModifiedTokenSeq().getPositionLength(), 0, 0);
 				}
 				
 				LinkedPosition lp = new ProposalPosition(document, cp.getModifiedTokenSeq().getStartPosition(), 
 						cp.getModifiedTokenSeq().getPositionLength(), proposals);
+				for(ICompletionProposal icp : proposals){
+					RankedCompletionProposal rcp = (RankedCompletionProposal) icp;
+					rcp.setPosition(lp);
+				}
+				
 				group.addPosition(lp);
 				model.addGroup(group);
+				CCDemonUtil.positions.add(lp);
 			}
 			model.forceInstall();
 			CustomLinkedModeUI ui = new CustomLinkedModeUI(model, sourceViewer);
 			CustomLinkedModeUIFocusListener listener = new CustomLinkedModeUIFocusListener();
+			listener.setCps(cps);
 			ui.setPositionListener(listener);
 			//ui.setExitPosition(sourceViewer, startPositionInPastedFile, copiedRange.getPositionLength(), Integer.MAX_VALUE);
 			ui.enter();
-			//listener.setTestPosition(model.get);
 		}
 		catch(BadLocationException e){
 			e.printStackTrace();
