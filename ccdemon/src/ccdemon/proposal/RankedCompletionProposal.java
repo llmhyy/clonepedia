@@ -87,14 +87,10 @@ public final class RankedCompletionProposal implements ICompletionProposal {
 			
 			//why not working!!
 //			document.replace(fReplacementOffset, fReplacementLength, fReplacementString);
-//			
-//			System.out.println("fReplacementOffset: " + fReplacementOffset + " fReplacementLength: " + fReplacementLength);
 			
 			document.replace(position.offset, position.length, fReplacementString);
 			fReplacementOffset = position.offset;
 			fReplacementLength = position.length;
-			
-			System.out.println("position.offset: " + position.offset + " position.length: " + position.length);
 			
 			this.position.setLength(fReplacementString.length());
 			ProposalPosition pp = (ProposalPosition) position;
