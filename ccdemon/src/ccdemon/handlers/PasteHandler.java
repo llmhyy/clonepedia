@@ -75,7 +75,7 @@ public class PasteHandler extends AbstractHandler {
 	/**
 	 * @param cps
 	 */
-	public static void installConfigurationPointsOnCode(ConfigurationPointSet cps) {
+	public void installConfigurationPointsOnCode(ConfigurationPointSet cps) {
 		AbstractTextEditor activeEditor = CCDemonUtil.getActiveEditor();
 		ISourceViewer sourceViewer = (ISourceViewer) activeEditor.getAdapter(ITextOperationTarget.class);
 		IDocument document= sourceViewer.getDocument();
