@@ -258,8 +258,8 @@ public class CloneDiffView extends ViewPart {
 			parser.setResolveBindings(true);
 			CompilationUnit cu = (CompilationUnit) parser.createAST(null);
 			
-			int startClonePosition = cu.getPosition(instance.getStartLine()-1, 0);
-			int endClonePosition = cu.getPosition(instance.getEndLine(), 0);
+			//int startClonePosition = cu.getPosition(instance.getStartLine()-1, 0);
+			//int endClonePosition = cu.getPosition(instance.getEndLine(), 0);
 			
 			ASTNode containingNode = instanceWrapper.getMinimumContainingASTNode();
 			int methodStartPosition = containingNode.getStartPosition();
@@ -272,14 +272,14 @@ public class CloneDiffView extends ViewPart {
 			
 			text.setText(content);
 			
-			final int startCloneLineNumber = cu.getLineNumber(startClonePosition);
-			final int lineCount =  cu.getLineNumber(endClonePosition) - cu.getLineNumber(startClonePosition);
+			final int startCloneLineNumber = instance.getStartLine();
+			final int lineCount =  instance.getLength();
 
 			menuItem.addSelectionListener(new SelectionListener() {
 				
 				@Override
 				public void widgetSelected(SelectionEvent e) {
-					ViewUtil.openJavaEditorForCloneInstace(iunit, startCloneLineNumber, startCloneLineNumber+lineCount);
+					ViewUtil.openJavaEditorForCloneInstace(iunit, startCloneLineNumber, startCloneLineNumber+lineCount-1);
 				}
 				
 				@Override
@@ -290,7 +290,7 @@ public class CloneDiffView extends ViewPart {
 			text.setTopIndex(startCloneLineNumber - 3);
 			
 			Color disposableColoar = new Color(Display.getCurrent(), 150, 250, 250);
-			text.setLineBackground(startCloneLineNumber, lineCount, disposableColoar);
+			text.setLineBackground(startCloneLineNumber-1, lineCount, disposableColoar);
 			
 			ASTNode doc = null;
 			if(containingNode instanceof BodyDeclaration){
