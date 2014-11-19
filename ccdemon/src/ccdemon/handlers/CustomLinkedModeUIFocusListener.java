@@ -5,12 +5,17 @@ import java.util.ArrayList;
 import mcidiff.model.Token;
 import mcidiff.model.TokenSeq;
 
+import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.link.LinkedModeUI.ILinkedModeUIFocusListener;
 import org.eclipse.jface.text.link.LinkedModeUI.LinkedModeUITarget;
 import org.eclipse.jface.text.link.LinkedPosition;
+import org.eclipse.jface.text.link.ProposalPosition;
 
 import ccdemon.model.ConfigurationPoint;
 import ccdemon.model.ConfigurationPointSet;
+import ccdemon.proposal.RankedCompletionProposal;
+import ccdemon.proposal.RankedProposalPosition;
+import ccdemon.util.CCDemonUtil;
 
 public class CustomLinkedModeUIFocusListener implements
 		ILinkedModeUIFocusListener {
@@ -46,19 +51,17 @@ public class CustomLinkedModeUIFocusListener implements
 			//the way to modify proposals' content
 			/*int positionIndex = CCDemonUtil.positions.indexOf(position);
 			for(int i = positionIndex + 1; i < CCDemonUtil.positions.size(); i++){
-				ProposalPosition pp = (ProposalPosition) CCDemonUtil.positions.get(i);
+				RankedProposalPosition pp = (RankedProposalPosition) CCDemonUtil.positions.get(i);
+				ICompletionProposal[] proposals = new ICompletionProposal[3]; 
+				proposals[0] = new RankedCompletionProposal("test1", pp.offset, pp.length, 0 , 0);
+				((RankedCompletionProposal) proposals[0]).setPosition(pp);
+				proposals[1] = new RankedCompletionProposal("test2", pp.offset, pp.length, 0 , 0);
+				((RankedCompletionProposal) proposals[1]).setPosition(pp);
+				proposals[2] = new RankedCompletionProposal("test3", pp.offset, pp.length, 0 , 0);
+				((RankedCompletionProposal) proposals[2]).setPosition(pp);
 				
-				for(ICompletionProposal proposal : pp.getChoices()){
-					RankedCompletionProposal rankedProposal = (RankedCompletionProposal) proposal;
-
-					System.out.println("1: " + rankedProposal.getDisplayString() + " " + rankedProposal.getfReplacementString() + " " + rankedProposal.getOffset());
-					
-					rankedProposal.setfReplacementString("test" + i);
-
-					System.out.println("2: " + rankedProposal.getDisplayString() + " " + rankedProposal.getfReplacementString() + " " + rankedProposal.getOffset());
-				}
+				pp.setChoices(proposals);
 			}*/
-			
 		}
 	}
 
