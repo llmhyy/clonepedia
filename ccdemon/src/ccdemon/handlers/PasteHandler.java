@@ -66,6 +66,9 @@ public class PasteHandler extends AbstractHandler {
 			CCDemonUtil.positions.clear();
 			installConfigurationPointsOnCode(cps);
 		}
+		else{
+			CCDemonUtil.callBackDefaultEvent("paste", event);
+		}
 		
 		return null;
 	}
