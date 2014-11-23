@@ -114,10 +114,18 @@ public class MCIDiff {
 		for(Token prevToken: previousSet.getTokens()){
 			Token currentCorrspondingToken = set.findToken(prevToken.getCloneInstance());
 			
+			/**
+			 * for two consecutive episolon token
+			 */
 			if(prevToken.isEpisolon() && currentCorrspondingToken.isEpisolon()){
-				if(!prevToken.getPreviousToken().equals(currentCorrspondingToken.getPreviousToken()) ||
-						!prevToken.getPostToken().equals(currentCorrspondingToken.getPostToken())){
-					return false;
+				try{
+					if(!prevToken.getPreviousToken().equals(currentCorrspondingToken.getPreviousToken()) ||
+							!prevToken.getPostToken().equals(currentCorrspondingToken.getPostToken())){
+						return false;
+					}					
+				}
+				catch(NullPointerException e){
+					//Do nothing for now.
 				}
 			}
 			
