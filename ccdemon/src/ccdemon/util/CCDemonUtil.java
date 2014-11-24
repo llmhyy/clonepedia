@@ -48,6 +48,11 @@ public class CCDemonUtil {
 	public static ArrayList<ReferrableCloneSet> findCodeTemplateMaterials(CloneSets cloneSets, SelectedCodeRange range){
 		ArrayList<ReferrableCloneSet> materials = new ArrayList<>();
 		for(CloneSet set: cloneSets.getCloneList()){
+			
+			if(set.getId().equals("3015") || set.getId().equals("3548")){
+				continue;
+			}
+			
 			for(clonepedia.model.ontology.CloneInstance instance: set){
 				if(instance.getFileLocation().equals(range.getFileName())){
 					if(instance.getStartLine()<=range.getEndLine() && instance.getEndLine()>=range.getStartLine()){
