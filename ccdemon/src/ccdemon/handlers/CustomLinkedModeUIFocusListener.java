@@ -5,17 +5,12 @@ import java.util.ArrayList;
 import mcidiff.model.Token;
 import mcidiff.model.TokenSeq;
 
-import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.link.LinkedModeUI.ILinkedModeUIFocusListener;
 import org.eclipse.jface.text.link.LinkedModeUI.LinkedModeUITarget;
 import org.eclipse.jface.text.link.LinkedPosition;
-import org.eclipse.jface.text.link.ProposalPosition;
 
 import ccdemon.model.ConfigurationPoint;
 import ccdemon.model.ConfigurationPointSet;
-import ccdemon.proposal.RankedCompletionProposal;
-import ccdemon.proposal.RankedProposalPosition;
-import ccdemon.util.CCDemonUtil;
 
 public class CustomLinkedModeUIFocusListener implements
 		ILinkedModeUIFocusListener {
