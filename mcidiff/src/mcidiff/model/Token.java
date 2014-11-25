@@ -3,7 +3,9 @@ package mcidiff.model;
 import mcidiff.util.DiffUtil;
 
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.SimpleName;
+import org.eclipse.jdt.core.dom.SuperMethodInvocation;
 import org.eclipse.jdt.core.dom.Type;
 
 
@@ -55,11 +57,23 @@ public class Token {
 			}
 			else if(thatToken.getNode() != null && getNode() != null){
 				return getTokenName().equals(thatToken.getTokenName()) &&
-						getNode().getNodeType() == thatToken.getNode().getNodeType();
+						astMatch(thatToken.getNode(), getNode());
 			}
 		}
 		
 		return false;
+	}
+	
+	private boolean astMatch(ASTNode node1, ASTNode node2){
+		if(node1 instanceof MethodInvocation && node2 instanceof SuperMethodInvocation){
+			return true;
+		}
+		else if(node1 instanceof SuperMethodInvocation && node2 instanceof MethodInvocation){
+			return true;
+		}
+		else{
+			return node1.getNodeType() == node2.getNodeType();
+		}
 	}
 	
 	/**
