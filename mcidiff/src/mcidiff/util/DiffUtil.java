@@ -109,7 +109,7 @@ public class DiffUtil {
 				double sim = sc.compute(commonTokenList[i - 1], tokenList2[j - 1]);
 				double increase = scoreTable[i][j]-scoreTable[i-1][j-1];
 				
-				if(sim - increase < 0.01){
+				if(Math.abs(sim - increase) < 0.01){
 					commonList[k] = commonTokenList[i - 1];
 					
 					Multiset set = new Multiset();
@@ -154,7 +154,8 @@ public class DiffUtil {
 		for (int i = 1; i < tokenList1.length + 1; i++){
 			for (int j = 1; j < tokenList2.length + 1; j++) {
 				if (tokenList1[i - 1].equals(tokenList2[j - 1])){
-					similarityTable[i][j] = similarityTable[i - 1][j - 1] + comparator.compute(tokenList1[i - 1], tokenList2[j - 1]);					
+					double value = similarityTable[i - 1][j - 1] + comparator.compute(tokenList1[i - 1], tokenList2[j - 1]);
+					similarityTable[i][j] = getLargestValue(value, similarityTable[i-1][j], similarityTable[i][j-1]);
 				}
 				else {
 					similarityTable[i][j] = (similarityTable[i - 1][j] >= similarityTable[i][j - 1]) ? 
@@ -265,8 +266,8 @@ public class DiffUtil {
 		return sim;
 	}
 	
-	public static double getSmallestValue(double entry1, double entry2, double entry3){
-		double value = (entry1 < entry2)? entry1 : entry2;
-		return (value < entry3)? value : entry3;
+	public static double getLargestValue(double entry1, double entry2, double entry3){
+		double value = (entry1 > entry2)? entry1 : entry2;
+		return (value > entry3)? value : entry3;
 	}
 }
