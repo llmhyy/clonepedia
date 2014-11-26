@@ -66,9 +66,20 @@ public class CloneInstanceWrapper{
 		File javaFile = new File(filePath);
 		String javaFileContent = MinerUtil.getFileConent(javaFile);
 		
-		int packageStartIndex = javaFileContent.indexOf("package ")+8;
-		int packageEndIndex = javaFileContent.indexOf(";", packageStartIndex);
-		String packageName = javaFileContent.substring(packageStartIndex, packageEndIndex);
+		ASTParser parser = ASTParser.newParser(AST.JLS4);
+		parser.setSource(javaFileContent.toCharArray());
+		parser.setKind(ASTParser.K_COMPILATION_UNIT);
+		//parser.setResolveBindings(isNeedBinding);
+		
+		CompilationUnit cu = (CompilationUnit) parser.createAST(null);
+		
+		//int packageStartIndex = javaFileContent.indexOf("package ")+8;
+		//int packageEndIndex = javaFileContent.indexOf(";", packageStartIndex);
+		//String packageName = javaFileContent.substring(packageStartIndex, packageEndIndex);
+		String packageName = cu.getPackage().toString();
+		int packageStartIndex = packageName.indexOf("package ")+8;
+		int packageEndIndex = packageName.indexOf(";", packageStartIndex);
+		packageName = packageName.substring(packageStartIndex, packageEndIndex);
 		
 		String packagePrefix = null;
 		if(packageName.contains(".")){
