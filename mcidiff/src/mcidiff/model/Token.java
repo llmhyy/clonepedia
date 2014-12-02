@@ -3,7 +3,9 @@ package mcidiff.model;
 import mcidiff.util.DiffUtil;
 
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.FieldAccess;
 import org.eclipse.jdt.core.dom.MethodInvocation;
+import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SuperMethodInvocation;
 import org.eclipse.jdt.core.dom.Type;
@@ -28,6 +30,8 @@ public class Token {
 	
 	private boolean isMarked;
 	
+	private double relativePositionRatio = 0;
+
 	/**
 	 * @param tokenName
 	 * @param node
@@ -64,6 +68,12 @@ public class Token {
 		return false;
 	}
 	
+	/**
+	 * mainly used to tolerant "." symbol.
+	 * @param node1
+	 * @param node2
+	 * @return
+	 */
 	private boolean astMatch(ASTNode node1, ASTNode node2){
 		if(node1 instanceof MethodInvocation && node2 instanceof SuperMethodInvocation){
 			return true;
@@ -71,9 +81,17 @@ public class Token {
 		else if(node1 instanceof SuperMethodInvocation && node2 instanceof MethodInvocation){
 			return true;
 		}
+		if(node1 instanceof FieldAccess && node2 instanceof QualifiedName){
+			return true;
+		}
+		else if(node1 instanceof QualifiedName && node2 instanceof FieldAccess){
+			return true;
+		}
 		else{
 			return node1.getNodeType() == node2.getNodeType();
 		}
+		
+		
 	}
 	
 	/**
@@ -217,5 +235,19 @@ public class Token {
 	
 	public boolean isEpisolon(){
 		return getTokenName().equals(Token.episolonSymbol);
+	}
+	
+	/**
+	 * @return the relativePositionRatio
+	 */
+	public double getRelativePositionRatio() {
+		return relativePositionRatio;
+	}
+
+	/**
+	 * @param relativePositionRatio the relativePositionRatio to set
+	 */
+	public void setRelativePositionRatio(double relativePositionRatio) {
+		this.relativePositionRatio = relativePositionRatio;
 	}
 }

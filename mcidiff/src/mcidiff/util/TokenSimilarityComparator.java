@@ -20,7 +20,10 @@ public class TokenSimilarityComparator{
 			
 			double length = DiffUtil.buildLeveshteinTable(str1, str2)[str1.length][str2.length];
 			
-			return 2*length/(str1.length+str2.length);
+			double textualSim = 2*length/(str1.length+str2.length);
+			double positionSim = 1-Math.abs(token1.getRelativePositionRatio() - token2.getRelativePositionRatio());
+			
+			return 0.5*textualSim + 0.5*positionSim;
 		}
 		
 		return 0;

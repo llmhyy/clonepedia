@@ -28,20 +28,6 @@ public class CloneInstance {
 	private ArrayList<Token> tokenList = new ArrayList<>();
 	
 	/**
-	 * @return the tokenList
-	 */
-	public ArrayList<Token> getTokenList() {
-		return tokenList;
-	}
-
-	/**
-	 * @param tokenList the tokenList to set
-	 */
-	public void setTokenList(ArrayList<Token> tokenList) {
-		this.tokenList = tokenList;
-	}
-
-	/**
 	 * @param fileName
 	 * @param startLine
 	 * @param endLine
@@ -59,6 +45,14 @@ public class CloneInstance {
 		this.fileName = fileName;
 		this.startLine = startLine;
 		this.endLine = endLine;
+	}
+	
+	public void computeInnerTokenRelativePosition(){
+		for(int i=0; i<getTokenList().size(); i++){
+			Token token = getTokenList().get(i);
+			double ratio = ((double)i)/getTokenList().size();
+			token.setRelativePositionRatio(ratio);
+		}
 	}
 	
 	@Override
@@ -121,5 +115,17 @@ public class CloneInstance {
 		this.endLine = endLine;
 	}
 	
-	
+	/**
+	 * @return the tokenList
+	 */
+	public ArrayList<Token> getTokenList() {
+		return tokenList;
+	}
+
+	/**
+	 * @param tokenList the tokenList to set
+	 */
+	public void setTokenList(ArrayList<Token> tokenList) {
+		this.tokenList = tokenList;
+	}
 }

@@ -34,6 +34,7 @@ public class Tokenizer {
 			System.currentTimeMillis();
 			
 			instance.setTokenList(tokenList);
+			instance.computeInnerTokenRelativePosition();
 		}
 	}
 
