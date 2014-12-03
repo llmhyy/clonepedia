@@ -11,6 +11,12 @@ import mcidiff.model.TokenSeq;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.ToolFactory;
 import org.eclipse.jdt.core.compiler.IScanner;
 import org.eclipse.jdt.core.compiler.ITerminalSymbols;
@@ -37,6 +43,8 @@ import ccdemon.util.CCDemonUtil;
 import ccdemon.util.SharedData;
 import clonepedia.model.ontology.CloneInstance;
 import clonepedia.model.ontology.CloneSets;
+import clonepedia.preference.ClonepediaPreferencePage;
+import clonepedia.util.MinerProperties;
 
 
 public class PasteHandler extends AbstractHandler {
@@ -118,7 +126,23 @@ public class PasteHandler extends AbstractHandler {
 		}
 	}
 	
-	
+	private IJavaProject retrieveWorkingJavaProject(){
+		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+		IProject proj = root.getProject(clonepedia.Activator.getDefault().
+				getPreferenceStore().getString(ClonepediaPreferencePage.TARGET_PORJECT));
+		
+		try {
+			if (proj.isNatureEnabled(MinerProperties.javaNatureName)) {
+				IJavaProject javaProject = JavaCore.create(proj);
+				
+				return javaProject;
+			}
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
 
 	private ConfigurationPointSet identifyConfigurationPoints(ExecutionEvent event, int startPositionInPastedFile, 
 			SelectedCodeRange copiedRange, ArrayList<ReferrableCloneSet> referrableCloneSets ) throws ExecutionException {
@@ -126,7 +150,10 @@ public class PasteHandler extends AbstractHandler {
 			ReferrableCloneSet rcs = referrableCloneSets.get(0);
 			mcidiff.model.CloneSet set = CCDemonUtil.adaptClonepediaModel(rcs.getCloneSet()); 
 			MCIDiff diff = new MCIDiff();
-			ArrayList<SeqMultiset> diffList = diff.diff(set);
+			
+			IJavaProject proj = retrieveWorkingJavaProject();
+			
+			ArrayList<SeqMultiset> diffList = diff.diff(set, proj);
 
 			ArrayList<ConfigurationPoint> configurationPoints = 
 					constructConfigurationPoints(rcs.getReferredCloneInstance(), diffList);

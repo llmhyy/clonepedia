@@ -8,6 +8,7 @@ import java.util.Comparator;
 
 import mcidiff.model.Multiset;
 
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
@@ -84,14 +85,22 @@ public class ASTUtil {
 		return everything;
 	}
 	
-	public static CompilationUnit generateCompilationUnit(String path){
+	public static CompilationUnit generateCompilationUnit(String path, IJavaProject project){
 		
 		String content = retrieveContent(path);
 		
 		ASTParser parser = ASTParser.newParser(AST.JLS4);
 		parser.setSource(content.toCharArray());
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
-		//parser.setResolveBindings(isNeedBinding);
+		if(project != null){
+			String unitName = path.substring(path.indexOf(project.getProject().getName()));
+			unitName = unitName.replace("\\", "/");
+			unitName = "/" + unitName;
+			
+			parser.setProject(project);
+			parser.setUnitName(unitName);
+			parser.setResolveBindings(true);			
+		}
 		
 		CompilationUnit cu = (CompilationUnit) parser.createAST(null);
 		

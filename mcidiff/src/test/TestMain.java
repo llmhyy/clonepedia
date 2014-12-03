@@ -21,6 +21,6 @@ public class TestMain {
 		set.addInstance(instance2);
 		set.addInstance(instance3);
 		
-		new MCIDiff().diff(set);
+		new MCIDiff().diff(set, null);
 	}
 }

@@ -7,6 +7,7 @@ import mcidiff.model.CloneSet;
 import mcidiff.model.Token;
 import mcidiff.util.ASTUtil;
 
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.ToolFactory;
 import org.eclipse.jdt.core.compiler.IScanner;
 import org.eclipse.jdt.core.compiler.ITerminalSymbols;
@@ -20,9 +21,9 @@ public class Tokenizer {
 	 * assign the input set with its token list.
 	 * @param set
 	 */
-	public void tokenize(CloneSet set){
+	public void tokenize(CloneSet set, IJavaProject project){
 		for(CloneInstance instance: set.getInstances()){
-			ArrayList<Token> tokenList = parseTokens(instance);
+			ArrayList<Token> tokenList = parseTokens(instance, project);
 			/**
 			 * assign an empty token at head and another one at end to simplify the general process.
 			 */
@@ -46,14 +47,14 @@ public class Tokenizer {
 	 * @param endLine
 	 * @return
 	 */
-	public ArrayList<Token> parseTokens(CloneInstance instance) {
+	public ArrayList<Token> parseTokens(CloneInstance instance, IJavaProject project) {
 		ArrayList<Token> tokenList = new ArrayList<>();
 		//tokenList.add(new Token(Token.episolonSymbol, null, instance, -1, -1));
 		
 		String fileContent = ASTUtil.retrieveContent(instance.getFileName(), 
 				instance.getStartLine(), instance.getEndLine());
 		
-		CompilationUnit cu = ASTUtil.generateCompilationUnit(instance.getFileName());
+		CompilationUnit cu = ASTUtil.generateCompilationUnit(instance.getFileName(), project);
 		int baseLinePosition = cu.getPosition(instance.getStartLine(), 0);
 		
 		IScanner scanner = ToolFactory.createScanner(false, false, false, false);

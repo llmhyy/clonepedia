@@ -22,14 +22,14 @@ public class SelectedCodeRange {
 	}
 	
 	public int getStartLine(){
-		CompilationUnit cu = ASTUtil.generateCompilationUnit(getFileName());
+		CompilationUnit cu = ASTUtil.generateCompilationUnit(getFileName(), null);
 		return cu.getLineNumber(getStartPosition());
 		
 		//return 166;
 	}
 	
 	public int getEndLine(){
-		CompilationUnit cu = ASTUtil.generateCompilationUnit(getFileName());
+		CompilationUnit cu = ASTUtil.generateCompilationUnit(getFileName(), null);
 		return cu.getLineNumber(getEndPosition());
 				
 		//return 171;

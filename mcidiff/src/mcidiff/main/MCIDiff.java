@@ -16,6 +16,8 @@ import mcidiff.util.ASTUtil;
 import mcidiff.util.DiffUtil;
 import mcidiff.util.GlobalSettings;
 
+import org.eclipse.jdt.core.IJavaProject;
+
 public class MCIDiff {
 	
 	/**
@@ -24,9 +26,9 @@ public class MCIDiff {
 	 * @param set
 	 * @return
 	 */
-	public ArrayList<SeqMultiset> diff(CloneSet set){
+	public ArrayList<SeqMultiset> diff(CloneSet set, IJavaProject project){
 		
-		new Tokenizer().tokenize(set);
+		new Tokenizer().tokenize(set, project);
 		
 		ArrayList<Token>[] lists = set.getTokenLists();
 		//Object[] commonList = DiffUtil.generateCommonNodeListFromMultiSequence(lists);

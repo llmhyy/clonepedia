@@ -31,7 +31,6 @@ public class Token {
 	private boolean isMarked;
 	
 	private double relativePositionRatio = 0;
-
 	/**
 	 * @param tokenName
 	 * @param node

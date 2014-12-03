@@ -69,6 +69,7 @@ Export-Package: clonepedia,
  clonepedia.model.ontology,
  clonepedia.model.template,
  clonepedia.perspective,
+ clonepedia.preference,
  clonepedia.util,
  clonepedia.views.codesnippet,
  clonepedia.views.util
