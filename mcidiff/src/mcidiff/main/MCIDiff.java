@@ -42,7 +42,10 @@ public class MCIDiff {
 		
 		filterCommonSet(results);
 		
-		ArrayList<SeqMultiset> finalResults = aggregateSeperatedTokens(results);
+		ArrayList<SeqMultiset> finalResults = new ArrayList<>();
+		if(results.size() != 0){
+			finalResults = aggregateSeperatedTokens(results);
+		}
 		
 		return finalResults;
 	}

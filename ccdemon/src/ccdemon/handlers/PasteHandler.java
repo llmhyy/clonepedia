@@ -59,11 +59,13 @@ public class PasteHandler extends AbstractHandler {
 			ConfigurationPointSet cps = 
 					identifyConfigurationPoints(event, startPositionInPastedFile, copiedRange, referrableCloneSets);
 			
-			cps.prepareForInstallation(referrableCloneSets);
-
-			CCDemonUtil.setActiveEditor(event);
-			CCDemonUtil.positions.clear();
-			installConfigurationPointsOnCode(cps);
+			if(cps.getConfigurationPoints().size() != 0){
+				cps.prepareForInstallation(referrableCloneSets);
+				
+				CCDemonUtil.setActiveEditor(event);
+				CCDemonUtil.positions.clear();
+				installConfigurationPointsOnCode(cps);				
+			}
 		}
 		else{
 			CCDemonUtil.callBackDefaultEvent("paste", event);
