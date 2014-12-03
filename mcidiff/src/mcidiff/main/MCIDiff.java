@@ -251,7 +251,7 @@ public class MCIDiff {
 				sequences[j].moveStartToCursor();
 			}
 		}
-
+		
 		multisetList.remove(multisetList.size()-1);
 		
 		return multisetList;
@@ -276,6 +276,7 @@ public class MCIDiff {
 				if(!seedToken.isMarked()){
 					Multiset multiset = new Multiset();
 					multiset.add(seedToken);
+					seedToken.setMarked(true);
 					for(int k=0; k<otherSeqs.length; k++){
 						TokenSequence otherSeq = otherSeqs[k];
 						Token correspondingToken = findBestMatchToken(seedToken, otherSeq);
