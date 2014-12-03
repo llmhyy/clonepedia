@@ -143,7 +143,10 @@ public class ASTUtil {
 			}
 			
 			if(node != null){
-				return node instanceof MethodDeclaration;
+				if(node instanceof MethodDeclaration){
+					MethodDeclaration md = (MethodDeclaration)node;
+					return md.getName().equals(name);
+				}
 			}
 			return false;
 		}
@@ -157,7 +160,10 @@ public class ASTUtil {
 			}
 			
 			if(node != null){
-				return node instanceof TypeDeclaration;
+				if(node instanceof TypeDeclaration){
+					TypeDeclaration td = (TypeDeclaration)node;
+					return td.getName().equals(name);
+				}
 			}
 			return false;
 		}
@@ -171,7 +177,10 @@ public class ASTUtil {
 			}
 			
 			if(node != null){
-				return node instanceof VariableDeclaration;
+				if(node instanceof VariableDeclaration){
+					VariableDeclaration vd = (VariableDeclaration)node;
+					return vd.getName().equals(name);
+				}
 			}
 			return false;
 		}

@@ -89,10 +89,16 @@ public class Token {
 			return true;
 		}
 		else{
-			return node1.getNodeType() == node2.getNodeType();
+			if(node1 instanceof SimpleName && node2 instanceof SimpleName){
+				SimpleName name1 = (SimpleName)node1;
+				SimpleName name2 = (SimpleName)node2;
+				
+				boolean isUnmatchable = isUnmatchableSimpleNames(name1, name2);
+				return !isUnmatchable;
+			}
 		}
 		
-		
+		return node1.getNodeType() == node2.getNodeType();
 	}
 	
 	/**
@@ -216,52 +222,64 @@ public class Token {
 				SimpleName seedName = (SimpleName)seedNode;
 				SimpleName thisName = (SimpleName)thisNode;
 				
-				IBinding seedBinding = seedName.resolveBinding();
-				IBinding thisBinding = thisName.resolveBinding();
-				
-				if(seedBinding != null && thisBinding != null){
-					if(seedBinding.getKind() == IBinding.VARIABLE && thisBinding.getKind() == IBinding.METHOD){
-						//viable for comparison
-					}
-					else if(seedBinding.getKind() == IBinding.METHOD && thisBinding.getKind() == IBinding.VARIABLE){
-						//viable for comparison
-					}
-					else if(seedBinding.getKind() != thisBinding.getKind()){
-						return 0;
-					}
-					
-					boolean isSeedDeclaration = ASTUtil.isSimpleNameDeclaration(seedBinding, seedName);
-					boolean isThisDeclaration = ASTUtil.isSimpleNameDeclaration(thisBinding, thisName);
-					String str = seedName + ":" + thisName;
-					if(str.contains("read") && str.contains("tool")){
-						System.currentTimeMillis();
-					}
-					if(isSeedDeclaration ^ isThisDeclaration){
-						return 0;
-					}
-					else if(isSeedDeclaration && isThisDeclaration){
-						if(seedBinding.getKind() != thisBinding.getKind()){
-							return 0;
-						}
-					}
+				String str = seedName + ":" + thisName;
+				if(str.contains("newValue") && str.contains("name")){
+					System.currentTimeMillis();
+					System.currentTimeMillis();
 				}
-				else{
-					ASTNode seedParent = seedName.getParent();
-					ASTNode thisParent = thisName.getParent();
-					/**
-					 * type should not be matched to method/field/variable
-					 */
-					if(seedParent instanceof Type || thisParent instanceof Type){
-						if(seedParent.getNodeType() != thisParent.getNodeType()){
-							return 0;
-						}
-					}
+				
+				boolean isUnmatchable = isUnmatchableSimpleNames(seedName, thisName);
+				if(isUnmatchable){
+					return 0;
 				}
 			}
 			
 			return 0.1 + DiffUtil.compareStringSimilarity(seedToken.getTokenName(), getTokenName());
 		}
 		
+	}
+	
+	private boolean isUnmatchableSimpleNames(SimpleName seedName, SimpleName thisName){
+		IBinding seedBinding = seedName.resolveBinding();
+		IBinding thisBinding = thisName.resolveBinding();
+		
+		if(seedBinding != null && thisBinding != null){
+			if(seedBinding.getKind() == IBinding.VARIABLE && thisBinding.getKind() == IBinding.METHOD){
+				//viable for comparison
+			}
+			else if(seedBinding.getKind() == IBinding.METHOD && thisBinding.getKind() == IBinding.VARIABLE){
+				//viable for comparison
+			}
+			else if(seedBinding.getKind() != thisBinding.getKind()){
+				return true;
+			}
+			
+			boolean isSeedDeclaration = ASTUtil.isSimpleNameDeclaration(seedBinding, seedName);
+			boolean isThisDeclaration = ASTUtil.isSimpleNameDeclaration(thisBinding, thisName);
+
+			if(isSeedDeclaration ^ isThisDeclaration){
+				return true;
+			}
+			else if(isSeedDeclaration && isThisDeclaration){
+				if(seedBinding.getKind() != thisBinding.getKind()){
+					return true;
+				}
+			}
+		}
+		else{
+			ASTNode seedParent = seedName.getParent();
+			ASTNode thisParent = thisName.getParent();
+			/**
+			 * type should not be matched to method/field/variable
+			 */
+			if(seedParent instanceof Type || thisParent instanceof Type){
+				if(seedParent.getNodeType() != thisParent.getNodeType()){
+					return true;
+				}
+			}
+		}
+		
+		return false;
 	}
 	
 	public boolean isEpisolon(){
