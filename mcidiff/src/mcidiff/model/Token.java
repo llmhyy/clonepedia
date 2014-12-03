@@ -4,6 +4,7 @@ import mcidiff.util.DiffUtil;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.FieldAccess;
+import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.SimpleName;
@@ -214,17 +215,32 @@ public class Token {
 				SimpleName seedName = (SimpleName)seedNode;
 				SimpleName thisName = (SimpleName)thisNode;
 				
-				ASTNode seedParent = seedName.getParent();
-				ASTNode thisParent = thisName.getParent();
-				/**
-				 * type should not be matched to method/field/variable
-				 */
-				if(seedParent instanceof Type || thisParent instanceof Type){
-					if(seedParent.getNodeType() != thisParent.getNodeType()){
+				IBinding seedBinding = seedName.resolveBinding();
+				IBinding thisBinding = thisName.resolveBinding();
+				
+				if(seedBinding != null && thisBinding != null){
+					if(seedBinding.getKind() == IBinding.VARIABLE && thisBinding.getKind() == IBinding.METHOD){
+						//viable for comparison
+					}
+					else if(seedBinding.getKind() == IBinding.METHOD && thisBinding.getKind() == IBinding.VARIABLE){
+						//viable for comparison
+					}
+					else if(seedBinding.getKind() != thisBinding.getKind()){
 						return 0;
 					}
 				}
-				
+				else{
+					ASTNode seedParent = seedName.getParent();
+					ASTNode thisParent = thisName.getParent();
+					/**
+					 * type should not be matched to method/field/variable
+					 */
+					if(seedParent instanceof Type || thisParent instanceof Type){
+						if(seedParent.getNodeType() != thisParent.getNodeType()){
+							return 0;
+						}
+					}
+				}
 			}
 			
 			return 0.1 + DiffUtil.compareStringSimilarity(seedToken.getTokenName(), getTokenName());
