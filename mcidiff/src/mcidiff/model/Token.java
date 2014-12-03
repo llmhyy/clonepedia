@@ -1,5 +1,6 @@
 package mcidiff.model;
 
+import mcidiff.util.ASTUtil;
 import mcidiff.util.DiffUtil;
 
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -227,6 +228,21 @@ public class Token {
 					}
 					else if(seedBinding.getKind() != thisBinding.getKind()){
 						return 0;
+					}
+					
+					boolean isSeedDeclaration = ASTUtil.isSimpleNameDeclaration(seedBinding, seedName);
+					boolean isThisDeclaration = ASTUtil.isSimpleNameDeclaration(thisBinding, thisName);
+					String str = seedName + ":" + thisName;
+					if(str.contains("read") && str.contains("tool")){
+						System.currentTimeMillis();
+					}
+					if(isSeedDeclaration ^ isThisDeclaration){
+						return 0;
+					}
+					else if(isSeedDeclaration && isThisDeclaration){
+						if(seedBinding.getKind() != thisBinding.getKind()){
+							return 0;
+						}
 					}
 				}
 				else{

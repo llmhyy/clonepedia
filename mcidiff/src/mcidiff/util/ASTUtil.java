@@ -10,8 +10,16 @@ import mcidiff.model.Multiset;
 
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.dom.AST;
+import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.IBinding;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.MethodInvocation;
+import org.eclipse.jdt.core.dom.SimpleName;
+import org.eclipse.jdt.core.dom.SimpleType;
+import org.eclipse.jdt.core.dom.TypeDeclaration;
+import org.eclipse.jdt.core.dom.VariableDeclaration;
 
 public class ASTUtil {
 	public static String retrieveContent(String absolutePath){
@@ -122,5 +130,52 @@ public class ASTUtil {
 			list.set(replacePosition, list.get(targetPosition));
 			list.set(targetPosition, tmp);
 		}
+	}
+	
+	public static boolean isSimpleNameDeclaration(IBinding binding, SimpleName name){
+		if(binding.getKind() == IBinding.METHOD){
+			ASTNode node = name.getParent();
+			while(!(node instanceof MethodDeclaration || node instanceof MethodInvocation)){
+				node = node.getParent();
+				if(node == null){
+					break;
+				}
+			}
+			
+			if(node != null){
+				return node instanceof MethodDeclaration;
+			}
+			return false;
+		}
+		else if(binding.getKind() == IBinding.TYPE){
+			ASTNode node = name.getParent();
+			while(!(node instanceof SimpleType || node instanceof TypeDeclaration)){
+				node = node.getParent();
+				if(node == null){
+					break;
+				}
+			}
+			
+			if(node != null){
+				return node instanceof TypeDeclaration;
+			}
+			return false;
+		}
+		else if(binding.getKind() == IBinding.VARIABLE){
+			ASTNode node = name.getParent();
+			while(!(node instanceof VariableDeclaration)){
+				node = node.getParent();
+				if(node == null){
+					break;
+				}
+			}
+			
+			if(node != null){
+				return node instanceof VariableDeclaration;
+			}
+			return false;
+		}
+		
+		return false;
 	}
 }
