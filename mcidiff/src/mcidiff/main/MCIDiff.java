@@ -52,6 +52,11 @@ public class MCIDiff {
 		return finalResults;
 	}
 	
+	/**
+	 * {@code results} must be sorted for aggregation
+	 * @param results
+	 * @return
+	 */
 	private ArrayList<SeqMultiset> aggregateSeperatedTokens(ArrayList<Multiset> results) {
 
 		ArrayList<ArrayList<Multiset>> aggregatedSets = new ArrayList<>();
