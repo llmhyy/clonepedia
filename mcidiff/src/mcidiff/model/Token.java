@@ -2,6 +2,7 @@ package mcidiff.model;
 
 import mcidiff.util.ASTUtil;
 import mcidiff.util.DiffUtil;
+import mcidiff.util.TokenSimilarityComparator;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.FieldAccess;
@@ -234,7 +235,10 @@ public class Token {
 				}
 			}
 			
-			return 0.1 + DiffUtil.compareStringSimilarity(seedToken.getTokenName(), getTokenName());
+			double contextSim = new TokenSimilarityComparator().compute(this, seedToken);
+			double textualSim = DiffUtil.compareStringSimilarity(seedToken.getTokenName(), getTokenName());
+			
+			return 0.1 + 0.8*textualSim + 0.2*contextSim;
 		}
 		
 	}

@@ -120,11 +120,23 @@ public class ASTUtil {
 			int targetPosition = list.size()-i-1;
 			int replacePosition = 0;
 			for(int j=1; j<=targetPosition; j++){
-				Multiset set = list.get(j);
-				if(comparator.compare(list.get(replacePosition), set)<0){
+				Multiset targetingSet = list.get(j);
+				Multiset replacingSet = list.get(replacePosition);
+				
+//				if(list.get(replacePosition).toString().contains("(") && targetingSet.toString().contains("name")){
+//					System.currentTimeMillis();
+//				}
+//				
+//				if(targetingSet.toString().contains("name")){
+//					System.currentTimeMillis();//
+//				}
+				
+				if(comparator.compare(replacingSet, targetingSet)<0){
 					replacePosition = j;
 				}
 			}
+			
+			//System.out.println(list.get(replacePosition));
 			
 			Multiset tmp = list.get(replacePosition);
 			list.set(replacePosition, list.get(targetPosition));
