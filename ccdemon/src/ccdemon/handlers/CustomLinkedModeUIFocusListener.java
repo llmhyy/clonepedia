@@ -11,17 +11,36 @@ import org.eclipse.jface.text.link.LinkedPosition;
 
 import ccdemon.model.ConfigurationPoint;
 import ccdemon.model.ConfigurationPointSet;
+import ccdemon.proposal.RankedProposalPosition;
 
 public class CustomLinkedModeUIFocusListener implements
 		ILinkedModeUIFocusListener {
 	
-	private ConfigurationPointSet cps;
-	private ConfigurationPoint currentCP;
+	/**
+	 * the following two fields, {@code positionList} and {@code configurationPointSet} represents the model
+	 * and UI part of configuration points. The list of proposal and the list of configuration points share
+	 * the same order.
+	 */
+	private ArrayList<RankedProposalPosition> positionList;
+	private ConfigurationPointSet configurationPointSet;
+	
+	/**
+	 * record which configuration point/position has been configured.
+	 */
+	private ArrayList<Integer> configuredNum = new ArrayList<>();
+	
+	private ConfigurationPoint currentPoint;
 	private int formerLength;
 	private int currentLength;
 	
+	public CustomLinkedModeUIFocusListener(ArrayList<RankedProposalPosition> positionList, 
+			ConfigurationPointSet configurationPointSet){
+		this.positionList = positionList;
+		this.configurationPointSet = configurationPointSet;
+	}
+	
 	public void setConfigurationPointSet(ConfigurationPointSet cps) {
-		this.cps = cps;
+		this.configurationPointSet = cps;
 	}
 
 	@Override
@@ -30,8 +49,8 @@ public class CustomLinkedModeUIFocusListener implements
 		currentLength = position.length;
 		
 		if(currentLength != formerLength){
-			ArrayList<ConfigurationPoint> configurationPoints = cps.getConfigurationPoints();
-			int index = configurationPoints.indexOf(currentCP);
+			ArrayList<ConfigurationPoint> configurationPoints = configurationPointSet.getConfigurationPoints();
+			int index = configurationPoints.indexOf(currentPoint);
 			
 			for(int i = index + 1; i < configurationPoints.size(); i++){
 				ConfigurationPoint cp = configurationPoints.get(i);
@@ -62,18 +81,11 @@ public class CustomLinkedModeUIFocusListener implements
 
 	@Override
 	public void linkingFocusGained(LinkedPosition position, LinkedModeUITarget target) {
+		//find current configuration point that has the same offset and length
 		
 		formerLength = position.length;
+		currentPoint = configurationPointSet.getConfigurationPoints().get(positionList.indexOf(position));
 		
-		//find current configuration point that has the same offset and length
-		int offset = position.offset;
-		ArrayList<ConfigurationPoint> configurationPoints = cps.getConfigurationPoints();
-		for(ConfigurationPoint cp : configurationPoints){
-			if(cp.getModifiedTokenSeq().getStartPosition() == offset && cp.getModifiedTokenSeq().getPositionLength() == formerLength){
-				currentCP = cp;
-				break;
-			}
-		}
 	}
 
 }

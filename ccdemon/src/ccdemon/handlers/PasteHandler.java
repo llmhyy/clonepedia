@@ -69,9 +69,7 @@ public class PasteHandler extends AbstractHandler {
 			if(cps.getConfigurationPoints().size() != 0){
 				cps.prepareForInstallation(referrableCloneSets);
 				
-				CCDemonUtil.setActiveEditor(pastedEvent);
-				CCDemonUtil.positions.clear();
-				installConfigurationPointsOnCode(cps);				
+				installConfigurationPointsOnCode(cps, pastedEvent);				
 			}
 		}
 		else{
@@ -86,12 +84,14 @@ public class PasteHandler extends AbstractHandler {
 	/**
 	 * @param cps
 	 */
-	public void installConfigurationPointsOnCode(ConfigurationPointSet cps) {
-		AbstractTextEditor activeEditor = CCDemonUtil.getActiveEditor();
+	public void installConfigurationPointsOnCode(ConfigurationPointSet cps,  ExecutionEvent pastedEvent) {
+		AbstractTextEditor activeEditor = (AbstractTextEditor) HandlerUtil.getActiveEditor(pastedEvent);;
 		ISourceViewer sourceViewer = (ISourceViewer) activeEditor.getAdapter(ITextOperationTarget.class);
 		IDocument document = sourceViewer.getDocument();
 		
 		try{
+			ArrayList<RankedProposalPosition> positionList = new ArrayList<>();
+			
 			LinkedModeModel model = new LinkedModeModel();
 			for(ConfigurationPoint cp: cps.getConfigurationPoints()){
 				LinkedPositionGroup group = new LinkedPositionGroup();
@@ -100,21 +100,20 @@ public class PasteHandler extends AbstractHandler {
 						cp.getModifiedTokenSeq().getPositionLength(), proposals);
 				
 				for(int i=0; i<proposals.length; i++){
-					proposals[i] = new RankedCompletionProposal(cp.getCandidates().get(i).getText(), cp.getModifiedTokenSeq().getStartPosition(),
-							cp.getModifiedTokenSeq().getPositionLength(), 0, 0);
+					proposals[i] = new RankedCompletionProposal(cp.getCandidates().get(i).getText(), 
+							cp.getModifiedTokenSeq().getStartPosition(), cp.getModifiedTokenSeq().getPositionLength(), 0, 0);
 					proposals[i].setPosition(position);
 				}
 				position.setChoices(proposals);
 				
 				group.addPosition(position);
 				model.addGroup(group);
-				CCDemonUtil.positions.add(position);
+				positionList.add(position);
 			}
 			
 			model.forceInstall();
 			CustomLinkedModeUI ui = new CustomLinkedModeUI(model, sourceViewer);
-			CustomLinkedModeUIFocusListener listener = new CustomLinkedModeUIFocusListener();
-			listener.setConfigurationPointSet(cps);
+			CustomLinkedModeUIFocusListener listener = new CustomLinkedModeUIFocusListener(positionList, cps);
 			ui.setPositionListener(listener);
 			//ui.setExitPosition(sourceViewer, startPositionInPastedFile, copiedRange.getPositionLength(), Integer.MAX_VALUE);
 			ui.enter();
@@ -259,11 +258,11 @@ public class PasteHandler extends AbstractHandler {
 		
 	}
 
-	private ArrayList<Token> parsePastedTokens(ExecutionEvent event, int length) throws ExecutionException {
-		AbstractTextEditor activeEditor = (AbstractTextEditor) HandlerUtil.getActiveEditor(event);
+	private ArrayList<Token> parsePastedTokens(ExecutionEvent pastedEvent, int length) throws ExecutionException {
+		AbstractTextEditor activeEditor = (AbstractTextEditor) HandlerUtil.getActiveEditor(pastedEvent);
 		ISourceViewer sourceViewer = (ISourceViewer) activeEditor.getAdapter(ITextOperationTarget.class);	
 		IDocument document = sourceViewer.getDocument();
-		ITextSelection textSelection = (ITextSelection) HandlerUtil.getActivePart(event).
+		ITextSelection textSelection = (ITextSelection) HandlerUtil.getActivePart(pastedEvent).
 				getSite().getSelectionProvider().getSelection();
 		int cursorOffset = textSelection.getOffset();
 		
@@ -271,7 +270,7 @@ public class PasteHandler extends AbstractHandler {
 			int lineNumber = document.getLineOfOffset(cursorOffset) + 1;
 			System.out.println("start line: " + lineNumber);
 			
-			CCDemonUtil.callBackDefaultEvent("paste", event);
+			CCDemonUtil.callBackDefaultEvent("paste", pastedEvent);
 			
 			String pastedContent = document.get(cursorOffset, length);
 			
