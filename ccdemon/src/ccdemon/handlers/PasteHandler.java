@@ -65,7 +65,7 @@ public class PasteHandler extends AbstractHandler {
 		
 		if(referrableCloneSets.size() != 0){
 			ConfigurationPointSet cps = 
-					identifyConfigurationPoints(event, startPositionInPastedFile, copiedRange, referrableCloneSets);
+					identifyConfigurationPoints(referrableCloneSets, copiedRange, startPositionInPastedFile, event);
 			
 			if(cps.getConfigurationPoints().size() != 0){
 				cps.prepareForInstallation(referrableCloneSets);
@@ -144,8 +144,8 @@ public class PasteHandler extends AbstractHandler {
 		return null;
 	}
 
-	private ConfigurationPointSet identifyConfigurationPoints(ExecutionEvent event, int startPositionInPastedFile, 
-			SelectedCodeRange copiedRange, ArrayList<ReferrableCloneSet> referrableCloneSets ) throws ExecutionException {
+	private ConfigurationPointSet identifyConfigurationPoints(ArrayList<ReferrableCloneSet> referrableCloneSets,  
+			SelectedCodeRange copiedRange, int startPositionInPastedFile, ExecutionEvent event) throws ExecutionException {
 		if(copiedRange != null){
 			ReferrableCloneSet rcs = referrableCloneSets.get(0);
 			mcidiff.model.CloneSet set = CCDemonUtil.adaptClonepediaModel(rcs.getCloneSet()); 
