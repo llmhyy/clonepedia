@@ -27,7 +27,7 @@ public class CustomLinkedModeUIFocusListener implements
 	/**
 	 * record which configuration point/position has been configured.
 	 */
-	private ArrayList<Integer> configuredNum = new ArrayList<>();
+	//private ArrayList<Integer> configuredIndexList = new ArrayList<>();
 	
 	private ConfigurationPoint currentPoint;
 	private int formerLength;
@@ -61,6 +61,12 @@ public class CustomLinkedModeUIFocusListener implements
 					token.setEndPosition(token.getEndPosition() + currentLength - formerLength);
 				}
 			}
+			
+			//Step 1: change configuration point set
+			
+			//Step 2: update the position list w.r.t configuration point set.
+			
+			//Step 3: update the code by ranking
 			
 			//the way to modify proposals' content
 			/*int positionIndex = CCDemonUtil.positions.indexOf(position);
