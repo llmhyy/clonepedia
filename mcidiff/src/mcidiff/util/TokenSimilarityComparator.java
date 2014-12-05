@@ -23,7 +23,7 @@ public class TokenSimilarityComparator{
 			double textualSim = 2*length/(str1.length+str2.length);
 			double positionSim = 1-Math.abs(token1.getRelativePositionRatio() - token2.getRelativePositionRatio());
 			
-			return 0.7*textualSim + 0.3*positionSim;
+			return 0.5*textualSim + 0.5*positionSim;
 		}
 		
 		return 0;
