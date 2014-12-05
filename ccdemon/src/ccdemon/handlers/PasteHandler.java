@@ -50,14 +50,14 @@ import clonepedia.util.MinerProperties;
 public class PasteHandler extends AbstractHandler {
 
 	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
+	public Object execute(ExecutionEvent pastedEvent) throws ExecutionException {
 		
 		/**
 		 * search related clone instances in project's clone set.
 		 */
 		SelectedCodeRange copiedRange = SharedData.copiedRange;
 		
-		ITextSelection textSelection = (ITextSelection) HandlerUtil.getActivePart(event).getSite().getSelectionProvider().getSelection();
+		ITextSelection textSelection = (ITextSelection) HandlerUtil.getActivePart(pastedEvent).getSite().getSelectionProvider().getSelection();
 		int startPositionInPastedFile = textSelection.getOffset();
 		
 		CloneSets sets = clonepedia.Activator.plainSets;
@@ -65,18 +65,18 @@ public class PasteHandler extends AbstractHandler {
 		
 		if(referrableCloneSets.size() != 0){
 			ConfigurationPointSet cps = 
-					identifyConfigurationPoints(referrableCloneSets, copiedRange, startPositionInPastedFile, event);
+					identifyConfigurationPoints(referrableCloneSets, copiedRange, startPositionInPastedFile, pastedEvent);
 			
 			if(cps.getConfigurationPoints().size() != 0){
 				cps.prepareForInstallation(referrableCloneSets);
 				
-				CCDemonUtil.setActiveEditor(event);
+				CCDemonUtil.setActiveEditor(pastedEvent);
 				CCDemonUtil.positions.clear();
 				installConfigurationPointsOnCode(cps);				
 			}
 		}
 		else{
-			CCDemonUtil.callBackDefaultEvent("paste", event);
+			CCDemonUtil.callBackDefaultEvent("paste", pastedEvent);
 		}
 		
 		return null;
@@ -90,7 +90,7 @@ public class PasteHandler extends AbstractHandler {
 	public void installConfigurationPointsOnCode(ConfigurationPointSet cps) {
 		AbstractTextEditor activeEditor = CCDemonUtil.getActiveEditor();
 		ISourceViewer sourceViewer = (ISourceViewer) activeEditor.getAdapter(ITextOperationTarget.class);
-		IDocument document= sourceViewer.getDocument();
+		IDocument document = sourceViewer.getDocument();
 		
 		try{
 			LinkedModeModel model = new LinkedModeModel();
@@ -145,7 +145,7 @@ public class PasteHandler extends AbstractHandler {
 	}
 
 	private ConfigurationPointSet identifyConfigurationPoints(ArrayList<ReferrableCloneSet> referrableCloneSets,  
-			SelectedCodeRange copiedRange, int startPositionInPastedFile, ExecutionEvent event) throws ExecutionException {
+			SelectedCodeRange copiedRange, int startPositionInPastedFile, ExecutionEvent pastedEvent) throws ExecutionException {
 		if(copiedRange != null){
 			ReferrableCloneSet rcs = referrableCloneSets.get(0);
 			mcidiff.model.CloneSet set = CCDemonUtil.adaptClonepediaModel(rcs.getCloneSet()); 
@@ -165,7 +165,7 @@ public class PasteHandler extends AbstractHandler {
 			 * At this time, we need to match the token sequence in copied clone instance to
 			 * the pasted code fragments. Then the configuration point can be identified.
 			 */
-			appendConfigurationPointsWithPastedSeq(configurationPoints, event, copiedRange, startPositionInPastedFile);
+			appendConfigurationPointsWithPastedSeq(configurationPoints, pastedEvent, copiedRange, startPositionInPastedFile);
 			
 			return new ConfigurationPointSet(configurationPoints);
 		}
