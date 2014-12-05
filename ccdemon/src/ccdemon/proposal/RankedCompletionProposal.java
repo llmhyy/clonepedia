@@ -1,13 +1,13 @@
 package ccdemon.proposal;
 
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.Position;
-import org.eclipse.jface.text.contentassist.*;
-import org.eclipse.jface.text.link.ProposalPosition;
+import org.eclipse.jface.text.contentassist.ICompletionProposal;
+import org.eclipse.jface.text.contentassist.IContextInformation;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 
 
 /**
@@ -20,9 +20,16 @@ public final class RankedCompletionProposal implements ICompletionProposal {
 	/** The replacement string. */
 	private String fReplacementString;
 	/** The replacement offset. */
-	private int fReplacementOffset;
+	//private int fReplacementOffset;
 	/** The replacement length. */
-	private int fReplacementLength;
+	//private int fReplacementLength;
+	
+	/**
+	 * The position containing this proposal, the *replacement offset* and *replacement length* of
+	 * this proposal should be synchronized with that of position.
+	 */
+	private Position containingPosition;
+	
 	/** The cursor position after this proposal has been applied. */
 	private int fCursorPosition;
 	/** The image to be displayed in the completion proposal popup. */
@@ -34,7 +41,7 @@ public final class RankedCompletionProposal implements ICompletionProposal {
 	
 	private int rank;
 	
-	private Position position;
+	
 
 	/**
 	 * Creates a new completion proposal based on the provided information. The replacement string is
@@ -61,7 +68,8 @@ public final class RankedCompletionProposal implements ICompletionProposal {
 	 * @param contextInformation the context information associated with this proposal
 	 * @param additionalProposalInfo the additional information associated with this proposal
 	 */
-	public RankedCompletionProposal(String replacementString, int replacementOffset, int replacementLength, int cursorPosition, Image image, String displayString, IContextInformation contextInformation, String additionalProposalInfo, int rank) {
+	public RankedCompletionProposal(String replacementString, int replacementOffset, int replacementLength, 
+			int cursorPosition, Image image, String displayString, IContextInformation contextInformation, String additionalProposalInfo, int rank) {
 		Assert.isNotNull(replacementString);
 		Assert.isTrue(replacementOffset >= 0);
 		Assert.isTrue(replacementLength >= 0);
@@ -69,8 +77,8 @@ public final class RankedCompletionProposal implements ICompletionProposal {
 		Assert.isTrue(rank >= 0);
 
 		fReplacementString= replacementString;
-		fReplacementOffset= replacementOffset;
-		fReplacementLength= replacementLength;
+		//fReplacementOffset= replacementOffset;
+		//fReplacementLength= replacementLength;
 		fCursorPosition= cursorPosition;
 		fImage= image;
 		fDisplayString= displayString;
@@ -88,16 +96,16 @@ public final class RankedCompletionProposal implements ICompletionProposal {
 			//why not working!!
 //			document.replace(fReplacementOffset, fReplacementLength, fReplacementString);
 			
-			document.replace(position.offset, position.length, fReplacementString);
-			fReplacementOffset = position.offset;
-			fReplacementLength = position.length;
+			document.replace(containingPosition.offset, containingPosition.length, fReplacementString);
+			//fReplacementOffset = position.offset;
+			//fReplacementLength = position.length;
 			
-			this.position.setLength(fReplacementString.length());
-			ProposalPosition pp = (ProposalPosition) position;
-			for(ICompletionProposal icp : pp.getChoices()){
-				RankedCompletionProposal rcp = (RankedCompletionProposal) icp;
-				rcp.setLength(position.length);
-			}
+			this.containingPosition.setLength(fReplacementString.length());
+//			ProposalPosition pp = (ProposalPosition) position;
+//			for(ICompletionProposal icp : pp.getChoices()){
+//				RankedCompletionProposal rcp = (RankedCompletionProposal) icp;
+//				rcp.setLength(position.length);
+//			}
 		} catch (BadLocationException x) {
 			// ignore
 		}
@@ -107,7 +115,7 @@ public final class RankedCompletionProposal implements ICompletionProposal {
 	 * @see ICompletionProposal#getSelection(IDocument)
 	 */
 	public Point getSelection(IDocument document) {
-		return new Point(fReplacementOffset + fCursorPosition, 0);
+		return new Point(getPosition().getOffset() + fCursorPosition, 0);
 	}
 
 	/*
@@ -141,14 +149,7 @@ public final class RankedCompletionProposal implements ICompletionProposal {
 	}
 
 	public int getOffset() {
-		return this.fReplacementOffset;
-	}
-	
-	public void setOffset(int fReplacementOffset) {
-		this.fReplacementOffset = fReplacementOffset;
-	}
-	public void setLength(int fReplacementLength) {
-		this.fReplacementLength = fReplacementLength;
+		return this.containingPosition.getOffset();
 	}
 	
 	public int getRank() {
@@ -159,11 +160,11 @@ public final class RankedCompletionProposal implements ICompletionProposal {
 	}
 
 	public Position getPosition() {
-		return position;
+		return containingPosition;
 	}
 
 	public void setPosition(Position position) {
-		this.position = position;
+		this.containingPosition = position;
 	}
 
 	public String getfReplacementString() {

@@ -25,9 +25,7 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.jface.text.ITextSelection;
-import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.link.LinkedModeModel;
-import org.eclipse.jface.text.link.LinkedPosition;
 import org.eclipse.jface.text.link.LinkedPositionGroup;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.handlers.HandlerUtil;
@@ -64,6 +62,7 @@ public class PasteHandler extends AbstractHandler {
 		ArrayList<ReferrableCloneSet> referrableCloneSets = CCDemonUtil.findCodeTemplateMaterials(sets, copiedRange);
 		
 		if(referrableCloneSets.size() != 0){
+			
 			ConfigurationPointSet cps = 
 					identifyConfigurationPoints(referrableCloneSets, copiedRange, startPositionInPastedFile, pastedEvent);
 			
@@ -96,23 +95,22 @@ public class PasteHandler extends AbstractHandler {
 			LinkedModeModel model = new LinkedModeModel();
 			for(ConfigurationPoint cp: cps.getConfigurationPoints()){
 				LinkedPositionGroup group = new LinkedPositionGroup();
-				ICompletionProposal[] proposals = new ICompletionProposal[cp.getCandidates().size()]; 
+				RankedCompletionProposal[] proposals = new RankedCompletionProposal[cp.getCandidates().size()]; 
+				RankedProposalPosition position = new RankedProposalPosition(document, cp.getModifiedTokenSeq().getStartPosition(), 
+						cp.getModifiedTokenSeq().getPositionLength(), proposals);
+				
 				for(int i=0; i<proposals.length; i++){
 					proposals[i] = new RankedCompletionProposal(cp.getCandidates().get(i).getText(), cp.getModifiedTokenSeq().getStartPosition(),
 							cp.getModifiedTokenSeq().getPositionLength(), 0, 0);
+					proposals[i].setPosition(position);
 				}
+				position.setChoices(proposals);
 				
-				LinkedPosition lp = new RankedProposalPosition(document, cp.getModifiedTokenSeq().getStartPosition(), 
-						cp.getModifiedTokenSeq().getPositionLength(), proposals);
-				for(ICompletionProposal icp : proposals){
-					RankedCompletionProposal rcp = (RankedCompletionProposal) icp;
-					rcp.setPosition(lp);
-				}
-				
-				group.addPosition(lp);
+				group.addPosition(position);
 				model.addGroup(group);
-				CCDemonUtil.positions.add(lp);
+				CCDemonUtil.positions.add(position);
 			}
+			
 			model.forceInstall();
 			CustomLinkedModeUI ui = new CustomLinkedModeUI(model, sourceViewer);
 			CustomLinkedModeUIFocusListener listener = new CustomLinkedModeUIFocusListener();
@@ -144,6 +142,20 @@ public class PasteHandler extends AbstractHandler {
 		return null;
 	}
 
+	/**
+	 * Determine: 
+	 * 1) which parts of code in the pasted code are configurable (configuration point).
+	 * 2) what are the candidates for each configuration point.
+	 * 3) the candidate rankings in each configuration point.
+	 * 4) the rules need to be applied between the candidates.
+	 * 
+	 * @param referrableCloneSets
+	 * @param copiedRange
+	 * @param startPositionInPastedFile
+	 * @param pastedEvent
+	 * @return
+	 * @throws ExecutionException
+	 */
 	private ConfigurationPointSet identifyConfigurationPoints(ArrayList<ReferrableCloneSet> referrableCloneSets,  
 			SelectedCodeRange copiedRange, int startPositionInPastedFile, ExecutionEvent pastedEvent) throws ExecutionException {
 		if(copiedRange != null){

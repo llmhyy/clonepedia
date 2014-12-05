@@ -15,10 +15,10 @@ import ccdemon.model.ConfigurationPointSet;
 public class CustomLinkedModeUIFocusListener implements
 		ILinkedModeUIFocusListener {
 	
-	ConfigurationPointSet cps;
-	ConfigurationPoint currentCP;
-	int formerLength;
-	int currentLength;
+	private ConfigurationPointSet cps;
+	private ConfigurationPoint currentCP;
+	private int formerLength;
+	private int currentLength;
 	
 	public void setConfigurationPointSet(ConfigurationPointSet cps) {
 		this.cps = cps;
