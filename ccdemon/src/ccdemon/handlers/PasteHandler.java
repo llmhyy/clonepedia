@@ -165,7 +165,7 @@ public class PasteHandler extends AbstractHandler {
 			 * At this time, we need to match the token sequence in copied clone instance to
 			 * the pasted code fragments. Then the configuration point can be identified.
 			 */
-			appendConfigurationPointsWithPastedSeq(event, copiedRange, configurationPoints, startPositionInPastedFile);
+			appendConfigurationPointsWithPastedSeq(configurationPoints, event, copiedRange, startPositionInPastedFile);
 			
 			return new ConfigurationPointSet(configurationPoints);
 		}
@@ -181,8 +181,8 @@ public class PasteHandler extends AbstractHandler {
 	 * @param configurationPoints
 	 * @throws ExecutionException
 	 */
-	private void appendConfigurationPointsWithPastedSeq(ExecutionEvent event, SelectedCodeRange copiedRange,
-			ArrayList<ConfigurationPoint> configurationPoints, int startPositionInPastedFile)
+	private void appendConfigurationPointsWithPastedSeq(ArrayList<ConfigurationPoint> configurationPoints, ExecutionEvent event, 
+			SelectedCodeRange copiedRange, int startPositionInPastedFile)
 			throws ExecutionException {
 		ArrayList<Token> pastedTokenList = parsePastedTokens(event, copiedRange.getPositionLength());
 		int offsetFromCopiedCodeToPastedCode = startPositionInPastedFile - copiedRange.getStartPosition();
