@@ -49,7 +49,7 @@ public class CCDemonUtil {
 		ArrayList<ReferrableCloneSet> materials = new ArrayList<>();
 		for(CloneSet set: cloneSets.getCloneList()){
 			
-			if(/*set.getId().equals("3015") ||*/ set.getId().equals("3210")){
+			if(set.getId().equals("aa") || set.getId().equals("bb")){
 				continue;
 			}
 			
