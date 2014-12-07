@@ -32,6 +32,10 @@ public class TokenSeq {
 		return buffer.toString();
 	}
 	
+	public boolean isSingleToken(){
+		return this.tokens.size() == 1;
+	}
+	
 	public void retrieveTextFromDoc(){
 		if(isEpisolonTokenSeq()){
 			setText("");

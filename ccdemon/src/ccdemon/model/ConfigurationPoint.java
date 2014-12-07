@@ -5,7 +5,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import mcidiff.model.SeqMultiset;
+import mcidiff.model.Token;
 import mcidiff.model.TokenSeq;
+
+import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.IBinding;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
+import org.eclipse.jdt.core.dom.SimpleName;
 
 public class ConfigurationPoint {
 	/**
@@ -33,6 +41,60 @@ public class ConfigurationPoint {
 		this.seqMultiset = seqMultiset;
 		
 		organizeCandidate(getSeqMultiset());
+	}
+	
+	public boolean isType(){
+		for(TokenSeq tokenSeq: seqMultiset.getSequences()){
+			if(tokenSeq.isSingleToken()){
+				Token t = tokenSeq.getTokens().get(0);
+				ASTNode node = t.getNode();
+				if(node instanceof SimpleName){
+					SimpleName name = (SimpleName)node;
+					IBinding binding = name.resolveBinding();
+					if(binding != null && binding instanceof ITypeBinding){
+						return true;
+					}
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	public boolean isVariableOrField(){
+		for(TokenSeq tokenSeq: seqMultiset.getSequences()){
+			if(tokenSeq.isSingleToken()){
+				Token t = tokenSeq.getTokens().get(0);
+				ASTNode node = t.getNode();
+				if(node instanceof SimpleName){
+					SimpleName name = (SimpleName)node;
+					IBinding binding = name.resolveBinding();
+					if(binding != null && binding instanceof IVariableBinding){
+						return true;
+					}
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	public boolean isMethod(){
+		for(TokenSeq tokenSeq: seqMultiset.getSequences()){
+			if(tokenSeq.isSingleToken()){
+				Token t = tokenSeq.getTokens().get(0);
+				ASTNode node = t.getNode();
+				if(node instanceof SimpleName){
+					SimpleName name = (SimpleName)node;
+					IBinding binding = name.resolveBinding();
+					if(binding != null && binding instanceof IMethodBinding){
+						return true;
+					}
+				}
+			}
+		}
+		
+		return false;
 	}
 
 	private void organizeCandidate(SeqMultiset seqMultiset) {

@@ -23,23 +23,32 @@ public class ConfigurationPointSet {
 	
 	public void prepareForInstallation(ArrayList<ReferrableCloneSet> referrableCloneSets){
 		
-		expandCandidates(this.configurationPoints);
-		generateRules(this.configurationPoints);
+		expandEnvironmentBasedCandidates(this.configurationPoints);
+		generateNamingRules(this.configurationPoints);
 		
 		OccurrenceTable occurrences = constructCandidateOccurrences(referrableCloneSets);
 		adjustCandidateRanking(this.configurationPoints, occurrences);
 	}
 	
-	private void generateRules(
+	private void generateNamingRules(
 			ArrayList<ConfigurationPoint> configurationPoints) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	private void expandCandidates(
+	private void expandEnvironmentBasedCandidates(
 			ArrayList<ConfigurationPoint> configurationPoints) {
-		// TODO Auto-generated method stub
-		
+		for(ConfigurationPoint point: configurationPoints){
+			if(point.isType()){
+				//TODO find its sibling types 
+			}
+			else if(point.isVariableOrField()){
+				//TODO find compatible variable in the context
+			}
+			else if(point.isMethod()){
+				//do nothing for now
+			}
+		}
 	}
 
 	private OccurrenceTable constructCandidateOccurrences(ArrayList<ReferrableCloneSet> referrableCloneSets) {
