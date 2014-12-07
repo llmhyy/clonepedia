@@ -171,14 +171,14 @@ public class PasteHandler extends AbstractHandler {
 			/**
 			 * filter out those configuration points which are not copied.
 			 */
-			filterUnrelevantConfigurationPoints(configurationPoints, copiedRange);
+			filterIrrelevantConfigurationPoints(configurationPoints, copiedRange);
 			/**
 			 * At this time, we need to match the token sequence in copied clone instance to
 			 * the pasted code fragments. Then the configuration point can be identified.
 			 */
 			appendConfigurationPointsWithPastedSeq(configurationPoints, pastedEvent, copiedRange, startPositionInPastedFile);
 			
-			return new ConfigurationPointSet(configurationPoints);
+			return new ConfigurationPointSet(configurationPoints, referrableCloneSets);
 		}
 		
 		return new ConfigurationPointSet();
@@ -243,7 +243,7 @@ public class PasteHandler extends AbstractHandler {
 		return cpList;
 	}
 
-	private void filterUnrelevantConfigurationPoints(
+	private void filterIrrelevantConfigurationPoints(
 			ArrayList<ConfigurationPoint> configurationPoints, SelectedCodeRange range) {
 		Iterator<ConfigurationPoint> iterator = configurationPoints.iterator();
 		while(iterator.hasNext()){

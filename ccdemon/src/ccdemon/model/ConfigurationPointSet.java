@@ -7,6 +7,7 @@ import clonepedia.model.ontology.CloneInstance;
 
 public class ConfigurationPointSet {
 	private ArrayList<ConfigurationPoint> configurationPoints = new ArrayList<>();
+	private ArrayList<ReferrableCloneSet> referrableCloneSets = new ArrayList<>();
 
 	public ConfigurationPointSet(){}
 	
@@ -14,17 +15,33 @@ public class ConfigurationPointSet {
 	 * @param configurationPoints
 	 */
 	public ConfigurationPointSet(
-			ArrayList<ConfigurationPoint> configurationPoints) {
+			ArrayList<ConfigurationPoint> configurationPoints, ArrayList<ReferrableCloneSet> referrableCloneSets) {
 		super();
 		this.configurationPoints = configurationPoints;
+		this.referrableCloneSets = referrableCloneSets;
 	}
 	
 	public void prepareForInstallation(ArrayList<ReferrableCloneSet> referrableCloneSets){
+		
+		expandCandidates(this.configurationPoints);
+		generateRules(this.configurationPoints);
+		
 		OccurrenceTable occurrences = constructCandidateOccurrences(referrableCloneSets);
-		enhanceCandidates();
-		adjustCandidateRanking(occurrences);
+		adjustCandidateRanking(this.configurationPoints, occurrences);
 	}
 	
+	private void generateRules(
+			ArrayList<ConfigurationPoint> configurationPoints) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void expandCandidates(
+			ArrayList<ConfigurationPoint> configurationPoints) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	private OccurrenceTable constructCandidateOccurrences(ArrayList<ReferrableCloneSet> referrableCloneSets) {
 		ReferrableCloneSet rcs = referrableCloneSets.get(0);
 		String[][] occurrenceTable = new String[rcs.getCloneSet().size()][configurationPoints.size()];
@@ -46,12 +63,8 @@ public class ConfigurationPointSet {
 		return new OccurrenceTable(occurrenceTable);
 	}
 
-	private void enhanceCandidates() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	private void adjustCandidateRanking(OccurrenceTable occurrences) {
+	private void adjustCandidateRanking(ArrayList<ConfigurationPoint> configurationPoints,
+			OccurrenceTable occurrences) {
 		// TODO Auto-generated method stub
 		
 	}
