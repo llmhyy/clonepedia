@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import mcidiff.model.Token;
 import mcidiff.model.TokenSeq;
 
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.link.LinkedModeUI.ILinkedModeUIFocusListener;
 import org.eclipse.jface.text.link.LinkedModeUI.LinkedModeUITarget;
 import org.eclipse.jface.text.link.LinkedPosition;
 
 import ccdemon.model.ConfigurationPoint;
 import ccdemon.model.ConfigurationPointSet;
+import ccdemon.proposal.RankedCompletionProposal;
 import ccdemon.proposal.RankedProposalPosition;
 
 public class CustomLinkedModeUIFocusListener implements
@@ -38,18 +40,14 @@ public class CustomLinkedModeUIFocusListener implements
 		this.positionList = positionList;
 		this.configurationPointSet = configurationPointSet;
 	}
-	
-	public void setConfigurationPointSet(ConfigurationPointSet cps) {
-		this.configurationPointSet = cps;
-	}
 
 	@Override
 	public void linkingFocusLost(LinkedPosition position, LinkedModeUITarget target) {
-		
 		currentLength = position.length;
+
+		ArrayList<ConfigurationPoint> configurationPoints = configurationPointSet.getConfigurationPoints();
 		
 		if(currentLength != formerLength){
-			ArrayList<ConfigurationPoint> configurationPoints = configurationPointSet.getConfigurationPoints();
 			int index = configurationPoints.indexOf(currentPoint);
 			
 			for(int i = index + 1; i < configurationPoints.size(); i++){
@@ -61,37 +59,35 @@ public class CustomLinkedModeUIFocusListener implements
 					token.setEndPosition(token.getEndPosition() + currentLength - formerLength);
 				}
 			}
+		}
+		
+		//Step 1: change configuration point set
+		
+		//Step 2: update the position list w.r.t configuration point set.
+		for(int i = 0; i < configurationPoints.size(); i++){
+			ConfigurationPoint cp = configurationPoints.get(i);				
+			RankedProposalPosition pp = positionList.get(i);
 			
-			//Step 1: change configuration point set
-			
-			//Step 2: update the position list w.r.t configuration point set.
+			RankedCompletionProposal[] proposals = new RankedCompletionProposal[cp.getCandidates().size()]; 
+			for(int j = 0; j<proposals.length; j++){
+				proposals[j] = new RankedCompletionProposal(cp.getCandidates().get(j).getText(), 
+						cp.getModifiedTokenSeq().getStartPosition(), cp.getModifiedTokenSeq().getPositionLength(), 0, 0);
+				proposals[j].setPosition(pp);
+			}
+			pp.setChoices(proposals);
 			
 			//Step 3: update the code by ranking
-			
-			//the way to modify proposals' content
-			/*int positionIndex = CCDemonUtil.positions.indexOf(position);
-			for(int i = positionIndex + 1; i < CCDemonUtil.positions.size(); i++){
-				RankedProposalPosition pp = (RankedProposalPosition) CCDemonUtil.positions.get(i);
-				ICompletionProposal[] proposals = new ICompletionProposal[3]; 
-				proposals[0] = new RankedCompletionProposal("test1", pp.offset, pp.length, 0 , 0);
-				((RankedCompletionProposal) proposals[0]).setPosition(pp);
-				proposals[1] = new RankedCompletionProposal("test2", pp.offset, pp.length, 0 , 0);
-				((RankedCompletionProposal) proposals[1]).setPosition(pp);
-				proposals[2] = new RankedCompletionProposal("test3", pp.offset, pp.length, 0 , 0);
-				((RankedCompletionProposal) proposals[2]).setPosition(pp);
-				
-				pp.setChoices(proposals);
-			}*/
+			//TODO only update when the position is not configured
+			IDocument document= target.getViewer().getDocument();
+			proposals[0].apply(document);
 		}
 	}
 
 	@Override
 	public void linkingFocusGained(LinkedPosition position, LinkedModeUITarget target) {
 		//find current configuration point that has the same offset and length
-		
 		formerLength = position.length;
 		currentPoint = configurationPointSet.getConfigurationPoints().get(positionList.indexOf(position));
-		
 	}
 
 }
