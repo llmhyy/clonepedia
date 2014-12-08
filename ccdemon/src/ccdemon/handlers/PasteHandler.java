@@ -15,12 +15,19 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.ToolFactory;
 import org.eclipse.jdt.core.compiler.IScanner;
 import org.eclipse.jdt.core.compiler.ITerminalSymbols;
 import org.eclipse.jdt.core.compiler.InvalidInputException;
+import org.eclipse.jdt.core.dom.AST;
+import org.eclipse.jdt.core.dom.ASTParser;
+import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextOperationTarget;
@@ -29,6 +36,7 @@ import org.eclipse.jface.text.link.LinkedModeModel;
 import org.eclipse.jface.text.link.LinkedPositionGroup;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 
 import ccdemon.model.ConfigurationPoint;
@@ -178,10 +186,45 @@ public class PasteHandler extends AbstractHandler {
 			 */
 			appendConfigurationPointsWithPastedSeq(configurationPoints, pastedEvent, copiedRange, startPositionInPastedFile);
 			
-			return new ConfigurationPointSet(configurationPoints, referrableCloneSets);
+			CompilationUnit unit = retrieveCompilationUnitFromPastedFile(pastedEvent, proj);
+			
+			return new ConfigurationPointSet(configurationPoints, referrableCloneSets, unit, startPositionInPastedFile);
 		}
 		
 		return new ConfigurationPointSet();
+	}
+	
+	private CompilationUnit retrieveCompilationUnitFromPastedFile(ExecutionEvent pastedEvent, IJavaProject proj){
+		AbstractTextEditor activeEditor = (AbstractTextEditor) HandlerUtil.getActiveEditor(pastedEvent);
+		FileEditorInput fileInput = (FileEditorInput) activeEditor.getEditorInput();
+		
+		IPath iPath = fileInput.getPath();
+		String path = iPath.toOSString();
+		int startIndex = path.indexOf("\\", path.indexOf(proj.getProject().getName()));
+		path = path.substring(startIndex, path.length());
+		path = path.substring(0, path.lastIndexOf(iPath.getFileExtension())-1);
+		
+		//String packRoot = path.substring(1, path.indexOf("\\", 1));
+		//filter out the package root
+		String className = path.substring(path.indexOf("\\", 1)+1, path.length());
+		className = className.replace("\\", ".");
+		try {
+			IType type = proj.findType(className);
+			ICompilationUnit iunit = type.getCompilationUnit();
+			
+			ASTParser parser = ASTParser.newParser(AST.JLS4);
+			parser.setKind(ASTParser.K_COMPILATION_UNIT);
+			parser.setSource(iunit);
+			parser.setResolveBindings(true);
+			
+			CompilationUnit unit = (CompilationUnit)parser.createAST(null);
+			
+			return unit;
+		} catch (JavaModelException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 
 	/**
