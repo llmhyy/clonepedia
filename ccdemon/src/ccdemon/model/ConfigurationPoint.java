@@ -40,7 +40,7 @@ public class ConfigurationPoint {
 		this.copiedTokenSeq = tokenSeq;
 		this.seqMultiset = seqMultiset;
 		
-		organizeCandidate(getSeqMultiset());
+		organizeHistoricalCandidate(getSeqMultiset());
 	}
 	
 	public boolean isType(){
@@ -97,7 +97,7 @@ public class ConfigurationPoint {
 		return false;
 	}
 
-	private void organizeCandidate(SeqMultiset seqMultiset) {
+	private void organizeHistoricalCandidate(SeqMultiset seqMultiset) {
 		// TODO may need to collect more information to adjust the score of candidate to indidate candidate ranking.
 		HashMap<TokenSeq, Integer> map = new HashMap<>();
 		for(TokenSeq seq: seqMultiset.getSequences()){
@@ -113,7 +113,7 @@ public class ConfigurationPoint {
 		}
 		
 		for(TokenSeq seq: map.keySet()){
-			Candidate candidate = new Candidate(seq.getText(), map.get(seq));
+			Candidate candidate = new Candidate(seq.getText(), map.get(seq), Candidate.HISTORY);
 			candidates.add(candidate);
 		}
 	}

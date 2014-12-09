@@ -167,7 +167,7 @@ public class PasteHandler extends AbstractHandler {
 			SelectedCodeRange copiedRange, int startPositionInPastedFile, ExecutionEvent pastedEvent) throws ExecutionException {
 		if(copiedRange != null){
 			ReferrableCloneSet rcs = referrableCloneSets.get(0);
-			mcidiff.model.CloneSet set = CCDemonUtil.adaptClonepediaModel(rcs.getCloneSet()); 
+			mcidiff.model.CloneSet set = CCDemonUtil.adaptMCIDiffModel(rcs.getCloneSet()); 
 			MCIDiff diff = new MCIDiff();
 			
 			IJavaProject proj = retrieveWorkingJavaProject();
@@ -188,7 +188,7 @@ public class PasteHandler extends AbstractHandler {
 			
 			CompilationUnit unit = retrieveCompilationUnitFromPastedFile(pastedEvent, proj);
 			
-			return new ConfigurationPointSet(configurationPoints, referrableCloneSets, unit, startPositionInPastedFile);
+			return new ConfigurationPointSet(configurationPoints, set, unit, startPositionInPastedFile);
 		}
 		
 		return new ConfigurationPointSet();

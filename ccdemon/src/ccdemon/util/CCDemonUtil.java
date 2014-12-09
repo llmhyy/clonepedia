@@ -53,7 +53,7 @@ public class CCDemonUtil {
 		return materials;
 	}
 	
-	public static mcidiff.model.CloneSet adaptClonepediaModel(CloneSet set0) {
+	public static mcidiff.model.CloneSet adaptMCIDiffModel(CloneSet set0) {
 		mcidiff.model.CloneSet set = new mcidiff.model.CloneSet();
 		set.setId(set0.getId());
 		for(clonepedia.model.ontology.CloneInstance ins: set0){
@@ -64,7 +64,7 @@ public class CCDemonUtil {
 		return set;
 	}
 	
-	public static clonepedia.model.ontology.CloneSet adaptMCIDiffModel(mcidiff.model.CloneSet set0) {
+	public static clonepedia.model.ontology.CloneSet adaptClonepediaModel(mcidiff.model.CloneSet set0) {
 		clonepedia.model.ontology.CloneSet set = new clonepedia.model.ontology.CloneSet(set0.getId());
 		for(mcidiff.model.CloneInstance ins: set0.getInstances()){
 			clonepedia.model.ontology.CloneInstance instance = 

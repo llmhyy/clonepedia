@@ -1,0 +1,23 @@
+package ccdemon.model.rule;
+
+import java.util.ArrayList;
+
+public class EquivalentComponentGroup {
+	private ArrayList<Component> components = new ArrayList<>();
+
+	/**
+	 * @return the components
+	 */
+	public ArrayList<Component> getComponents() {
+		return components;
+	}
+
+	/**
+	 * @param components the components to set
+	 */
+	public void setComponents(ArrayList<Component> components) {
+		this.components = components;
+	} 
+	
+	
+}
