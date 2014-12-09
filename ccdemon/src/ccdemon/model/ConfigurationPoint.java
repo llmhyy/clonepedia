@@ -118,6 +118,28 @@ public class ConfigurationPoint {
 		}
 	}
 
+	public ArrayList<Class> getTypes(){
+		ArrayList<Class> classList = new ArrayList<Class>();
+		for(TokenSeq tokenSeq: seqMultiset.getSequences()){
+			if(tokenSeq.isSingleToken()){
+				Token t = tokenSeq.getTokens().get(0);
+				ASTNode node = t.getNode();
+				if(node instanceof SimpleName){
+					SimpleName name = (SimpleName)node;
+					IBinding binding = name.resolveBinding();
+					if(binding != null && binding instanceof ITypeBinding){
+						ITypeBinding typeBinding = (ITypeBinding) binding;
+						if(!classList.contains(typeBinding.getClass())){
+							classList.add(typeBinding.getClass());
+						}
+					}
+				}
+			}
+		}
+		
+		return classList;
+	}
+
 	/**
 	 * @return the tokenSeq
 	 */
