@@ -198,15 +198,15 @@ public class PasteHandler extends AbstractHandler {
 		AbstractTextEditor activeEditor = (AbstractTextEditor) HandlerUtil.getActiveEditor(pastedEvent);
 		FileEditorInput fileInput = (FileEditorInput) activeEditor.getEditorInput();
 		
-		IPath iPath = fileInput.getPath();
+		IPath iPath = fileInput.getFile().getProjectRelativePath();
 		String path = iPath.toOSString();
-		int startIndex = path.indexOf("\\", path.indexOf(proj.getProject().getName()));
-		path = path.substring(startIndex, path.length());
+//		int startIndex = path.indexOf("\\", path.indexOf(proj.getProject().getName()));
+//		path = path.substring(startIndex, path.length());
 		path = path.substring(0, path.lastIndexOf(iPath.getFileExtension())-1);
-		
-		//String packRoot = path.substring(1, path.indexOf("\\", 1));
+//		
+//		String packRoot = path.substring(1, path.indexOf("\\", 1));
 		//filter out the package root
-		String className = path.substring(path.indexOf("\\", 1)+1, path.length());
+		String className = path.substring(path.indexOf("\\")+1, path.length());
 		className = className.replace("\\", ".");
 		try {
 			IType type = proj.findType(className);

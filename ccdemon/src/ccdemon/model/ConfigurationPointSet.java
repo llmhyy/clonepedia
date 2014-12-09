@@ -1,8 +1,10 @@
 package ccdemon.model;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.reflections.Reflections;
 
 import mcidiff.model.TokenSeq;
 import clonepedia.model.ontology.CloneInstance;
@@ -48,6 +50,20 @@ public class ConfigurationPointSet {
 		for(ConfigurationPoint point: configurationPoints){
 			if(point.isType()){
 				//TODO find its sibling types
+				ArrayList<Class> types = point.getTypes();
+				ArrayList<Class> siblings = new ArrayList<Class>();
+				for(Class c : types){
+					Reflections reflections = new Reflections(c.getPackage());
+					Set<Class<?>> subset = reflections.getSubTypesOf(c);
+					if(subset.size() != 0){
+						for(Class sub : subset){
+							if(!siblings.contains(sub)){
+								siblings.add(sub);
+							}
+						}
+					}
+				}
+				System.out.println("siblings: " + siblings.size());
 			}
 			else if(point.isVariableOrField()){
 				//TODO find compatible variable in the context
