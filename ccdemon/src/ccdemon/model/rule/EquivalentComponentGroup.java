@@ -19,5 +19,7 @@ public class EquivalentComponentGroup {
 		this.components = components;
 	} 
 	
-	
+	public void addComponent(Component component){
+		this.components.add(component);
+	}
 }

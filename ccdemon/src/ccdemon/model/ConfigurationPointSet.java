@@ -6,16 +6,14 @@ import java.util.Set;
 import mcidiff.model.CloneInstance;
 import mcidiff.model.CloneSet;
 import mcidiff.model.SeqMultiset;
-
-import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.reflections.Reflections;
-
+import mcidiff.model.Token;
 import mcidiff.model.TokenSeq;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
+import org.reflections.Reflections;
 
 import ccdemon.model.rule.NameInstance;
 import ccdemon.model.rule.NamingRule;
@@ -112,6 +110,8 @@ public class ConfigurationPointSet {
 		for(CloneInstance instance: referrableCloneSet.getInstances()){
 			ContextContent content = parseContextPoint(instance);	
 			
+			System.currentTimeMillis();
+			
 			String typeName = content.getTypeDeclaration().getName().getIdentifier();
 			String methodName = content.getMethodDeclaration().getName().getIdentifier();
 			
@@ -132,7 +132,13 @@ public class ConfigurationPointSet {
 	}
  
 	private ContextContent parseContextPoint(CloneInstance instance) {
-		ASTNode node = instance.getTokenList().get(0).getNode();
+		ASTNode node = null;
+		for(Token t: instance.getTokenList()){
+			if(!t.isEpisolon()){
+				node = t.getNode();
+				break;
+			}
+		}
 		TypeDeclaration typeDeclaration = null;
 		MethodDeclaration methodDeclaration = null;
 		
@@ -155,6 +161,7 @@ public class ConfigurationPointSet {
 		return items;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void expandEnvironmentBasedCandidates(
 			ArrayList<ConfigurationPoint> configurationPoints) {
 		for(ConfigurationPoint point: configurationPoints){
@@ -187,14 +194,14 @@ public class ConfigurationPointSet {
 	private OccurrenceTable constructCandidateOccurrences(ArrayList<ReferrableCloneSet> referrableCloneSets) {
 		ReferrableCloneSet rcs = referrableCloneSets.get(0);
 		String[][] occurrenceTable = new String[rcs.getCloneSet().size()][configurationPoints.size()];
-		CloneInstance[] instanceArray = rcs.getCloneSet().toArray(new CloneInstance[0]);
+		clonepedia.model.ontology.CloneInstance[] instanceArray = rcs.getCloneSet().toArray(new clonepedia.model.ontology.CloneInstance[0]);
 		
 		for(int i=0; i<instanceArray.length; i++){
-			CloneInstance instance = instanceArray[i];
+			clonepedia.model.ontology.CloneInstance instance = instanceArray[i];
 			
 			for(int j=0; j<configurationPoints.size(); j++){
 				ConfigurationPoint cp = configurationPoints.get(j);
-				TokenSeq tokenSeq = cp.getSeqMultiset().findTokenSeqByCloneInstance(instance.getFileName(), 
+				TokenSeq tokenSeq = cp.getSeqMultiset().findTokenSeqByCloneInstance(instance.getFileLocation(), 
 						instance.getStartLine(), instance.getEndLine());
 				if(tokenSeq != null){
 					occurrenceTable[i][j] = tokenSeq.getText();
