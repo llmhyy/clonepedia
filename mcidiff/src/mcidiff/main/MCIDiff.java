@@ -79,6 +79,7 @@ public class MCIDiff {
 				}
 			}
 		}
+		
 		aggregatedSets.add(sets);
 		
 		ArrayList<SeqMultiset> seqMultisets = transferToSeqMultiset(aggregatedSets);
@@ -112,6 +113,7 @@ public class MCIDiff {
 				}
 				
 				sequence.retrieveTextFromDoc();
+				sequence.filterUselessEpsilonToken();
 				seqMultiset.addTokenSeq(sequence);
 			}
 			
