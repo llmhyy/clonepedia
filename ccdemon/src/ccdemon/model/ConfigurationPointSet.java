@@ -9,11 +9,13 @@ import mcidiff.model.SeqMultiset;
 
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.reflections.Reflections;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
 
 import mcidiff.model.TokenSeq;
 
 import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
@@ -86,7 +88,7 @@ public class ConfigurationPointSet {
 	public void prepareForInstallation(ArrayList<ReferrableCloneSet> referrableCloneSets){
 		
 		expandEnvironmentBasedCandidates(this.configurationPoints);
-		generateNamingRules(this.configurationPoints, this.referrableCloneSet);
+		//generateNamingRules(this.configurationPoints, this.referrableCloneSet);
 		
 		OccurrenceTable occurrences = constructCandidateOccurrences(referrableCloneSets);
 		adjustCandidateRanking(this.configurationPoints, occurrences);
@@ -160,20 +162,22 @@ public class ConfigurationPointSet {
 		for(ConfigurationPoint point: configurationPoints){
 			if(point.isType()){
 				//TODO find its sibling types
-				ArrayList<Class> types = point.getTypes();
+				ArrayList<Class> types = point.getSuperTypes();
 				ArrayList<Class> siblings = new ArrayList<Class>();
 				for(Class c : types){
-					Reflections reflections = new Reflections(c.getPackage());
+					ConfigurationBuilder cb = new ConfigurationBuilder().setScanners(new SubTypesScanner());
+					cb.addUrls(ClasspathHelper.forClass(c));
+				    Reflections reflections = new Reflections(cb);				
 					Set<Class<?>> subset = reflections.getSubTypesOf(c);
 					if(subset.size() != 0){
 						for(Class sub : subset){
 							if(!siblings.contains(sub)){
 								siblings.add(sub);
+								point.getCandidates().add(new Candidate(sub.getSimpleName(),0,Candidate.ENVIRONMENT));
 							}
 						}
 					}
 				}
-				System.out.println("siblings: " + siblings.size());
 			}
 			else if(point.isVariableOrField()){
 				//TODO find compatible variable in the context
@@ -187,14 +191,14 @@ public class ConfigurationPointSet {
 	private OccurrenceTable constructCandidateOccurrences(ArrayList<ReferrableCloneSet> referrableCloneSets) {
 		ReferrableCloneSet rcs = referrableCloneSets.get(0);
 		String[][] occurrenceTable = new String[rcs.getCloneSet().size()][configurationPoints.size()];
-		CloneInstance[] instanceArray = rcs.getCloneSet().toArray(new CloneInstance[0]);
+		clonepedia.model.ontology.CloneInstance[] instanceArray = rcs.getCloneSet().toArray(new clonepedia.model.ontology.CloneInstance[0]);
 		
 		for(int i=0; i<instanceArray.length; i++){
-			CloneInstance instance = instanceArray[i];
+			clonepedia.model.ontology.CloneInstance instance = instanceArray[i];
 			
 			for(int j=0; j<configurationPoints.size(); j++){
 				ConfigurationPoint cp = configurationPoints.get(j);
-				TokenSeq tokenSeq = cp.getSeqMultiset().findTokenSeqByCloneInstance(instance.getFileName(), 
+				TokenSeq tokenSeq = cp.getSeqMultiset().findTokenSeqByCloneInstance(instance.getFileLocation(), 
 						instance.getStartLine(), instance.getEndLine());
 				if(tokenSeq != null){
 					occurrenceTable[i][j] = tokenSeq.getText();
