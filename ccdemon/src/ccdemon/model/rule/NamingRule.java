@@ -44,8 +44,11 @@ public class NamingRule {
 					}
 					
 					if(isValidForAdding){
+						String newValue = buffer.toString();
 						ConfigurationPoint point = item.getConfigurationPoint();
-						point.getCandidates().add(new Candidate(buffer.toString(), 0, Candidate.RULE));
+						if(!point.contains(newValue)){
+							point.getCandidates().add(new Candidate(newValue, 0, Candidate.RULE));							
+						}
 					}
 					
 				}
@@ -97,21 +100,21 @@ public class NamingRule {
 					int endInstanceCursor = 0;
 					
 					if(startTemplateCursor < 0){
-						startInstanceCursor = 0;
+						startInstanceCursor = -1;
 					}
 					else{
 						startInstanceCursor = templateMatch.getValue(startTemplateCursor);
 					}
 					
 					if(endTempalteCursor > components.size()-1){
-						endInstanceCursor = instanceArray.length-1;
+						endInstanceCursor = instanceArray.length;
 					}
 					else{
 						endInstanceCursor = templateMatch.getValue(endTempalteCursor);
 					}
 					
 					StringBuffer buffer = new StringBuffer();
-					for(int j=startInstanceCursor; j<=endInstanceCursor; j++){
+					for(int j=startInstanceCursor+1; j<=endInstanceCursor-1; j++){
 						if(j != -1){
 							buffer.append(instanceArray[j]);							
 						}
