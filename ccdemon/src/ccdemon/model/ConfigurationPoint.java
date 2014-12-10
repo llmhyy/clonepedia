@@ -129,7 +129,7 @@ public class ConfigurationPoint {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public ArrayList<Class> getSuperTypes(){
+	public ArrayList<Class> getSuperClasses(){
 		ArrayList<Class> classList = new ArrayList<Class>();
 		for(TokenSeq tokenSeq: seqMultiset.getSequences()){
 			if(tokenSeq.isSingleToken()){
@@ -154,6 +154,27 @@ public class ConfigurationPoint {
 		}
 		
 		return classList;
+	}
+	
+	public ArrayList<String> getVariableOrFieldTypes(){
+		ArrayList<String> typeList = new ArrayList<String>();
+		for(TokenSeq tokenSeq: seqMultiset.getSequences()){
+			if(tokenSeq.isSingleToken()){
+				Token t = tokenSeq.getTokens().get(0);
+				ASTNode node = t.getNode();
+				if(node instanceof SimpleName){
+					SimpleName name = (SimpleName)node;
+					IBinding binding = name.resolveBinding();
+					if(binding != null && binding instanceof IVariableBinding){
+						if(!typeList.contains(((IVariableBinding)binding).getType().getQualifiedName())){
+							typeList.add(((IVariableBinding)binding).getType().getQualifiedName());
+						}
+					}
+				}
+			}
+		}
+		
+		return typeList;
 	}
 
 	/**
