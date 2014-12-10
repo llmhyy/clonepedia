@@ -55,9 +55,6 @@ public class NamingRule {
 				}
 			}
 		}
-		else{
-			//TODO check other configuration ponits to remove some rule-generated candidates
-		}
 	}
 	
 	private void refreshNamingModel(String candidateString, ConfigurationPoint currentPoint){
