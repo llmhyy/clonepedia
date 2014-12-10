@@ -18,11 +18,14 @@ import mcidiff.model.TokenSeq;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.NodeFinder;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
+import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 import ccdemon.model.rule.NameInstance;
 import ccdemon.model.rule.NamingRule;
@@ -198,8 +201,23 @@ public class ConfigurationPointSet {
 			else if(point.isVariableOrField()){
 				//find compatible variable in the context
 				ArrayList<String> types = point.getVariableOrFieldTypes();
-				String pastedVariableName = point.toString();
-				VariableOrFieldVisitor visitor = new VariableOrFieldVisitor(types, pastedVariableName);
+				String pastedVariableName = point.getCopiedTokenSeq().getText();
+				
+				NodeFinder finder = new NodeFinder(pastedCompilationUnit, startPositionInPastedFile, 1);
+				ASTNode node = finder.getCoveringNode();
+				while(!(node instanceof MethodDeclaration || node instanceof TypeDeclaration)){
+					node = node.getParent();
+				}
+				//if copied code is put in a method, we need to search for the variable in the method as well
+				if(node instanceof MethodDeclaration){
+					VariableVisitor visitor = new VariableVisitor(types, pastedVariableName);
+					node.accept(visitor);
+					for(String variable : visitor.getCompatibleVariables()){
+						point.getCandidates().add(new Candidate(variable, 0 ,Candidate.ENVIRONMENT));
+					}
+				}
+				//otherwise, we just search those fields
+				FieldVisitor visitor = new FieldVisitor(types, pastedVariableName);
 				pastedCompilationUnit.accept(visitor);
 				for(String variable : visitor.getCompatibleVariables()){
 					point.getCandidates().add(new Candidate(variable, 0 ,Candidate.ENVIRONMENT));
@@ -267,12 +285,12 @@ public class ConfigurationPointSet {
 		this.configurationPoints = configurationPoints;
 	}
 	
-	public class VariableOrFieldVisitor extends ASTVisitor{
+	public class VariableVisitor extends ASTVisitor{
 		ArrayList<String> types;
 		ArrayList<String> compatibleVariables = new ArrayList<String>();
 		String pastedVariableName;
 		
-		public VariableOrFieldVisitor(ArrayList<String> types, String pastedVariableName){
+		public VariableVisitor(ArrayList<String> types, String pastedVariableName){
 			this.types = types;
 			this.pastedVariableName = pastedVariableName;
 		}
@@ -282,9 +300,35 @@ public class ConfigurationPointSet {
 			if(binding != null && binding instanceof IVariableBinding){
 				if(types.contains(((IVariableBinding) binding).getType().getQualifiedName())){
 					//don't add the just pasted variable in, otherwise will cause duplication
-					if(!name.toString().equals(pastedVariableName.trim()) && !this.compatibleVariables.contains(name.toString())){
+					if(!name.toString().equals(pastedVariableName) && !this.compatibleVariables.contains(name.toString())){
 						this.compatibleVariables.add(name.toString());
 					}
+				}
+			}
+			return false;
+		}
+		
+		public ArrayList<String> getCompatibleVariables(){
+			return this.compatibleVariables;
+		}
+	}
+	
+	public class FieldVisitor extends ASTVisitor{
+		ArrayList<String> types;
+		ArrayList<String> compatibleVariables = new ArrayList<String>();
+		String pastedVariableName;
+		
+		public FieldVisitor(ArrayList<String> types, String pastedVariableName){
+			this.types = types;
+			this.pastedVariableName = pastedVariableName;
+		}
+		
+		public boolean visit(FieldDeclaration field){
+			if(types.contains(field.getType().resolveBinding().getQualifiedName())){
+				//don't add the just pasted variable in, otherwise will cause duplication
+				String fieldName = ((VariableDeclarationFragment)field.fragments().get(0)).getName().toString();
+				if(!fieldName.equals(pastedVariableName) && !this.compatibleVariables.contains(fieldName)){
+					this.compatibleVariables.add(fieldName);
 				}
 			}
 			return false;
