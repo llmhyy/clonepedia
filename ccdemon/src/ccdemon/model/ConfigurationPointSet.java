@@ -90,7 +90,7 @@ public class ConfigurationPointSet {
 	public void prepareForInstallation(ArrayList<ReferrableCloneSet> referrableCloneSets){
 		
 		expandEnvironmentBasedCandidates(this.configurationPoints);
-		//generateNamingRules(this.configurationPoints, this.referrableCloneSet);
+		generateNamingRules(this.configurationPoints, this.referrableCloneSet);
 		
 		OccurrenceTable occurrences = constructCandidateOccurrences(referrableCloneSets);
 		adjustCandidateRanking(this.configurationPoints, occurrences);
