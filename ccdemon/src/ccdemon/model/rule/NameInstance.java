@@ -13,6 +13,12 @@ public class NameInstance {
 		this.name = name;
 		this.isSingleToken = isSingleToken;
 	}
+	
+	@Override
+	public String toString(){
+		return this.name;
+	}
+	
 	/**
 	 * @return the name
 	 */

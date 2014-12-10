@@ -118,6 +118,7 @@ public class ConfigurationPoint {
 		}
 	}
 
+	@SuppressWarnings("rawtypes")
 	public ArrayList<Class> getSuperTypes(){
 		ArrayList<Class> classList = new ArrayList<Class>();
 		for(TokenSeq tokenSeq: seqMultiset.getSequences()){

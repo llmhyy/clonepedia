@@ -1,6 +1,7 @@
 package mcidiff.model;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspace;
@@ -56,6 +57,18 @@ public class TokenSeq {
 				e.printStackTrace();
 			} catch (CoreException e) {
 				e.printStackTrace();
+			}
+		}
+	}
+	
+	public void filterUselessEpsilonToken(){
+		Iterator<Token> iter = this.tokens.iterator();
+		while(iter.hasNext()){
+			Token t = iter.next();
+			if(t.isEpisolon()){
+				if(!(tokens.size()==1 && tokens.get(0).isEpisolon())){
+					iter.remove();
+				}
 			}
 		}
 	}

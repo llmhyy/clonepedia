@@ -13,6 +13,8 @@ import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 
+import mcidiff.model.Token;
+
 import mcidiff.model.TokenSeq;
 
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -114,6 +116,8 @@ public class ConfigurationPointSet {
 		for(CloneInstance instance: referrableCloneSet.getInstances()){
 			ContextContent content = parseContextPoint(instance);	
 			
+			System.currentTimeMillis();
+			
 			String typeName = content.getTypeDeclaration().getName().getIdentifier();
 			String methodName = content.getMethodDeclaration().getName().getIdentifier();
 			
@@ -134,7 +138,13 @@ public class ConfigurationPointSet {
 	}
  
 	private ContextContent parseContextPoint(CloneInstance instance) {
-		ASTNode node = instance.getTokenList().get(0).getNode();
+		ASTNode node = null;
+		for(Token t: instance.getTokenList()){
+			if(!t.isEpisolon()){
+				node = t.getNode();
+				break;
+			}
+		}
 		TypeDeclaration typeDeclaration = null;
 		MethodDeclaration methodDeclaration = null;
 		
@@ -157,6 +167,7 @@ public class ConfigurationPointSet {
 		return items;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void expandEnvironmentBasedCandidates(
 			ArrayList<ConfigurationPoint> configurationPoints) {
 		for(ConfigurationPoint point: configurationPoints){

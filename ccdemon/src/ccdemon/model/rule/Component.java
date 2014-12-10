@@ -9,6 +9,53 @@ public class Component {
 	private boolean isAbstract;
 	
 	
+	public Component(RuleItem item, String[] supportingNames, boolean isAbstract) {
+		this.ruleItem = item;
+		this.supportingNames = supportingNames;
+		this.isAbstract = isAbstract;
+		
+		if(isAbstract){
+			this.abstractName = "*";
+		}
+		else{
+			for(int i=0; i<supportingNames.length; i++){
+				if(supportingNames[i] != null){
+					this.abstractName = supportingNames[i];
+					break;
+				}
+			}
+		}
+	}
+	
+	@Override
+	public boolean equals(Object obj){
+		if(obj instanceof Component){
+			Component thatComp = (Component)obj;
+			if(thatComp.getSupportingNames().length != this.getSupportingNames().length){
+				return false;
+			}
+			else{
+				for(int i=0; i<this.getSupportingNames().length; i++){
+					String thatString = thatComp.getSupportingNames()[i];
+					String thisString = this.getSupportingNames()[i];
+					if(thatString != null && thisString != null){
+						if(!thatString.equals(thisString)){
+							return false;
+						}
+					}
+					else if((thatString != null && thisString == null) || 
+							(thatString == null && thisString != null)){
+						return false;
+					}
+				}
+				
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	/**
 	 * @return the ruleItem
 	 */
