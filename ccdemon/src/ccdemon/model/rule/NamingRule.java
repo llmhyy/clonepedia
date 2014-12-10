@@ -46,6 +46,7 @@ public class NamingRule {
 					if(isValidForAdding){
 						String newValue = buffer.toString();
 						ConfigurationPoint point = item.getConfigurationPoint();
+						point.clearRuleGeneratedCandidates();
 						if(!point.contains(newValue)){
 							point.getCandidates().add(new Candidate(newValue, 0, Candidate.RULE));							
 						}

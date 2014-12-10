@@ -3,6 +3,7 @@ package ccdemon.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import mcidiff.model.SeqMultiset;
 import mcidiff.model.Token;
@@ -41,6 +42,16 @@ public class ConfigurationPoint {
 		this.seqMultiset = seqMultiset;
 		
 		organizeHistoricalCandidate(getSeqMultiset());
+	}
+	
+	public void clearRuleGeneratedCandidates(){
+		Iterator<Candidate> iterator = this.candidates.iterator();
+		while(iterator.hasNext()){
+			Candidate candidate = iterator.next();
+			if(candidate.getOrigin().equals(Candidate.RULE)){
+				iterator.remove();
+			}
+		}
 	}
 	
 	public boolean contains(String candidateString){
