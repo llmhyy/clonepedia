@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import mcidiff.model.Token;
 import mcidiff.model.TokenSeq;
 
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.link.LinkedModeUI.ILinkedModeUIFocusListener;
 import org.eclipse.jface.text.link.LinkedModeUI.LinkedModeUITarget;
@@ -63,6 +64,12 @@ public class CustomLinkedModeUIFocusListener implements
 		
 		//Step 1: change configuration point set
 		
+		try {
+			configurationPointSet.getRule().applyRule(position.getContent(), currentPoint);
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
+		
 		//Step 2: update the position list w.r.t configuration point set.
 		for(int i = 0; i < configurationPoints.size(); i++){
 			ConfigurationPoint cp = configurationPoints.get(i);				
@@ -78,8 +85,8 @@ public class CustomLinkedModeUIFocusListener implements
 			
 			//Step 3: update the code by ranking
 			//TODO only update when the position is not configured
-			IDocument document= target.getViewer().getDocument();
-			proposals[0].apply(document);
+			//IDocument document = target.getViewer().getDocument();
+			//proposals[0].apply(document);
 		}
 	}
 

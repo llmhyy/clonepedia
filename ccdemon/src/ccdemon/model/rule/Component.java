@@ -8,6 +8,7 @@ public class Component {
 	
 	private boolean isAbstract;
 	
+	private EquivalentComponentGroup group;
 	
 	public Component(RuleItem item, String[] supportingNames, boolean isAbstract) {
 		this.ruleItem = item;
@@ -103,6 +104,20 @@ public class Component {
 	 */
 	public void setAbstract(boolean isAbstract) {
 		this.isAbstract = isAbstract;
+	}
+
+	/**
+	 * @return the group
+	 */
+	public EquivalentComponentGroup getGroup() {
+		return group;
+	}
+
+	/**
+	 * @param group the group to set
+	 */
+	public void setGroup(EquivalentComponentGroup group) {
+		this.group = group;
 	}
 	
 	

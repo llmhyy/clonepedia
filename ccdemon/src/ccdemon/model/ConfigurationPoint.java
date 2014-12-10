@@ -43,6 +43,16 @@ public class ConfigurationPoint {
 		organizeHistoricalCandidate(getSeqMultiset());
 	}
 	
+	public boolean contains(String candidateString){
+		for(Candidate candidate: this.candidates){
+			if(candidate.getText().equals(candidateString)){
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	public boolean isType(){
 		for(TokenSeq tokenSeq: seqMultiset.getSequences()){
 			if(tokenSeq.isSingleToken()){

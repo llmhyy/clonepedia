@@ -4,32 +4,134 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import mcidiff.util.DiffUtil;
+import ccdemon.model.Candidate;
 import ccdemon.model.ConfigurationPoint;
-import ccdemon.model.ConfigurationPointSet;
 
 public class NamingRule {
 	
 	private ArrayList<RuleItem> itemList = new ArrayList<>();
-	private ArrayList<EquivalentComponentGroup> equivalentComponentGroupList = new ArrayList<>();
+	private EquivalentComponentGroupList equivalentComponentGroupList = new EquivalentComponentGroupList();
 	/**
 	 * if a (new) candidate is determined in a configuration point, it will has an impact
 	 * on the number of candidates in other configuration points. It may generate or remove 
 	 * a new candidate on other configuration points.
 	 * 
-	 * @param value
+	 * @param candidateString
 	 * @param configurationPoint
 	 */
-	public void applyRule(String candidate, ConfigurationPoint currentPoint, ConfigurationPointSet pointSet){
+	public void applyRule(String candidateString, ConfigurationPoint currentPoint){
+		if(!currentPoint.contains(candidateString)){
+			refreshNamingModel(candidateString, currentPoint);
+			
+			for(RuleItem item: itemList){
+				if(item.isChangeable()){
+					boolean isValidForAdding = true;
+					StringBuffer buffer = new StringBuffer();
+					for(Component comp: item.getComponentList()){
+						if(comp.isAbstract()){
+							String currentValue = comp.getGroup().getCurrentValue();
+							if(currentValue != null){
+								buffer.append(currentValue);
+							}
+							else{
+								isValidForAdding = false;
+								break;
+							}
+						}
+						else{
+							buffer.append(comp.getAbstractName());
+						}
+					}
+					
+					if(isValidForAdding){
+						ConfigurationPoint point = item.getConfigurationPoint();
+						point.getCandidates().add(new Candidate(buffer.toString(), 0, Candidate.RULE));
+					}
+					
+				}
+			}
+		}
+		else{
+			//TODO check other configuration ponits to remove some rule-generated candidates
+		}
+	}
+	
+	private void refreshNamingModel(String candidateString, ConfigurationPoint currentPoint){
+		EquivalentComponentGroup group = this.equivalentComponentGroupList.findEquivalentGroup(currentPoint);
+		RuleItem ruleItem = this.equivalentComponentGroupList.findMatchingRuleItem(currentPoint);
 		
-		//ArrayList<RuleItem> influencedItemList = detectInfluencedItems(candidate, currentPoint, itemList);
-		
-		for(ConfigurationPoint point: pointSet.getConfigurationPoints()){
-			if(point != currentPoint){
-				
+		if(group != null && ruleItem != null){
+			ArrayList<Component> components = ruleItem.getComponentList();
+			String[] instanceArray = DiffUtil.splitCamelString(candidateString);
+			
+			TemplateMatch templateMatch = new TemplateMatch(components.size());
+			
+			/**
+			 * find which components in the new candidate string are corresponded to the "concrete" component
+			 */
+			int instanceStart = 0;
+			for(int i=0; i<components.size(); i++){
+				Component comp = components.get(i);
+				if(!comp.isAbstract()){
+					int index = findMatchingIndex(instanceArray, instanceStart, comp.getAbstractName());
+					if(index == -1){
+						return;
+					}
+					else{
+						templateMatch.setValue(i, index);
+						instanceStart = index + 1;
+					}
+				}
+			}
+			
+			/**
+			 * find which component in the new candidate string are corresponded to the abstract component
+			 */
+			for(int i=0; i<components.size(); i++){
+				Component comp = components.get(i);
+				if(comp.isAbstract()){
+					int startTemplateCursor = i-1;
+					int endTempalteCursor = i+1;
+					
+					int startInstanceCursor = 0;
+					int endInstanceCursor = 0;
+					
+					if(startTemplateCursor < 0){
+						startInstanceCursor = 0;
+					}
+					else{
+						startInstanceCursor = templateMatch.getValue(startTemplateCursor);
+					}
+					
+					if(endTempalteCursor > components.size()-1){
+						endInstanceCursor = instanceArray.length-1;
+					}
+					else{
+						endInstanceCursor = templateMatch.getValue(endTempalteCursor);
+					}
+					
+					StringBuffer buffer = new StringBuffer();
+					for(int j=startInstanceCursor; j<=endInstanceCursor; j++){
+						if(j != -1){
+							buffer.append(instanceArray[j]);							
+						}
+					}
+					String newCandidateString = buffer.toString();
+					comp.getGroup().setCurrentValue(newCandidateString);
+				}
 			}
 		}
 	}
 	
+	private int findMatchingIndex(String[] instanceArray, int instanceStart, String compName) {
+		for(int i=instanceStart; i<instanceArray.length; i++){
+			if(instanceArray[i].equals(compName)){
+				return i;
+			}
+		}
+		return -1;
+	}
+
 	/**
 	 * retrieve naming pattern from {@code itemList}
 	 */
@@ -66,6 +168,7 @@ public class NamingRule {
 			EquivalentComponentGroup group = new EquivalentComponentGroup();
 			Component component = compList.get(0);
 			group.addComponent(component);
+			component.setGroup(group);
 			compList.remove(0);
 			
 			Iterator<Component> iter = compList.iterator();
@@ -73,10 +176,11 @@ public class NamingRule {
 				Component comp = iter.next();
 				if(comp.equals(component)){
 					group.addComponent(comp);
+					comp.setGroup(group);
 					iter.remove();
 				}
 			}
-			this.equivalentComponentGroupList.add(group);
+			this.equivalentComponentGroupList.addGroup(group);
 		}
 		
 	}
@@ -189,7 +293,7 @@ public class NamingRule {
 	/**
 	 * @return the equivalentComponentGroupList
 	 */
-	public ArrayList<EquivalentComponentGroup> getEquivalentComponentGroupList() {
+	public EquivalentComponentGroupList getEquivalentComponentGroupList() {
 		return equivalentComponentGroupList;
 	}
 
@@ -197,7 +301,7 @@ public class NamingRule {
 	 * @param equivalentComponentGroupList the equivalentComponentGroupList to set
 	 */
 	public void setEquivalentComponentGroupList(
-			ArrayList<EquivalentComponentGroup> equivalentComponentGroupList) {
+			EquivalentComponentGroupList equivalentComponentGroupList) {
 		this.equivalentComponentGroupList = equivalentComponentGroupList;
 	}
 }

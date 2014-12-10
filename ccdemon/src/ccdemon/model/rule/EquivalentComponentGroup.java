@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 public class EquivalentComponentGroup {
 	private ArrayList<Component> components = new ArrayList<>();
+	
+	private String currentValue;
 
 	/**
 	 * @return the components
@@ -22,4 +24,20 @@ public class EquivalentComponentGroup {
 	public void addComponent(Component component){
 		this.components.add(component);
 	}
+
+	/**
+	 * @return the currentValue
+	 */
+	public String getCurrentValue() {
+		return currentValue;
+	}
+
+	/**
+	 * @param currentValue the currentValue to set
+	 */
+	public void setCurrentValue(String currentValue) {
+		this.currentValue = currentValue;
+	}
+	
+	
 }
