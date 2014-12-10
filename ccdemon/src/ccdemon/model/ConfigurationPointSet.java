@@ -25,6 +25,8 @@ public class ConfigurationPointSet {
 	private CloneSet referrableCloneSet;
 	private CompilationUnit pastedCompilationUnit;
 	private int startPositionInPastedFile;
+	
+	private NamingRule rule;
 
 	public class ContextContent{
 		private TypeDeclaration typeDeclaration;
@@ -110,8 +112,6 @@ public class ConfigurationPointSet {
 		for(CloneInstance instance: referrableCloneSet.getInstances()){
 			ContextContent content = parseContextPoint(instance);	
 			
-			System.currentTimeMillis();
-			
 			String typeName = content.getTypeDeclaration().getName().getIdentifier();
 			String methodName = content.getMethodDeclaration().getName().getIdentifier();
 			
@@ -129,6 +129,8 @@ public class ConfigurationPointSet {
 		}
 		
 		rule.parseNamingPattern();
+
+		setRule(rule);
 	}
  
 	private ContextContent parseContextPoint(CloneInstance instance) {
@@ -216,6 +218,20 @@ public class ConfigurationPointSet {
 			OccurrenceTable occurrences) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	/**
+	 * @return the rule
+	 */
+	public NamingRule getRule() {
+		return rule;
+	}
+
+	/**
+	 * @param rule the rule to set
+	 */
+	public void setRule(NamingRule rule) {
+		this.rule = rule;
 	}
 
 	/**
