@@ -14,11 +14,14 @@ import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 
 import mcidiff.model.Token;
-
 import mcidiff.model.TokenSeq;
 
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.IBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import ccdemon.model.rule.NameInstance;
@@ -174,8 +177,8 @@ public class ConfigurationPointSet {
 			ArrayList<ConfigurationPoint> configurationPoints) {
 		for(ConfigurationPoint point: configurationPoints){
 			if(point.isType()){
-				//TODO find its sibling types
-				ArrayList<Class> types = point.getSuperTypes();
+				//find its sibling types
+				ArrayList<Class> types = point.getSuperClasses();
 				ArrayList<Class> siblings = new ArrayList<Class>();
 				for(Class c : types){
 					ConfigurationBuilder cb = new ConfigurationBuilder().setScanners(new SubTypesScanner());
@@ -186,14 +189,21 @@ public class ConfigurationPointSet {
 						for(Class sub : subset){
 							if(!siblings.contains(sub)){
 								siblings.add(sub);
-								point.getCandidates().add(new Candidate(sub.getSimpleName(),0,Candidate.ENVIRONMENT));
+								point.getCandidates().add(new Candidate(sub.getSimpleName(), 0 ,Candidate.ENVIRONMENT));
 							}
 						}
 					}
 				}
 			}
 			else if(point.isVariableOrField()){
-				//TODO find compatible variable in the context
+				//find compatible variable in the context
+				ArrayList<String> types = point.getVariableOrFieldTypes();
+				String pastedVariableName = point.toString();
+				VariableOrFieldVisitor visitor = new VariableOrFieldVisitor(types, pastedVariableName);
+				pastedCompilationUnit.accept(visitor);
+				for(String variable : visitor.getCompatibleVariables()){
+					point.getCandidates().add(new Candidate(variable, 0 ,Candidate.ENVIRONMENT));
+				}
 			}
 			else if(point.isMethod()){
 				//do nothing for now
@@ -255,5 +265,33 @@ public class ConfigurationPointSet {
 	public void setConfigurationPoints(
 			ArrayList<ConfigurationPoint> configurationPoints) {
 		this.configurationPoints = configurationPoints;
+	}
+	
+	public class VariableOrFieldVisitor extends ASTVisitor{
+		ArrayList<String> types;
+		ArrayList<String> compatibleVariables = new ArrayList<String>();
+		String pastedVariableName;
+		
+		public VariableOrFieldVisitor(ArrayList<String> types, String pastedVariableName){
+			this.types = types;
+			this.pastedVariableName = pastedVariableName;
+		}
+		
+		public boolean visit(SimpleName name){
+			IBinding binding = name.resolveBinding();
+			if(binding != null && binding instanceof IVariableBinding){
+				if(types.contains(((IVariableBinding) binding).getType().getQualifiedName())){
+					//don't add the just pasted variable in, otherwise will cause duplication
+					if(!name.toString().equals(pastedVariableName.trim()) && !this.compatibleVariables.contains(name.toString())){
+						this.compatibleVariables.add(name.toString());
+					}
+				}
+			}
+			return false;
+		}
+		
+		public ArrayList<String> getCompatibleVariables(){
+			return this.compatibleVariables;
+		}
 	}
 }
