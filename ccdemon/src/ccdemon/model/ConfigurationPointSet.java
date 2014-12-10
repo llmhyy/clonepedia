@@ -6,14 +6,20 @@ import java.util.Set;
 import mcidiff.model.CloneInstance;
 import mcidiff.model.CloneSet;
 import mcidiff.model.SeqMultiset;
+
+import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.reflections.Reflections;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
+
 import mcidiff.model.Token;
+
 import mcidiff.model.TokenSeq;
 
 import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
-import org.reflections.Reflections;
 
 import ccdemon.model.rule.NameInstance;
 import ccdemon.model.rule.NamingRule;
@@ -169,20 +175,22 @@ public class ConfigurationPointSet {
 		for(ConfigurationPoint point: configurationPoints){
 			if(point.isType()){
 				//TODO find its sibling types
-				ArrayList<Class> types = point.getTypes();
+				ArrayList<Class> types = point.getSuperTypes();
 				ArrayList<Class> siblings = new ArrayList<Class>();
 				for(Class c : types){
-					Reflections reflections = new Reflections(c.getPackage());
+					ConfigurationBuilder cb = new ConfigurationBuilder().setScanners(new SubTypesScanner());
+					cb.addUrls(ClasspathHelper.forClass(c));
+				    Reflections reflections = new Reflections(cb);				
 					Set<Class<?>> subset = reflections.getSubTypesOf(c);
 					if(subset.size() != 0){
 						for(Class sub : subset){
 							if(!siblings.contains(sub)){
 								siblings.add(sub);
+								point.getCandidates().add(new Candidate(sub.getSimpleName(),0,Candidate.ENVIRONMENT));
 							}
 						}
 					}
 				}
-				System.out.println("siblings: " + siblings.size());
 			}
 			else if(point.isVariableOrField()){
 				//TODO find compatible variable in the context

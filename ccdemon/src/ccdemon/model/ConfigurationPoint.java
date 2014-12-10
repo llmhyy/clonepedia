@@ -119,7 +119,7 @@ public class ConfigurationPoint {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public ArrayList<Class> getTypes(){
+	public ArrayList<Class> getSuperTypes(){
 		ArrayList<Class> classList = new ArrayList<Class>();
 		for(TokenSeq tokenSeq: seqMultiset.getSequences()){
 			if(tokenSeq.isSingleToken()){
@@ -130,8 +130,13 @@ public class ConfigurationPoint {
 					IBinding binding = name.resolveBinding();
 					if(binding != null && binding instanceof ITypeBinding){
 						ITypeBinding typeBinding = (ITypeBinding) binding;
-						if(!classList.contains(typeBinding.getClass())){
-							classList.add(typeBinding.getClass());
+						try {
+							Class<?> c = Class.forName(typeBinding.getSuperclass().getQualifiedName());
+							if(!c.equals(Object.class) && !classList.contains(c)){
+								classList.add(c);
+							}
+						} catch (ClassNotFoundException e) {
+							e.printStackTrace();
 						}
 					}
 				}
