@@ -117,8 +117,8 @@ public class NamingRule {
 							buffer.append(instanceArray[j]);							
 						}
 					}
-					String newCandidateString = buffer.toString();
-					comp.getGroup().setCurrentValue(newCandidateString);
+					String newComponentName = buffer.toString();
+					comp.getGroup().setCurrentValue(newComponentName);
 				}
 			}
 		}
