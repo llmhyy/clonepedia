@@ -2,14 +2,11 @@ package test;
 
 import java.util.Set;
 
+import org.eclipse.jface.text.IDocument;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
-import org.eclipse.core.commands.AbstractHandler;
-import org.eclipse.jface.text.IDocument;
-
-import java.lang.Number;
 
 public class TestSub {
 	public static void main(String[] args){
