@@ -1,5 +1,7 @@
 package ccdemon.model;
 
+import mcidiff.model.TokenSeq;
+
 
 public class Candidate {
 	
@@ -98,13 +100,80 @@ public class Candidate {
 	}
 
 	public double computeScore(double ruleWeight, double environmentWeight,
-			double occuranceWeight) {
+			double historyWeight, ConfigurationPointSet points) {
 		double ruleValue = isRuleBased() ? 1 : 0;
 		double environmentValue = isEnvironmentBased() ? 1 : 0;
-		double historyValue = isHistoryBased() ? 1 : 0;
+		double historyValue = 0; 
+		if(isHistoryBased()){
+			historyValue = computeHistoryValue(points);
+		}
 		
-		return ruleWeight*ruleValue + environmentWeight*environmentValue + occuranceWeight*historyValue;
+		return ruleWeight*ruleValue + environmentWeight*environmentValue + historyWeight*historyValue;
 	}
 	
+	private double computeHistoryValue(ConfigurationPointSet points){
+		double occurenceWeight = 0.3;
+		double contextWeight = 0.3;
+		double dynamicWeight = 0.4;
+		
+		double occurenceValue = computeOccurrenceValue();
+		double contextValue = computeContextValue(points);
+		double dynamicValue = computeDynamicValue(points);
+		
+		return occurenceWeight*occurenceValue + contextWeight*contextValue + dynamicWeight*dynamicValue;
+	}
+
+	private double computeOccurrenceValue() {
+		double count = 0;
+		double totalCount = 0;
+		for(TokenSeq tokenSeq: this.configurationPoint.getSeqMultiset().getSequences()){
+			if(tokenSeq.getText().equals(this.text)){
+				count ++;
+			}
+			totalCount++;
+		}
+		return count/totalCount;
+	}
+
+	private double computeContextValue(ConfigurationPointSet points) {
+		// TODO 
+		return 1;
+	}
 	
+	private double computeDynamicValue(ConfigurationPointSet points) {
+		OccurrenceTable table = points.getOccurrences();
+		int columnIndex = points.getConfigurationPoints().indexOf(configurationPoint);
+		
+		int totalDeterminedPointSize = 0;
+		double totalContribution = 0;
+		
+		for(ConfigurationPoint cp: points.getConfigurationPoints()){
+			if(cp.isConfigured()){
+				
+				double occurrenceNum = cp.findHistoryCandidateOccurenceNumber(cp.getCurrentValue());
+				int count = 0;
+				int determinedColumnIndex = points.getConfigurationPoints().indexOf(cp);
+				
+				String[][] stringTable = table.getTable();
+				for(int i=0; i<stringTable.length; i++){
+					if(stringTable[i][determinedColumnIndex].equals(cp.getCurrentValue())
+							&& stringTable[i][columnIndex].equals(this.text)){
+						count++;
+					}
+				}
+				
+				totalContribution += count/occurrenceNum;
+				totalDeterminedPointSize++;
+			}
+		}
+		
+		if(totalDeterminedPointSize == 0){
+			return 0;
+		}
+		else{
+			double value = totalContribution/totalDeterminedPointSize;
+			return value;
+		}
+		
+	}
 }

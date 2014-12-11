@@ -46,13 +46,15 @@ public class CustomLinkedModeUIFocusListener implements
 	public void linkingFocusLost(LinkedPosition position, LinkedModeUITarget target) {
 		try {
 			currentContent = position.getContent();
-			if(!currentContent.equals(formerContent)){
-				((RankedProposalPosition) position).setConfigured(true);
-			}
+			//((RankedProposalPosition) position).setConfigured(true);
+			currentPoint.setConfigured(true);
+//			if(!currentContent.equals(formerContent)){
+//			}
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 		}
 		currentPoint.setCurrentValue(currentContent);
+		
 		
 		ArrayList<ConfigurationPoint> configurationPoints = configurationPointSet.getConfigurationPoints();
 		if(currentContent.length() != formerContent.length()){
@@ -88,7 +90,7 @@ public class CustomLinkedModeUIFocusListener implements
 			
 			//Step 3: update the code by ranking
 			//only update when the position is not configured
-			if(!pp.isConfigured()){
+			if(!cp.isConfigured()){
 				IDocument document = target.getViewer().getDocument();
 				proposals[0].apply(document);
 			}

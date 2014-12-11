@@ -34,6 +34,8 @@ public class ConfigurationPoint {
 	private String currentValue;
 	private double historyEntropy;
 	
+	private boolean configured = false;
+	
 	private ArrayList<Candidate> candidates = new ArrayList<>();
 	/**
 	 * @param tokenSeq
@@ -146,6 +148,18 @@ public class ConfigurationPoint {
 			candidates.add(candidate);
 		}
 		setHistoryEntropy(entropy);
+	}
+	
+	public int findHistoryCandidateOccurenceNumber(String candidateText){
+		int count = 0;
+		for(TokenSeq seq: this.seqMultiset.getSequences()){
+			String seqText = seq.getText();
+			if(seqText.equals(candidateText)){
+				count++;
+			}
+		}
+		
+		return count;
 	}
 	
 	public int getHistoryCandidateNumber(){
@@ -289,6 +303,20 @@ public class ConfigurationPoint {
 	 */
 	public void setHistoryEntropy(double historyEntropy) {
 		this.historyEntropy = historyEntropy;
+	}
+
+	/**
+	 * @return the configured
+	 */
+	public boolean isConfigured() {
+		return configured;
+	}
+
+	/**
+	 * @param configured the configured to set
+	 */
+	public void setConfigured(boolean configured) {
+		this.configured = configured;
 	}
 	
 	

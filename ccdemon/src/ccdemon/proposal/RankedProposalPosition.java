@@ -9,8 +9,6 @@ import org.eclipse.jface.text.link.ProposalPosition;
 public class RankedProposalPosition extends ProposalPosition {
 	
 	private ArrayList<ICompletionProposal> proposalList = new ArrayList<ICompletionProposal>();
-	//whether this position is configured by user
-	private boolean configured = false;
 	
 	public RankedProposalPosition(IDocument document, int offset, int length,
 			ICompletionProposal[] proposals) {
@@ -35,14 +33,6 @@ public class RankedProposalPosition extends ProposalPosition {
 		for(ICompletionProposal p : proposals){
 			proposalList.add(p);
 		}
-	}
-
-	public boolean isConfigured() {
-		return configured;
-	}
-
-	public void setConfigured(boolean configured) {
-		this.configured = configured;
 	}
 
 }

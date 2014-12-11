@@ -260,7 +260,7 @@ public class ConfigurationPointSet {
 	}
 
 	public void adjustCandidateRanking() {
-		CandidateComparator comparator = new CandidateComparator(this, occurrences);
+		CandidateComparator comparator = new CandidateComparator(this);
 		
 		for(ConfigurationPoint point: this.configurationPoints){
 			Collections.sort(point.getCandidates(), comparator);
@@ -350,4 +350,13 @@ public class ConfigurationPointSet {
 			return this.compatibleVariables;
 		}
 	}
+
+	/**
+	 * @return the occurrences
+	 */
+	public OccurrenceTable getOccurrences() {
+		return occurrences;
+	}
+	
+	
 }
