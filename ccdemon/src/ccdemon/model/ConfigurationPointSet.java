@@ -191,7 +191,15 @@ public class ConfigurationPointSet {
 					Set<Class<?>> subset = reflections.getSubTypesOf(c);
 					if(subset.size() != 0){
 						for(Class sub : subset){
-							if(!siblings.contains(sub)){
+							//avoid duplication with existing type candidate
+							boolean candidateExist = false;
+							for(Candidate candidate : point.getCandidates()){
+								if(candidate.getText().equals(sub.getSimpleName())){
+									candidateExist = true;
+									break;
+								}
+							}
+							if(!candidateExist && !siblings.contains(sub)){
 								siblings.add(sub);
 								point.getCandidates().add(new Candidate(sub.getSimpleName(), 0 ,Candidate.ENVIRONMENT, point));
 							}
