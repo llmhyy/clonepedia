@@ -35,6 +35,8 @@ public class CustomLinkedModeUIFocusListener implements
 	private ConfigurationPoint currentPoint;
 	private int formerLength;
 	private int currentLength;
+	private String formerContent;
+	private String currentContent;
 	
 	public CustomLinkedModeUIFocusListener(ArrayList<RankedProposalPosition> positionList, 
 			ConfigurationPointSet configurationPointSet){
@@ -45,6 +47,14 @@ public class CustomLinkedModeUIFocusListener implements
 	@Override
 	public void linkingFocusLost(LinkedPosition position, LinkedModeUITarget target) {
 		currentLength = position.length;
+		try {
+			currentContent = position.getContent();
+			if(!currentContent.equals(formerContent)){
+				((RankedProposalPosition) position).setConfigured(true);
+			}
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
 
 		ArrayList<ConfigurationPoint> configurationPoints = configurationPointSet.getConfigurationPoints();
 		
@@ -63,7 +73,6 @@ public class CustomLinkedModeUIFocusListener implements
 		}
 		
 		//Step 1: change configuration point set
-		
 		try {
 			configurationPointSet.getRule().applyRule(position.getContent(), currentPoint);
 		} catch (BadLocationException e) {
@@ -84,9 +93,11 @@ public class CustomLinkedModeUIFocusListener implements
 			pp.setChoices(proposals);
 			
 			//Step 3: update the code by ranking
-			//TODO only update when the position is not configured
-			//IDocument document = target.getViewer().getDocument();
-			//proposals[0].apply(document);
+			//only update when the position is not configured
+			if(!pp.isConfigured()){
+				IDocument document = target.getViewer().getDocument();
+				proposals[0].apply(document);
+			}
 		}
 	}
 
@@ -94,6 +105,11 @@ public class CustomLinkedModeUIFocusListener implements
 	public void linkingFocusGained(LinkedPosition position, LinkedModeUITarget target) {
 		//find current configuration point that has the same offset and length
 		formerLength = position.length;
+		try {
+			formerContent = position.getContent();
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
 		currentPoint = configurationPointSet.getConfigurationPoints().get(positionList.indexOf(position));
 	}
 
