@@ -32,6 +32,7 @@ public class ConfigurationPoint {
 	private SeqMultiset seqMultiset;
 	
 	private String currentValue;
+	private double historyEntropy;
 	
 	private ArrayList<Candidate> candidates = new ArrayList<>();
 	/**
@@ -135,10 +136,27 @@ public class ConfigurationPoint {
 			map.put(seq, count);
 		}
 		
+		double entropy = 0;
 		for(TokenSeq seq: map.keySet()){
-			Candidate candidate = new Candidate(seq.getText(), map.get(seq), Candidate.HISTORY);
+			double occurrence = map.get(seq);
+			double freq = occurrence/seqMultiset.getSize();
+			entropy += -1 * freq * Math.log(freq);
+			
+			Candidate candidate = new Candidate(seq.getText(), 0, Candidate.HISTORY, this);
 			candidates.add(candidate);
 		}
+		setHistoryEntropy(entropy);
+	}
+	
+	public int getHistoryCandidateNumber(){
+		int count = 0;
+		for(Candidate candidate: getCandidates()){
+			if(candidate.isHistoryBased()){
+				count++;
+			}
+		}
+		
+		return count;
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -257,6 +275,20 @@ public class ConfigurationPoint {
 	 */
 	public void setCurrentValue(String currentValue) {
 		this.currentValue = currentValue;
+	}
+
+	/**
+	 * @return the historyEntropy
+	 */
+	public double getHistoryEntropy() {
+		return historyEntropy;
+	}
+
+	/**
+	 * @param historyEntropy the historyEntropy to set
+	 */
+	public void setHistoryEntropy(double historyEntropy) {
+		this.historyEntropy = historyEntropy;
 	}
 	
 	

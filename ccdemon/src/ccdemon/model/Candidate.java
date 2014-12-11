@@ -6,9 +6,10 @@ public class Candidate {
 	public static final String HISTORY = "history";
 	public static final String ENVIRONMENT = "environment";
 	public static final String RULE = "rule";
-	
+
 	private String text;
 	private double score;
+	private ConfigurationPoint configurationPoint;
 	
 	private String origin;
 	
@@ -16,11 +17,24 @@ public class Candidate {
 	 * @param text
 	 * @param score
 	 */
-	public Candidate(String text, double score, String origin) {
+	public Candidate(String text, double score, String origin, ConfigurationPoint configurationPoint) {
 		super();
 		this.text = text;
 		this.score = score;
 		this.origin = origin;
+		this.configurationPoint = configurationPoint;
+	}
+	
+	public boolean isHistoryBased(){
+		return getOrigin().equals(Candidate.HISTORY);
+	}
+	
+	public boolean isEnvironmentBased(){
+		return getOrigin().equals(Candidate.ENVIRONMENT);
+	}
+	
+	public boolean isRuleBased(){
+		return getOrigin().equals(Candidate.RULE);
 	}
 	
 	/**
@@ -68,4 +82,29 @@ public class Candidate {
 	public String toString(){
 		return text;
 	}
+
+	/**
+	 * @return the configurationPoint
+	 */
+	public ConfigurationPoint getConfigurationPoint() {
+		return configurationPoint;
+	}
+
+	/**
+	 * @param configurationPoint the configurationPoint to set
+	 */
+	public void setConfigurationPoint(ConfigurationPoint configurationPoint) {
+		this.configurationPoint = configurationPoint;
+	}
+
+	public double computeScore(double ruleWeight, double environmentWeight,
+			double occuranceWeight) {
+		double ruleValue = isRuleBased() ? 1 : 0;
+		double environmentValue = isEnvironmentBased() ? 1 : 0;
+		double historyValue = isHistoryBased() ? 1 : 0;
+		
+		return ruleWeight*ruleValue + environmentWeight*environmentValue + occuranceWeight*historyValue;
+	}
+	
+	
 }

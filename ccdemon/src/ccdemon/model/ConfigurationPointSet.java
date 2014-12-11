@@ -1,23 +1,18 @@
 package ccdemon.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Set;
 
 import mcidiff.model.CloneInstance;
 import mcidiff.model.CloneSet;
 import mcidiff.model.SeqMultiset;
-
-import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.reflections.Reflections;
-import org.reflections.scanners.SubTypesScanner;
-import org.reflections.util.ClasspathHelper;
-import org.reflections.util.ConfigurationBuilder;
-
 import mcidiff.model.Token;
 import mcidiff.model.TokenSeq;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
@@ -26,6 +21,10 @@ import org.eclipse.jdt.core.dom.NodeFinder;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
+import org.reflections.Reflections;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
 
 import ccdemon.model.rule.NameInstance;
 import ccdemon.model.rule.NamingRule;
@@ -194,7 +193,7 @@ public class ConfigurationPointSet {
 						for(Class sub : subset){
 							if(!siblings.contains(sub)){
 								siblings.add(sub);
-								point.getCandidates().add(new Candidate(sub.getSimpleName(), 0 ,Candidate.ENVIRONMENT));
+								point.getCandidates().add(new Candidate(sub.getSimpleName(), 0 ,Candidate.ENVIRONMENT, point));
 							}
 						}
 					}
@@ -215,14 +214,14 @@ public class ConfigurationPointSet {
 					VariableVisitor visitor = new VariableVisitor(types, pastedVariableName);
 					node.accept(visitor);
 					for(String variable : visitor.getCompatibleVariables()){
-						point.getCandidates().add(new Candidate(variable, 0 ,Candidate.ENVIRONMENT));
+						point.getCandidates().add(new Candidate(variable, 0, Candidate.ENVIRONMENT, point));
 					}
 				}
 				//otherwise, we just search those fields
 				FieldVisitor visitor = new FieldVisitor(types, pastedVariableName);
 				pastedCompilationUnit.accept(visitor);
 				for(String variable : visitor.getCompatibleVariables()){
-					point.getCandidates().add(new Candidate(variable, 0 ,Candidate.ENVIRONMENT));
+					point.getCandidates().add(new Candidate(variable, 0, Candidate.ENVIRONMENT, point));
 				}
 			}
 			else if(point.isMethod()){
@@ -253,8 +252,10 @@ public class ConfigurationPointSet {
 	}
 
 	public void adjustCandidateRanking() {
+		CandidateComparator comparator = new CandidateComparator(this, occurrences);
+		
 		for(ConfigurationPoint point: this.configurationPoints){
-			
+			Collections.sort(point.getCandidates(), comparator);
 		}
 		
 	}

@@ -20,41 +20,40 @@ public class NamingRule {
 	 * @param configurationPoint
 	 */
 	public void applyRule(String candidateString, ConfigurationPoint currentPoint){
-		if(!currentPoint.contains(candidateString)){
-			refreshNamingModel(candidateString, currentPoint);
-			
-			for(RuleItem item: itemList){
-				if(item.isChangeable()){
-					boolean isValidForAdding = true;
-					StringBuffer buffer = new StringBuffer();
-					for(Component comp: item.getComponentList()){
-						if(comp.isAbstract()){
-							String currentValue = comp.getGroup().getCurrentValue();
-							if(currentValue != null){
-								buffer.append(currentValue);
-							}
-							else{
-								isValidForAdding = false;
-								break;
-							}
+		refreshNamingModel(candidateString, currentPoint);
+		
+		for(RuleItem item: itemList){
+			if(item.isChangeable()){
+				boolean isValidForAdding = true;
+				StringBuffer buffer = new StringBuffer();
+				for(Component comp: item.getComponentList()){
+					if(comp.isAbstract()){
+						String currentValue = comp.getGroup().getCurrentValue();
+						if(currentValue != null){
+							buffer.append(currentValue);
 						}
 						else{
-							buffer.append(comp.getAbstractName());
+							isValidForAdding = false;
+							break;
 						}
 					}
-					
-					if(isValidForAdding){
-						String newValue = buffer.toString();
-						ConfigurationPoint point = item.getConfigurationPoint();
-						point.clearRuleGeneratedCandidates();
-						if(!point.contains(newValue)){
-							point.getCandidates().add(new Candidate(newValue, 0, Candidate.RULE));							
-						}
+					else{
+						buffer.append(comp.getAbstractName());
 					}
-					
 				}
+				
+				if(isValidForAdding){
+					String newValue = buffer.toString();
+					ConfigurationPoint point = item.getConfigurationPoint();
+					point.clearRuleGeneratedCandidates();
+					if(!point.contains(newValue)){
+						point.getCandidates().add(new Candidate(newValue, 0, Candidate.RULE, point));							
+					}
+				}
+				
 			}
 		}
+		
 	}
 	
 	private void refreshNamingModel(String candidateString, ConfigurationPoint currentPoint){
