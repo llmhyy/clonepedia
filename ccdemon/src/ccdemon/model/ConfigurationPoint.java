@@ -31,6 +31,8 @@ public class ConfigurationPoint {
 	 */
 	private SeqMultiset seqMultiset;
 	
+	private String currentValue;
+	
 	private ArrayList<Candidate> candidates = new ArrayList<>();
 	/**
 	 * @param tokenSeq
@@ -40,6 +42,7 @@ public class ConfigurationPoint {
 		super();
 		this.copiedTokenSeq = tokenSeq;
 		this.seqMultiset = seqMultiset;
+		this.currentValue = tokenSeq.getText();
 		
 		organizeHistoricalCandidate(getSeqMultiset());
 	}
@@ -119,7 +122,6 @@ public class ConfigurationPoint {
 	}
 
 	private void organizeHistoricalCandidate(SeqMultiset seqMultiset) {
-		// TODO may need to collect more information to adjust the score of candidate to indidate candidate ranking.
 		HashMap<TokenSeq, Integer> map = new HashMap<>();
 		for(TokenSeq seq: seqMultiset.getSequences()){
 			Integer count = map.get(seq);
@@ -241,6 +243,20 @@ public class ConfigurationPoint {
 	 */
 	public void setModifiedTokenSeq(TokenSeq modifiedTokenSeq) {
 		this.modifiedTokenSeq = modifiedTokenSeq;
+	}
+
+	/**
+	 * @return the currentValue
+	 */
+	public String getCurrentValue() {
+		return currentValue;
+	}
+
+	/**
+	 * @param currentValue the currentValue to set
+	 */
+	public void setCurrentValue(String currentValue) {
+		this.currentValue = currentValue;
 	}
 	
 	

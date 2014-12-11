@@ -45,9 +45,16 @@ public class CustomLinkedModeUIFocusListener implements
 	@Override
 	public void linkingFocusLost(LinkedPosition position, LinkedModeUITarget target) {
 		currentLength = position.length;
-
-		ArrayList<ConfigurationPoint> configurationPoints = configurationPointSet.getConfigurationPoints();
 		
+		String currentValue = null;
+		try {
+			currentValue = position.getContent();
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
+		currentPoint.setCurrentValue(currentValue);
+		
+		ArrayList<ConfigurationPoint> configurationPoints = configurationPointSet.getConfigurationPoints();
 		if(currentLength != formerLength){
 			int index = configurationPoints.indexOf(currentPoint);
 			
@@ -63,12 +70,8 @@ public class CustomLinkedModeUIFocusListener implements
 		}
 		
 		//Step 1: change configuration point set
-		
-		try {
-			configurationPointSet.getRule().applyRule(position.getContent(), currentPoint);
-		} catch (BadLocationException e) {
-			e.printStackTrace();
-		}
+		configurationPointSet.getRule().applyRule(currentValue, currentPoint);
+		configurationPointSet.adjustCandidateRanking();
 		
 		//Step 2: update the position list w.r.t configuration point set.
 		for(int i = 0; i < configurationPoints.size(); i++){

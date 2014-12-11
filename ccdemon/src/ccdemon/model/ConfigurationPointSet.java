@@ -35,10 +35,12 @@ import ccdemon.model.rule.RuleItem;
 public class ConfigurationPointSet {
 	private ArrayList<ConfigurationPoint> configurationPoints = new ArrayList<>();
 	private CloneSet referrableCloneSet;
+	
 	private CompilationUnit pastedCompilationUnit;
 	private int startPositionInPastedFile;
 	
 	private NamingRule rule;
+	private OccurrenceTable occurrences;
 
 	public class ContextContent{
 		private TypeDeclaration typeDeclaration;
@@ -100,8 +102,8 @@ public class ConfigurationPointSet {
 		expandEnvironmentBasedCandidates(this.configurationPoints);
 		generateNamingRules(this.configurationPoints, this.referrableCloneSet);
 		
-		OccurrenceTable occurrences = constructCandidateOccurrences(referrableCloneSets);
-		adjustCandidateRanking(this.configurationPoints, occurrences);
+		this.occurrences = constructCandidateOccurrences(referrableCloneSets);
+		adjustCandidateRanking();
 	}
 	
 	private void generateNamingRules(
@@ -250,9 +252,10 @@ public class ConfigurationPointSet {
 		return new OccurrenceTable(occurrenceTable);
 	}
 
-	private void adjustCandidateRanking(ArrayList<ConfigurationPoint> configurationPoints,
-			OccurrenceTable occurrences) {
-		// TODO Auto-generated method stub
+	public void adjustCandidateRanking() {
+		for(ConfigurationPoint point: this.configurationPoints){
+			
+		}
 		
 	}
 	
