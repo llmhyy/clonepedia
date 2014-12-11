@@ -148,12 +148,12 @@ public class Candidate {
 		double totalContribution = 0;
 		
 		for(ConfigurationPoint cp: points.getConfigurationPoints()){
-			if(cp.isConfigured()){
+			if(cp.isConfigured() && !cp.equals(this.configurationPoint)){
 				
 				double occurrenceNum = cp.findHistoryCandidateOccurenceNumber(cp.getCurrentValue());
 				int count = 0;
 				int determinedColumnIndex = points.getConfigurationPoints().indexOf(cp);
-				
+				 
 				String[][] stringTable = table.getTable();
 				for(int i=0; i<stringTable.length; i++){
 					if(stringTable[i][determinedColumnIndex].equals(cp.getCurrentValue())
