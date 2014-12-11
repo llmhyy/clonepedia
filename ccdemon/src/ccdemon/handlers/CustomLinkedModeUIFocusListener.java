@@ -33,8 +33,8 @@ public class CustomLinkedModeUIFocusListener implements
 	//private ArrayList<Integer> configuredIndexList = new ArrayList<>();
 	
 	private ConfigurationPoint currentPoint;
-	private int formerLength;
-	private int currentLength;
+	private String formerContent;
+	private String currentContent;
 	
 	public CustomLinkedModeUIFocusListener(ArrayList<RankedProposalPosition> positionList, 
 			ConfigurationPointSet configurationPointSet){
@@ -44,18 +44,18 @@ public class CustomLinkedModeUIFocusListener implements
 
 	@Override
 	public void linkingFocusLost(LinkedPosition position, LinkedModeUITarget target) {
-		currentLength = position.length;
-		
-		String currentValue = null;
 		try {
-			currentValue = position.getContent();
+			currentContent = position.getContent();
+			if(!currentContent.equals(formerContent)){
+				((RankedProposalPosition) position).setConfigured(true);
+			}
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 		}
-		currentPoint.setCurrentValue(currentValue);
+		currentPoint.setCurrentValue(currentContent);
 		
 		ArrayList<ConfigurationPoint> configurationPoints = configurationPointSet.getConfigurationPoints();
-		if(currentLength != formerLength){
+		if(currentContent.length() != formerContent.length()){
 			int index = configurationPoints.indexOf(currentPoint);
 			
 			for(int i = index + 1; i < configurationPoints.size(); i++){
@@ -63,14 +63,14 @@ public class CustomLinkedModeUIFocusListener implements
 				TokenSeq modifiedTokenSeq = cp.getModifiedTokenSeq();
 				ArrayList<Token> tokens = modifiedTokenSeq.getTokens();
 				for(Token token : tokens){
-					token.setStartPosition(token.getStartPosition() + currentLength - formerLength);
-					token.setEndPosition(token.getEndPosition() + currentLength - formerLength);
+					token.setStartPosition(token.getStartPosition() + currentContent.length() - formerContent.length());
+					token.setEndPosition(token.getEndPosition() + currentContent.length() - formerContent.length());
 				}
 			}
 		}
 		
 		//Step 1: change configuration point set
-		configurationPointSet.getRule().applyRule(currentValue, currentPoint);
+		configurationPointSet.getRule().applyRule(currentContent, currentPoint);
 		configurationPointSet.adjustCandidateRanking();
 		
 		//Step 2: update the position list w.r.t configuration point set.
@@ -87,16 +87,22 @@ public class CustomLinkedModeUIFocusListener implements
 			pp.setChoices(proposals);
 			
 			//Step 3: update the code by ranking
-			//TODO only update when the position is not configured
-			//IDocument document = target.getViewer().getDocument();
-			//proposals[0].apply(document);
+			//only update when the position is not configured
+			if(!pp.isConfigured()){
+				IDocument document = target.getViewer().getDocument();
+				proposals[0].apply(document);
+			}
 		}
 	}
 
 	@Override
 	public void linkingFocusGained(LinkedPosition position, LinkedModeUITarget target) {
 		//find current configuration point that has the same offset and length
-		formerLength = position.length;
+		try {
+			formerContent = position.getContent();
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
 		currentPoint = configurationPointSet.getConfigurationPoints().get(positionList.indexOf(position));
 	}
 
