@@ -67,7 +67,11 @@ public class PasteHandler extends AbstractHandler {
 		int startPositionInPastedFile = textSelection.getOffset();
 		
 		CloneSets sets = clonepedia.Activator.plainSets;
+		
+		long t1 = System.currentTimeMillis();
 		ArrayList<ReferrableCloneSet> referrableCloneSets = CCDemonUtil.findCodeTemplateMaterials(sets, copiedRange);
+		long t2 = System.currentTimeMillis();
+		System.out.println("Time for finding clone set:" + (t2-t1));
 		
 		if(referrableCloneSets.size() != 0){
 			

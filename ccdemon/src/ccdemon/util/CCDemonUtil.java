@@ -10,6 +10,8 @@ import org.eclipse.ui.internal.handlers.WidgetMethodHandler;
 
 import ccdemon.model.ReferrableCloneSet;
 import ccdemon.model.SelectedCodeRange;
+import ccdemon.model.rule.PatternMatchingComponent;
+import ccdemon.model.rule.TemplateMatch;
 import clonepedia.model.ontology.CloneSet;
 import clonepedia.model.ontology.CloneSets;
 
@@ -34,7 +36,7 @@ public class CCDemonUtil {
 		ArrayList<ReferrableCloneSet> materials = new ArrayList<>();
 		for(CloneSet set: cloneSets.getCloneList()){
 			
-			if(set.getId().equals("aa") || set.getId().equals("bb")){
+			if(set.getId().equals("aa") || set.getId().equals("bb") || set.size() != 5){
 				continue;
 			}
 			
@@ -51,6 +53,70 @@ public class CCDemonUtil {
 		}
 		
 		return materials;
+	}
+	
+	public static TemplateMatch matchPattern(String[] patternArray, String[] instanceArray){
+		PatternMatchingComponent[] patternList = transferToPatternComponentList(patternArray);
+		PatternMatchingComponent[] instanceList = transferToPatternComponentList(instanceArray);
+		
+		double[][] scoreTable = new double[patternArray.length+1][instanceArray.length+1];
+		for(int i=1; i<scoreTable.length; i++){
+			for(int j=1; j<scoreTable[0].length; j++){
+				double replaceValue = patternList[i-1].computeSimilarity(instanceList[j-1]);
+				
+				double replaceV = scoreTable[i-1][j-1] + replaceValue;
+				double addV = scoreTable[i-1][j];
+				double delV = scoreTable[i][j-1];
+				
+				double value = getLargestValue(replaceV, addV, delV);
+				scoreTable[i][j] = value;
+			}
+		}
+
+		TemplateMatch match = new TemplateMatch(patternArray.length);
+		
+		double optimalValue = scoreTable[patternArray.length][instanceArray.length];
+		if(optimalValue >= Settings.patternMatchingThreshold){
+			match.setMatchable(true);
+			for(int i=patternArray.length, j=instanceArray.length; i>0&&j>0;){
+				double replaceValue = patternList[i-1].computeSimilarity(instanceList[j-1]);
+				double replaceScore = scoreTable[i][j] - scoreTable[i-1][j-1];
+				
+				if(Math.abs(replaceValue-replaceScore)<0.01){
+					match.setValue(i-1, j-1);
+					i--;
+					j--;
+				}
+				else{
+					if(scoreTable[i][j-1] >= scoreTable[i-1][j]){
+						j--;
+					}
+					else{
+						i--;
+					}
+				}
+			}
+		}
+		else{
+			match.setMatchable(false);
+		}
+		
+		return match;
+	}
+	
+	public static double getLargestValue(double entry1, double entry2, double entry3){
+		double value = (entry1 > entry2)? entry1 : entry2;
+		return (value > entry3)? value : entry3;
+	}
+	
+	private static PatternMatchingComponent[] transferToPatternComponentList(String[] list){
+		PatternMatchingComponent[] comList = new PatternMatchingComponent[list.length];
+		for(int i=0; i<list.length; i++){
+			PatternMatchingComponent com = new PatternMatchingComponent(list[i], (i+1)/(double)list.length);
+			comList[i] = com;
+		}
+		
+		return comList;
 	}
 	
 	public static mcidiff.model.CloneSet adaptMCIDiffModel(CloneSet set0) {

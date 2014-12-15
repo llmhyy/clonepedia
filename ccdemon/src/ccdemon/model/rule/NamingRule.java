@@ -6,6 +6,8 @@ import java.util.Iterator;
 import mcidiff.util.DiffUtil;
 import ccdemon.model.Candidate;
 import ccdemon.model.ConfigurationPoint;
+import ccdemon.util.CCDemonUtil;
+import ccdemon.util.Settings;
 
 public class NamingRule {
 	
@@ -26,19 +28,19 @@ public class NamingRule {
 			if(item.isChangeable()){
 				boolean isValidForAdding = true;
 				StringBuffer buffer = new StringBuffer();
-				for(Component comp: item.getComponentList()){
-					if(comp.isAbstract()){
-						String currentValue = comp.getGroup().getCurrentValue();
-						if(currentValue != null){
-							buffer.append(currentValue);
+				for(int i=0; i<item.getComponentList().size(); i++){
+					Component comp = item.getComponentList().get(i);
+					String currentValue = comp.getGroup().getCurrentValue();
+					if(currentValue != null){
+						//The first non-type component is usually in lower case.
+						if(i == 0 && !item.getConfigurationPoint().isType()){
+							currentValue = currentValue.toLowerCase();
 						}
-						else{
-							isValidForAdding = false;
-							break;
-						}
+						buffer.append(currentValue);
 					}
 					else{
-						buffer.append(comp.getAbstractName());
+						isValidForAdding = false;
+						break;
 					}
 				}
 				
@@ -64,73 +66,65 @@ public class NamingRule {
 			ArrayList<Component> components = ruleItem.getComponentList();
 			String[] instanceArray = DiffUtil.splitCamelString(candidateString);
 			
-			TemplateMatch templateMatch = new TemplateMatch(components.size());
-			
-			/**
-			 * find which components in the new candidate string are corresponded to the "concrete" component
-			 */
-			int instanceStart = 0;
+			String[] patternArray = new String[components.size()];
 			for(int i=0; i<components.size(); i++){
-				Component comp = components.get(i);
-				if(!comp.isAbstract()){
-					int index = findMatchingIndex(instanceArray, instanceStart, comp.getAbstractName());
-					if(index == -1){
-						return;
-					}
-					else{
-						templateMatch.setValue(i, index);
-						instanceStart = index + 1;
-					}
-				}
+				patternArray[i] = components.get(i).getAbstractName();
 			}
 			
-			/**
-			 * find which component in the new candidate string are corresponded to the abstract component
-			 */
-			for(int i=0; i<components.size(); i++){
-				Component comp = components.get(i);
-				if(comp.isAbstract()){
-					int startTemplateCursor = i-1;
-					int endTempalteCursor = i+1;
-					
-					int startInstanceCursor = 0;
-					int endInstanceCursor = 0;
-					
-					if(startTemplateCursor < 0){
-						startInstanceCursor = -1;
-					}
-					else{
-						startInstanceCursor = templateMatch.getValue(startTemplateCursor);
-					}
-					
-					if(endTempalteCursor > components.size()-1){
-						endInstanceCursor = instanceArray.length;
-					}
-					else{
-						endInstanceCursor = templateMatch.getValue(endTempalteCursor);
-					}
-					
-					StringBuffer buffer = new StringBuffer();
-					for(int j=startInstanceCursor+1; j<=endInstanceCursor-1; j++){
-						if(j != -1){
-							buffer.append(instanceArray[j]);							
+			TemplateMatch templateMatch = CCDemonUtil.matchPattern(patternArray, instanceArray);
+			if(templateMatch.isMatchable()){
+				/**
+				 * find which component in the new candidate string are corresponded to the abstract component
+				 */
+				for(int i=0; i<components.size(); i++){
+					Component comp = components.get(i);
+					if(comp.isAbstract()){
+						int startTemplateCursor = i-1;
+						int endTempalteCursor = i+1;
+						
+						int startInstanceCursor = 0;
+						int endInstanceCursor = 0;
+						
+						if(startTemplateCursor < 0){
+							startInstanceCursor = -1;
 						}
+						else{
+							startInstanceCursor = templateMatch.getValue(startTemplateCursor);
+						}
+						
+						if(endTempalteCursor > components.size()-1){
+							endInstanceCursor = instanceArray.length;
+						}
+						else{
+							endInstanceCursor = templateMatch.getValue(endTempalteCursor);
+						}
+						
+						StringBuffer buffer = new StringBuffer();
+						for(int j=startInstanceCursor+1; j<=endInstanceCursor-1; j++){
+							if(j != -1){
+								buffer.append(instanceArray[j]);							
+							}
+						}
+						String newComponentName = buffer.toString();
+						comp.getGroup().setCurrentValue(newComponentName);
 					}
-					String newComponentName = buffer.toString();
-					comp.getGroup().setCurrentValue(newComponentName);
-				}
+					else{
+						String newComponentName = instanceArray[templateMatch.getValue(i)];
+						comp.getGroup().setCurrentValue(newComponentName);
+					}
+				}			
 			}
 		}
 	}
 	
-	private int findMatchingIndex(String[] instanceArray, int instanceStart, String compName) {
+	/*private int findMatchingIndex(String[] instanceArray, int instanceStart, String compName) {
 		for(int i=instanceStart; i<instanceArray.length; i++){
-			if(instanceArray[i].equals(compName)){
+			if(instanceArray[i].toLowerCase().equals(compName.toLowerCase())){
 				return i;
 			}
 		}
 		return -1;
-	}
+	}*/
 
 	/**
 	 * retrieve naming pattern from {@code itemList}
@@ -174,7 +168,8 @@ public class NamingRule {
 			Iterator<Component> iter = compList.iterator();
 			while(iter.hasNext()){
 				Component comp = iter.next();
-				if(comp.equals(component)){
+				if(/*comp.equals(component)*/comp.compareSupportingNamesWith(component) 
+						>= Settings.equivalentComponentThreshold){
 					group.addComponent(comp);
 					comp.setGroup(group);
 					iter.remove();
@@ -196,7 +191,7 @@ public class NamingRule {
 				ArrayList<String> list = new ArrayList<>();
 				list.add("$");
 				for(String comp: comps){
-					list.add(comp);
+					list.add(comp.toLowerCase());
 				}
 				list.add("$");
 				stringLists.add(list);

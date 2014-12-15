@@ -1,6 +1,8 @@
 package ccdemon.model.rule;
 
 public class Component {
+	public final static String ABS_LITERAL = "*";
+	
 	private RuleItem ruleItem;
 	
 	private String abstractName;
@@ -16,7 +18,7 @@ public class Component {
 		this.isAbstract = isAbstract;
 		
 		if(isAbstract){
-			this.abstractName = "*";
+			this.abstractName = Component.ABS_LITERAL;
 		}
 		else{
 			for(int i=0; i<supportingNames.length; i++){
@@ -26,6 +28,18 @@ public class Component {
 				}
 			}
 		}
+	}
+	
+	@Override
+	public String toString(){
+		StringBuffer buffer = new StringBuffer();
+		buffer.append(this.abstractName);
+		buffer.append("[");
+		for(String str: this.supportingNames){
+			buffer.append(str+" ");
+		}
+		buffer.append("]");
+		return buffer.toString();
 	}
 	
 	@Override
@@ -55,6 +69,29 @@ public class Component {
 		}
 		
 		return false;
+	}
+	
+	public double compareSupportingNamesWith(Component thatComp){
+		if(thatComp.getSupportingNames().length != this.getSupportingNames().length){
+			return 0;
+		}
+		else{
+			double count = 0;
+			for(int i=0; i<this.getSupportingNames().length; i++){
+				String thatString = thatComp.getSupportingNames()[i];
+				String thisString = this.getSupportingNames()[i];
+				if(thatString != null && thisString != null){
+					if(thatString.equals(thisString)){
+						count++;
+					}
+				}
+				else if(thatString == null && thisString == null){
+					count++;
+				}
+			}
+			
+			return count/getSupportingNames().length;
+		}
 	}
 	
 	/**
