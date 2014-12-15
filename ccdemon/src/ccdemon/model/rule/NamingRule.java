@@ -51,6 +51,7 @@ public class NamingRule {
 				
 				if(isValidForAdding){
 					String newValue = buffer.toString();
+					newValue = parseStringToCamel(0, item, newValue);
 					ConfigurationPoint point = item.getConfigurationPoint();
 					point.clearRuleGeneratedCandidates();
 					if(!point.contains(newValue)){
@@ -65,6 +66,11 @@ public class NamingRule {
 	
 	private String parseStringToCamel(int position, RuleItem item, String value){
 		String currentValue = value;
+		
+		if(currentValue.length() == 0){
+			return currentValue;
+		}
+		
 		if(position == 0 && !item.getConfigurationPoint().isType()){
 			char[] chars = currentValue.toCharArray();
 			chars[0] = String.valueOf(chars[0]).toLowerCase().charAt(0);
