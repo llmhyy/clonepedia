@@ -54,7 +54,7 @@ public class Component {
 					String thatString = thatComp.getSupportingNames()[i];
 					String thisString = this.getSupportingNames()[i];
 					if(thatString != null && thisString != null){
-						if(!thatString.equals(thisString)){
+						if(!thatString.toLowerCase().equals(thisString.toLowerCase())){
 							return false;
 						}
 					}
@@ -81,7 +81,7 @@ public class Component {
 				String thatString = thatComp.getSupportingNames()[i];
 				String thisString = this.getSupportingNames()[i];
 				if(thatString != null && thisString != null){
-					if(thatString.equals(thisString)){
+					if(thatString.toLowerCase().equals(thisString.toLowerCase())){
 						count++;
 					}
 				}

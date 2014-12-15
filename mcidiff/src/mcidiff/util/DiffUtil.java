@@ -97,7 +97,7 @@ public class DiffUtil {
 		
 		TokenSimilarityComparator sc = new TokenSimilarityComparator(); 
 		
-		int[][] commonLengthTable = buildLeveshteinTable(commonTokenList, tokenList2);
+		int[][] commonLengthTable = buildLeveshteinTable(commonTokenList, tokenList2, new DefaultComparator());
 		double[][] scoreTable = buildScoreTable(commonTokenList, tokenList2, sc);
 
 		int commonLength = commonLengthTable[commonTokenList.length][tokenList2.length];
@@ -176,14 +176,14 @@ public class DiffUtil {
 	 * @param comparator
 	 * @return
 	 */
-	public static Object[] generateCommonNodeList(Object[] nodeList1, Object[] nodeList2) {
-		int[][] commonLengthTable = buildLeveshteinTable(nodeList1, nodeList2);
+	public static Object[] generateCommonNodeList(Object[] nodeList1, Object[] nodeList2, IObjComparator comparator) {
+		int[][] commonLengthTable = buildLeveshteinTable(nodeList1, nodeList2, comparator);
 
 		int commonLength = commonLengthTable[nodeList1.length][nodeList2.length];
 		Object[] commonList = new Object[commonLength];
 
 		for (int k = commonLength - 1, i = nodeList1.length, j = nodeList2.length; (i > 0 && j > 0);) {
-			if (nodeList1[i - 1].equals(nodeList2[j - 1])) {
+			if (comparator.isEquals(nodeList1[i - 1], nodeList2[j - 1])) {
 				commonList[k] = nodeList1[i - 1];
 				k--;
 				i--;
@@ -201,7 +201,7 @@ public class DiffUtil {
 		return commonList;
 	}
 	
-	public static Object[] generateCommonNodeListFromMultiSequence(ArrayList<? extends Object>[] lists){
+	public static Object[] generateCommonNodeListFromMultiSequence(ArrayList<? extends Object>[] lists, IObjComparator comparator){
 		if(lists.length < 1){
 			return new Object[0];
 		}
@@ -209,21 +209,21 @@ public class DiffUtil {
 			return lists[0].toArray(new Object[0]);
 		}
 		else if(lists.length == 2){
-			return generateCommonNodeList(lists[0].toArray(new Object[0]), lists[1].toArray(new Object[0]));
+			return generateCommonNodeList(lists[0].toArray(new Object[0]), lists[1].toArray(new Object[0]), comparator);
 		}
 		else{
 			Object[] commonList = generateCommonNodeList(lists[0].toArray(new Object[0]),
-					lists[1].toArray(new Object[0]));
+					lists[1].toArray(new Object[0]), comparator);
 			if (lists.length > 2) {
 				for (int k = 2; k < lists.length; k++) {
-					commonList = generateCommonNodeList(commonList, lists[k].toArray(new Object[0]));
+					commonList = generateCommonNodeList(commonList, lists[k].toArray(new Object[0]), comparator);
 				}
 			}
 			return commonList;
 		}
 	}
 	
-	public static int[][] buildLeveshteinTable(Object[] nodeList1, Object[] nodeList2){
+	public static int[][] buildLeveshteinTable(Object[] nodeList1, Object[] nodeList2, IObjComparator comparator){
 		int[][] commonLengthTable = new int[nodeList1.length + 1][nodeList2.length + 1];
 		for (int i = 0; i < nodeList1.length + 1; i++)
 			commonLengthTable[i][0] = 0;
@@ -232,7 +232,7 @@ public class DiffUtil {
 
 		for (int i = 1; i < nodeList1.length + 1; i++){
 			for (int j = 1; j < nodeList2.length + 1; j++) {
-				if (nodeList1[i - 1].equals(nodeList2[j - 1])){
+				if (comparator.isEquals(nodeList1[i - 1], nodeList2[j - 1])){
 					commonLengthTable[i][j] = commonLengthTable[i - 1][j - 1] + 1;					
 				}
 				else {
@@ -260,7 +260,7 @@ public class DiffUtil {
 		String[] words1 = splitCamelString(str1);
 		String[] words2 = splitCamelString(str2);
 		
-		Object[] commonWords = generateCommonNodeList(words1, words2);
+		Object[] commonWords = generateCommonNodeList(words1, words2, new StringComparator(false));
 		double sim = 2d*commonWords.length/(words1.length+words2.length);
 		
 		return sim;

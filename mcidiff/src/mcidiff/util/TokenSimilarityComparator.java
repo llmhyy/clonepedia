@@ -18,7 +18,7 @@ public class TokenSimilarityComparator{
 			Character[] str1 = transferChar(node1.toString());
 			Character[] str2 = transferChar(node2.toString());
 			
-			double length = DiffUtil.buildLeveshteinTable(str1, str2)[str1.length][str2.length];
+			double length = DiffUtil.buildLeveshteinTable(str1, str2, new DefaultComparator())[str1.length][str2.length];
 			
 			double textualSim = 2*length/(str1.length+str2.length);
 			double positionSim = 1-Math.abs(token1.getRelativePositionRatio() - token2.getRelativePositionRatio());

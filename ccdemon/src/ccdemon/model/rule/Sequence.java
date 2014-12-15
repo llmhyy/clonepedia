@@ -15,6 +15,14 @@ public class Sequence {
 		this.compList = compList;
 	}
 	
+	public String getStartString(){
+		return this.compList.get(startIndex);
+	}
+	
+	public String getEndString(){
+		return this.compList.get(endIndex);
+	}
+	
 	public String toString(){
 		return this.compList.toString();
 	}
@@ -59,7 +67,7 @@ public class Sequence {
 	public void moveStartIndex(String startString) {
 		for(int i=startIndex; i<compList.size(); i++ ){
 			String str = compList.get(i);
-			if(str.equals(startString)){
+			if(str.toLowerCase().equals(startString.toLowerCase())){
 				startIndex = i;
 				break;
 			}
@@ -69,7 +77,7 @@ public class Sequence {
 	public void moveEndIndex(String endString) {
 		for(int i=startIndex+1; i<compList.size(); i++){
 			String str = compList.get(i);
-			if(str.equals(endString)){
+			if(str.toLowerCase().equals(endString.toLowerCase())){
 				endIndex = i;
 				break;
 			}

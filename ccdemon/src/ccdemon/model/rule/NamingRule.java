@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import mcidiff.util.DiffUtil;
+import mcidiff.util.StringComparator;
 import ccdemon.model.Candidate;
 import ccdemon.model.ConfigurationPoint;
 import ccdemon.util.CCDemonUtil;
@@ -37,7 +38,7 @@ public class NamingRule {
 						buffer.append(currentValue);
 					}
 					else if(!comp.isAbstract()){
-						currentValue = comp.getAbstractName();
+						currentValue = (currentValue != null) ? currentValue : comp.getAbstractName();
 						currentValue = parseStringToCamel(i, item, currentValue);
 						comp.getGroup().setCurrentValue(currentValue);
 						buffer.append(currentValue);
@@ -208,7 +209,7 @@ public class NamingRule {
 				ArrayList<String> list = new ArrayList<>();
 				list.add("$");
 				for(String comp: comps){
-					list.add(comp.toLowerCase());
+					list.add(comp);
 				}
 				list.add("$");
 				stringLists.add(list);
@@ -220,7 +221,7 @@ public class NamingRule {
 		}
 		
 		ArrayList<String>[] stringArray = stringLists.toArray(new ArrayList[0]);
-		Object[] commonList = DiffUtil.generateCommonNodeListFromMultiSequence(stringArray);
+		Object[] commonList = DiffUtil.generateCommonNodeListFromMultiSequence(stringArray, new StringComparator(true));
 		
 		ArrayList<Component> componentList = constructComponentListInDiffRange(item, names, sequenceList, commonList);
 		
@@ -247,7 +248,8 @@ public class NamingRule {
 				String[] supportingNames = new String[sequenceList.size()];
 				for(int j=0; j<supportingNames.length; j++){
 					if(names[j] != null){
-						supportingNames[j] = (String) commonList[i];						
+						sequenceList.get(j).moveStartIndex(startString);
+						supportingNames[j] = sequenceList.get(j).getStartString();				
 					}
 				}
 				Component component = new Component(item, supportingNames, false);
@@ -263,6 +265,8 @@ public class NamingRule {
 					seq.moveEndIndex(endString);	
 					String compString = seq.retrieveComponent();
 					supportingNames[j] = compString;
+					
+					seq.setStartIndex(seq.getEndIndex());
 				}
 				else{
 					supportingNames[j] = null;
