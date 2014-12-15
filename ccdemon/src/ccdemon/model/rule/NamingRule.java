@@ -31,11 +31,15 @@ public class NamingRule {
 				for(int i=0; i<item.getComponentList().size(); i++){
 					Component comp = item.getComponentList().get(i);
 					String currentValue = comp.getGroup().getCurrentValue();
-					if(currentValue != null){
+					if(comp.isAbstract() && currentValue != null){
 						//The first non-type component is usually in lower case.
-						if(i == 0 && !item.getConfigurationPoint().isType()){
-							currentValue = currentValue.toLowerCase();
-						}
+						currentValue = parseStringToCamel(i, item, currentValue);
+						buffer.append(currentValue);
+					}
+					else if(!comp.isAbstract()){
+						currentValue = comp.getAbstractName();
+						currentValue = parseStringToCamel(i, item, currentValue);
+						comp.getGroup().setCurrentValue(currentValue);
 						buffer.append(currentValue);
 					}
 					else{
@@ -56,6 +60,19 @@ public class NamingRule {
 			}
 		}
 		
+	}
+	
+	private String parseStringToCamel(int position, RuleItem item, String value){
+		String currentValue = value;
+		if(position == 0 && !item.getConfigurationPoint().isType()){
+			currentValue = currentValue.toLowerCase();
+		}
+		else if(position != 0){
+			char[] chars = currentValue.toCharArray();
+			chars[0] = String.valueOf(chars[0]).toUpperCase().charAt(0);
+			currentValue = String.valueOf(chars);
+		}
+		return currentValue;
 	}
 	
 	private void refreshNamingModel(String candidateString, ConfigurationPoint currentPoint){

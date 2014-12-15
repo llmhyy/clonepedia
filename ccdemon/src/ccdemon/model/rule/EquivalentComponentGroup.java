@@ -6,7 +6,7 @@ public class EquivalentComponentGroup {
 	private ArrayList<Component> components = new ArrayList<>();
 	
 	private String currentValue;
-
+	
 	/**
 	 * @return the components
 	 */
