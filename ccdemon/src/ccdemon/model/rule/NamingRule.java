@@ -66,7 +66,9 @@ public class NamingRule {
 	private String parseStringToCamel(int position, RuleItem item, String value){
 		String currentValue = value;
 		if(position == 0 && !item.getConfigurationPoint().isType()){
-			currentValue = currentValue.toLowerCase();
+			char[] chars = currentValue.toCharArray();
+			chars[0] = String.valueOf(chars[0]).toLowerCase().charAt(0);
+			currentValue = String.valueOf(chars);
 		}
 		else if(position != 0){
 			char[] chars = currentValue.toCharArray();
