@@ -308,6 +308,10 @@ public class ConfigurationPointSet {
 		}
 		
 		public boolean visit(SimpleName name){
+			//avoid finding variable appears in the pasted code fragment
+			if(name.getStartPosition() > startPositionInPastedFile){
+				return false;
+			}
 			IBinding binding = name.resolveBinding();
 			if(binding != null && binding instanceof IVariableBinding){
 				if(types.contains(((IVariableBinding) binding).getType().getQualifiedName())){
