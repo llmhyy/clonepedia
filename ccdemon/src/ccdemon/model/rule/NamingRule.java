@@ -30,7 +30,7 @@ public class NamingRule {
 		}
 		
 		for(RuleItem item: itemList){
-			if(item.isChangeable()){
+			if(item.isChangeable() && item.getComponentList().size() > 0){
 				boolean isValidForAdding = true;
 				StringBuffer buffer = new StringBuffer();
 				for(int i=0; i<item.getComponentList().size(); i++){
