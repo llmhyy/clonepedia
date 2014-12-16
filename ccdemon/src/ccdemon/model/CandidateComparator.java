@@ -24,7 +24,7 @@ public class CandidateComparator implements Comparator<Candidate>{
 		ConfigurationPoint point = candidate1.getConfigurationPoint();
 		
 		if(point.toString().contains("double")){
-			System.currentTimeMillis();
+			//System.currentTimeMillis();
 		}
 		
 		//the maxium entropy is log(m)

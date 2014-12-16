@@ -25,6 +25,10 @@ public class NamingRule {
 	public void applyRule(String candidateString, ConfigurationPoint currentPoint){
 		refreshNamingModel(candidateString, currentPoint);
 		
+		if(!currentPoint.getCopiedTokenSeq().isSingleToken()){
+			return;
+		}
+		
 		for(RuleItem item: itemList){
 			if(item.isChangeable()){
 				boolean isValidForAdding = true;
@@ -123,6 +127,7 @@ public class NamingRule {
 						}
 						else{
 							endInstanceCursor = templateMatch.getValue(endTempalteCursor);
+							endInstanceCursor = (endInstanceCursor == -1)? instanceArray.length : endInstanceCursor;
 						}
 						
 						StringBuffer buffer = new StringBuffer();
@@ -135,8 +140,14 @@ public class NamingRule {
 						comp.getGroup().setCurrentValue(newComponentName);
 					}
 					else{
-						String newComponentName = instanceArray[templateMatch.getValue(i)];
-						comp.getGroup().setCurrentValue(newComponentName);
+						int index = templateMatch.getValue(i);
+						if(index != -1){
+							String newComponentName = instanceArray[index];
+							comp.getGroup().setCurrentValue(newComponentName);							
+						}
+						else{
+							comp.getGroup().setCurrentValue("");	
+						}
 					}
 				}			
 			}
