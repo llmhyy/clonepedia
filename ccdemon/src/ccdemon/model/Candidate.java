@@ -105,7 +105,7 @@ public class Candidate {
 		double environmentValue = isEnvironmentBased() ? 1 : 0;
 		double historyValue = 0; 
 		if(isHistoryBased()){
-			historyValue = computeHistoryValue(points);;
+			historyValue = computeHistoryValue(points);
 		}
 		
 		return ruleWeight*ruleValue + environmentWeight*environmentValue + historyWeight*historyValue;
