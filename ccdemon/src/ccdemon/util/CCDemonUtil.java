@@ -36,7 +36,7 @@ public class CCDemonUtil {
 		ArrayList<ReferrableCloneSet> materials = new ArrayList<>();
 		for(CloneSet set: cloneSets.getCloneList()){
 			
-			if(set.getId().equals("aa") || set.getId().equals("bb") || set.size() != 5){
+			if(set.getId().equals("aa") || set.getId().equals("bb") /*|| set.size() != 5*/){
 				continue;
 			}
 			

@@ -70,6 +70,16 @@ public class ConfigurationPoint {
 		return false;
 	}
 	
+	public boolean containsByIgnoringCase(String candidateString){
+		for(Candidate candidate: this.candidates){
+			if(candidate.getText().toLowerCase().equals(candidateString.toLowerCase())){
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	public boolean isType(){
 		for(TokenSeq tokenSeq: seqMultiset.getSequences()){
 			if(tokenSeq.isSingleToken()){

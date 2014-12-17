@@ -58,7 +58,7 @@ public class NamingRule {
 					newValue = parseStringToCamel(0, item, newValue);
 					ConfigurationPoint point = item.getConfigurationPoint();
 					point.clearRuleGeneratedCandidates();
-					if(!point.contains(newValue)){
+					if(!point.containsByIgnoringCase(newValue)){
 						point.getCandidates().add(new Candidate(newValue, 0, Candidate.RULE, point));							
 					}
 				}
