@@ -18,6 +18,10 @@ public class RuleItem {
 		this.configurationPoint = configurationPoint;
 	}
 	
+	public String toString(){
+		return this.componentList.toString();
+	}
+	
 	/**
 	 * @return the nameInstanceList
 	 */

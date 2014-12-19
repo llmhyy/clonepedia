@@ -7,6 +7,11 @@ public class EquivalentComponentGroup {
 	
 	private String currentValue;
 	
+	@Override
+	public String toString(){
+		return this.components.toString();
+	}
+	
 	/**
 	 * @return the components
 	 */

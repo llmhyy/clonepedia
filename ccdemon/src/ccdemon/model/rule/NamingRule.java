@@ -221,6 +221,8 @@ public class NamingRule {
 	private ArrayList<Component> parseComponents(String[] names, RuleItem item) {
 		ArrayList<Sequence> sequenceList = new ArrayList<>();
 		ArrayList<ArrayList<String>> stringLists = new ArrayList<>();
+		
+		int nullCount = 0;
 		for(int i=0; i<names.length; i++){
 			String name = names[i];
 			if(name != null && name.length() > 0){
@@ -236,7 +238,12 @@ public class NamingRule {
 			}
 			else{
 				sequenceList.add(null);
+				nullCount++;
 			}
+		}
+		//there is only one SimpleName candidate
+		if(nullCount == names.length-1){
+			return new ArrayList<Component>();
 		}
 		
 		ArrayList<String>[] stringArray = stringLists.toArray(new ArrayList[0]);
