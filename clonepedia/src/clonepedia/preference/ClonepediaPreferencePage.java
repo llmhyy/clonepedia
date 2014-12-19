@@ -2,8 +2,6 @@ package clonepedia.preference;
 
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.Collections;
 
 import org.eclipse.core.resources.IProject;
@@ -451,47 +449,50 @@ public class ClonepediaPreferencePage extends PreferencePage implements
 			Settings.projectName = this.projectCombo.getText();
 			Activator.setCloneSets((CloneSets) MinerUtil.deserialize("sets", false));
 			
-			CloneSetWrapperList cloneSets = SummaryUtil.wrapCloneSets(Activator.getCloneSets().getCloneList());
-			
-			PlainCloneSetView cloneSetView = (PlainCloneSetView)PlatformUI.getWorkbench().
-					getActiveWorkbenchWindow().getActivePage().findView(CloneSummaryPerspective.PLAIN_CLONESET_VIEW);
-			//cloneSetView.restoreInput(Activator.getCloneSets());
-			
-			
-			PatternOrientedView patternView = (PatternOrientedView)PlatformUI.getWorkbench().
-					getActiveWorkbenchWindow().getActivePage().findView(CloneSummaryPerspective.PATTERN_ORIENTED_VIEW);
-			TopicOrientedView topicView = (TopicOrientedView)PlatformUI.getWorkbench().
-					getActiveWorkbenchWindow().getActivePage().findView(CloneSummaryPerspective.TOPIC_ORIENTED_VIEW);
-			
-			try {
-				if(cloneSetView != null){
-					cloneSetView.setCloneSets(cloneSets);
-					cloneSetView.restoreInput(cloneSets);
-				}
+			if(Activator.getCloneSets() != null){
 				
-				if(patternView != null){
-					ClonePatternGroupCategoryList clonePatternCategories = (ClonePatternGroupCategoryList)SummaryUtil.generateClonePatternSimplifiedCategories(Activator.getCloneSets().getCloneList());
-					for(PatternGroupCategory category: clonePatternCategories){
-						Collections.sort(category.getPatternList(), new DefaultValueDescComparator());
+				CloneSetWrapperList cloneSets = SummaryUtil.wrapCloneSets(Activator.getCloneSets().getCloneList());
+				
+				PlainCloneSetView cloneSetView = (PlainCloneSetView)PlatformUI.getWorkbench().
+						getActiveWorkbenchWindow().getActivePage().findView(CloneSummaryPerspective.PLAIN_CLONESET_VIEW);
+				//cloneSetView.restoreInput(Activator.getCloneSets());
+				
+				
+				PatternOrientedView patternView = (PatternOrientedView)PlatformUI.getWorkbench().
+						getActiveWorkbenchWindow().getActivePage().findView(CloneSummaryPerspective.PATTERN_ORIENTED_VIEW);
+				TopicOrientedView topicView = (TopicOrientedView)PlatformUI.getWorkbench().
+						getActiveWorkbenchWindow().getActivePage().findView(CloneSummaryPerspective.TOPIC_ORIENTED_VIEW);
+				
+				try {
+					if(cloneSetView != null){
+						cloneSetView.setCloneSets(cloneSets);
+						cloneSetView.restoreInput(cloneSets);
 					}
 					
-					patternView.setCategories(clonePatternCategories);
-					patternView.restoreInput(clonePatternCategories);
+					if(patternView != null){
+						ClonePatternGroupCategoryList clonePatternCategories = (ClonePatternGroupCategoryList)SummaryUtil.generateClonePatternSimplifiedCategories(Activator.getCloneSets().getCloneList());
+						for(PatternGroupCategory category: clonePatternCategories){
+							Collections.sort(category.getPatternList(), new DefaultValueDescComparator());
+						}
+						
+						patternView.setCategories(clonePatternCategories);
+						patternView.restoreInput(clonePatternCategories);
+						
+					}
 					
+					if(topicView != null){
+						TopicWrapperList topics = SummaryUtil.generateTopicOrientedSimpleTree(Activator.getCloneSets().getCloneList());
+						Collections.sort(topics, new DefaultValueAscComparator());
+						
+						topicView.restoreInput(topics);
+						topicView.setTopics(topics);
+						
+					}
+					
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-
-				if(topicView != null){
-					TopicWrapperList topics = SummaryUtil.generateTopicOrientedSimpleTree(Activator.getCloneSets().getCloneList());
-					Collections.sort(topics, new DefaultValueAscComparator());
-					
-					topicView.restoreInput(topics);
-					topicView.setTopics(topics);
-					
-				}
-				
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
 			
 		}
