@@ -8,6 +8,11 @@ public class Component {
 	private String abstractName;
 	private String[] supportingNames;
 	
+	/**
+	 * it is the original text of this component in the pasted code
+	 */
+	private String originName;
+	
 	private boolean isAbstract;
 	
 	private EquivalentComponentGroup group;
@@ -156,6 +161,19 @@ public class Component {
 	public void setGroup(EquivalentComponentGroup group) {
 		this.group = group;
 	}
-	
+
+	/**
+	 * @return the originName
+	 */
+	public String getOriginName() {
+		return originName;
+	}
+
+	/**
+	 * @param originName the originName to set
+	 */
+	public void setOriginName(String originName) {
+		this.originName = originName;
+	}
 	
 }

@@ -23,7 +23,7 @@ public class NamingRule {
 	 * @param configurationPoint
 	 */
 	public void applyRule(String candidateString, ConfigurationPoint currentPoint){
-		refreshNamingModel(candidateString, currentPoint);
+		matchingCandidateStringToNamingPattern(candidateString, currentPoint, false);
 		 
 		if(!currentPoint.getCopiedTokenSeq().isSingleToken()){
 			return;
@@ -31,7 +31,7 @@ public class NamingRule {
 		
 		for(RuleItem item: itemList){
 			if(item.isChangeable() && item.getComponentList().size() > 0){
-				boolean isValidForAdding = true;
+				//boolean isValidForAdding = true;
 				StringBuffer buffer = new StringBuffer();
 				for(int i=0; i<item.getComponentList().size(); i++){
 					Component comp = item.getComponentList().get(i);
@@ -48,19 +48,18 @@ public class NamingRule {
 						buffer.append(currentValue);
 					}
 					else{
-						isValidForAdding = false;
-						break;
+						//isValidForAdding = false;
+						//break;
+						buffer.append(comp.getOriginName());
 					}
 				}
 				
-				if(isValidForAdding){
-					String newValue = buffer.toString();
-					newValue = parseStringToCamel(0, item, newValue);
-					ConfigurationPoint point = item.getConfigurationPoint();
-					point.clearRuleGeneratedCandidates();
-					if(!point.containsByIgnoringCase(newValue)){
-						point.getCandidates().add(new Candidate(newValue, 0, Candidate.RULE, point));							
-					}
+				String newValue = buffer.toString();
+				newValue = parseStringToCamel(0, item, newValue);
+				ConfigurationPoint point = item.getConfigurationPoint();
+				point.clearRuleGeneratedCandidates();
+				if(!point.containsByIgnoringCase(newValue)){
+					point.getCandidates().add(new Candidate(newValue, 0, Candidate.RULE, point));							
 				}
 				
 			}
@@ -88,7 +87,12 @@ public class NamingRule {
 		return currentValue;
 	}
 	
-	private void refreshNamingModel(String candidateString, ConfigurationPoint currentPoint){
+	/**
+	 * match the candidate string to the naming pattern of its configuration
+	 * @param candidateString
+	 * @param currentPoint
+	 */
+	private void matchingCandidateStringToNamingPattern(String candidateString, ConfigurationPoint currentPoint, boolean isSetOriginName){
 		EquivalentComponentGroup group = this.equivalentComponentGroupList.findEquivalentGroup(currentPoint);
 		RuleItem ruleItem = this.equivalentComponentGroupList.findMatchingRuleItem(currentPoint);
 		
@@ -137,16 +141,31 @@ public class NamingRule {
 							}
 						}
 						String newComponentName = buffer.toString();
-						comp.getGroup().setCurrentValue(newComponentName);
+						if(isSetOriginName){
+							comp.setOriginName(newComponentName);
+						}
+						else{
+							comp.getGroup().setCurrentValue(newComponentName);					
+						}
 					}
 					else{
 						int index = templateMatch.getValue(i);
 						if(index != -1){
 							String newComponentName = instanceArray[index];
-							comp.getGroup().setCurrentValue(newComponentName);							
+							if(isSetOriginName){
+								comp.setOriginName(newComponentName);
+							}
+							else{
+								comp.getGroup().setCurrentValue(newComponentName);					
+							}			
 						}
 						else{
-							comp.getGroup().setCurrentValue("");	
+							if(isSetOriginName){
+								comp.setOriginName("");
+							}
+							else{
+								comp.getGroup().setCurrentValue("");					
+							}
 						}
 					}
 				}			
@@ -186,9 +205,18 @@ public class NamingRule {
 		
 		generateEquivantGroups(this.itemList);
 		
-		System.currentTimeMillis();
+		analyzeOriginNameForComponents(this.itemList);
 	}
 	
+	private void analyzeOriginNameForComponents(ArrayList<RuleItem> itemList) {
+		for(RuleItem item: itemList){
+			if(item.isChangeable()){
+				ConfigurationPoint point = item.getConfigurationPoint();
+				matchingCandidateStringToNamingPattern(point.getCurrentValue(), point, true);				
+			}
+		}
+	}
+
 	private void generateEquivantGroups(ArrayList<RuleItem> itemList) {
 		ArrayList<Component> compList = new ArrayList<>();
 		for(RuleItem item: itemList){
