@@ -24,7 +24,7 @@ public class NamingRule {
 	 */
 	public void applyRule(String candidateString, ConfigurationPoint currentPoint){
 		refreshNamingModel(candidateString, currentPoint);
-		
+		 
 		if(!currentPoint.getCopiedTokenSeq().isSingleToken()){
 			return;
 		}
