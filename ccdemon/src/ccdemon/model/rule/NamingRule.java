@@ -124,6 +124,15 @@ public class NamingRule {
 						}
 						else{
 							startInstanceCursor = templateMatch.getValue(startTemplateCursor);
+							if(startInstanceCursor == -1){
+								int index = templateMatch.getValue(i);
+								if(index != -1){
+									startInstanceCursor = index - 1;
+								}
+								else{
+									startInstanceCursor = instanceArray.length;
+								}
+							} 
 						}
 						
 						if(endTempalteCursor > components.size()-1){
@@ -131,7 +140,16 @@ public class NamingRule {
 						}
 						else{
 							endInstanceCursor = templateMatch.getValue(endTempalteCursor);
-							endInstanceCursor = (endInstanceCursor == -1)? instanceArray.length : endInstanceCursor;
+							if(endInstanceCursor == -1){
+								int index = templateMatch.getValue(i);
+								if(index != -1){
+									endInstanceCursor = index + 1;
+								}
+								else {
+									endInstanceCursor = -1;
+								}
+							}
+							//endInstanceCursor = (endInstanceCursor == -1)? instanceArray.length : endInstanceCursor;
 						}
 						
 						StringBuffer buffer = new StringBuffer();
