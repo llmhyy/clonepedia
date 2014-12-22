@@ -196,9 +196,12 @@ public class ConfigurationPoint {
 					if(binding != null && binding instanceof ITypeBinding){
 						ITypeBinding typeBinding = (ITypeBinding) binding;
 						try {
-							Class<?> c = Class.forName(typeBinding.getSuperclass().getQualifiedName());
-							if(!c.equals(Object.class) && !classList.contains(c)){
-								classList.add(c);
+							ITypeBinding superTypeBinding = typeBinding.getSuperclass();
+							if(superTypeBinding != null){//not Object.class
+								Class<?> c = Class.forName(superTypeBinding.getQualifiedName());
+								if(!classList.contains(c)){
+									classList.add(c);
+								}
 							}
 						} catch (ClassNotFoundException e) {
 							e.printStackTrace();
