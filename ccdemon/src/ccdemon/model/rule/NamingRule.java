@@ -319,7 +319,7 @@ public class NamingRule {
 			if(i != 0 && i != commonList.length-1){
 				String[] supportingNames = new String[sequenceList.size()];
 				for(int j=0; j<supportingNames.length; j++){
-					if(names[j] != null){
+					if(names[j] != null && names[j].length() > 0){
 						sequenceList.get(j).moveStartIndex(startString);
 						supportingNames[j] = sequenceList.get(j).getStartString();				
 					}
