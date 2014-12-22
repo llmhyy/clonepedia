@@ -1,4 +1,4 @@
-package ccdemon.proposal;
+package ccdemon.ui;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.text.BadLocationException;

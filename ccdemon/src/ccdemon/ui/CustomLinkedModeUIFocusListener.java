@@ -1,4 +1,4 @@
-package ccdemon.handlers;
+package ccdemon.ui;
 
 import java.util.ArrayList;
 
@@ -7,14 +7,12 @@ import mcidiff.model.TokenSeq;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.link.LinkedModeUI.ILinkedModeUIFocusListener;
-import org.eclipse.jface.text.link.LinkedModeUI.LinkedModeUITarget;
 import org.eclipse.jface.text.link.LinkedPosition;
 
 import ccdemon.model.ConfigurationPoint;
 import ccdemon.model.ConfigurationPointSet;
-import ccdemon.proposal.RankedCompletionProposal;
-import ccdemon.proposal.RankedProposalPosition;
+import ccdemon.ui.CustomLinkedModeUI.ILinkedModeUIFocusListener;
+import ccdemon.ui.CustomLinkedModeUI.LinkedModeUITarget;
 
 public class CustomLinkedModeUIFocusListener implements
 		ILinkedModeUIFocusListener {

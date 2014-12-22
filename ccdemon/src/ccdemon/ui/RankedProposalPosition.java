@@ -1,4 +1,4 @@
-package ccdemon.proposal;
+package ccdemon.ui;
 
 import java.util.ArrayList;
 
