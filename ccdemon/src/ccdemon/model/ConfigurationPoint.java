@@ -1,6 +1,13 @@
 package ccdemon.model;
 
 
+import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -9,12 +16,18 @@ import mcidiff.model.SeqMultiset;
 import mcidiff.model.Token;
 import mcidiff.model.TokenSeq;
 
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.SimpleName;
+
+import ccdemon.util.CCDemonUtil;
 
 public class ConfigurationPoint {
 	/**
@@ -185,6 +198,36 @@ public class ConfigurationPoint {
 
 	@SuppressWarnings("rawtypes")
 	public ArrayList<Class> getSuperClasses(){
+	    URLClassLoader urlClassLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+		try {
+			IJavaProject proj = CCDemonUtil.retrieveWorkingJavaProject();
+			IClasspathEntry[] entries = proj.getRawClasspath();
+			IPath fullPathOfProj = proj.getProject().getLocation();
+			for(IClasspathEntry entry : entries){
+				File f = new File(fullPathOfProj.toOSString() + "\\" + entry.getPath().makeRelativeTo(proj.getPath()).toOSString());
+//				File f = entry.getPath().toFile();
+			    URI u = f.toURI();
+			    Class<URLClassLoader> urlClass = URLClassLoader.class;
+			    Method method = urlClass.getDeclaredMethod("addURL", new Class[]{URL.class});
+			    method.setAccessible(true);
+			    method.invoke(urlClassLoader, new Object[]{u.toURL()});
+			}
+		} catch (JavaModelException e) {
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		
 		ArrayList<Class> classList = new ArrayList<Class>();
 		for(TokenSeq tokenSeq: seqMultiset.getSequences()){
 			if(tokenSeq.isSingleToken()){
@@ -198,7 +241,7 @@ public class ConfigurationPoint {
 						try {
 							ITypeBinding superTypeBinding = typeBinding.getSuperclass();
 							if(superTypeBinding != null){//not Object.class
-								Class<?> c = Class.forName(superTypeBinding.getQualifiedName());
+								Class<?> c = Class.forName(superTypeBinding.getQualifiedName(), true, urlClassLoader);
 								if(!classList.contains(c)){
 									classList.add(c);
 								}

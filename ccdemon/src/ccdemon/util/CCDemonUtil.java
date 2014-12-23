@@ -6,6 +6,12 @@ import mcidiff.model.CloneInstance;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.ui.internal.handlers.WidgetMethodHandler;
 
 import ccdemon.model.ReferrableCloneSet;
@@ -14,6 +20,8 @@ import ccdemon.model.rule.PatternMatchingComponent;
 import ccdemon.model.rule.TemplateMatch;
 import clonepedia.model.ontology.CloneSet;
 import clonepedia.model.ontology.CloneSets;
+import clonepedia.preference.ClonepediaPreferencePage;
+import clonepedia.util.MinerProperties;
 
 @SuppressWarnings("restriction")
 public class CCDemonUtil {
@@ -140,4 +148,21 @@ public class CCDemonUtil {
 		return set;
 	}
 
+	public static IJavaProject retrieveWorkingJavaProject(){
+		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+		IProject proj = root.getProject(clonepedia.Activator.getDefault().
+				getPreferenceStore().getString(ClonepediaPreferencePage.TARGET_PORJECT));
+		
+		try {
+			if (proj.isNatureEnabled(MinerProperties.javaNatureName)) {
+				IJavaProject javaProject = JavaCore.create(proj);
+				
+				return javaProject;
+			}
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
 }

@@ -137,23 +137,6 @@ public class PasteHandler extends AbstractHandler {
 		}
 	}
 	
-	private IJavaProject retrieveWorkingJavaProject(){
-		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		IProject proj = root.getProject(clonepedia.Activator.getDefault().
-				getPreferenceStore().getString(ClonepediaPreferencePage.TARGET_PORJECT));
-		
-		try {
-			if (proj.isNatureEnabled(MinerProperties.javaNatureName)) {
-				IJavaProject javaProject = JavaCore.create(proj);
-				
-				return javaProject;
-			}
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
-		
-		return null;
-	}
 
 	/**
 	 * Determine: 
@@ -176,7 +159,7 @@ public class PasteHandler extends AbstractHandler {
 			mcidiff.model.CloneSet set = CCDemonUtil.adaptMCIDiffModel(rcs.getCloneSet()); 
 			MCIDiff diff = new MCIDiff();
 			
-			IJavaProject proj = retrieveWorkingJavaProject();
+			IJavaProject proj = CCDemonUtil.retrieveWorkingJavaProject();
 			
 			ArrayList<SeqMultiset> diffList = diff.diff(set, proj);
 
