@@ -11,15 +11,10 @@ import mcidiff.model.TokenSeq;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.ToolFactory;
 import org.eclipse.jdt.core.compiler.IScanner;
@@ -51,8 +46,6 @@ import ccdemon.util.CCDemonUtil;
 import ccdemon.util.SharedData;
 import clonepedia.model.ontology.CloneInstance;
 import clonepedia.model.ontology.CloneSets;
-import clonepedia.preference.ClonepediaPreferencePage;
-import clonepedia.util.MinerProperties;
 
 
 public class PasteHandler extends AbstractHandler {
