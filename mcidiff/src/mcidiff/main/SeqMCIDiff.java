@@ -15,13 +15,8 @@ import mcidiff.util.DiffUtil;
 
 import org.eclipse.jdt.core.IJavaProject;
 
-public class SeqMCIDiff extends MCIDiff{
-	/**
-	 * Given a clone set, this method return a list of multiset representing the differences across
-	 * the clone instances of this clone set.
-	 * @param set
-	 * @return
-	 */
+public class SeqMCIDiff{
+	
 	public ArrayList<? extends Multiset> diff(CloneSet set, IJavaProject project){
 		
 		new Tokenizer().tokenize(set, project);
@@ -29,11 +24,11 @@ public class SeqMCIDiff extends MCIDiff{
 		ArrayList<Token>[] lists = set.getTokenLists();
 		CorrespondentListAndSet cls = DiffUtil.generateMatchedTokenListFromMultiSequence(lists);
 		
-		TokenSequence[] sequences = transferToModel(set);
+		TokenSequence[] sequences = MCIDiffUtil.transferToModel(set);
 		ArrayList<? extends Multiset> results = computeDiff(cls, sequences);
 		
 		identifyEpsilonTokenPosition(results);
-		filterCommonSet(results);
+		MCIDiffUtil.filterCommonSet(results);
 		
 		System.currentTimeMillis();
 		
@@ -49,7 +44,7 @@ public class SeqMCIDiff extends MCIDiff{
 	 * @param sequences
 	 * @return
 	 */
-	protected ArrayList<? extends Multiset> computeDiff(CorrespondentListAndSet cls, TokenSequence[] sequences) {
+	public ArrayList<? extends Multiset> computeDiff(CorrespondentListAndSet cls, TokenSequence[] sequences) {
 		ArrayList<Multiset> seqMultisetList = new ArrayList<>();
 		
 		for(int i=1; i<cls.getCommonTokenList().length; i++){
