@@ -154,7 +154,7 @@ public class PasteHandler extends AbstractHandler {
 			
 			IJavaProject proj = CCDemonUtil.retrieveWorkingJavaProject();
 			
-			ArrayList<SeqMultiset> diffList = diff.diff(set, proj);
+			ArrayList<SeqMultiset> diffList = diff.diffByTokenSeq(set, proj);
 
 			ArrayList<ConfigurationPoint> configurationPoints = 
 					constructConfigurationPoints(rcs.getReferredCloneInstance(), diffList);

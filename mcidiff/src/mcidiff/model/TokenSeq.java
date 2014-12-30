@@ -33,6 +33,10 @@ public class TokenSeq {
 		return buffer.toString();
 	}
 	
+	public int size(){
+		return this.tokens.size();
+	}
+	
 	public boolean isSingleToken(){
 		return this.tokens.size() == 1;
 	}

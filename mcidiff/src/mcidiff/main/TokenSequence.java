@@ -7,7 +7,7 @@ import mcidiff.model.Token;
 
 public class TokenSequence {
 	private int startIndex = 0;
-	private int cursorIndex = 0;
+	private int endIndex = 0;
 	private CloneInstance cloneInstance;
 	
 	/**
@@ -20,7 +20,7 @@ public class TokenSequence {
 	
 	public String toString(){
 		StringBuffer buffer = new StringBuffer();
-		for(int i=startIndex+1; i<=cursorIndex-1; i++){
+		for(int i=startIndex+1; i<=endIndex-1; i++){
 			buffer.append(getCloneInstance().getTokenList().get(i));
 		}
 		return buffer.toString();
@@ -29,14 +29,14 @@ public class TokenSequence {
 	/**
 	 * @return the cursorIndex
 	 */
-	public int getCursorIndex() {
-		return cursorIndex;
+	public int getEndIndex() {
+		return endIndex;
 	}
 	/**
 	 * @param cursorIndex the cursorIndex to set
 	 */
 	public void setCursorIndex(int cursorIndex) {
-		this.cursorIndex = cursorIndex;
+		this.endIndex = cursorIndex;
 	}
 	/**
 	 * @return the tokenList
@@ -62,10 +62,10 @@ public class TokenSequence {
 	 * move cursor to the nearest following token equal to commonToken.
 	 * @param commonToken
 	 */
-	public Token moveCursorTo(Token commonToken) {
+	public Token moveEndCursorTo(Token commonToken) {
 		for(int i=startIndex+1; i<getLength(); i++){
 			if(getTokenList().get(i) == commonToken){
-				this.cursorIndex = i;
+				this.endIndex = i;
 				return getTokenList().get(i);
 			}
 		}
@@ -77,12 +77,12 @@ public class TokenSequence {
 		return getCloneInstance().getTokenList().get(index);
 	}
 	
-	public void moveStartToCursor() {
-		this.startIndex = this.cursorIndex;
+	public void moveStartCursorToEndCursor() {
+		this.startIndex = this.endIndex;
 	}
 	
-	public void moveCursorToEnd() {
-		this.cursorIndex = getLength();
+	public void moveEndCursorToSeqEnd() {
+		this.endIndex = getLength();
 	}
 	
 	public int getLength(){
@@ -102,6 +102,6 @@ public class TokenSequence {
 	}
 	
 	public boolean isRangeEmpty(){
-		return this.startIndex == this.cursorIndex - 1;
+		return this.startIndex == this.endIndex - 1;
 	}
 }

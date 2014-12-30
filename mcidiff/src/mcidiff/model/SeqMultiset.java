@@ -42,4 +42,14 @@ public class SeqMultiset {
 	public int getSize(){
 		return getSequences().size();
 	}
+
+	public boolean isAllEmpty() {
+		for(TokenSeq seq: this.sequences){
+			if(!seq.isEpisolonTokenSeq()){
+				return false;
+			}
+		}
+		
+		return true;
+	}
 }

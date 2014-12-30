@@ -1,7 +1,11 @@
-package mcidiff.model;
+package mcidiff.comparator;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+
+import mcidiff.model.CloneInstance;
+import mcidiff.model.Multiset;
+import mcidiff.model.Token;
 
 public class MultisetPositionComparator implements Comparator<Multiset>{
 	private ArrayList<Multiset> list;
