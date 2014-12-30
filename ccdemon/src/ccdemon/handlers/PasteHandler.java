@@ -3,7 +3,7 @@ package ccdemon.handlers;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import mcidiff.main.MCIDiff;
+import mcidiff.main.SeqMCIDiff;
 import mcidiff.model.SeqMultiset;
 import mcidiff.model.Token;
 import mcidiff.model.TokenSeq;
@@ -150,11 +150,12 @@ public class PasteHandler extends AbstractHandler {
 		if(copiedRange != null){
 			ReferrableCloneSet rcs = referrableCloneSets.get(0);
 			mcidiff.model.CloneSet set = CCDemonUtil.adaptMCIDiffModel(rcs.getCloneSet()); 
-			MCIDiff diff = new MCIDiff();
+			SeqMCIDiff diff = new SeqMCIDiff();
 			
 			IJavaProject proj = CCDemonUtil.retrieveWorkingJavaProject();
 			
-			ArrayList<SeqMultiset> diffList = diff.diffByTokenSeq(set, proj);
+			@SuppressWarnings("unchecked")
+			ArrayList<SeqMultiset> diffList = (ArrayList<SeqMultiset>) diff.diff(set, proj);
 
 			ArrayList<ConfigurationPoint> configurationPoints = 
 					constructConfigurationPoints(rcs.getReferredCloneInstance(), diffList);

@@ -2,7 +2,7 @@ package mcidiff.model;
 
 import java.util.ArrayList;
 
-public class SeqMultiset {
+public class SeqMultiset extends Multiset{
 	private ArrayList<TokenSeq> sequences = new ArrayList<>();
 
 	@Override

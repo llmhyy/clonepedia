@@ -1,6 +1,6 @@
 package test;
 
-import mcidiff.main.MCIDiff;
+import mcidiff.main.TokenMCIDiff;
 import mcidiff.model.CloneInstance;
 import mcidiff.model.CloneSet;
 
@@ -21,6 +21,6 @@ public class TestMain {
 		set.addInstance(instance2);
 		set.addInstance(instance3);
 		
-		new MCIDiff().diffByTokenSeq(set, null);
+		new TokenMCIDiff().diff(set, null);
 	}
 }

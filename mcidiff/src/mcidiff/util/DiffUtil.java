@@ -3,7 +3,7 @@ package mcidiff.util;
 import java.util.ArrayList;
 
 import mcidiff.model.CorrespondentListAndSet;
-import mcidiff.model.Multiset;
+import mcidiff.model.TokenMultiset;
 import mcidiff.model.Token;
 
 public class DiffUtil {
@@ -51,9 +51,9 @@ public class DiffUtil {
 
 	public static CorrespondentListAndSet generateMatchedTokenListFromMultiSequence(ArrayList<Token>[] lists){
 		Token[] commonTokenList = lists[0].toArray(new Token[0]);
-		Multiset[] setList = new Multiset[commonTokenList.length];
+		TokenMultiset[] setList = new TokenMultiset[commonTokenList.length];
 		for(int i=0; i<commonTokenList.length; i++){
-			Multiset set = new Multiset();
+			TokenMultiset set = new TokenMultiset();
 			set.add(commonTokenList[i]);
 			setList[i] = set;
 		}
@@ -92,7 +92,7 @@ public class DiffUtil {
 	 * @param tokenList2
 	 */
 	public static CorrespondentListAndSet generateMatchedTokenList(CorrespondentListAndSet cls, Token[] tokenList2) {
-		Multiset[] multisetList = cls.getMultisetList();
+		TokenMultiset[] multisetList = cls.getMultisetList();
 		Token[] commonTokenList = cls.getCommonTokenList();
 		
 		TokenSimilarityComparator sc = new TokenSimilarityComparator(); 
@@ -102,7 +102,7 @@ public class DiffUtil {
 
 		int commonLength = commonLengthTable[commonTokenList.length][tokenList2.length];
 		Token[] commonList = new Token[commonLength];
-		Multiset[] setList = new Multiset[commonLength];
+		TokenMultiset[] setList = new TokenMultiset[commonLength];
 
 		for (int k = commonLength - 1, i = commonTokenList.length, j = tokenList2.length; (i > 0 && j > 0);) {
 			if (commonTokenList[i - 1].equals(tokenList2[j - 1])) {
@@ -112,7 +112,7 @@ public class DiffUtil {
 				if(Math.abs(sim - increase) < 0.01){
 					commonList[k] = commonTokenList[i - 1];
 					
-					Multiset set = new Multiset();
+					TokenMultiset set = new TokenMultiset();
 					set.addAll(multisetList[i - 1]);
 					set.add(tokenList2[j - 1]);
 					setList[k] = set;

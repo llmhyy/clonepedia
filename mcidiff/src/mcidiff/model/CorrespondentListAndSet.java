@@ -1,14 +1,14 @@
 package mcidiff.model;
 
 public class CorrespondentListAndSet{
-	private Multiset[] multisetList; 
+	private TokenMultiset[] multisetList; 
 	private Token[] commonTokenList;
 	
 	/**
 	 * @param multisetList
 	 * @param commonTokenList
 	 */
-	public CorrespondentListAndSet(Multiset[] multisetList,
+	public CorrespondentListAndSet(TokenMultiset[] multisetList,
 			Token[] commonTokenList) {
 		super();
 		this.multisetList = multisetList;
@@ -17,13 +17,13 @@ public class CorrespondentListAndSet{
 	/**
 	 * @return the multisetList
 	 */
-	public Multiset[] getMultisetList() {
+	public TokenMultiset[] getMultisetList() {
 		return multisetList;
 	}
 	/**
 	 * @param multisetList the multisetList to set
 	 */
-	public void setMultisetList(Multiset[] multisetList) {
+	public void setMultisetList(TokenMultiset[] multisetList) {
 		this.multisetList = multisetList;
 	}
 	/**

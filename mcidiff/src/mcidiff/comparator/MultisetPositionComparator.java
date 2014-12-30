@@ -4,18 +4,18 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 import mcidiff.model.CloneInstance;
-import mcidiff.model.Multiset;
+import mcidiff.model.TokenMultiset;
 import mcidiff.model.Token;
 
-public class MultisetPositionComparator implements Comparator<Multiset>{
-	private ArrayList<Multiset> list;
+public class MultisetPositionComparator implements Comparator<TokenMultiset>{
+	private ArrayList<TokenMultiset> list;
 	
-	public MultisetPositionComparator(ArrayList<Multiset> list){
+	public MultisetPositionComparator(ArrayList<TokenMultiset> list){
 		this.list = list;
 	}
 	
 	@Override
-	public int compare(Multiset set1, Multiset set2) {
+	public int compare(TokenMultiset set1, TokenMultiset set2) {
 		
 		if(set1 != null && set2 != null){
 			
@@ -33,7 +33,7 @@ public class MultisetPositionComparator implements Comparator<Multiset>{
 			}
 			
 			if(!isComparable){
-				for(Multiset set: list){
+				for(TokenMultiset set: list){
 					if(isComparable(set, set1) && isComparable(set, set2)){
 						int value1 = compareValidatedSet(set, set1);
 						int value2 = compareValidatedSet(set, set2);
@@ -58,7 +58,7 @@ public class MultisetPositionComparator implements Comparator<Multiset>{
 		return 0;
 	}
 	
-	private int compareValidatedSet(Multiset set1, Multiset set2){
+	private int compareValidatedSet(TokenMultiset set1, TokenMultiset set2){
 		int sum = 0;
 		for(Token token1: set1.getTokens()){
 			CloneInstance instance = token1.getCloneInstance();
@@ -72,7 +72,7 @@ public class MultisetPositionComparator implements Comparator<Multiset>{
 		return sum;
 	}
 	
-	private boolean isComparable(Multiset set1, Multiset set2){
+	private boolean isComparable(TokenMultiset set1, TokenMultiset set2){
 		for(Token token1: set1.getTokens()){
 			CloneInstance instance = token1.getCloneInstance();
 			Token token2 = set2.findToken(instance);
