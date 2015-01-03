@@ -38,14 +38,6 @@ public class SeqMCIDiff{
 		
 		MCIDiffUtil.filterCommonSet(results);
 		
-		for(Multiset set0: results){
-			SeqMultiset seqM = (SeqMultiset)set0;
-			for(TokenSeq seq: seqM.getSequences()){
-				if(seq.getEndPosition() <= seq.getStartPosition()){
-					System.currentTimeMillis();
-				}
-			}
-		}
 		
 		System.currentTimeMillis();
 		
@@ -414,7 +406,7 @@ public class SeqMCIDiff{
 	private ArrayList<TokenSeq> generateSeparateRanges(TokenSeq seq, ArrayList<ASTNode> completeUnit) {
 		ArrayList<TokenSeq> seqList = new ArrayList<>();
 		
-		int preIndex = 0;
+		int preIndex = -1;
 		int postIndex = seq.getTokens().size();
 		Token prepartialToken = findPrepartialToken(seq, completeUnit);
 		Token postpartialToken = findPostpartialToken(seq, completeUnit);
@@ -441,7 +433,7 @@ public class SeqMCIDiff{
 		}
 		
 		TokenSeq middleSyntaxCompleteSeq = new TokenSeq();
-		for(int i=preIndex; i<postIndex; i++){
+		for(int i=preIndex+1; i<postIndex; i++){
 			middleSyntaxCompleteSeq.addToken(seq.getTokens().get(i));
 		}
 		seqList.add(middleSyntaxCompleteSeq);
