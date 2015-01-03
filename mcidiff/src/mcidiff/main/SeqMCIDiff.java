@@ -3,6 +3,7 @@ package mcidiff.main;
 import java.util.ArrayList;
 
 import mcidiff.action.Tokenizer;
+import mcidiff.comparator.SeqMultisetPositionComparator;
 import mcidiff.model.CloneInstance;
 import mcidiff.model.CloneSet;
 import mcidiff.model.CorrespondentListAndSet;
@@ -11,9 +12,13 @@ import mcidiff.model.SeqMultiset;
 import mcidiff.model.Token;
 import mcidiff.model.TokenMultiset;
 import mcidiff.model.TokenSeq;
+import mcidiff.util.ASTUtil;
 import mcidiff.util.DiffUtil;
 
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.CompilationUnit;
 
 public class SeqMCIDiff{
 	
@@ -27,14 +32,36 @@ public class SeqMCIDiff{
 		TokenSequence[] sequences = MCIDiffUtil.transferToModel(set);
 		ArrayList<? extends Multiset> results = computeDiff(cls, sequences);
 		
+		results = mergeDiffRanges(results);
+		
 		identifyEpsilonTokenPosition(results);
+		
 		MCIDiffUtil.filterCommonSet(results);
+		
+		for(Multiset set0: results){
+			SeqMultiset seqM = (SeqMultiset)set0;
+			for(TokenSeq seq: seqM.getSequences()){
+				if(seq.getEndPosition() <= seq.getStartPosition()){
+					System.currentTimeMillis();
+				}
+			}
+		}
 		
 		System.currentTimeMillis();
 		
 		return results;
 	}
-	
+
+	/**
+	 * This method is used to merge some common tokens into diff range.
+	 * @param results
+	 * @return
+	 */
+	private ArrayList<? extends Multiset> mergeDiffRanges(ArrayList<? extends Multiset> results) {
+		// TODO Auto-generated method stub
+		return results;
+	}
+
 	/**
 	 * This method returns an ordered list of token-multiset and token-seq-multiset.
 	 * For example, it returns [{int, int, int}, {a, a, a}, {=, =, =}, {b1+c1, b2+c2, b3-c3},
@@ -46,6 +73,12 @@ public class SeqMCIDiff{
 	 */
 	public ArrayList<? extends Multiset> computeDiff(CorrespondentListAndSet cls, TokenSequence[] sequences) {
 		ArrayList<Multiset> seqMultisetList = new ArrayList<>();
+		
+		ArrayList<TokenMultiset> tokenMultisets = new TokenMCIDiff().computeDiff(cls, sequences);
+		for(TokenSequence sequence: sequences){
+			sequence.setStartIndex(0);
+			sequence.setCursorIndex(0);
+		}
 		
 		for(int i=1; i<cls.getCommonTokenList().length; i++){
 			
@@ -59,7 +92,10 @@ public class SeqMCIDiff{
 			
 			SeqMultiset seqMultiset = generateSeqMultiset(sequences);
 			if(!seqMultiset.isAllEmpty()){
-				seqMultisetList.add(seqMultiset);
+				ArrayList<SeqMultiset> splitedMultisets = splitDiffRanges(seqMultiset, tokenMultisets);
+				seqMultisetList.addAll(splitedMultisets);
+				
+				//seqMultisetList.add(seqMultiset);
 			}
 			
 			seqMultisetList.add(commonSet);
@@ -70,6 +106,454 @@ public class SeqMCIDiff{
 		}
 		
 		return seqMultisetList;
+	}
+	
+	public class CompleteSyntacticUnitVisitor extends ASTVisitor{
+		private ArrayList<ASTNode> completeSyntacticUnits = new ArrayList<>();
+		private TokenSeq seq;
+		
+		public CompleteSyntacticUnitVisitor(TokenSeq seq){
+			this.seq = seq;
+		}
+		
+		@Override
+		public void preVisit(ASTNode node){
+			int startPosition = this.seq.getStartPosition();
+			int endPosition = this.seq.getEndPosition();
+			/**
+			 * the node is inside the diff range
+			 */
+			if(node.getStartPosition() >= startPosition && node.getStartPosition()+node.getLength() <= endPosition){
+				int coveredTokenNumber = findCoveredToken(this.seq, node).size();
+				/**
+				 * the pre-order traverse of AST will ensure that the parent node will be
+				 * visited before child node.
+				 */
+				if(isNotCoveredByExistingUnits(node) && coveredTokenNumber>1){
+					this.completeSyntacticUnits.add(node);
+				}
+			}
+		}
+
+		private boolean isNotCoveredByExistingUnits(ASTNode node) {
+			for(ASTNode existingNode: this.completeSyntacticUnits){
+				int existingStart = existingNode.getStartPosition();
+				int existingEnd = existingStart + existingNode.getLength();
+				
+				int start = node.getStartPosition();
+				int end = start + node.getLength();
+				
+				if(existingStart <= start && existingEnd >= end){
+					return false;
+				}
+			}
+			
+			return true;
+		}
+
+		/**
+		 * @return the completeSyntacticUnits
+		 */
+		public ArrayList<ASTNode> getCompleteSyntacticUnits() {
+			return completeSyntacticUnits;
+		}
+		
+	}
+
+	private ArrayList<Token> findCoveredToken(TokenSeq seq, ASTNode node) {
+		ArrayList<Token> coveredTokenList = new ArrayList<>();
+		int start = node.getStartPosition();
+		int end = start + node.getLength();
+		for(Token token: seq.getTokens()){
+			if(start <= token.getStartPosition() && end >= token.getEndPosition()){
+				coveredTokenList.add(token);
+			}
+		}
+		return coveredTokenList;
+	}
+	
+	/**
+	 * This method is used to split some diff range so that there will be no
+	 * mixture of complete and incomplete ASTs in a single differences.
+	 * 
+	 * For example, a diff range could be "print(); int a", the split process
+	 * will make this diff range into "print()" and "int a". In this example,
+	 * the mixture of a complete AST and an incomplete AST is distinguished.
+	 * @param seqMultiset
+	 * @return
+	 */
+	private ArrayList<SeqMultiset> splitDiffRanges(SeqMultiset seqMultiset, ArrayList<TokenMultiset> tokenMultisets) {
+		ArrayList<ArrayList<TokenSeq>> lists = new ArrayList<>();
+		for(TokenSeq seq: seqMultiset.getSequences()){
+			ArrayList<TokenSeq> list = new ArrayList<>();
+			if(!seq.isEpisolonTokenSeq()){
+				if(seq.isSingleToken()){
+					list.add(seq);
+				}
+				else{
+					CompilationUnit cu = (CompilationUnit) seq.getTokens().get(0).getNode().getRoot();
+					CompleteSyntacticUnitVisitor csVisitor = new CompleteSyntacticUnitVisitor(seq);
+					
+					cu.accept(csVisitor);
+					ArrayList<ASTNode> completeUnit = csVisitor.getCompleteSyntacticUnits();
+					
+					if(completeUnit.size() == 0){
+						list.add(seq);
+					}
+					else{
+						ArrayList<TokenSeq> seqList = generateSeparateRanges(seq, completeUnit);
+						list.addAll(seqList);
+					}
+				}
+			}
+			//empty candidate range
+			else{
+				list.add(seq);
+			}
+			
+			lists.add(list);
+		}
+		
+		ArrayList<SeqMultiset> multisets = matchRanges(lists, tokenMultisets);
+		
+		computeText(multisets);
+		
+		return multisets;
+	}
+	
+	private void computeText(ArrayList<SeqMultiset> multisets){
+		for(SeqMultiset set: multisets){
+			for(TokenSeq seq: set.getSequences()){
+				seq.retrieveTextFromDoc();
+			}
+		}
+	}
+
+	private ArrayList<SeqMultiset> matchRanges(ArrayList<ArrayList<TokenSeq>> lists,
+			ArrayList<TokenMultiset> tokenMultisets) {
+		
+		System.currentTimeMillis();
+		
+		ArrayList<SeqMultiset> seqMultisetList = new ArrayList<>();
+		
+		for(ArrayList<TokenSeq> seqList: lists){
+			ArrayList<ArrayList<TokenSeq>> otherSeqLists = findOtherLists(lists, seqList);
+			for(TokenSeq seq: seqList){
+				
+				if(!seq.isMarked()){
+					SeqMultiset seqMultiset = new SeqMultiset();
+					seqMultiset.addTokenSeq(seq);
+					seq.setMarked(true);
+					
+					for(ArrayList<TokenSeq> otherSeqList: otherSeqLists){
+						CloneInstance cloneInstance = otherSeqList.get(0).getCloneInstance();
+						TokenSeq otherSeq = identifyMostSimilarSeq(otherSeqList, seq, tokenMultisets);
+						if(otherSeq != null){
+							seqMultiset.addTokenSeq(otherSeq);
+							if(!isConformToValidatedOrder(seqMultiset, seqMultisetList)){
+								seqMultiset.getSequences().remove(otherSeq);
+								
+								TokenSeq episolonTokenSeq = TokenSeq.createEpisolonTokenSeq(cloneInstance);
+								seqMultiset.addTokenSeq(episolonTokenSeq);
+							}
+							else{
+								otherSeq.setMarked(true);								
+							}
+						}
+						else{
+							TokenSeq episolonTokenSeq = TokenSeq.createEpisolonTokenSeq(cloneInstance);
+							seqMultiset.addTokenSeq(episolonTokenSeq);
+						}
+					}	
+					
+					if(!seqMultiset.isAllEmpty()){
+						seqMultisetList.add(seqMultiset);						
+					}
+					
+				}
+			}
+		}
+		
+		SeqMultisetPositionComparator comparator = new SeqMultisetPositionComparator(seqMultisetList);
+		ASTUtil.sort(seqMultisetList, comparator);
+		
+		return seqMultisetList;
+	}
+
+	/**
+	 * To ensure that the matched token sequences will not be crossed corresponded. For example, one list is
+	 * {"seq1", "seq2"} and the other one is {"seq1'", "seq2'"}, the matched results should never be ["seq1", "seq2'"]
+	 * and ["seq2", "seq1'"].
+	 * 
+	 * @param partialSet
+	 * @param seqMultisetList
+	 * @return
+	 */
+	private boolean isConformToValidatedOrder(SeqMultiset partialSet,
+			ArrayList<SeqMultiset> seqMultisetList) {
+		for(SeqMultiset set: seqMultisetList){
+			int result = 0;
+			
+			for(TokenSeq seq: partialSet.getSequences()){
+				TokenSeq corresSeq = set.findTokenSeqByCloneInstance(seq.getCloneInstance());
+				
+				if(!seq.isEpisolonTokenSeq() && !corresSeq.isEpisolonTokenSeq()){
+					int diff = seq.getStartPosition() - corresSeq.getStartPosition();
+					if(result == 0){
+						result += diff;
+					}
+					else if(result < 0){
+						int r = result + diff;
+						if(r > result){
+							return false;
+						}
+						else{
+							result = r;
+						}
+					}
+					else if(result > 0){
+						int r = result + diff;
+						if(r < result){
+							return false;
+						}
+						else{
+							result = r;
+						}
+					}
+				}
+			}
+		}
+		
+		return true;
+	}
+
+	private TokenSeq identifyMostSimilarSeq(ArrayList<TokenSeq> otherSeqList,
+			TokenSeq seq, ArrayList<TokenMultiset> tokenMultisets) {
+				
+		double bestSim = 0;
+		TokenSeq bestSeq = null;
+		
+		for(TokenSeq otherSeq: otherSeqList){
+			if(!otherSeq.isMarked()){
+				
+				double sim = computeTokenSeqSimilarity(seq, otherSeq, tokenMultisets);
+				if(sim > 0){
+					if(bestSeq == null){
+						bestSeq = otherSeq;
+						bestSim = sim;
+					}
+					else{
+						if(sim > bestSim){
+							bestSeq = otherSeq;
+							bestSim = sim;
+						}
+					}
+				}
+			}
+		}
+		
+		return bestSeq;
+	}
+
+	private double computeTokenSeqSimilarity(TokenSeq seq, TokenSeq otherSeq,
+			ArrayList<TokenMultiset> tokenMultisets) {
+		if(seq.isEpisolonTokenSeq() && otherSeq.isEpisolonTokenSeq()){
+			return 1;
+		}
+		else if(!seq.isEpisolonTokenSeq() && !otherSeq.isEpisolonTokenSeq()){
+			int commonTokenNum = 0;
+			for(Token t: seq.getTokens()){
+				Token corresToken = findCorrespondenceToken(tokenMultisets, t, otherSeq.getCloneInstance());
+				if(otherSeq.getTokens().contains(corresToken)){
+					commonTokenNum++;
+				}
+			}
+			
+			return ((double)commonTokenNum)*2/(seq.getTokens().size()+otherSeq.getTokens().size());
+		}
+		else{
+			return 0;			
+		}
+		
+	}
+
+	private Token findCorrespondenceToken(
+			ArrayList<TokenMultiset> tokenMultisets, Token t, CloneInstance cloneInstance) {
+		for(TokenMultiset set: tokenMultisets){
+			if(set.getTokens().contains(t)){
+				return set.findToken(cloneInstance);
+			}
+		}
+		return null;
+	}
+
+	private ArrayList<ArrayList<TokenSeq>> findOtherLists(
+			ArrayList<ArrayList<TokenSeq>> lists, ArrayList<TokenSeq> seqList) {
+		ArrayList<ArrayList<TokenSeq>> otherLists = new ArrayList<>();
+		for(ArrayList<TokenSeq> list: lists){
+			if(list != seqList){
+				otherLists.add(list);
+			}
+		}
+		return otherLists;
+	}
+
+	/**
+	 * precondition: the {@code completeUnit} is not empty.
+	 * 
+	 * Generate the separated ranges given a complete syntax unit which is fully contained in {@code seq}.
+	 * For example, a token sequence like "b; int f = 0; double", the token sequence will be divided into
+	 * "b;", "int f = 0;" and "double".
+	 * 
+	 * The method will divide the token sequence into at least 1 sequence and at most three sequences.
+	 * 
+	 * @param seq
+	 * @param completeUnit
+	 * @return
+	 */
+	private ArrayList<TokenSeq> generateSeparateRanges(TokenSeq seq, ArrayList<ASTNode> completeUnit) {
+		ArrayList<TokenSeq> seqList = new ArrayList<>();
+		
+		int preIndex = 0;
+		int postIndex = seq.getTokens().size();
+		Token prepartialToken = findPrepartialToken(seq, completeUnit);
+		Token postpartialToken = findPostpartialToken(seq, completeUnit);
+		
+		
+		if(prepartialToken != null){
+			preIndex = seq.getTokens().indexOf(prepartialToken);
+			TokenSeq prepartialSeq = new TokenSeq();
+			for(int i=0; i<=preIndex; i++){
+				prepartialSeq.addToken(seq.getTokens().get(i));
+			}
+			seqList.add(prepartialSeq);
+		}
+		
+		boolean hasPostpartial = false;
+		if(postpartialToken != null){
+			hasPostpartial = true;
+			postIndex = seq.getTokens().indexOf(postpartialToken);
+			TokenSeq postpartialSeq = new TokenSeq();
+			for(int i=postIndex; i<seq.getTokens().size(); i++){
+				postpartialSeq.addToken(seq.getTokens().get(i));
+			}
+			seqList.add(postpartialSeq);
+		}
+		
+		TokenSeq middleSyntaxCompleteSeq = new TokenSeq();
+		for(int i=preIndex; i<postIndex; i++){
+			middleSyntaxCompleteSeq.addToken(seq.getTokens().get(i));
+		}
+		seqList.add(middleSyntaxCompleteSeq);
+		
+		if(hasPostpartial){
+			int size = seqList.size();
+			TokenSeq tmp = seqList.get(size-1);
+			seqList.set(size-1, seqList.get(size-2));
+			seqList.set(size-2, tmp);
+		}
+		
+		return seqList;
+	}
+
+	/**
+	 * precondition: the {@code completeUnit} is not empty.
+	 * 
+	 * return the closest token before complete syntax unit
+	 * 
+	 * @param seq
+	 * @param completeUnit
+	 * @return
+	 */
+	private Token findPrepartialToken(TokenSeq seq, ArrayList<ASTNode> completeUnit) {
+		int leastIndex = findFirstTokenPosition(completeUnit);
+		
+		Token prepartialToken = null;
+		int leastInterval = -1;
+		
+		for(Token token: seq.getTokens()){
+			if(token.getStartPosition() < leastIndex){
+				int interval = leastIndex - token.getStartPosition();
+				if(leastInterval == -1){
+					leastInterval = interval;
+					prepartialToken = token;
+				}
+				else{
+					if(leastInterval > interval){
+						leastInterval = interval;
+						prepartialToken = token;
+					}
+				}
+			}
+		}
+		
+		return prepartialToken;
+	}
+	
+	private int findFirstTokenPosition(ArrayList<ASTNode> completeUnit){
+		int leastIndex = -1;
+		for(ASTNode node: completeUnit){
+			if(leastIndex == -1){
+				leastIndex = node.getStartPosition();
+			}
+			else{
+				if(leastIndex > node.getStartPosition()){
+					leastIndex = node.getStartPosition();
+				}
+			}
+		}
+		
+		return leastIndex;
+	}
+	
+	/**
+	 * precondition: the {@code completeUnit} is not empty.
+	 * 
+	 * return the closest token after complete syntax unit
+	 * 
+	 * @param seq
+	 * @param completeUnit
+	 * @return
+	 */
+	private Token findPostpartialToken(TokenSeq seq, ArrayList<ASTNode> completeUnit) {
+		int lastIndex = findLastTokenPosition(completeUnit);
+		
+		Token postpartialToken = null;
+		int leastInterval = -1;
+		
+		for(Token token: seq.getTokens()){
+			if(token.getEndPosition() > lastIndex){
+				int interval = token.getEndPosition() - lastIndex;
+				if(leastInterval == -1){
+					leastInterval = interval;
+					postpartialToken = token;
+				}
+				else{
+					if(leastInterval > interval){
+						leastInterval = interval;
+						postpartialToken = token;
+					}
+				}
+			}
+		}
+		
+		return postpartialToken;
+	}
+	
+	private int findLastTokenPosition(ArrayList<ASTNode> completeUnit){
+		int lastIndex = -1;
+		for(ASTNode node: completeUnit){
+			if(lastIndex == -1){
+				lastIndex = node.getStartPosition() + node.getLength();
+			}
+			else{
+				if(lastIndex < node.getStartPosition() + node.getLength()){
+					lastIndex = node.getStartPosition() + node.getLength();
+				}
+			}
+		}
+		
+		return lastIndex;
 	}
 
 	private SeqMultiset generateSeqMultiset(TokenSequence[] sequences) {
@@ -103,23 +587,75 @@ public class SeqMCIDiff{
 						Token t = seq.getTokens().get(0);
 						
 						if(i != 0){
-							TokenMultiset previousMultiset = (TokenMultiset)(results.get(i-1));
-							Token prevToken = previousMultiset.findToken(t.getCloneInstance());
-							t.setPreviousToken(prevToken);
+							Token prevToken = findPreviousNonEpisolonToken(i, results, t);
+							if(null != prevToken){
+								t.setPreviousToken(prevToken);								
+							}
 						}
 						
 						if(i != results.size()-1){
-							TokenMultiset postMultiset = (TokenMultiset)(results.get(i+1));
-							Token postToken = postMultiset.findToken(t.getCloneInstance());
-							t.setPostToken(postToken);
-							
-							t.setStartPosition(postToken.getStartPosition());
-							t.setEndPosition(postToken.getStartPosition());	
+							Token postToken = findPostNonEpisolonToken(i, results, t);
+							if(null != postToken){
+								t.setPostToken(postToken);
+								
+								t.setStartPosition(postToken.getStartPosition());
+								t.setEndPosition(postToken.getStartPosition());	
+							}
 						}
 					}
 					
 				}
 			}
 		}
+	}
+
+	private Token findPostNonEpisolonToken(int index,
+			ArrayList<? extends Multiset> results, Token episolonToken) {
+		int cursor = index+1;
+		while(cursor < results.size()){
+			Multiset postSet = results.get(cursor);
+			if(postSet instanceof TokenMultiset){
+				Token postToken = ((TokenMultiset)postSet).findToken(episolonToken.getCloneInstance());
+				if(!postToken.isEpisolon()){
+					return postToken;
+				}
+				cursor++;				
+			}
+			else if(postSet instanceof SeqMultiset){
+				TokenSeq postSeq = ((SeqMultiset)postSet).findTokenSeqByCloneInstance(episolonToken.getCloneInstance());
+				if(!postSeq.isEpisolonTokenSeq()){
+					return postSeq.getTokens().get(0);
+				}
+				cursor++;	
+			}
+		}
+		
+		return null;
+	}
+
+	private Token findPreviousNonEpisolonToken(int index,
+			ArrayList<? extends Multiset> results, Token episolonToken) {
+		int cursor = index-1;
+		while(cursor >= 0){
+			Multiset prevSet = results.get(cursor);
+			if(prevSet instanceof TokenMultiset){
+				Token previousToken = ((TokenMultiset)prevSet).findToken(episolonToken.getCloneInstance());
+				if(!previousToken.isEpisolon()){
+					return previousToken;
+				}
+				cursor--;				
+			}
+			else if(prevSet instanceof SeqMultiset){
+				TokenSeq previousSeq = ((SeqMultiset)prevSet).findTokenSeqByCloneInstance(episolonToken.getCloneInstance());
+				if(!previousSeq.isEpisolonTokenSeq()){
+					int size = previousSeq.getTokens().size();
+					return previousSeq.getTokens().get(size-1);
+				}
+				cursor--;	
+			}
+			
+		}
+		
+		return null;
 	}
 }

@@ -3,7 +3,7 @@ package mcidiff.main;
 import java.util.ArrayList;
 
 import mcidiff.action.Tokenizer;
-import mcidiff.comparator.MultisetPositionComparator;
+import mcidiff.comparator.TokenMultisetPositionComparator;
 import mcidiff.model.CloneInstance;
 import mcidiff.model.CloneSet;
 import mcidiff.model.CorrespondentListAndSet;
@@ -33,7 +33,7 @@ public class TokenMCIDiff{
 		TokenSequence[] sequences = MCIDiffUtil.transferToModel(set);
 		ArrayList<TokenMultiset> results = computeDiff(cls, sequences);
 		
-		ASTUtil.sort(results, new MultisetPositionComparator(results));
+		ASTUtil.sort(results, new TokenMultisetPositionComparator(results));
 		identifyEpsilonTokenPosition(results);
 		
 		MCIDiffUtil.filterCommonSet(results);

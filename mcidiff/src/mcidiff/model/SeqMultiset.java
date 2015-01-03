@@ -10,6 +10,11 @@ public class SeqMultiset extends Multiset{
 		return this.sequences.toString();
 	}
 	
+	public TokenSeq findTokenSeqByCloneInstance(CloneInstance cloneInstance){
+		return findTokenSeqByCloneInstance(cloneInstance.getFileName(), 
+				cloneInstance.getStartLine(), cloneInstance.getEndLine());
+	}
+	
 	public TokenSeq findTokenSeqByCloneInstance(String fileName, int startLine, int endLine){
 		for(TokenSeq seq: getSequences()){
 			CloneInstance ins = seq.getCloneInstance();

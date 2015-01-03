@@ -7,10 +7,10 @@ import mcidiff.model.CloneInstance;
 import mcidiff.model.TokenMultiset;
 import mcidiff.model.Token;
 
-public class MultisetPositionComparator implements Comparator<TokenMultiset>{
+public class TokenMultisetPositionComparator implements Comparator<TokenMultiset>{
 	private ArrayList<TokenMultiset> list;
 	
-	public MultisetPositionComparator(ArrayList<TokenMultiset> list){
+	public TokenMultisetPositionComparator(ArrayList<TokenMultiset> list){
 		this.list = list;
 	}
 	

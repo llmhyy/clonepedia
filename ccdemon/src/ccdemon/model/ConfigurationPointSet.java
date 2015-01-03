@@ -96,6 +96,10 @@ public class ConfigurationPointSet {
 		this.startPositionInPastedFile = startPositionInPastedFile;
 	}
 	
+	/**
+	 * identify environmental and rule-based candidates; in addition, the method will also rank them.
+	 * @param referrableCloneSets
+	 */
 	public void prepareForInstallation(ArrayList<ReferrableCloneSet> referrableCloneSets){
 		
 		expandEnvironmentBasedCandidates(this.configurationPoints);

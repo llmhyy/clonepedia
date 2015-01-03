@@ -22,6 +22,16 @@ import org.eclipse.ui.editors.text.TextFileDocumentProvider;
 public class TokenSeq {
 	private ArrayList<Token> tokens = new ArrayList<>();
 	private String text;
+	
+	private boolean isMarked = false;
+	
+	public static TokenSeq createEpisolonTokenSeq(CloneInstance cloneInstance){
+		Token episolonToken = new Token(Token.episolonSymbol, null, cloneInstance, -1, -1);
+		TokenSeq episolonTokenSeq = new TokenSeq();
+		episolonTokenSeq.addToken(episolonToken);
+		
+		return episolonTokenSeq;
+	}
 
 	@Override
 	public String toString(){
@@ -77,6 +87,20 @@ public class TokenSeq {
 		}
 	}
 	
+	/**
+	 * @return the isMarked
+	 */
+	public boolean isMarked() {
+		return isMarked;
+	}
+
+	/**
+	 * @param isMarked the isMarked to set
+	 */
+	public void setMarked(boolean isMarked) {
+		this.isMarked = isMarked;
+	}
+
 	public String getText(){
 		return text;
 	}

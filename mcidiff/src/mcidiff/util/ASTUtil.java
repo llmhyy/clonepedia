@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-import mcidiff.model.TokenMultiset;
-
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -115,13 +113,14 @@ public class ASTUtil {
 		return cu;
 	}
 	
-	public static void sort(ArrayList<TokenMultiset> list, Comparator<TokenMultiset> comparator){
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static void sort(ArrayList list, Comparator comparator){
 		for(int i=0; i<list.size(); i++){
 			int targetPosition = list.size()-i-1;
 			int replacePosition = 0;
 			for(int j=1; j<=targetPosition; j++){
-				TokenMultiset targetingSet = list.get(j);
-				TokenMultiset replacingSet = list.get(replacePosition);
+				Object targetingSet = list.get(j);
+				Object replacingSet = list.get(replacePosition);
 				
 //				if(list.get(replacePosition).toString().contains("(") && targetingSet.toString().contains("name")){
 //					System.currentTimeMillis();
@@ -138,7 +137,7 @@ public class ASTUtil {
 			
 			//System.out.println(list.get(replacePosition));
 			
-			TokenMultiset tmp = list.get(replacePosition);
+			Object tmp = list.get(replacePosition);
 			list.set(replacePosition, list.get(targetPosition));
 			list.set(targetPosition, tmp);
 		}
