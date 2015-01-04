@@ -22,7 +22,7 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 
 public class SeqMCIDiff{
 	
-	public ArrayList<? extends Multiset> diff(CloneSet set, IJavaProject project){
+	public ArrayList<SeqMultiset> diff(CloneSet set, IJavaProject project){
 		
 		new Tokenizer().tokenize(set, project);
 		
@@ -38,10 +38,23 @@ public class SeqMCIDiff{
 		
 		MCIDiffUtil.filterCommonSet(results);
 		
+		ArrayList<SeqMultiset> seqResults = transferSeqMultiset(results);
+		computeText(seqResults);
 		
 		System.currentTimeMillis();
 		
-		return results;
+		return seqResults;
+	}
+	
+	private ArrayList<SeqMultiset> transferSeqMultiset(ArrayList<? extends Multiset> results){
+		ArrayList<SeqMultiset> sets = new ArrayList<>();
+		
+		for(Multiset multiset: results){
+			SeqMultiset set = (SeqMultiset)multiset;
+			sets.add(set);
+		}
+		
+		return sets;
 	}
 
 	/**
@@ -208,8 +221,6 @@ public class SeqMCIDiff{
 		}
 		
 		ArrayList<SeqMultiset> multisets = matchRanges(lists, tokenMultisets);
-		
-		computeText(multisets);
 		
 		return multisets;
 	}
