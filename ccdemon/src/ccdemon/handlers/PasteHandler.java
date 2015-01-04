@@ -154,8 +154,7 @@ public class PasteHandler extends AbstractHandler {
 			
 			IJavaProject proj = CCDemonUtil.retrieveWorkingJavaProject();
 			
-			@SuppressWarnings("unchecked")
-			ArrayList<SeqMultiset> diffList = (ArrayList<SeqMultiset>) diff.diff(set, proj);
+			ArrayList<SeqMultiset> diffList = diff.diff(set, proj);
 
 			ArrayList<ConfigurationPoint> configurationPoints = 
 					constructConfigurationPoints(rcs.getReferredCloneInstance(), diffList);
