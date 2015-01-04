@@ -190,7 +190,8 @@ public class SeqMCIDiff{
 					ArrayList<ASTNode> completeUnit = csVisitor.getCompleteSyntacticUnits();
 					
 					if(completeUnit.size() == 0){
-						list.add(seq);
+						ArrayList<TokenSeq> seqList = trySplitingByDelimiter(seq);
+						list.addAll(seqList);
 					}
 					else{
 						ArrayList<TokenSeq> seqList = generateSeparateRanges(seq, completeUnit);
@@ -213,6 +214,36 @@ public class SeqMCIDiff{
 		return multisets;
 	}
 	
+	private ArrayList<TokenSeq> trySplitingByDelimiter(TokenSeq seq) {
+		int splitIndex = -1;
+		for(int i=0; i<seq.size(); i++){
+			Token t = seq.getTokens().get(i);
+			if(t.getTokenName().equals(";")){
+				splitIndex = i;
+			}
+		}
+		
+		ArrayList<TokenSeq> list = new ArrayList<TokenSeq>();
+		if(splitIndex == -1){
+			list.add(seq);
+		}
+		else{
+			TokenSeq preSeq = new TokenSeq();
+			for(int i=0; i<=splitIndex; i++){
+				preSeq.addToken(seq.getTokens().get(i));
+			}
+			list.add(preSeq);
+			
+			TokenSeq postSeq = new TokenSeq();
+			for(int i=splitIndex+1; i<seq.size(); i++){
+				postSeq.addToken(seq.getTokens().get(i));
+			}
+			list.add(postSeq);
+		}
+		
+		return list;
+	}
+
 	private void computeText(ArrayList<SeqMultiset> multisets){
 		for(SeqMultiset set: multisets){
 			for(TokenSeq seq: set.getSequences()){
