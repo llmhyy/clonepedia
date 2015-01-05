@@ -52,7 +52,7 @@ public class CustomLinkedModeUIFocusListener implements
 			e.printStackTrace();
 		}
 		currentPoint.setCurrentValue(currentContent);
-		
+		 
 		
 		ArrayList<ConfigurationPoint> configurationPoints = configurationPointSet.getConfigurationPoints();
 		if(currentContent.length() != formerContent.length()){
