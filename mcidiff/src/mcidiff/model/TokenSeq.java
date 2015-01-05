@@ -9,6 +9,9 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.editors.text.TextFileDocumentProvider;
@@ -188,5 +191,40 @@ public class TokenSeq {
 		}
 		
 		return -1;
+	}
+	
+	public class SyntaxCheck extends ASTVisitor{
+		private boolean isComplete = false;
+		
+		@Override
+		public void preVisit(ASTNode node){
+			int nodeStart = node.getStartPosition();
+			int nodeEnd = nodeStart + node.getLength();
+			
+			if(nodeStart == getStartPosition() && nodeEnd == getEndPosition()){
+				isComplete = true;
+			}
+		}
+
+		/**
+		 * @return the isComplete
+		 */
+		public boolean isComplete() {
+			return isComplete;
+		}
+	}
+
+	public boolean isSyntaxComplete() {
+		if(this.tokens.size() >= 2){
+			Token firstToken = this.tokens.get(0);
+			CompilationUnit cu = (CompilationUnit) firstToken.getNode().getRoot();
+			
+			SyntaxCheck checker = new SyntaxCheck();
+			cu.accept(checker);
+			
+			return checker.isComplete();
+		}
+		
+		return true;
 	}
 }

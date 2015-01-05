@@ -14,6 +14,7 @@ import mcidiff.model.TokenMultiset;
 import mcidiff.model.TokenSeq;
 import mcidiff.util.ASTUtil;
 import mcidiff.util.DiffUtil;
+import mcidiff.util.GlobalSettings;
 
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -30,7 +31,7 @@ public class SeqMCIDiff{
 		CorrespondentListAndSet cls = DiffUtil.generateMatchedTokenListFromMultiSequence(lists);
 		
 		TokenSequence[] sequences = MCIDiffUtil.transferToModel(set);
-		ArrayList<? extends Multiset> results = computeDiff(cls, sequences);
+		ArrayList<Multiset> results = computeDiff(cls, sequences);
 		
 		results = mergeDiffRanges(results);
 		
@@ -46,7 +47,7 @@ public class SeqMCIDiff{
 		return seqResults;
 	}
 	
-	private ArrayList<SeqMultiset> transferSeqMultiset(ArrayList<? extends Multiset> results){
+	private ArrayList<SeqMultiset> transferSeqMultiset(ArrayList<Multiset> results){
 		ArrayList<SeqMultiset> sets = new ArrayList<>();
 		
 		for(Multiset multiset: results){
@@ -62,9 +63,126 @@ public class SeqMCIDiff{
 	 * @param results
 	 * @return
 	 */
-	private ArrayList<? extends Multiset> mergeDiffRanges(ArrayList<? extends Multiset> results) {
-		// TODO Auto-generated method stub
+	private ArrayList<Multiset> mergeDiffRanges(ArrayList<Multiset> results) {
+		int preIndex = findSeqMultisetByOrder(results, -1);
+		int postIndex = findSeqMultisetByOrder(results, preIndex);
+		
+		if(preIndex != -1 && postIndex != -1){
+			while(postIndex != -1){
+				if(postIndex-preIndex == GlobalSettings.tokenGapForMergeDiffRange+1){
+					ArrayList<Multiset> candidateMultisetList = new ArrayList<>();
+					for(int i=preIndex; i<=postIndex; i++){
+						candidateMultisetList.add(results.get(i));
+					}
+					
+					SeqMultiset seqMultiset = tryMergeMultipleMultisets(candidateMultisetList);
+					
+					if(seqMultiset != null){
+						//adjust the array list to merge
+						results.set(preIndex, seqMultiset);
+						int offset = GlobalSettings.tokenGapForMergeDiffRange + 1;
+						for(int i=preIndex+1; i<results.size()-offset; i++){
+							results.set(i, results.get(i+offset));
+						}
+						
+						for(int k=0; k<offset; k++){
+							results.remove(results.size()-1-k);
+						}
+						
+						preIndex = findSeqMultisetByOrder(results, preIndex);
+						postIndex = findSeqMultisetByOrder(results, preIndex);
+					}
+					else{
+						preIndex = findSeqMultisetByOrder(results, preIndex);
+						postIndex = findSeqMultisetByOrder(results, preIndex);
+					}
+				}
+				else{
+					preIndex = postIndex;
+					postIndex = findSeqMultisetByOrder(results, postIndex);
+				}
+			}
+		}
+		
 		return results;
+	}
+
+	/**
+	 * precondition: {@code candidateMultisetList} is in correct order.
+	 * 
+	 * try merge the candidate multiset list, if it is not syntax complete, return null. Otherwise,
+	 * this method returns a merged sequence multiset.
+	 * 
+	 * @param candidateMultiset
+	 * @return
+	 */
+	private SeqMultiset tryMergeMultipleMultisets(ArrayList<Multiset> candidateMultisetList) {
+		
+		SeqMultiset newSeqMultiset = new SeqMultiset();
+		
+		SeqMultiset set = (SeqMultiset) candidateMultisetList.get(0);
+		for(TokenSeq seq0: set.getSequences()){
+			CloneInstance instance = seq0.getCloneInstance();
+			
+			TokenSeq newSeq = new TokenSeq();
+			for(Multiset s: candidateMultisetList){
+				if(s instanceof TokenMultiset){
+					TokenMultiset tm = (TokenMultiset)s;
+					Token t = tm.findToken(instance);
+					if(!t.isEpisolon()){
+						newSeq.addToken(t);
+					}
+				}
+				else if(s instanceof SeqMultiset){
+					SeqMultiset seqSet = (SeqMultiset)s;
+					TokenSeq seq = seqSet.findTokenSeqByCloneInstance(instance);
+					if(!seq.isEpisolonTokenSeq()){
+						for(Token t: seq.getTokens()){
+							newSeq.addToken(t);
+						}
+					}
+				}
+			}
+			
+			newSeqMultiset.addTokenSeq(newSeq);
+		}
+		
+		if(isSyntaxComplete(newSeqMultiset)){
+			return newSeqMultiset;
+		}
+		
+		return null;
+	}
+
+	private boolean isSyntaxComplete(SeqMultiset newSeqMultiset) {
+		for(TokenSeq seq: newSeqMultiset.getSequences()){
+			if(!seq.isSyntaxComplete()){
+				return false;
+			}
+		}
+		
+		return true;
+	}
+
+	/**
+	 * Find the first sequence multiset appearing after the {@code index}th multiset.  
+	 * The {@code index}th multiset is not included.
+	 * 
+	 * If not found, return -1.
+	 * 
+	 * @param results
+	 * @param index
+	 * @return
+	 */
+	private int findSeqMultisetByOrder(ArrayList<Multiset> results,
+			int index) {
+		for(int i=index+1; i<results.size(); i++){
+			Multiset set = results.get(i);
+			if(set instanceof SeqMultiset){
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	/**
@@ -76,7 +194,7 @@ public class SeqMCIDiff{
 	 * @param sequences
 	 * @return
 	 */
-	public ArrayList<? extends Multiset> computeDiff(CorrespondentListAndSet cls, TokenSequence[] sequences) {
+	public ArrayList<Multiset> computeDiff(CorrespondentListAndSet cls, TokenSequence[] sequences) {
 		ArrayList<Multiset> seqMultisetList = new ArrayList<>();
 		
 		ArrayList<TokenMultiset> tokenMultisets = new TokenMCIDiff().computeDiff(cls, sequences);
