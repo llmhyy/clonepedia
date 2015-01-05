@@ -100,7 +100,28 @@ public class PasteHandler extends AbstractHandler {
 			ArrayList<RankedProposalPosition> positionList = new ArrayList<>();
 			
 			LinkedModeModel model = new LinkedModeModel();
-			for(ConfigurationPoint cp: cps.getConfigurationPoints()){
+			ArrayList<ConfigurationPoint> configurationPoints = cps.getConfigurationPoints();
+			for(ConfigurationPoint cp: configurationPoints){
+				//handle the bug of adjoining position by inserting a white space
+				int index = configurationPoints.indexOf(cp);
+				if(index + 1 != configurationPoints.size()){
+					int thisEnd = cp.getModifiedTokenSeq().getStartPosition() + cp.getModifiedTokenSeq().getPositionLength();
+					int nextStart = configurationPoints.get(index+1).getModifiedTokenSeq().getStartPosition();
+					if(thisEnd == nextStart){
+						document.replace(thisEnd, 0, " ");
+						
+						for(int i = index + 1; i < configurationPoints.size(); i++){
+							ConfigurationPoint point = configurationPoints.get(i);
+							TokenSeq modifiedTokenSeq = point.getModifiedTokenSeq();
+							ArrayList<Token> tokens = modifiedTokenSeq.getTokens();
+							for(Token token : tokens){
+								token.setStartPosition(token.getStartPosition() + 1);
+								token.setEndPosition(token.getEndPosition() + 1);
+							}
+						}
+					}
+				}
+				
 				LinkedPositionGroup group = new LinkedPositionGroup();
 				RankedCompletionProposal[] proposals = new RankedCompletionProposal[cp.getCandidates().size()]; 
 				RankedProposalPosition position = new RankedProposalPosition(document, cp.getModifiedTokenSeq().getStartPosition(), 
