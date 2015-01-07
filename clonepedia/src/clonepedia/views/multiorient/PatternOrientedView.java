@@ -1,8 +1,6 @@
 package clonepedia.views.multiorient;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -22,7 +20,6 @@ import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
@@ -33,7 +30,6 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.forms.FormColors;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.FormText;
@@ -43,16 +39,12 @@ import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 
 import clonepedia.Activator;
-import clonepedia.model.ontology.CloneSet;
-import clonepedia.model.syntactic.ClonePatternGroup;
-import clonepedia.model.syntactic.PathSequence;
 import clonepedia.model.viewer.ClonePatternGroupCategoryList;
-import clonepedia.model.viewer.PatternGroupCategory;
-import clonepedia.model.viewer.PatternGroupCategoryList;
 import clonepedia.model.viewer.ClonePatternGroupWrapper;
 import clonepedia.model.viewer.CloneSetWrapper;
 import clonepedia.model.viewer.CloneSetWrapperList;
-import clonepedia.model.viewer.IContainer;
+import clonepedia.model.viewer.PatternGroupCategory;
+import clonepedia.model.viewer.PatternGroupCategoryList;
 import clonepedia.model.viewer.TopicWrapper;
 import clonepedia.model.viewer.TopicWrapperList;
 import clonepedia.model.viewer.comparator.AlphabetAscComparator;
@@ -73,7 +65,7 @@ import clonepedia.util.ImageUI;
 import clonepedia.views.dialog.ClonePatternFilteringDialog;
 import clonepedia.views.util.ViewUIUtil;
 
-
+@SuppressWarnings("unchecked")
 public class PatternOrientedView extends MultiOrientedView {
 	
 	 
@@ -521,7 +513,7 @@ public class PatternOrientedView extends MultiOrientedView {
 		section.setExpanded(true);
 		section.setLayout(new TableWrapLayout());
 		
-		ClonePatternGroupWrapper clonePattern = (ClonePatternGroupWrapper)targetObject;
+		//ClonePatternGroupWrapper clonePattern = (ClonePatternGroupWrapper)targetObject;
 		
 		String sectionTitle = "Common Syntactic Context of Clones";
 		/*String sectionTitle = "";
