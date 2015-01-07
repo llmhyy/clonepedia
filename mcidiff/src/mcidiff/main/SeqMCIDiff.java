@@ -362,13 +362,17 @@ public class SeqMCIDiff{
 			for(int i=0; i<=splitIndex; i++){
 				preSeq.addToken(seq.getTokens().get(i));
 			}
-			list.add(preSeq);
+			if(preSeq.size() != 0){
+				list.add(preSeq);				
+			}
 			
 			TokenSeq postSeq = new TokenSeq();
 			for(int i=splitIndex+1; i<seq.size(); i++){
 				postSeq.addToken(seq.getTokens().get(i));
 			}
-			list.add(postSeq);
+			if(postSeq.size() != 0){
+				list.add(postSeq);				
+			}
 		}
 		
 		return list;
