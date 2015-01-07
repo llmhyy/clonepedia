@@ -64,11 +64,12 @@ public class SeqMCIDiff{
 	 * @return
 	 */
 	private ArrayList<Multiset> mergeDiffRanges(ArrayList<Multiset> results) {
+		
 		int preIndex = findSeqMultisetByOrder(results, -1);
 		int postIndex = findSeqMultisetByOrder(results, preIndex);
 		
 		if(preIndex != -1 && postIndex != -1){
-			while(postIndex != -1){
+			while(postIndex != -1 && preIndex != -1){
 				if(postIndex-preIndex == GlobalSettings.tokenGapForMergeDiffRange+1){
 					ArrayList<Multiset> candidateMultisetList = new ArrayList<>();
 					for(int i=preIndex; i<=postIndex; i++){
