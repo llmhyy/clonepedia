@@ -158,6 +158,7 @@ public class PatternOrientedView extends MultiOrientedView {
 		try {
 			clonePatternCategories = (ClonePatternGroupCategoryList)SummaryUtil.generateClonePatternSimplifiedCategories(Activator.getCloneSets().getCloneList());
 			for(PatternGroupCategory category: clonePatternCategories){
+				//category.constructProgrammingElementHierarchy();
 				Collections.sort(category.getPatternList(), new DefaultValueDescComparator());
 			}
 		} catch (Exception e) {
