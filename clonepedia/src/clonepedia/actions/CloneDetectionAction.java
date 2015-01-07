@@ -3,6 +3,9 @@ package clonepedia.actions;
 import java.io.File;
 import java.util.ArrayList;
 
+import mcidiff.main.SeqMCIDiff;
+import mcidiff.model.SeqMultiset;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -112,6 +115,29 @@ public class CloneDetectionAction implements IWorkbenchWindowActionDelegate {
 				SimilarityGroup[] simGroups = manager.getSimilarityGroups();
 				
 				CloneSets sets = convertToCloneSets(simGroups);
+				
+				//for collecting test data
+				SeqMCIDiff mcidiff = new SeqMCIDiff();
+				ArrayList<CloneSet> toRemove = new ArrayList<CloneSet>();
+				for(CloneSet set : sets.getCloneList()){
+					if(set.size()<3 || set.size()>8){
+						toRemove.add(set);
+					}else{
+						mcidiff.model.CloneSet diffset = new mcidiff.model.CloneSet();
+						for(CloneInstance ins : set){
+							mcidiff.model.CloneInstance diffins = new mcidiff.model.CloneInstance(diffset, ins.getFileLocation(), ins.getStartLine(), ins.getEndLine());
+							diffset.addInstance(diffins);
+						}
+						ArrayList<SeqMultiset> diffList = mcidiff.diff(diffset, JavaCore.create(proj));
+						if(diffList.size() == 0){
+							toRemove.add(set);
+						}
+					}
+				}
+				sets.getCloneList().removeAll(toRemove);
+				System.out.println("----------------------------------------------------------------------------------------------");
+				System.out.println("Project:" + proj.getName() + ", clone set size:" + sets.getCloneList().size());
+				System.out.println("----------------------------------------------------------------------------------------------");
 				
 				CloneDetectionFileWriter writer = new CloneDetectionFileWriter();
 				writer.writeToXML(sets);
