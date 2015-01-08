@@ -97,12 +97,18 @@ public class DiffUtil {
 		
 		TokenSimilarityComparator sc = new TokenSimilarityComparator(); 
 		
-		int[][] commonLengthTable = buildLeveshteinTable(commonTokenList, tokenList2, new DefaultComparator());
 		double[][] scoreTable = buildScoreTable(commonTokenList, tokenList2, sc);
 
-		int commonLength = commonLengthTable[commonTokenList.length][tokenList2.length];
-		Token[] commonList = new Token[commonLength];
-		TokenMultiset[] setList = new TokenMultiset[commonLength];
+		/**
+		 * let the length be an arbitary length, which much be greater equal than the real common length.
+		 */
+		int commonLength = commonTokenList.length;
+		ArrayList<Token> commonList = new ArrayList<>();
+		ArrayList<TokenMultiset> setList = new ArrayList<>();
+		for(int i=0; i<commonLength; i++){
+			commonList.add(null);
+			setList.add(null);
+		}
 
 		for (int k = commonLength - 1, i = commonTokenList.length, j = tokenList2.length; (i > 0 && j > 0);) {
 			if (commonTokenList[i - 1].equals(tokenList2[j - 1])) {
@@ -110,12 +116,12 @@ public class DiffUtil {
 				double increase = scoreTable[i][j]-scoreTable[i-1][j-1];
 				
 				if(Math.abs(sim - increase) < 0.01){
-					commonList[k] = commonTokenList[i - 1];
+					commonList.set(k, commonTokenList[i - 1]);
 					
 					TokenMultiset set = new TokenMultiset();
 					set.addAll(multisetList[i - 1]);
 					set.add(tokenList2[j - 1]);
-					setList[k] = set;
+					setList.set(k, set);
 					
 					k--;
 					i--;
@@ -140,8 +146,15 @@ public class DiffUtil {
 			}
 		}
 
-		System.currentTimeMillis();
-		return new CorrespondentListAndSet(setList, commonList);
+		/**
+		 * remove the extra length
+		 */
+		while(commonList.get(0) == null){
+			commonList.remove(0);
+			setList.remove(0);
+		}
+		
+		return new CorrespondentListAndSet(setList.toArray(new TokenMultiset[0]), commonList.toArray(new Token[0]));
 	}
 	
 	private static double[][] buildScoreTable(Token[] tokenList1, Token[] tokenList2, TokenSimilarityComparator comparator){
