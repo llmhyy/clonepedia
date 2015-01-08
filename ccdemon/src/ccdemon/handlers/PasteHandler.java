@@ -14,6 +14,8 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IPackageFragment;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.ToolFactory;
@@ -23,6 +25,8 @@ import org.eclipse.jdt.core.compiler.InvalidInputException;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.internal.core.JarPackageFragmentRoot;
+import org.eclipse.jdt.internal.core.PackageFragmentRoot;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextOperationTarget;
@@ -197,21 +201,43 @@ public class PasteHandler extends AbstractHandler {
 		return new ConfigurationPointSet();
 	}
 	
+	@SuppressWarnings("restriction")
 	private CompilationUnit retrieveCompilationUnitFromPastedFile(ExecutionEvent pastedEvent, IJavaProject proj){
 		AbstractTextEditor activeEditor = (AbstractTextEditor) HandlerUtil.getActiveEditor(pastedEvent);
 		FileEditorInput fileInput = (FileEditorInput) activeEditor.getEditorInput();
 		
-		IPath iPath = fileInput.getFile().getProjectRelativePath();
+		IPath iPath = fileInput.getFile().getFullPath();
 		String path = iPath.toOSString();
-//		int startIndex = path.indexOf("\\", path.indexOf(proj.getProject().getName()));
-//		path = path.substring(startIndex, path.length());
 		path = path.substring(0, path.lastIndexOf(iPath.getFileExtension())-1);
-//		
-//		String packRoot = path.substring(1, path.indexOf("\\", 1));
-		//filter out the package root
-		String className = path.substring(path.indexOf("\\")+1, path.length());
-		className = className.replace("\\", ".");
+		String className = null;
 		try {
+			int slashCount = 0;
+			String maxPack = null; 
+			for(IPackageFragmentRoot root : proj.getAllPackageFragmentRoots()){
+				if(root instanceof PackageFragmentRoot && !(root instanceof JarPackageFragmentRoot)){
+					PackageFragmentRoot pack = (PackageFragmentRoot) root;
+					String packString = pack.getPath().toOSString();
+					if(path.contains(packString)){
+						int count = 0;
+						for(int i = 0; i < packString.length(); i++){
+							if(packString.charAt(i) == '\\'){
+								count++;
+							}
+						}
+						if(count > slashCount){
+							slashCount = count;
+							maxPack = packString;
+						}
+					}
+				}
+			}
+			if(slashCount == 0){
+				className = path.substring(path.indexOf("\\")+1, path.length());
+			}else{
+				className = path.substring(maxPack.length()+1, path.length());
+			}
+			className = className.replace("\\", ".");
+			
 			IType type = proj.findType(className);
 			ICompilationUnit iunit = type.getCompilationUnit();
 			
