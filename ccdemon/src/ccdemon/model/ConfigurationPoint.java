@@ -167,10 +167,28 @@ public class ConfigurationPoint {
 			double freq = occurrence/seqMultiset.getSize();
 			entropy += -1 * freq * Math.log(freq);
 			
+			/**
+			 * transfer some special token, in this case, "else" need an extra while space.
+			 */
+			String text = seq.getText();
+			text = transferTextAccordingHeuristicRule(text);
+			seq.setText(text);
+			
 			Candidate candidate = new Candidate(seq.getText(), 0, Candidate.HISTORY, this);
 			candidates.add(candidate);
 		}
 		setHistoryEntropy(entropy);
+	}
+	
+	/**
+	 * transfer some special token, in this case, "else" need an extra while space.
+	 */
+	private String transferTextAccordingHeuristicRule(String text){
+		if(text.equals("else")){
+			text += " ";
+			return text;
+		}
+		return text;
 	}
 	
 	public int findHistoryCandidateOccurenceNumber(String candidateText){
