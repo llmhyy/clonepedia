@@ -130,10 +130,15 @@ public class ConfigurationPointSet {
 			ContextContent content = parseContextPoint(instance);	
 			
 			String typeName = content.getTypeDeclaration().getName().getIdentifier();
-			String methodName = content.getMethodDeclaration().getName().getIdentifier();
-			
 			typeNameItem.addNameInstance(new NameInstance(typeName, true));
-			methodNameItem.addNameInstance(new NameInstance(methodName, true));
+			
+			if(content.getMethodDeclaration() != null){
+				String methodName = content.getMethodDeclaration().getName().getIdentifier();			
+				methodNameItem.addNameInstance(new NameInstance(methodName, true));				
+			}
+			else{
+				methodNameItem.addNameInstance(new NameInstance("", true));
+			}
 			
 			for(int i=0; i<configurationPoints.size(); i++){
 				ConfigurationPoint point = configurationPoints.get(i);
