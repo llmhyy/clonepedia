@@ -14,7 +14,6 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
@@ -52,6 +51,7 @@ import clonepedia.model.ontology.CloneInstance;
 import clonepedia.model.ontology.CloneSets;
 
 
+@SuppressWarnings("restriction")
 public class PasteHandler extends AbstractHandler {
 
 	@Override
@@ -201,7 +201,6 @@ public class PasteHandler extends AbstractHandler {
 		return new ConfigurationPointSet();
 	}
 	
-	@SuppressWarnings("restriction")
 	private CompilationUnit retrieveCompilationUnitFromPastedFile(ExecutionEvent pastedEvent, IJavaProject proj){
 		AbstractTextEditor activeEditor = (AbstractTextEditor) HandlerUtil.getActiveEditor(pastedEvent);
 		FileEditorInput fileInput = (FileEditorInput) activeEditor.getEditorInput();
