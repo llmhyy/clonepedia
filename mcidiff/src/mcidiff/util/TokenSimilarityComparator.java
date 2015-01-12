@@ -18,15 +18,34 @@ public class TokenSimilarityComparator{
 			
 			
 			double textualSim = computeNodeSim(token1.getNode(), token2.getNode());
-			double contextualSim = computeNodeSim(node1.getParent(), node2.getParent());
+			
+			double contextualSim = textualSim;
+			
+			if(!isGodParent(node1) && !isGodParent(node2)){
+				contextualSim = computeNodeSim(node1.getParent(), node2.getParent());
+			}
+			
 			double positionSim = 1-Math.abs(token1.getRelativePositionRatio() - token2.getRelativePositionRatio());
 			
 			//double avgWeight = (1.0)/3;
-			return 0.8*contextualSim + 0.1*textualSim + 0.1*positionSim;
+			return 0.5*contextualSim + 0.1*textualSim + 0.4*positionSim;
 		}
 		
 		return 0;
 	};	
+	
+	private boolean isGodParent(ASTNode child){
+		ASTNode parent = child.getParent();
+		if(parent == null){
+			return true;
+		}
+		else{
+			int parentLen = parent.getLength();
+			int childLen = child.getLength();
+		
+			return parentLen > GlobalSettings.godParentRatio*childLen;
+		}
+	}
 	
 	private double computeNodeSim(ASTNode node1, ASTNode node2){
 		if(node1 == null || node2 == null){
