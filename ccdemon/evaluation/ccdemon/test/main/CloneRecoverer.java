@@ -101,7 +101,7 @@ public class CloneRecoverer {
 							constructPartialConfigurationPoints(sourceInstance, targetInstance, matchableDiffs);
 					ArrayList<ConfigurationPoint> pointList = wrapperList.getConfigurationPoints();
 					
-					ConfigurationPointSet cps = identifyConfigurationPointSet(proj, 
+					ConfigurationPointSet cps = identifyPartialConfigurationPointSet(proj, 
 							pointList, targetInstance, sourceInstance, set);
 					
 					CollectedData data = simulate(cps, wrapperList);
@@ -194,7 +194,7 @@ public class CloneRecoverer {
 		return tokenList;
 	}
 
-	private ConfigurationPointSet identifyConfigurationPointSet(IJavaProject proj, ArrayList<ConfigurationPoint> pointList,
+	private ConfigurationPointSet identifyPartialConfigurationPointSet(IJavaProject proj, ArrayList<ConfigurationPoint> pointList,
 			CloneInstance targetInstance, CloneInstance sourceInstance, CloneSet set){
 		CompilationUnit cu = findCompilationUnitOfTargetInstance(proj, targetInstance);
 		int startPosition = cu.getPosition(targetInstance.getStartLine(), 0);
