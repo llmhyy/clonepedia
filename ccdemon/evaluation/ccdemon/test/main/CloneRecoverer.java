@@ -98,7 +98,7 @@ public class CloneRecoverer {
 					}
 
 					CPWrapperList wrapperList = 
-							constructConfigurationPoints(sourceInstance, targetInstance, matchableDiffs);
+							constructPartialConfigurationPoints(sourceInstance, targetInstance, matchableDiffs);
 					ArrayList<ConfigurationPoint> pointList = wrapperList.getConfigurationPoints();
 					
 					ConfigurationPointSet cps = identifyConfigurationPointSet(proj, 
@@ -255,7 +255,7 @@ public class CloneRecoverer {
 	 * @param diffList
 	 * @return
 	 */
-	private CPWrapperList constructConfigurationPoints(
+	private CPWrapperList constructPartialConfigurationPoints(
 			CloneInstance sourceInstance, CloneInstance targetInstance, ArrayList<SeqMultiset> diffList) {
 		ArrayList<CPWrapper> cpList = new ArrayList<>();
 		for(SeqMultiset multiset: diffList){
