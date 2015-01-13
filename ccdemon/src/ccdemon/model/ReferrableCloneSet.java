@@ -6,6 +6,9 @@ import mcidiff.model.CloneSet;
 
 public class ReferrableCloneSet {
 	private CloneSet cloneSet;
+	/**
+	 * copied clone instance
+	 */
 	private CloneInstance referredCloneInstance;
 	
 	
