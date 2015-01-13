@@ -3,7 +3,14 @@ package mcidiff.model;
 import java.util.ArrayList;
 
 public class CloneSet {
+	
+	private ArrayList<CloneInstance> instances = new ArrayList<>();
 	private String id;
+	
+	public CloneSet(String id){
+		this.id = id;
+	}
+	
 	/**
 	 * @return the id
 	 */
@@ -17,8 +24,6 @@ public class CloneSet {
 	public void setId(String id) {
 		this.id = id;
 	}
-
-	private ArrayList<CloneInstance> instances = new ArrayList<>();
 
 	public void addInstance(CloneInstance instance){
 		this.instances.add(instance);

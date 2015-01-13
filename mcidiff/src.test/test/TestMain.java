@@ -16,7 +16,7 @@ public class TestMain {
 		CloneInstance instance2 = new CloneInstance(path2, 18, 23);
 		CloneInstance instance3 = new CloneInstance(path3, 18, 23);
 		
-		CloneSet set = new CloneSet();
+		CloneSet set = new CloneSet("0");
 		set.addInstance(instance1);
 		set.addInstance(instance2);
 		set.addInstance(instance3);
