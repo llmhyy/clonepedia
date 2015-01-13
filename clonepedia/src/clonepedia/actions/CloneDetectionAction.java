@@ -1,6 +1,5 @@
 package clonepedia.actions;
 
-import java.io.File;
 import java.util.ArrayList;
 
 import mcidiff.main.SeqMCIDiff;
@@ -29,7 +28,6 @@ import org.eposoft.jccd.data.ASourceUnit;
 import org.eposoft.jccd.data.JCCDFile;
 import org.eposoft.jccd.data.SimilarityGroup;
 import org.eposoft.jccd.data.SimilarityGroupManager;
-import org.eposoft.jccd.data.SimilarityPair;
 import org.eposoft.jccd.data.SourceUnitPosition;
 import org.eposoft.jccd.data.ast.ANode;
 import org.eposoft.jccd.data.ast.NodeTypes;
@@ -123,7 +121,7 @@ public class CloneDetectionAction implements IWorkbenchWindowActionDelegate {
 					if(set.size()<3 || set.size()>8){
 						toRemove.add(set);
 					}else{
-						mcidiff.model.CloneSet diffset = new mcidiff.model.CloneSet();
+						mcidiff.model.CloneSet diffset = new mcidiff.model.CloneSet(set.getId());
 						for(CloneInstance ins : set){
 							mcidiff.model.CloneInstance diffins = new mcidiff.model.CloneInstance(diffset, ins.getFileLocation(), ins.getStartLine(), ins.getEndLine());
 							diffset.addInstance(diffins);

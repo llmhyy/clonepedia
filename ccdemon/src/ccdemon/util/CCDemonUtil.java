@@ -129,8 +129,7 @@ public class CCDemonUtil {
 	}
 	
 	public static mcidiff.model.CloneSet adaptMCIDiffModel(clonepedia.model.ontology.CloneSet set0) {
-		mcidiff.model.CloneSet set = new mcidiff.model.CloneSet();
-		set.setId(set0.getId());
+		mcidiff.model.CloneSet set = new mcidiff.model.CloneSet(set0.getId());
 		for(clonepedia.model.ontology.CloneInstance ins: set0){
 			mcidiff.model.CloneInstance instance = 
 					new CloneInstance(set, ins.getFileLocation(), ins.getStartLine(), ins.getEndLine());
