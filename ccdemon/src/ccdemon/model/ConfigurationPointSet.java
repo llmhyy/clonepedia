@@ -349,6 +349,10 @@ public class ConfigurationPointSet {
 		}
 		
 		public boolean visit(FieldDeclaration field){
+			//avoid finding field appears in the pasted code fragment
+			if(field.getStartPosition() > startPositionInPastedFile){
+				return false;
+			}
 			if(types.contains(field.getType().resolveBinding().getQualifiedName())){
 				//don't add the just pasted variable in, otherwise will cause duplication
 				String fieldName = ((VariableDeclarationFragment)field.fragments().get(0)).getName().toString();

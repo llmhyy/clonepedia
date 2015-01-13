@@ -20,6 +20,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.Statement;
 
 public class SeqMCIDiff{
 	
@@ -242,6 +243,11 @@ public class SeqMCIDiff{
 		
 		@Override
 		public void preVisit(ASTNode node){
+			
+			if(!(node instanceof Statement)){
+				return;
+			}
+			
 			int startPosition = this.seq.getStartPosition();
 			int endPosition = this.seq.getEndPosition();
 			/**
@@ -494,7 +500,7 @@ public class SeqMCIDiff{
 			if(!otherSeq.isMarked()){
 				
 				double sim = computeTokenSeqSimilarity(seq, otherSeq, tokenMultisets);
-				if(sim > 0){
+				if(sim >= 0){
 					if(bestSeq == null){
 						bestSeq = otherSeq;
 						bestSim = sim;

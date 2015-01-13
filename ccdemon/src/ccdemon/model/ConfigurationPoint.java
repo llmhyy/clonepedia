@@ -184,7 +184,7 @@ public class ConfigurationPoint {
 	 * transfer some special token, in this case, "else" need an extra while space.
 	 */
 	private String transferTextAccordingHeuristicRule(String text){
-		if(text.equals("else")){
+		if(text.endsWith("else")){
 			text += " ";
 			return text;
 		}
