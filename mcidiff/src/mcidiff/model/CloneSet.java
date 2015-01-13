@@ -57,4 +57,8 @@ public class CloneSet {
 		}
 		return lists;
 	}
+	
+	public int size(){
+		return this.instances.size();
+	}
 }

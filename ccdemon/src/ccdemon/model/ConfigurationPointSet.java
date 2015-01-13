@@ -250,14 +250,14 @@ public class ConfigurationPointSet {
 	private OccurrenceTable constructCandidateOccurrences(ArrayList<ReferrableCloneSet> referrableCloneSets) {
 		ReferrableCloneSet rcs = referrableCloneSets.get(0);
 		String[][] occurrenceTable = new String[rcs.getCloneSet().size()][configurationPoints.size()];
-		clonepedia.model.ontology.CloneInstance[] instanceArray = rcs.getCloneSet().toArray(new clonepedia.model.ontology.CloneInstance[0]);
+		CloneInstance[] instanceArray = rcs.getCloneSet().getInstances().toArray(new CloneInstance[0]);
 		
 		for(int i=0; i<instanceArray.length; i++){
-			clonepedia.model.ontology.CloneInstance instance = instanceArray[i];
+			CloneInstance instance = instanceArray[i];
 			
 			for(int j=0; j<configurationPoints.size(); j++){
 				ConfigurationPoint cp = configurationPoints.get(j);
-				TokenSeq tokenSeq = cp.getSeqMultiset().findTokenSeqByCloneInstance(instance.getFileLocation(), 
+				TokenSeq tokenSeq = cp.getSeqMultiset().findTokenSeqByCloneInstance(instance.getFileName(), 
 						instance.getStartLine(), instance.getEndLine());
 				if(tokenSeq != null){
 					occurrenceTable[i][j] = tokenSeq.getText();

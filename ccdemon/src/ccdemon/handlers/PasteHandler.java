@@ -47,7 +47,6 @@ import ccdemon.ui.RankedCompletionProposal;
 import ccdemon.ui.RankedProposalPosition;
 import ccdemon.util.CCDemonUtil;
 import ccdemon.util.SharedData;
-import clonepedia.model.ontology.CloneInstance;
 import clonepedia.model.ontology.CloneSets;
 
 
@@ -62,7 +61,8 @@ public class PasteHandler extends AbstractHandler {
 		 */
 		SelectedCodeRange copiedRange = SharedData.copiedRange;
 		
-		ITextSelection textSelection = (ITextSelection) HandlerUtil.getActivePart(pastedEvent).getSite().getSelectionProvider().getSelection();
+		ITextSelection textSelection = (ITextSelection) HandlerUtil.getActivePart(pastedEvent).
+				getSite().getSelectionProvider().getSelection();
 		int startPositionInPastedFile = textSelection.getOffset();
 		
 		CloneSets sets = clonepedia.Activator.plainSets;
@@ -174,7 +174,7 @@ public class PasteHandler extends AbstractHandler {
 			SelectedCodeRange copiedRange, int startPositionInPastedFile, ExecutionEvent pastedEvent) throws ExecutionException {
 		if(copiedRange != null){
 			ReferrableCloneSet rcs = referrableCloneSets.get(0);
-			mcidiff.model.CloneSet set = CCDemonUtil.adaptMCIDiffModel(rcs.getCloneSet()); 
+			mcidiff.model.CloneSet set = rcs.getCloneSet(); 
 			SeqMCIDiff diff = new SeqMCIDiff();
 			
 			IJavaProject proj = CCDemonUtil.retrieveWorkingJavaProject();
@@ -296,14 +296,12 @@ public class PasteHandler extends AbstractHandler {
 	}
 
 	private ArrayList<ConfigurationPoint> constructConfigurationPoints(
-			CloneInstance referredCloneInstance, ArrayList<SeqMultiset> diffList) {
+			mcidiff.model.CloneInstance referredCloneInstance, ArrayList<SeqMultiset> diffList) {
 		ArrayList<ConfigurationPoint> cpList = new ArrayList<>();
 		for(SeqMultiset multiset: diffList){
 			for(TokenSeq tokenSeq: multiset.getSequences()){
 				mcidiff.model.CloneInstance ins = tokenSeq.getCloneInstance();
-				if(referredCloneInstance.getFileLocation().equals(ins.getFileName()) &&
-						referredCloneInstance.getStartLine() == ins.getStartLine() &&
-						referredCloneInstance.getEndLine() == ins.getEndLine()){
+				if(referredCloneInstance.equals(ins)){
 					ConfigurationPoint point = new ConfigurationPoint(tokenSeq, multiset);
 					cpList.add(point);
 					continue;

@@ -1,7 +1,8 @@
 package ccdemon.model;
 
-import clonepedia.model.ontology.CloneInstance;
-import clonepedia.model.ontology.CloneSet;
+import mcidiff.model.CloneInstance;
+import mcidiff.model.CloneSet;
+
 
 public class ReferrableCloneSet {
 	private CloneSet cloneSet;

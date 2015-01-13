@@ -18,7 +18,6 @@ import ccdemon.model.ReferrableCloneSet;
 import ccdemon.model.SelectedCodeRange;
 import ccdemon.model.rule.PatternMatchingComponent;
 import ccdemon.model.rule.TemplateMatch;
-import clonepedia.model.ontology.CloneSet;
 import clonepedia.model.ontology.CloneSets;
 import clonepedia.preference.ClonepediaPreferencePage;
 import clonepedia.util.MinerProperties;
@@ -42,14 +41,16 @@ public class CCDemonUtil {
 	 */
 	public static ArrayList<ReferrableCloneSet> findCodeTemplateMaterials(CloneSets cloneSets, SelectedCodeRange range){
 		ArrayList<ReferrableCloneSet> materials = new ArrayList<>();
-		for(CloneSet set: cloneSets.getCloneList()){
+		for(clonepedia.model.ontology.CloneSet clonepediaSet: cloneSets.getCloneList()){
 			
-			if(set.getId().equals("2869") || set.getId().equals("bb")/* || set.size() != 3*/){
+			if(clonepediaSet.getId().equals("2869") || clonepediaSet.getId().equals("bb")/* || clonepediaSet.size() != 3*/){
 				continue;
 			}
 			
-			for(clonepedia.model.ontology.CloneInstance instance: set){
-				if(instance.getFileLocation().equals(range.getFileName())){
+			mcidiff.model.CloneSet set = CCDemonUtil.adaptMCIDiffModel(clonepediaSet);
+			
+			for(mcidiff.model.CloneInstance instance: set.getInstances()){
+				if(instance.getFileName().equals(range.getFileName())){
 					if(instance.getStartLine()<=range.getEndLine() && instance.getEndLine()>=range.getStartLine()){
 						ReferrableCloneSet material = new ReferrableCloneSet(set, instance);
 						
@@ -127,7 +128,7 @@ public class CCDemonUtil {
 		return comList;
 	}
 	
-	public static mcidiff.model.CloneSet adaptMCIDiffModel(CloneSet set0) {
+	public static mcidiff.model.CloneSet adaptMCIDiffModel(clonepedia.model.ontology.CloneSet set0) {
 		mcidiff.model.CloneSet set = new mcidiff.model.CloneSet();
 		set.setId(set0.getId());
 		for(clonepedia.model.ontology.CloneInstance ins: set0){

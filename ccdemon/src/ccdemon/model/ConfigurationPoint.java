@@ -51,14 +51,14 @@ public class ConfigurationPoint {
 	
 	private ArrayList<Candidate> candidates = new ArrayList<>();
 	/**
-	 * @param tokenSeq
+	 * @param copiedTokenSeq
 	 * @param seqMultiset
 	 */
-	public ConfigurationPoint(TokenSeq tokenSeq, SeqMultiset seqMultiset) {
+	public ConfigurationPoint(TokenSeq copiedTokenSeq, SeqMultiset seqMultiset) {
 		super();
-		this.copiedTokenSeq = tokenSeq;
+		this.copiedTokenSeq = copiedTokenSeq;
 		this.seqMultiset = seqMultiset;
-		this.currentValue = tokenSeq.getText();
+		this.currentValue = copiedTokenSeq.getText();
 		
 		organizeHistoricalCandidate(getSeqMultiset());
 	}
