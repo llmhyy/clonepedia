@@ -7,11 +7,17 @@ import mcidiff.main.SeqMCIDiff;
 import mcidiff.model.CloneInstance;
 import mcidiff.model.CloneSet;
 import mcidiff.model.SeqMultiset;
+import mcidiff.model.Token;
 import mcidiff.model.TokenSeq;
 
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.ToolFactory;
+import org.eclipse.jdt.core.compiler.IScanner;
+import org.eclipse.jdt.core.compiler.ITerminalSymbols;
+import org.eclipse.jdt.core.compiler.InvalidInputException;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
+import ccdemon.model.Candidate;
 import ccdemon.model.ConfigurationPoint;
 import ccdemon.model.ConfigurationPointSet;
 import ccdemon.model.ReferrableCloneSet;
@@ -23,7 +29,45 @@ import clonepedia.model.ontology.CloneSets;
 public class CloneRecoverer {
 	
 	class CollectedData{
-		
+		private double configurationEffort;
+		private double savedEditingEffort;
+		private double correctness;
+		/**
+		 * @return the configurationEffort
+		 */
+		public double getConfigurationEffort() {
+			return configurationEffort;
+		}
+		/**
+		 * @param configurationEffort the configurationEffort to set
+		 */
+		public void setConfigurationEffort(double configurationEffort) {
+			this.configurationEffort = configurationEffort;
+		}
+		/**
+		 * @return the savedEditingEffort
+		 */
+		public double getSavedEditingEffort() {
+			return savedEditingEffort;
+		}
+		/**
+		 * @param savedEditingEffort the savedEditingEffort to set
+		 */
+		public void setSavedEditingEffort(double savedEditingEffort) {
+			this.savedEditingEffort = savedEditingEffort;
+		}
+		/**
+		 * @return the correctness
+		 */
+		public double getCorrectness() {
+			return correctness;
+		}
+		/**
+		 * @param correctness the correctness to set
+		 */
+		public void setCorrectness(double correctness) {
+			this.correctness = correctness;
+		}
 	}
 	
 	public void trial(CloneSets sets){
@@ -43,6 +87,8 @@ public class CloneRecoverer {
 				ArrayList<SeqMultiset> typeIDiffs = findTypeIDiff(diffList, targetInstance);
 				ArrayList<SeqMultiset> typeIIDiffs = findTypeIIDiff(diffList, targetInstance);
 				
+				double correctness = typeIIDiffs.size()/((double)diffList.size());
+				
 				/**
 				 * choose the source clone instance as the copied instance
 				 */
@@ -59,6 +105,8 @@ public class CloneRecoverer {
 							pointList, targetInstance, sourceInstance, set);
 					
 					CollectedData data = simulate(cps, wrapperList);
+					data.setCorrectness(correctness);
+					
 				}
 			}
 		}
@@ -66,8 +114,84 @@ public class CloneRecoverer {
 	
 	private CollectedData simulate(ConfigurationPointSet cps,
 			CPWrapperList wrapperList) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		double totalConfigurationEffort = 0;
+		double totalEditingEffort = 0;
+		
+		for(int i=0; i<cps.getConfigurationPoints().size(); i++){
+			ConfigurationPoint cp = cps.getConfigurationPoints().get(i);
+			TokenSeq correctSeq = wrapperList.findCorrectSeq(cp);
+			int configurationEffort = findCandidate(cp.getCandidates(), correctSeq);
+			
+			if(configurationEffort == -1){
+				totalConfigurationEffort += (double)configurationEffort/cp.getCandidates().size();				
+			}
+			else{
+				totalEditingEffort ++;
+			}
+			
+			String text = correctSeq.getText();
+			cps.getRule().applyRule(text, cp);
+		}
+		
+		double savedEditingEffort = 1 - ((double)totalEditingEffort)/cps.size();
+		
+		CollectedData data = new CollectedData();
+		data.setConfigurationEffort(totalConfigurationEffort);
+		data.setSavedEditingEffort(savedEditingEffort);
+		
+		return data;
+	}
+
+	private int findCandidate(ArrayList<Candidate> candidates, TokenSeq correctSeq) {
+		for(int i=0; i<candidates.size(); i++){
+			Candidate candidate = candidates.get(i);
+			String text = candidate.getText();
+			
+			ArrayList<Token> tokenList = parseTokenFromText(text, 0);
+			TokenSeq seq = new TokenSeq();
+			seq.setTokens(tokenList);
+			if(seq.toString().equals(correctSeq.toString())){
+				return i;
+			}
+		}
+		
+		return -1;
+	}
+	
+	private ArrayList<Token> parseTokenFromText(String pastedContent, int basePosition) {
+		ArrayList<Token> tokenList = new ArrayList<>();
+		
+		IScanner scanner = ToolFactory.createScanner(false, false, false, false);
+		scanner.setSource(pastedContent.toCharArray());
+		
+		Token previous = null;
+		while(true){
+			try {
+				int t = scanner.getNextToken();
+				if(t == ITerminalSymbols.TokenNameEOF){
+					break;
+				}
+				String tokenName = new String(scanner.getCurrentTokenSource());
+				
+				int startPosition = basePosition + scanner.getCurrentTokenStartPosition();
+				int endPosition = basePosition + scanner.getCurrentTokenEndPosition()+1;
+				
+				Token token = new Token(tokenName, null, null, startPosition, endPosition);
+				tokenList.add(token);
+				
+				token.setPreviousToken(previous);
+				if(previous != null){
+					previous.setPostToken(token);
+				}
+				previous = token;
+			} catch (InvalidInputException e) {
+				e.printStackTrace();
+			}
+			
+		}
+		
+		return tokenList;
 	}
 
 	private ConfigurationPointSet identifyConfigurationPointSet(IJavaProject proj, ArrayList<ConfigurationPoint> pointList,

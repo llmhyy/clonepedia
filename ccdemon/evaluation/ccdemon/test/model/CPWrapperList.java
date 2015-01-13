@@ -2,6 +2,7 @@ package ccdemon.test.model;
 
 import java.util.ArrayList;
 
+import mcidiff.model.TokenSeq;
 import ccdemon.model.ConfigurationPoint;
 
 public class CPWrapperList {
@@ -35,5 +36,16 @@ public class CPWrapperList {
 			pointList.add(wrapper.getPoint());
 		}
 		return pointList;
+	}
+
+	public TokenSeq findCorrectSeq(ConfigurationPoint cp) {
+		for(CPWrapper wrapper: this.list){
+			ConfigurationPoint point = wrapper.getPoint();
+			if(point == cp){
+				return wrapper.getCorrentValue();
+			}
+		}
+		
+		return null;
 	}
 }

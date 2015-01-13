@@ -277,6 +277,10 @@ public class ConfigurationPointSet {
 		
 	}
 	
+	public int size(){
+		return this.getConfigurationPoints().size();
+	}
+	
 	/**
 	 * @return the rule
 	 */
