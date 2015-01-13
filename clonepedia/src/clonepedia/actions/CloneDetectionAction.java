@@ -2,6 +2,7 @@ package clonepedia.actions;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import mcidiff.main.SeqMCIDiff;
 import mcidiff.model.SeqMultiset;
@@ -118,23 +119,48 @@ public class CloneDetectionAction implements IWorkbenchWindowActionDelegate {
 				
 				//for collecting test data
 				SeqMCIDiff mcidiff = new SeqMCIDiff();
-				ArrayList<CloneSet> toRemove = new ArrayList<CloneSet>();
-				for(CloneSet set : sets.getCloneList()){
+//				ArrayList<CloneSet> toRemove = new ArrayList<CloneSet>();
+				Iterator<CloneSet> iterator = sets.getCloneList().iterator();
+				int count = 0;
+				int size = sets.getCloneList().size();
+				while(iterator.hasNext()){
+					CloneSet set = iterator.next();
 					if(set.size()<3 || set.size()>8){
-						toRemove.add(set);
+						iterator.remove();
 					}else{
 						mcidiff.model.CloneSet diffset = new mcidiff.model.CloneSet();
+						diffset.setId(set.getId());
 						for(CloneInstance ins : set){
 							mcidiff.model.CloneInstance diffins = new mcidiff.model.CloneInstance(diffset, ins.getFileLocation(), ins.getStartLine(), ins.getEndLine());
 							diffset.addInstance(diffins);
 						}
-						ArrayList<SeqMultiset> diffList = mcidiff.diff(diffset, JavaCore.create(proj));
+						ArrayList<SeqMultiset> diffList = mcidiff.diff(diffset, javaProject);
 						if(diffList.size() == 0){
-							toRemove.add(set);
+							iterator.remove();
 						}
 					}
+					count++;
+					System.out.println("=============== Count: " + count + ", Size: " + size + " ================");
 				}
-				sets.getCloneList().removeAll(toRemove);
+				
+				
+//				for(CloneSet set : sets.getCloneList()){
+//					if(set.size()<3 || set.size()>8){
+//						toRemove.add(set);
+//					}else{
+//						mcidiff.model.CloneSet diffset = new mcidiff.model.CloneSet();
+//						diffset.setId(set.getId());
+//						for(CloneInstance ins : set){
+//							mcidiff.model.CloneInstance diffins = new mcidiff.model.CloneInstance(diffset, ins.getFileLocation(), ins.getStartLine(), ins.getEndLine());
+//							diffset.addInstance(diffins);
+//						}
+//						ArrayList<SeqMultiset> diffList = mcidiff.diff(diffset, javaProject);
+//						if(diffList.size() == 0){
+//							toRemove.add(set);
+//						}
+//					}
+//				}
+//				sets.getCloneList().removeAll(toRemove);
 				System.out.println("----------------------------------------------------------------------------------------------");
 				System.out.println("Project:" + proj.getName() + ", clone set size:" + sets.getCloneList().size());
 				System.out.println("----------------------------------------------------------------------------------------------");
