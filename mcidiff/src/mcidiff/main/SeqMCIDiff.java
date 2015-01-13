@@ -500,7 +500,7 @@ public class SeqMCIDiff{
 			if(!otherSeq.isMarked()){
 				
 				double sim = computeTokenSeqSimilarity(seq, otherSeq, tokenMultisets);
-				if(sim >= 0){
+				if(sim > 0){
 					if(bestSeq == null){
 						bestSeq = otherSeq;
 						bestSim = sim;
