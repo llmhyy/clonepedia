@@ -84,10 +84,10 @@ public class CloneRecoverer {
 			 */
 			for(CloneInstance targetInstance: set.getInstances()){
 				
-				ArrayList<SeqMultiset> typeIDiffs = findTypeIDiff(diffList, targetInstance);
-				ArrayList<SeqMultiset> typeIIDiffs = findTypeIIDiff(diffList, targetInstance);
+				//ArrayList<SeqMultiset> typeIDiffs = findTypeIDiff(diffList, targetInstance);
+				ArrayList<SeqMultiset> matchableDiffs = findMatchableDiff(diffList, targetInstance);
 				
-				double correctness = typeIIDiffs.size()/((double)diffList.size());
+				double correctness = matchableDiffs.size()/((double)diffList.size());
 				
 				/**
 				 * choose the source clone instance as the copied instance
@@ -98,7 +98,7 @@ public class CloneRecoverer {
 					}
 
 					CPWrapperList wrapperList = 
-							constructConfigurationPoints(sourceInstance, targetInstance, typeIIDiffs);
+							constructConfigurationPoints(sourceInstance, targetInstance, matchableDiffs);
 					ArrayList<ConfigurationPoint> pointList = wrapperList.getConfigurationPoints();
 					
 					ConfigurationPointSet cps = identifyConfigurationPointSet(proj, 
@@ -230,7 +230,7 @@ public class CloneRecoverer {
 	 * Given a target instance, the diffs can be divided into two categories: 
 	 * Type I: The token sequence for target instance is different from the token sequences for other instances, 
 	 * in this case, those token sequences in other instances are exactly the same.
-	 * Type II: The token sequences for other instances are different with each other.
+	 * Type II (i.e., matchable diff): The token sequences for other instances are different with each other.
 	 * 
 	 * By differentiating these differences, I am able to identify the correct candidate for each configuration
 	 * point.
@@ -238,20 +238,7 @@ public class CloneRecoverer {
 	 * @param diffList
 	 * @return
 	 */
-	private ArrayList<SeqMultiset> findTypeIDiff(ArrayList<SeqMultiset> diffList, CloneInstance targetInstance){
-		ArrayList<SeqMultiset> typeOneDiffList = new ArrayList<>();
-		//TODO
-		
-		return typeOneDiffList;
-	}
-	
-	/**
-	 * See the doc for {@code findTypeIDiff()} method.
-	 * @param diffList
-	 * @param targetInstance
-	 * @return
-	 */
-	private ArrayList<SeqMultiset> findTypeIIDiff(ArrayList<SeqMultiset> diffList, CloneInstance targetInstance){
+	private ArrayList<SeqMultiset> findMatchableDiff(ArrayList<SeqMultiset> diffList, CloneInstance targetInstance){
 		ArrayList<SeqMultiset> typeTwoDiffList = new ArrayList<>();
 		//TODO
 		
