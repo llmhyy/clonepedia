@@ -84,6 +84,8 @@ public class CloneRecoverer {
 			
 			double correctness = matchableDiffs.size()/((double)diffList.size());
 			
+			double previousCE = -1; 
+			
 			/**
 			 * choose the source clone instance as the copied instance
 			 */
@@ -102,11 +104,20 @@ public class CloneRecoverer {
 				CollectedData data = simulate(cps, wrapperList);
 				data.setCorrectness(correctness);
 				
+				System.out.println("===================================");
+				System.out.println("copied source:" + sourceInstance.toString());
+				System.out.println("target source:" + targetInstance.toString());
 				System.out.println("correctness: " + data.getCorrectness());
 				System.out.println("configuration effort: " + data.getConfigurationEffort());
 				System.out.println("saved editing effort: " + data.getSavedEditingEffort());
+				System.out.println("===================================");
 				
 				System.currentTimeMillis();
+				
+				if(previousCE != -1 && previousCE != data.getConfigurationEffort()){
+					simulate(cps, wrapperList);					
+				}
+				previousCE = data.getConfigurationEffort();
 			}
 		}
 		
