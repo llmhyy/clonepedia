@@ -114,7 +114,15 @@ public class ConfigurationPointSet {
 		}
 		if(content.getMethodDeclaration() != null){
 			String methodName = content.getMethodDeclaration().getName().getIdentifier();
-			String methodReturnType = content.getMethodDeclaration().getReturnType2().toString();
+			ASTNode node = content.getMethodDeclaration().getReturnType2();
+			String methodReturnType = null;
+			if(null == node){
+				methodReturnType = content.getMethodDeclaration().getName().getFullyQualifiedName();
+			}
+			else{
+				methodReturnType = content.getMethodDeclaration().getReturnType2().toString();
+			}
+			//String methodReturnType = content.getMethodDeclaration().getReturnType2().toString();
 			getRule().applyMethodNameRule(methodName);
 			getRule().applyMethodReturnTypeRule(methodReturnType);
 		}
@@ -186,7 +194,14 @@ public class ConfigurationPointSet {
 				String methodName = content.getMethodDeclaration().getName().getIdentifier();			
 				methodNameItem.addNameInstance(new NameInstance(methodName, true));	
 				
-				String methodReturnType = content.getMethodDeclaration().getReturnType2().toString();
+				ASTNode node = content.getMethodDeclaration().getReturnType2();
+				String methodReturnType = null;
+				if(null == node){
+					methodReturnType = content.getMethodDeclaration().getName().getFullyQualifiedName();
+				}
+				else{
+					methodReturnType = content.getMethodDeclaration().getReturnType2().toString();
+				}
 				methodReturnTypeItem.addNameInstance(new NameInstance(methodReturnType, true));
 			}
 			else{
