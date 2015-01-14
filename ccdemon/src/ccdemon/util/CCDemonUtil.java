@@ -10,8 +10,17 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
+import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.core.dom.AST;
+import org.eclipse.jdt.core.dom.ASTParser;
+import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.internal.core.JarPackageFragmentRoot;
+import org.eclipse.jdt.internal.core.PackageFragmentRoot;
 import org.eclipse.ui.internal.handlers.WidgetMethodHandler;
 
 import ccdemon.model.ReferrableCloneSet;
@@ -163,6 +172,58 @@ public class CCDemonUtil {
 			e.printStackTrace();
 		}
 		
+		return null;
+	}
+	
+	/**
+	 * @param proj
+	 * @param iPath
+	 * @param path
+	 */
+	public static CompilationUnit getCompilationUnitFromFileLocation(IJavaProject proj, String path) {
+		try {
+			String className = null;
+			int slashCount = 0;
+			String maxPack = null; 
+			for(IPackageFragmentRoot root : proj.getAllPackageFragmentRoots()){
+				if(root instanceof PackageFragmentRoot && !(root instanceof JarPackageFragmentRoot)){
+					PackageFragmentRoot pack = (PackageFragmentRoot) root;
+					String packString = pack.getPath().toOSString();
+					if(path.contains(packString)){
+						int count = 0;
+						for(int i = 0; i < packString.length(); i++){
+							if(packString.charAt(i) == '\\'){
+								count++;
+							}
+						}
+						if(count > slashCount){
+							slashCount = count;
+							maxPack = packString;
+						}
+					}
+				}
+			}
+			if(slashCount == 0){
+				className = path.substring(path.indexOf("\\")+1, path.length());
+			}else{
+				className = path.substring(maxPack.length()+1, path.length());
+			}
+			className = className.replace("\\", ".");
+			
+			IType type = proj.findType(className);
+			ICompilationUnit iunit = type.getCompilationUnit();
+			
+			ASTParser parser = ASTParser.newParser(AST.JLS4);
+			parser.setKind(ASTParser.K_COMPILATION_UNIT);
+			parser.setSource(iunit);
+			parser.setResolveBindings(true);
+			
+			CompilationUnit unit = (CompilationUnit)parser.createAST(null);
+			
+			return unit;
+		} catch (JavaModelException e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 }

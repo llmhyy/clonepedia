@@ -92,6 +92,22 @@
             sequence="M1+M3+Z">
       </key>
    </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="ccdemon.actionSet"
+            label="Evaluation"
+            visible="true">
+         <action
+               class="ccdemon.test.action.EvaluationAction"
+               id="ccdemon.evaluationAction"
+               label="Evaluate"
+               style="push"
+               toolbarPath="evaluate"
+               tooltip="Evaluate the correctness of recommendation technique">
+         </action>
+      </actionSet>
+   </extension>
 
 
 </plugin>

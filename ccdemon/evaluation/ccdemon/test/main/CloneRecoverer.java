@@ -10,16 +10,11 @@ import mcidiff.model.SeqMultiset;
 import mcidiff.model.Token;
 import mcidiff.model.TokenSeq;
 
-import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.ToolFactory;
 import org.eclipse.jdt.core.compiler.IScanner;
 import org.eclipse.jdt.core.compiler.ITerminalSymbols;
 import org.eclipse.jdt.core.compiler.InvalidInputException;
-import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
 import ccdemon.model.Candidate;
@@ -29,7 +24,6 @@ import ccdemon.model.ReferrableCloneSet;
 import ccdemon.test.model.CPWrapper;
 import ccdemon.test.model.CPWrapperList;
 import ccdemon.util.CCDemonUtil;
-import clonepedia.model.ontology.CloneSets;
 
 public class CloneRecoverer {
 	
@@ -75,46 +69,42 @@ public class CloneRecoverer {
 		}
 	}
 	
-	public void trial(CloneSets sets){
-		for(clonepedia.model.ontology.CloneSet clonepdiaSet: sets.getCloneList()){
+	public void trial(CloneSet set){
+		SeqMCIDiff diff = new SeqMCIDiff();
+		IJavaProject proj = CCDemonUtil.retrieveWorkingJavaProject();
+		ArrayList<SeqMultiset> diffList = diff.diff(set, proj);
+		
+		/**
+		 * choose the target clone instance to be recovered
+		 */
+		for(CloneInstance targetInstance: set.getInstances()){
 			
-			CloneSet set = CCDemonUtil.adaptMCIDiffModel(clonepdiaSet);
+			//ArrayList<SeqMultiset> typeIDiffs = findTypeIDiff(diffList, targetInstance);
+			ArrayList<SeqMultiset> matchableDiffs = findMatchableDiff(diffList, targetInstance);
 			
-			SeqMCIDiff diff = new SeqMCIDiff();
-			IJavaProject proj = CCDemonUtil.retrieveWorkingJavaProject();
-			ArrayList<SeqMultiset> diffList = diff.diff(set, proj);
+			double correctness = matchableDiffs.size()/((double)diffList.size());
 			
 			/**
-			 * choose the target clone instance to be recovered
+			 * choose the source clone instance as the copied instance
 			 */
-			for(CloneInstance targetInstance: set.getInstances()){
-				
-				//ArrayList<SeqMultiset> typeIDiffs = findTypeIDiff(diffList, targetInstance);
-				ArrayList<SeqMultiset> matchableDiffs = findMatchableDiff(diffList, targetInstance);
-				
-				double correctness = matchableDiffs.size()/((double)diffList.size());
-				
-				/**
-				 * choose the source clone instance as the copied instance
-				 */
-				for(CloneInstance sourceInstance: set.getInstances()){
-					if(sourceInstance.equals(targetInstance)){
-						continue;
-					}
-
-					CPWrapperList wrapperList = 
-							constructPartialConfigurationPoints(sourceInstance, targetInstance, matchableDiffs);
-					ArrayList<ConfigurationPoint> pointList = wrapperList.getConfigurationPoints();
-					
-					ConfigurationPointSet cps = identifyPartialConfigurationPointSet(proj, 
-							pointList, targetInstance, sourceInstance, set);
-					
-					CollectedData data = simulate(cps, wrapperList);
-					data.setCorrectness(correctness);
-					
+			for(CloneInstance sourceInstance: set.getInstances()){
+				if(sourceInstance.equals(targetInstance)){
+					continue;
 				}
+
+				CPWrapperList wrapperList = 
+						constructPartialConfigurationPoints(sourceInstance, targetInstance, matchableDiffs);
+				ArrayList<ConfigurationPoint> pointList = wrapperList.getConfigurationPoints();
+				
+				ConfigurationPointSet cps = identifyPartialConfigurationPointSet(proj, 
+						pointList, targetInstance, sourceInstance, set);
+				
+				CollectedData data = simulate(cps, wrapperList);
+				data.setCorrectness(correctness);
+				
 			}
 		}
+		
 	}
 	
 	private CollectedData simulate(ConfigurationPointSet cps,
@@ -128,7 +118,7 @@ public class CloneRecoverer {
 			TokenSeq correctSeq = wrapperList.findCorrectSeq(cp);
 			int configurationEffort = findCandidate(cp.getCandidates(), correctSeq);
 			
-			if(configurationEffort == -1){
+			if(configurationEffort != -1){
 				totalConfigurationEffort += (double)configurationEffort/cp.getCandidates().size();				
 			}
 			else{
@@ -137,8 +127,12 @@ public class CloneRecoverer {
 			
 			String text = correctSeq.getText();
 			cps.getRule().applyRule(text, cp);
+			cps.adjustCandidateRanking();
+			
+			System.currentTimeMillis();
 		}
 		
+		totalConfigurationEffort /= cps.size();
 		double savedEditingEffort = 1 - ((double)totalEditingEffort)/cps.size();
 		
 		CollectedData data = new CollectedData();
@@ -227,26 +221,14 @@ public class CloneRecoverer {
 	}
 	
 	private CompilationUnit findCompilationUnitOfTargetInstance(IJavaProject proj, CloneInstance targetInstance) {
-		try {
-			String projPath = proj.getPath().makeAbsolute().toOSString();
-			String filePath = targetInstance.getFileName();
-			String relativePath = filePath.substring(projPath.length(), filePath.length() - 1);
-			
-			IType type = proj.findType(relativePath.replace("\\", "."));
-			ICompilationUnit icu = type.getCompilationUnit();
-			
-			ASTParser parser = ASTParser.newParser(AST.JLS4);
-			parser.setKind(ASTParser.K_COMPILATION_UNIT);
-			parser.setSource(icu);
-			parser.setResolveBindings(true);
-			
-			CompilationUnit unit = (CompilationUnit)parser.createAST(null);
-			return unit;
-		} catch (JavaModelException e) {
-			e.printStackTrace();
-		}
+		String filePath = targetInstance.getFileName();
+		String path = filePath.substring(0, filePath.lastIndexOf("."));
 		
-		return null;
+		String projPath = proj.getProject().getLocation().toOSString();
+		path = proj.getPath().toOSString() + path.substring(projPath.length(), path.length());
+		
+		CompilationUnit cu = CCDemonUtil.getCompilationUnitFromFileLocation(proj, path);
+		return cu;
 	}
 	
 	/**
@@ -263,6 +245,7 @@ public class CloneRecoverer {
 	 */
 	private ArrayList<SeqMultiset> findMatchableDiff(ArrayList<SeqMultiset> diffList, CloneInstance targetInstance){
 		ArrayList<SeqMultiset> typeTwoDiffList = new ArrayList<>();
+		
 		for(SeqMultiset diff : diffList){
 			TokenSeq thisSeq = diff.findTokenSeqByCloneInstance(targetInstance);
 			int difference = 0;
@@ -278,7 +261,11 @@ public class CloneRecoverer {
 				}
 			}
 			if(difference != 0){
-				typeTwoDiffList.add(diff);
+				SeqMultiset newDiff = new SeqMultiset();
+				for(TokenSeq seq : diff.getSequences()){
+					newDiff.addTokenSeq(seq);
+				}
+				typeTwoDiffList.add(newDiff);
 			}
 		}
 		
@@ -296,7 +283,10 @@ public class CloneRecoverer {
 	 * @return
 	 */
 	private CPWrapperList constructPartialConfigurationPoints(
-			CloneInstance sourceInstance, CloneInstance targetInstance, ArrayList<SeqMultiset> diffList) {
+			CloneInstance sourceInstance, CloneInstance targetInstance, ArrayList<SeqMultiset> originalDiffList) {
+		
+		ArrayList<SeqMultiset> diffList = cloneList(originalDiffList);
+		
 		ArrayList<CPWrapper> cpList = new ArrayList<>();
 		for(SeqMultiset multiset: diffList){
 			TokenSeq copiedSeq = null;
@@ -325,5 +315,18 @@ public class CloneRecoverer {
 		}
 		
 		return new CPWrapperList(cpList);
+	}
+	
+	private ArrayList<SeqMultiset> cloneList(ArrayList<SeqMultiset> originalDiffList){
+		ArrayList<SeqMultiset> diffList = new ArrayList<>();
+		for(SeqMultiset set: originalDiffList){
+			SeqMultiset newSet = new SeqMultiset();
+			for(TokenSeq seq: set.getSequences()){
+				newSet.addTokenSeq(seq);
+			}
+			diffList.add(newSet);
+		}
+		
+		return diffList;
 	}
 }

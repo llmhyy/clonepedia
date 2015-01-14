@@ -33,7 +33,7 @@ import ccdemon.model.rule.RuleItem;
 
 public class ConfigurationPointSet {
 	private ArrayList<ConfigurationPoint> configurationPoints = new ArrayList<>();
-	private CloneSet referrableCloneSet;
+	//private CloneSet referrableCloneSet;
 	
 	private CompilationUnit pastedCompilationUnit;
 	private int startPositionInPastedFile;
@@ -91,7 +91,7 @@ public class ConfigurationPointSet {
 			int startPositionInPastedFile) {
 		super();
 		this.configurationPoints = configurationPoints;
-		this.referrableCloneSet = referrableCloneSet;
+		//this.referrableCloneSet = referrableCloneSet;
 		this.pastedCompilationUnit = pastedCompilationUnit;
 		this.startPositionInPastedFile = startPositionInPastedFile;
 	}
@@ -103,7 +103,7 @@ public class ConfigurationPointSet {
 	public void prepareForInstallation(ArrayList<ReferrableCloneSet> referrableCloneSets){
 		
 		expandEnvironmentBasedCandidates(this.configurationPoints);
-		generateNamingRules(this.configurationPoints, this.referrableCloneSet);
+		generateNamingRules(this.configurationPoints, referrableCloneSets.get(0).getCloneSet());
 		
 		this.occurrences = constructCandidateOccurrences(referrableCloneSets);
 		
