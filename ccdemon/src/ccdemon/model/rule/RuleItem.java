@@ -14,6 +14,10 @@ public class RuleItem {
 	private ArrayList<Component> componentList;
 	private ArrayList<NameInstance> nameInstanceList = new ArrayList<>();
 	
+	private boolean isMethodNameItem = false;
+	private boolean isTypeItem = false;
+	private boolean isMethodReturnTypeItem = false;
+	
 	public RuleItem(ConfigurationPoint configurationPoint){
 		this.configurationPoint = configurationPoint;
 	}
@@ -65,6 +69,50 @@ public class RuleItem {
 	 */
 	public void setComponentList(ArrayList<Component> componentList) {
 		this.componentList = componentList;
+	}
+
+	
+
+	/**
+	 * @return the isMethodNameItem
+	 */
+	public boolean isMethodNameItem() {
+		return isMethodNameItem;
+	}
+
+	/**
+	 * @param isMethodNameItem the isMethodNameItem to set
+	 */
+	public void setMethodNameItem(boolean isMethodNameItem) {
+		this.isMethodNameItem = isMethodNameItem;
+	}
+	
+	/**
+	 * @return the isMethodReturnTypeItem
+	 */
+	public boolean isMethodReturnTypeItem() {
+		return isMethodReturnTypeItem;
+	}
+
+	/**
+	 * @param isMethodReturnTypeItem the isMethodReturnTypeItem to set
+	 */
+	public void setMethodReturnTypeItem(boolean isMethodReturnTypeItem) {
+		this.isMethodReturnTypeItem = isMethodReturnTypeItem;
+	}
+
+	/**
+	 * @return the isTypeItem
+	 */
+	public boolean isTypeItem() {
+		return isTypeItem;
+	}
+
+	/**
+	 * @param isTypeItem the isTypeItem to set
+	 */
+	public void setTypeItem(boolean isTypeItem) {
+		this.isTypeItem = isTypeItem;
 	}
 	
 	

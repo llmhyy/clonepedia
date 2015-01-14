@@ -47,7 +47,6 @@ public class EquivalentComponentGroupList {
 	 */
 	public void setGroupList(ArrayList<EquivalentComponentGroup> groupList) {
 		this.groupList = groupList;
-	}
-	
+	}	
 	
 }

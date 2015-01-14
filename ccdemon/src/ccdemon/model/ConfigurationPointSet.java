@@ -106,7 +106,51 @@ public class ConfigurationPointSet {
 		generateNamingRules(this.configurationPoints, this.referrableCloneSet);
 		
 		this.occurrences = constructCandidateOccurrences(referrableCloneSets);
+		
+		ContextContent content = parseThisContext();
+		if(content.getTypeDeclaration() != null){
+			String typeName = content.getTypeDeclaration().getName().getIdentifier();
+			getRule().applyTypeNameRule(typeName);
+		}
+		if(content.getMethodDeclaration() != null){
+			String methodName = content.getMethodDeclaration().getName().getIdentifier();
+			String methodReturnType = content.getMethodDeclaration().getReturnType2().toString();
+			getRule().applyMethodNameRule(methodName);
+			getRule().applyMethodReturnTypeRule(methodReturnType);
+		}
+		
 		adjustCandidateRanking();
+	}
+	
+	private ContextContent parseThisContext(){
+		
+		final ContextContent content = new ContextContent(null, null);
+		
+		pastedCompilationUnit.accept(new ASTVisitor() {
+			public boolean visit(TypeDeclaration td){
+				int start = td.getStartPosition();
+				int end = start + td.getLength();
+				
+				if(start <= startPositionInPastedFile && end >= startPositionInPastedFile){
+					content.setTypeDeclaration(td);
+				}
+				
+				return true;
+			}
+			
+			public boolean visit(MethodDeclaration md){
+				int start = md.getStartPosition();
+				int end = start + md.getLength();
+				
+				if(start <= startPositionInPastedFile && end >= startPositionInPastedFile){
+					content.setMethodDeclaration(md);
+				}
+				
+				return false;
+			}
+		});
+		
+		return content;
 	}
 	
 	private void generateNamingRules(
@@ -115,10 +159,16 @@ public class ConfigurationPointSet {
 		NamingRule rule = new NamingRule();
 		
 		RuleItem typeNameItem = new RuleItem(null);
+		typeNameItem.setTypeItem(true);
 		rule.addItem(typeNameItem);
 		
 		RuleItem methodNameItem = new RuleItem(null);
+		methodNameItem.setMethodNameItem(true);
 		rule.addItem(methodNameItem);
+		
+		RuleItem methodReturnTypeItem = new RuleItem(null);
+		methodReturnTypeItem.setMethodReturnTypeItem(true);
+		rule.addItem(methodReturnTypeItem);
 		
 		RuleItem[] items = new RuleItem[configurationPoints.size()];
 		for(int i=0; i<items.length; i++){
@@ -134,10 +184,14 @@ public class ConfigurationPointSet {
 			
 			if(content.getMethodDeclaration() != null){
 				String methodName = content.getMethodDeclaration().getName().getIdentifier();			
-				methodNameItem.addNameInstance(new NameInstance(methodName, true));				
+				methodNameItem.addNameInstance(new NameInstance(methodName, true));	
+				
+				String methodReturnType = content.getMethodDeclaration().getReturnType2().toString();
+				methodReturnTypeItem.addNameInstance(new NameInstance(methodReturnType, true));
 			}
 			else{
 				methodNameItem.addNameInstance(new NameInstance("", true));
+				methodReturnTypeItem.addNameInstance(new NameInstance("", true));
 			}
 			
 			for(int i=0; i<configurationPoints.size(); i++){

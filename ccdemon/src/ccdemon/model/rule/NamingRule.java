@@ -14,6 +14,65 @@ public class NamingRule {
 	
 	private ArrayList<RuleItem> itemList = new ArrayList<>();
 	private EquivalentComponentGroupList equivalentComponentGroupList = new EquivalentComponentGroupList();
+	
+	public void applyMethodReturnTypeRule(String candidateString){
+		EquivalentComponentGroup group = new EquivalentComponentGroup();
+		RuleItem ruleItem = findMethodReturnTypeItem();
+		matchingCandidateStringToNamingPattern(candidateString, false, group, ruleItem);
+		
+		if(ruleItem != null){
+			updateCandidatesByNewValue();			
+		}
+	}
+	
+	private RuleItem findMethodReturnTypeItem() {
+		for(RuleItem item: itemList){
+			if(item.isMethodReturnTypeItem()){
+				return item;
+			}
+		}
+		return null;
+	}
+
+	public void applyMethodNameRule(String candidateString){
+		EquivalentComponentGroup group = new EquivalentComponentGroup();
+		RuleItem ruleItem = findMethodRuleItem();
+		matchingCandidateStringToNamingPattern(candidateString, false, group, ruleItem);
+		
+		if(ruleItem != null){
+			updateCandidatesByNewValue();			
+		}
+	}
+	
+	private RuleItem findMethodRuleItem() {
+		for(RuleItem item: itemList){
+			if(item.isMethodNameItem()){
+				return item;
+			}
+		}
+		return null;
+	}
+
+	public void applyTypeNameRule(String candidateString){
+		EquivalentComponentGroup group = new EquivalentComponentGroup();
+		RuleItem ruleItem = findTypeRuleItem();
+		matchingCandidateStringToNamingPattern(candidateString, false, group, ruleItem);
+		
+		if(ruleItem != null){
+			updateCandidatesByNewValue();			
+		}
+	}
+	
+	
+	private RuleItem findTypeRuleItem() {
+		for(RuleItem item: itemList){
+			if(item.isTypeItem()){
+				return item;
+			}
+		}
+		return null;
+	}
+
 	/**
 	 * if a (new) candidate is determined in a configuration point, it will has an impact
 	 * on the number of candidates in other configuration points. It may generate or remove 
@@ -23,12 +82,22 @@ public class NamingRule {
 	 * @param configurationPoint
 	 */
 	public void applyRule(String candidateString, ConfigurationPoint currentPoint){
-		matchingCandidateStringToNamingPattern(candidateString, currentPoint, false);
-		 
+		EquivalentComponentGroup group = this.equivalentComponentGroupList.findEquivalentGroup(currentPoint);
+		RuleItem ruleItem = this.equivalentComponentGroupList.findMatchingRuleItem(currentPoint);
+		matchingCandidateStringToNamingPattern(candidateString, false, group, ruleItem);
+		
 		if(!currentPoint.getCopiedTokenSeq().isSingleToken()){
 			return;
 		}
 		
+		updateCandidatesByNewValue();
+		
+	}
+
+	/**
+	 * 
+	 */
+	private void updateCandidatesByNewValue() {
 		for(RuleItem item: itemList){
 			if(item.isChangeable() && item.getComponentList().size() > 0){
 				//boolean isValidForAdding = true;
@@ -61,11 +130,10 @@ public class NamingRule {
 				if(!point.containsByIgnoringCase(newValue)){
 					point.getCandidates().add(new Candidate(newValue, 0, Candidate.RULE, point));							
 				}
-				
 			}
 		}
-		
 	}
+	
 	
 	private String parseStringToCamel(int position, RuleItem item, String value){
 		String currentValue = value;
@@ -92,9 +160,8 @@ public class NamingRule {
 	 * @param candidateString
 	 * @param currentPoint
 	 */
-	private void matchingCandidateStringToNamingPattern(String candidateString, ConfigurationPoint currentPoint, boolean isSetOriginName){
-		EquivalentComponentGroup group = this.equivalentComponentGroupList.findEquivalentGroup(currentPoint);
-		RuleItem ruleItem = this.equivalentComponentGroupList.findMatchingRuleItem(currentPoint);
+	private void matchingCandidateStringToNamingPattern(String candidateString, boolean isSetOriginName,
+			EquivalentComponentGroup group, RuleItem ruleItem){
 		
 		if(group != null && ruleItem != null){
 			ArrayList<Component> components = ruleItem.getComponentList();
@@ -230,7 +297,10 @@ public class NamingRule {
 		for(RuleItem item: itemList){
 			if(item.isChangeable()){
 				ConfigurationPoint point = item.getConfigurationPoint();
-				matchingCandidateStringToNamingPattern(point.getCurrentValue(), point, true);				
+				EquivalentComponentGroup group = this.equivalentComponentGroupList.findEquivalentGroup(point);
+				RuleItem ruleItem = this.equivalentComponentGroupList.findMatchingRuleItem(point);
+				
+				matchingCandidateStringToNamingPattern(point.getCurrentValue(), true, group, ruleItem);				
 			}
 		}
 	}
