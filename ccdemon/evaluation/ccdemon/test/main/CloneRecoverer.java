@@ -102,6 +102,11 @@ public class CloneRecoverer {
 				CollectedData data = simulate(cps, wrapperList);
 				data.setCorrectness(correctness);
 				
+				System.out.println("correctness: " + data.getCorrectness());
+				System.out.println("configuration effort: " + data.getConfigurationEffort());
+				System.out.println("saved editing effort: " + data.getSavedEditingEffort());
+				
+				System.currentTimeMillis();
 			}
 		}
 		
