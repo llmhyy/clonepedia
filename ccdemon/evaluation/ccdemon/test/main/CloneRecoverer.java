@@ -269,8 +269,10 @@ public class CloneRecoverer {
 			for(int i = 0; i < diff.getSequences().size(); i++){
 				if(!thisSeq.equals(diff.getSequences().get(i))){
 					for(int j = i + 1; j < diff.getSequences().size(); j++){
-						if(!diff.getSequences().get(i).equals(diff.getSequences().get(j))){
-							difference++;
+						if(!thisSeq.equals(diff.getSequences().get(j))){
+							if(!diff.getSequences().get(i).equals(diff.getSequences().get(j))){
+								difference++;
+							}
 						}
 					}
 				}
