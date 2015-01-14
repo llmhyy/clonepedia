@@ -146,6 +146,25 @@ public class ConfigurationPoint {
 		
 		return false;
 	}
+	
+	public boolean isConstructor(){
+		for(TokenSeq tokenSeq: seqMultiset.getSequences()){
+			if(tokenSeq.isSingleToken()){
+				Token t = tokenSeq.getTokens().get(0);
+				ASTNode node = t.getNode();
+				if(node instanceof SimpleName){
+					SimpleName name = (SimpleName)node;
+					IBinding binding = name.resolveBinding();
+					if(binding != null && binding instanceof IMethodBinding){
+						IMethodBinding mBinding = (IMethodBinding)binding;
+						return mBinding.isConstructor();
+					}
+				}
+			}
+		}
+		
+		return false;
+	}
 
 	private void organizeHistoricalCandidate(SeqMultiset seqMultiset) {
 		HashMap<TokenSeq, Integer> map = new HashMap<>();

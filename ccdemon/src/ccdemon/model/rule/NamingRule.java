@@ -142,7 +142,7 @@ public class NamingRule {
 			return currentValue;
 		}
 		
-		if(position == 0 && !item.getConfigurationPoint().isType()){
+		if(position == 0 && !(item.getConfigurationPoint().isType() || item.getConfigurationPoint().isConstructor())){
 			char[] chars = currentValue.toCharArray();
 			chars[0] = String.valueOf(chars[0]).toLowerCase().charAt(0);
 			currentValue = String.valueOf(chars);
