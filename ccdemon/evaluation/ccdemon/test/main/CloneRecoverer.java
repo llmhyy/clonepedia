@@ -124,16 +124,19 @@ public class CloneRecoverer {
 		double totalConfigurationEffort = 0;
 		double totalEditingEffort = 0;
 		
+		int configurableSize = 0;
+		
 		for(int i=0; i<cps.getConfigurationPoints().size(); i++){
 			ConfigurationPoint cp = cps.getConfigurationPoints().get(i);
 			TokenSeq correctSeq = wrapperList.findCorrectSeq(cp);
 			int configurationEffort = findCandidate(cp.getCandidates(), correctSeq);
 			
 			if(configurationEffort != -1){
-				totalConfigurationEffort += (double)configurationEffort/cp.getCandidates().size();				
+				totalConfigurationEffort += (double)configurationEffort/cp.getCandidates().size();
+				configurableSize++;
 			}
 			else{
-				totalEditingEffort ++;
+				totalEditingEffort++;
 			}
 			
 			String text = correctSeq.getText();
@@ -143,7 +146,7 @@ public class CloneRecoverer {
 			System.currentTimeMillis();
 		}
 		
-		totalConfigurationEffort /= cps.size();
+		totalConfigurationEffort /= configurableSize;
 		double savedEditingEffort = 1 - ((double)totalEditingEffort)/cps.size();
 		
 		CollectedData data = new CollectedData();
