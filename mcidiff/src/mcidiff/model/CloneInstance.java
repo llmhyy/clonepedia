@@ -57,7 +57,7 @@ public class CloneInstance {
 	
 	@Override
 	public String toString() {
-		return "CloneInstance [fileName=" + fileName + ", startLine="
+		return "Set ID: " + set.getId() + "; CloneInstance [fileName=" + fileName + ", startLine="
 				+ startLine + ", endLine=" + endLine + "]";
 	}
 	

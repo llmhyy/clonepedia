@@ -27,7 +27,8 @@ import ccdemon.util.CCDemonUtil;
 
 public class CloneRecoverer {
 	
-	class CollectedData{
+	public class CollectedData{
+		private CloneInstance cloneInstance;
 		private double configurationEffort;
 		private double savedEditingEffort;
 		private double correctness;
@@ -67,9 +68,17 @@ public class CloneRecoverer {
 		public void setCorrectness(double correctness) {
 			this.correctness = correctness;
 		}
+		public CloneInstance getCloneInstance() {
+			return cloneInstance;
+		}
+		public void setCloneInstance(CloneInstance cloneInstance) {
+			this.cloneInstance = cloneInstance;
+		}
 	}
 	
-	public void trial(CloneSet set){
+	public ArrayList<CollectedData> trial(CloneSet set){
+		ArrayList<CollectedData> datas = new ArrayList<CollectedData>();
+		
 		SeqMCIDiff diff = new SeqMCIDiff();
 		IJavaProject proj = CCDemonUtil.retrieveWorkingJavaProject();
 		ArrayList<SeqMultiset> diffList = diff.diff(set, proj);
@@ -101,6 +110,8 @@ public class CloneRecoverer {
 				
 				CollectedData data = simulate(cps, wrapperList);
 				data.setCorrectness(correctness);
+				data.setCloneInstance(targetInstance);
+				datas.add(data);
 				
 				System.out.println("===================================");
 				System.out.println("copied source:" + sourceInstance.toString());
@@ -115,7 +126,7 @@ public class CloneRecoverer {
 				break;
 			}
 		}
-		
+		return datas;
 	}
 	
 	private CollectedData simulate(ConfigurationPointSet cps,
@@ -164,7 +175,10 @@ public class CloneRecoverer {
 			ArrayList<Token> tokenList = parseTokenFromText(text, 0);
 			TokenSeq seq = new TokenSeq();
 			seq.setTokens(tokenList);
-			if(seq.toString().equals(correctSeq.toString())){
+			if(seq.isEpisolonTokenSeq() && correctSeq.isEpisolonTokenSeq()){
+				return i;
+			}
+			else if(seq.toString().equals(correctSeq.toString())){
 				return i;
 			}
 		}
