@@ -252,12 +252,12 @@ public class CloneRecoverer {
 		ArrayList<SeqMultiset> typeTwoDiffList = new ArrayList<>();
 		
 		for(SeqMultiset diff : diffList){
-			TokenSeq thisSeq = diff.findTokenSeqByCloneInstance(targetInstance);
+			//TokenSeq targetSeq = diff.findTokenSeqByCloneInstance(targetInstance);
 			int difference = 0;
 			for(int i = 0; i < diff.getSequences().size(); i++){
-				if(!thisSeq.equals(diff.getSequences().get(i))){
+				if(!diff.getSequences().get(i).getCloneInstance().equals(targetInstance)){
 					for(int j = i + 1; j < diff.getSequences().size(); j++){
-						if(!thisSeq.equals(diff.getSequences().get(j))){
+						if(!diff.getSequences().get(j).getCloneInstance().equals(targetInstance)){
 							if(!diff.getSequences().get(i).equals(diff.getSequences().get(j))){
 								difference++;
 							}
