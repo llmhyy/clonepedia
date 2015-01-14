@@ -10,11 +10,16 @@ import mcidiff.model.SeqMultiset;
 import mcidiff.model.Token;
 import mcidiff.model.TokenSeq;
 
+import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.ToolFactory;
 import org.eclipse.jdt.core.compiler.IScanner;
 import org.eclipse.jdt.core.compiler.ITerminalSymbols;
 import org.eclipse.jdt.core.compiler.InvalidInputException;
+import org.eclipse.jdt.core.dom.AST;
+import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
 import ccdemon.model.Candidate;
@@ -222,7 +227,25 @@ public class CloneRecoverer {
 	}
 	
 	private CompilationUnit findCompilationUnitOfTargetInstance(IJavaProject proj, CloneInstance targetInstance) {
-		// TODO Auto-generated method stub
+		try {
+			String projPath = proj.getPath().makeAbsolute().toOSString();
+			String filePath = targetInstance.getFileName();
+			String relativePath = filePath.substring(projPath.length(), filePath.length() - 1);
+			
+			IType type = proj.findType(relativePath.replace("\\", "."));
+			ICompilationUnit icu = type.getCompilationUnit();
+			
+			ASTParser parser = ASTParser.newParser(AST.JLS4);
+			parser.setKind(ASTParser.K_COMPILATION_UNIT);
+			parser.setSource(icu);
+			parser.setResolveBindings(true);
+			
+			CompilationUnit unit = (CompilationUnit)parser.createAST(null);
+			return unit;
+		} catch (JavaModelException e) {
+			e.printStackTrace();
+		}
+		
 		return null;
 	}
 	
@@ -240,7 +263,22 @@ public class CloneRecoverer {
 	 */
 	private ArrayList<SeqMultiset> findMatchableDiff(ArrayList<SeqMultiset> diffList, CloneInstance targetInstance){
 		ArrayList<SeqMultiset> typeTwoDiffList = new ArrayList<>();
-		//TODO
+		for(SeqMultiset diff : diffList){
+			TokenSeq thisSeq = diff.findTokenSeqByCloneInstance(targetInstance);
+			int difference = 0;
+			for(int i = 0; i < diff.getSequences().size(); i++){
+				if(!thisSeq.equals(diff.getSequences().get(i))){
+					for(int j = i + 1; j < diff.getSequences().size(); j++){
+						if(!diff.getSequences().get(i).equals(diff.getSequences().get(j))){
+							difference++;
+						}
+					}
+				}
+			}
+			if(difference != 0){
+				typeTwoDiffList.add(diff);
+			}
+		}
 		
 		return typeTwoDiffList;
 	}
