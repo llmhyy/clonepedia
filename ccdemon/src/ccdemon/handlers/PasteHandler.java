@@ -42,7 +42,6 @@ import ccdemon.util.SharedData;
 import clonepedia.model.ontology.CloneSets;
 
 
-@SuppressWarnings("restriction")
 public class PasteHandler extends AbstractHandler {
 
 	@Override
