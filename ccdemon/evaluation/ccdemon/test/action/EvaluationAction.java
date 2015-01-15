@@ -35,12 +35,16 @@ public class EvaluationAction implements IWorkbenchWindowActionDelegate {
 		ArrayList<Double> saveedit_effort_t3 = new ArrayList<Double>();
 		ArrayList<CloneInstance> record_t4 = new ArrayList<CloneInstance>();
 		ArrayList<CloneInstance> record_t5 = new ArrayList<CloneInstance>();
+		int total_historyNum = 0;
+		int total_environmentNum = 0;
+		int total_ruleNum = 0;
+		int total_totalNum = 0;
 		
 		for(clonepedia.model.ontology.CloneSet clonepediaSet: sets.getCloneList()){
 			
-			if(!clonepediaSet.getId().equals("2458")){
-				continue;
-			}
+//			if(!clonepediaSet.getId().equals("3100")){
+//				continue;
+//			}
 			
 			System.out.println("Clone set ID: " + clonepediaSet.getId());
 			
@@ -73,6 +77,11 @@ public class EvaluationAction implements IWorkbenchWindowActionDelegate {
 					count_for_t4++;
 					record_t4.add(data.getCloneInstance());
 				}
+				
+				total_historyNum += data.getHistoryNum();
+				total_environmentNum += data.getEnvironmentNum();
+				total_ruleNum += data.getRuleNum();
+				total_totalNum += data.getTotalNum();
 			}
 		}
 		
@@ -117,6 +126,11 @@ public class EvaluationAction implements IWorkbenchWindowActionDelegate {
 		System.out.println("t1_std_saveedit: " + t1_std_saveedit);
 		System.out.println("t2_std_saveedit: " + t2_std_saveedit);
 		System.out.println("t3_std_saveedit: " + t3_std_saveedit);
+		System.out.println("=============================================");
+		System.out.println("total_historyNum: " + total_historyNum);
+		System.out.println("total_environmentNum: " + total_environmentNum);
+		System.out.println("total_ruleNum: " + total_ruleNum);
+		System.out.println("total_totalNum: " + total_totalNum);
 		System.out.println("=============================================");
 		System.out.println("Trial for type4: " + record_t4.toString());
 		System.out.println("Trial for type5: " + record_t5.toString());
