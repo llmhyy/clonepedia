@@ -315,6 +315,56 @@ public class ConfigurationPoint {
 		return typeList;
 	}
 
+
+	public ArrayList<String> getVariableOrFieldSuperTypes(){
+		ArrayList<String> superTypeList = new ArrayList<String>();
+		for(TokenSeq tokenSeq: seqMultiset.getSequences()){
+			if(tokenSeq.isSingleToken()){
+				Token t = tokenSeq.getTokens().get(0);
+				ASTNode node = t.getNode();
+				if(node instanceof SimpleName){
+					SimpleName name = (SimpleName)node;
+					IBinding binding = name.resolveBinding();
+					if(binding != null && binding instanceof IVariableBinding){
+						//super class
+						if(((IVariableBinding)binding).getType().getSuperclass() != null &&
+								!superTypeList.contains(((IVariableBinding)binding).getType().getSuperclass().getQualifiedName())){
+							superTypeList.add(((IVariableBinding)binding).getType().getSuperclass().getQualifiedName());
+						}
+					}
+				}
+			}
+		}
+		
+		return superTypeList;
+	}
+	
+	public ArrayList<String> getVariableOrFieldInterfaceTypes(){
+		ArrayList<String> interfaceTypeList = new ArrayList<String>();
+		for(TokenSeq tokenSeq: seqMultiset.getSequences()){
+			if(tokenSeq.isSingleToken()){
+				Token t = tokenSeq.getTokens().get(0);
+				ASTNode node = t.getNode();
+				if(node instanceof SimpleName){
+					SimpleName name = (SimpleName)node;
+					IBinding binding = name.resolveBinding();
+					if(binding != null && binding instanceof IVariableBinding){
+						//interface
+						if(((IVariableBinding)binding).getType().getInterfaces().length != 0){
+							for(ITypeBinding interfaceType : ((IVariableBinding)binding).getType().getInterfaces()){
+								if(!interfaceTypeList.contains(interfaceType.getQualifiedName())){
+									interfaceTypeList.add(interfaceType.getQualifiedName());
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		return interfaceTypeList;
+	}
+	
 	/**
 	 * @return the tokenSeq
 	 */

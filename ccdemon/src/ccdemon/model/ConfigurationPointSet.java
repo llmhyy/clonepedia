@@ -15,6 +15,7 @@ import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.IBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.NodeFinder;
@@ -288,6 +289,8 @@ public class ConfigurationPointSet {
 			else if(point.isVariableOrField()){
 				//find compatible variable in the context
 				ArrayList<String> types = point.getVariableOrFieldTypes();
+				ArrayList<String> superTypes = point.getVariableOrFieldSuperTypes();
+				ArrayList<String> interfaceTypes = point.getVariableOrFieldInterfaceTypes();
 				String pastedVariableName = point.getCopiedTokenSeq().getText();
 				
 				NodeFinder finder = new NodeFinder(pastedCompilationUnit, startPositionInPastedFile, 1);
@@ -297,14 +300,14 @@ public class ConfigurationPointSet {
 				}
 				//if copied code is put in a method, we need to search for the variable in the method as well
 				if(node instanceof MethodDeclaration){
-					VariableVisitor visitor = new VariableVisitor(types, pastedVariableName);
+					VariableVisitor visitor = new VariableVisitor(types, superTypes, interfaceTypes, pastedVariableName);
 					node.accept(visitor);
 					for(String variable : visitor.getCompatibleVariables()){
 						point.getCandidates().add(new Candidate(variable, 0, Candidate.ENVIRONMENT, point));
 					}
 				}
 				//otherwise, we just search those fields
-				FieldVisitor visitor = new FieldVisitor(types, pastedVariableName);
+				FieldVisitor visitor = new FieldVisitor(types, superTypes, interfaceTypes, pastedVariableName);
 				pastedCompilationUnit.accept(visitor);
 				for(String variable : visitor.getCompatibleVariables()){
 					point.getCandidates().add(new Candidate(variable, 0, Candidate.ENVIRONMENT, point));
@@ -381,11 +384,15 @@ public class ConfigurationPointSet {
 	
 	public class VariableVisitor extends ASTVisitor{
 		ArrayList<String> types;
+		ArrayList<String> superTypes;
+		ArrayList<String> interfaceTypes;
 		ArrayList<String> compatibleVariables = new ArrayList<String>();
 		String pastedVariableName;
 		
-		public VariableVisitor(ArrayList<String> types, String pastedVariableName){
+		public VariableVisitor(ArrayList<String> types, ArrayList<String> superTypes, ArrayList<String> interfaceTypes, String pastedVariableName){
 			this.types = types;
+			this.superTypes = superTypes;
+			this.interfaceTypes = interfaceTypes;
 			this.pastedVariableName = pastedVariableName;
 		}
 		
@@ -396,10 +403,20 @@ public class ConfigurationPointSet {
 			}
 			IBinding binding = name.resolveBinding();
 			if(binding != null && binding instanceof IVariableBinding){
-				if(types.contains(((IVariableBinding) binding).getType().getQualifiedName())){
+				if(types.contains(((IVariableBinding) binding).getType().getQualifiedName()) ||
+						(((IVariableBinding) binding).getType().getSuperclass() != null &&
+						superTypes.contains(((IVariableBinding) binding).getType().getSuperclass().getQualifiedName()))){
 					//don't add the just pasted variable in, otherwise will cause duplication
 					if(!name.toString().equals(pastedVariableName) && !this.compatibleVariables.contains(name.toString())){
 						this.compatibleVariables.add(name.toString());
+					}
+				}
+				for(ITypeBinding interfaceBinding : ((IVariableBinding) binding).getType().getInterfaces()){
+					if(interfaceTypes.contains(interfaceBinding.getQualifiedName())){
+						//don't add the just pasted variable in, otherwise will cause duplication
+						if(!name.toString().equals(pastedVariableName) && !this.compatibleVariables.contains(name.toString())){
+							this.compatibleVariables.add(name.toString());
+						}
 					}
 				}
 			}
@@ -413,11 +430,15 @@ public class ConfigurationPointSet {
 	
 	public class FieldVisitor extends ASTVisitor{
 		ArrayList<String> types;
+		ArrayList<String> superTypes;
+		ArrayList<String> interfaceTypes;
 		ArrayList<String> compatibleVariables = new ArrayList<String>();
 		String pastedVariableName;
 		
-		public FieldVisitor(ArrayList<String> types, String pastedVariableName){
+		public FieldVisitor(ArrayList<String> types, ArrayList<String> superTypes, ArrayList<String> interfaceTypes, String pastedVariableName){
 			this.types = types;
+			this.superTypes = superTypes;
+			this.interfaceTypes = interfaceTypes;
 			this.pastedVariableName = pastedVariableName;
 		}
 		
@@ -426,11 +447,22 @@ public class ConfigurationPointSet {
 			if(field.getStartPosition() > startPositionInPastedFile){
 				return false;
 			}
-			if(types.contains(field.getType().resolveBinding().getQualifiedName())){
+			if(types.contains(field.getType().resolveBinding().getQualifiedName()) ||
+					(field.getType().resolveBinding().getSuperclass() != null &&
+					superTypes.contains(field.getType().resolveBinding().getSuperclass().getQualifiedName()))){
 				//don't add the just pasted variable in, otherwise will cause duplication
 				String fieldName = ((VariableDeclarationFragment)field.fragments().get(0)).getName().toString();
 				if(!fieldName.equals(pastedVariableName) && !this.compatibleVariables.contains(fieldName)){
 					this.compatibleVariables.add(fieldName);
+				}
+			}
+			for(ITypeBinding interfaceBinding : field.getType().resolveBinding().getInterfaces()){
+				if(interfaceTypes.contains(interfaceBinding.getQualifiedName())){
+					//don't add the just pasted variable in, otherwise will cause duplication
+					String fieldName = ((VariableDeclarationFragment)field.fragments().get(0)).getName().toString();
+					if(!fieldName.equals(pastedVariableName) && !this.compatibleVariables.contains(fieldName)){
+						this.compatibleVariables.add(fieldName);
+					}
 				}
 			}
 			return false;
