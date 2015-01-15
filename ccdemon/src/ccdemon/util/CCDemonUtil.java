@@ -130,7 +130,7 @@ public class CCDemonUtil {
 	private static PatternMatchingComponent[] transferToPatternComponentList(String[] list){
 		PatternMatchingComponent[] comList = new PatternMatchingComponent[list.length];
 		for(int i=0; i<list.length; i++){
-			PatternMatchingComponent com = new PatternMatchingComponent(list[i], (i+1)/(double)list.length);
+			PatternMatchingComponent com = new PatternMatchingComponent(list[i], i/(double)list.length);
 			comList[i] = com;
 		}
 		
