@@ -12,6 +12,7 @@ import mcidiff.model.TokenSeq;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.IBinding;
@@ -43,14 +44,14 @@ public class ConfigurationPointSet {
 	private OccurrenceTable occurrences;
 
 	public class ContextContent{
-		private TypeDeclaration typeDeclaration;
+		private AbstractTypeDeclaration typeDeclaration;
 		private MethodDeclaration methodDeclaration;
 		
 		/**
 		 * @param typeDeclaration
 		 * @param methodDeclaration
 		 */
-		public ContextContent(TypeDeclaration typeDeclaration,
+		public ContextContent(AbstractTypeDeclaration typeDeclaration,
 				MethodDeclaration methodDeclaration) {
 			super();
 			this.typeDeclaration = typeDeclaration;
@@ -59,13 +60,13 @@ public class ConfigurationPointSet {
 		/**
 		 * @return the typeDeclaration
 		 */
-		public TypeDeclaration getTypeDeclaration() {
+		public AbstractTypeDeclaration getTypeDeclaration() {
 			return typeDeclaration;
 		}
 		/**
 		 * @param typeDeclaration the typeDeclaration to set
 		 */
-		public void setTypeDeclaration(TypeDeclaration typeDeclaration) {
+		public void setTypeDeclaration(AbstractTypeDeclaration typeDeclaration) {
 			this.typeDeclaration = typeDeclaration;
 		}
 		/**
@@ -233,15 +234,15 @@ public class ConfigurationPointSet {
 				break;
 			}
 		}
-		TypeDeclaration typeDeclaration = null;
+		AbstractTypeDeclaration typeDeclaration = null;
 		MethodDeclaration methodDeclaration = null;
 		
 		while(node != null){
 			if(node instanceof MethodDeclaration && methodDeclaration == null){
 				methodDeclaration = (MethodDeclaration)node;
 			}
-			else if(node instanceof TypeDeclaration && typeDeclaration == null){
-				typeDeclaration = (TypeDeclaration)node;
+			else if(node instanceof AbstractTypeDeclaration && typeDeclaration == null){
+				typeDeclaration = (AbstractTypeDeclaration)node;
 			}
 			
 			if(methodDeclaration != null && typeDeclaration != null){
@@ -295,7 +296,7 @@ public class ConfigurationPointSet {
 				
 				NodeFinder finder = new NodeFinder(pastedCompilationUnit, startPositionInPastedFile, 1);
 				ASTNode node = finder.getCoveringNode();
-				while(!(node instanceof MethodDeclaration || node instanceof TypeDeclaration)){
+				while(!(node instanceof MethodDeclaration || node instanceof TypeDeclaration || node instanceof CompilationUnit)){
 					node = node.getParent();
 				}
 				//if copied code is put in a method, we need to search for the variable in the method as well
