@@ -32,6 +32,12 @@ public class CloneRecoverer {
 		private double configurationEffort;
 		private double savedEditingEffort;
 		private double correctness;
+		
+		private int historyNum = 0;
+		private int environmentNum = 0;
+		private int ruleNum = 0;
+		private int totalNum = 0;
+		
 		/**
 		 * @return the configurationEffort
 		 */
@@ -74,7 +80,62 @@ public class CloneRecoverer {
 		public void setCloneInstance(CloneInstance cloneInstance) {
 			this.cloneInstance = cloneInstance;
 		}
+		/**
+		 * @return the historyNum
+		 */
+		public int getHistoryNum() {
+			return historyNum;
+		}
+		/**
+		 * @param historyNum the historyNum to set
+		 */
+		public void setHistoryNum(int historyNum) {
+			this.historyNum = historyNum;
+		}
+		/**
+		 * @return the environmentNum
+		 */
+		public int getEnvironmentNum() {
+			return environmentNum;
+		}
+		/**
+		 * @param environmentNum the environmentNum to set
+		 */
+		public void setEnvironmentNum(int environmentNum) {
+			this.environmentNum = environmentNum;
+		}
+		/**
+		 * @return the ruleNum
+		 */
+		public int getRuleNum() {
+			return ruleNum;
+		}
+		/**
+		 * @param ruleNum the ruleNum to set
+		 */
+		public void setRuleNum(int ruleNum) {
+			this.ruleNum = ruleNum;
+		}
+		/**
+		 * @return the totalNum
+		 */
+		public int getTotalNum() {
+			return totalNum;
+		}
+		/**
+		 * @param totalNum the totalNum to set
+		 */
+		public void setTotalNum(int totalNum) {
+			this.totalNum = totalNum;
+		}
+		
+		
 	}
+	
+	private int historyNum = 0;
+	private int environmentNum = 0;
+	private int ruleNum = 0;
+	private int totalNum = 0;
 	
 	public ArrayList<CollectedData> trial(CloneSet set){
 		ArrayList<CollectedData> datas = new ArrayList<CollectedData>();
@@ -111,6 +172,10 @@ public class CloneRecoverer {
 				CollectedData data = simulate(cps, wrapperList);
 				data.setCorrectness(correctness);
 				data.setCloneInstance(targetInstance);
+				data.setHistoryNum(this.historyNum);
+				data.setEnvironmentNum(this.environmentNum);
+				data.setRuleNum(this.ruleNum);
+				data.setTotalNum(this.totalNum);
 				datas.add(data);
 				
 				System.out.println("===================================");
@@ -145,6 +210,8 @@ public class CloneRecoverer {
 			if(configurationEffort != -1){
 				totalConfigurationEffort += (double)configurationEffort/cp.getCandidates().size();
 				configurableSize++;
+				
+				this.totalNum++;
 			}
 			else{
 				totalEditingEffort++;
@@ -176,14 +243,28 @@ public class CloneRecoverer {
 			TokenSeq seq = new TokenSeq();
 			seq.setTokens(tokenList);
 			if(seq.isEpisolonTokenSeq() && correctSeq.isEpisolonTokenSeq()){
+				countOriginContribution(candidate);
 				return i;
 			}
 			else if(seq.toString().equals(correctSeq.toString())){
+				countOriginContribution(candidate);
 				return i;
 			}
 		}
 		
 		return -1;
+	}
+	
+	private void countOriginContribution(Candidate candidate){
+		if(candidate.isHistoryBased()){
+			this.historyNum++;
+		}
+		else if(candidate.isEnvironmentBased()){
+			this.environmentNum++;
+		}
+		else if(candidate.isRuleBased()){
+			this.ruleNum++;
+		}
 	}
 	
 	private ArrayList<Token> parseTokenFromText(String pastedContent, int basePosition) {
