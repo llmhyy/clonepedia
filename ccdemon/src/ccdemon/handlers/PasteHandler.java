@@ -69,7 +69,10 @@ public class PasteHandler extends AbstractHandler {
 					identifyConfigurationPoints(referrableCloneSets, copiedRange, startPositionInPastedFile, pastedEvent);
 			
 			if(cps.getConfigurationPoints().size() != 0){
+				t1 = System.currentTimeMillis();
 				cps.prepareForInstallation(referrableCloneSets);
+				t2 = System.currentTimeMillis();
+				System.out.println("Time for candidate identification: " + (t2-t1));
 				
 				installConfigurationPointsOnCode(cps, pastedEvent);				
 			}
@@ -166,12 +169,16 @@ public class PasteHandler extends AbstractHandler {
 		if(copiedRange != null){
 			ReferrableCloneSet rcs = referrableCloneSets.get(0);
 			mcidiff.model.CloneSet set = rcs.getCloneSet(); 
+			
 			SeqMCIDiff diff = new SeqMCIDiff();
 			
 			IJavaProject proj = CCDemonUtil.retrieveWorkingJavaProject();
 			
+			long t1 = System.currentTimeMillis();
 			ArrayList<SeqMultiset> diffList = diff.diff(set, proj);
-
+			long t2 = System.currentTimeMillis();
+			System.out.println("Time for MCIDiff: " + (t2-t1));
+			
 			ArrayList<ConfigurationPoint> configurationPoints = 
 					constructConfigurationPoints(rcs.getReferredCloneInstance(), diffList);
 			/**
