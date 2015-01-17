@@ -33,6 +33,8 @@ public class CloneRecoverer {
 		private double savedEditingEffort;
 		private double correctness;
 		
+		private int configurationPointNum = 0;
+		
 		private int historyNum = 0;
 		private int environmentNum = 0;
 		private int ruleNum = 0;
@@ -128,6 +130,18 @@ public class CloneRecoverer {
 		public void setTotalNum(int totalNum) {
 			this.totalNum = totalNum;
 		}
+		/**
+		 * @return the configurationPointNum
+		 */
+		public int getConfigurationPointNum() {
+			return configurationPointNum;
+		}
+		/**
+		 * @param configurationPointNum the configurationPointNum to set
+		 */
+		public void setConfigurationPointNum(int configurationPointNum) {
+			this.configurationPointNum = configurationPointNum;
+		}
 		
 		
 	}
@@ -176,6 +190,8 @@ public class CloneRecoverer {
 				data.setEnvironmentNum(this.environmentNum);
 				data.setRuleNum(this.ruleNum);
 				data.setTotalNum(this.totalNum);
+				data.setConfigurationPointNum(cps.size());
+				
 				datas.add(data);
 				
 				System.out.println("===================================");
