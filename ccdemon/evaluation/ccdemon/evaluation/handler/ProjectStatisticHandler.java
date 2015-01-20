@@ -48,9 +48,9 @@ public class ProjectStatisticHandler extends AbstractHandler{
 //			trialNum += clonepediaSet.size();
 			
 			
-//			if(!clonepediaSet.getId().equals("3061")){
-//				continue;
-//			}
+			if(!clonepediaSet.getId().equals("69565")){
+				continue;
+			}
 			
 			System.out.println("Clone set ID: " + clonepediaSet.getId());
 			
@@ -59,10 +59,10 @@ public class ProjectStatisticHandler extends AbstractHandler{
 			
 			for(CollectedData data : datas){
 				//collect trials when:
-				if(data.getSavedEditingEffort() == 1.0 && data.getCorrectness() > 0 && data.getCorrectness() < 1.0 
-						&& data.getConfigurationEffort() < 0.5
+				if(data.getSavedEditingEffort() == 0.0 && data.getCorrectness() == 1.0 
+//						&& data.getConfigurationEffort() < 0.5
 //						&& data.getHistoryNum() > 0 && data.getRuleNum() > 0 && data.getEnvironmentNum() > 0 
-						&& data.getConfigurationPointNum() >= 10
+						&& data.getConfigurationPointNum() >= 5
 						&& data.getCloneInstance().getLength() >= 8){
 					if(!cloneSetId.contains(clonepediaSet.getId())){
 						cloneSetId.add(clonepediaSet.getId());
@@ -179,7 +179,7 @@ public class ProjectStatisticHandler extends AbstractHandler{
 
 		System.out.println("-------------------------------------- Result -----------------------------------");
 		System.out.println("ID: " + cloneSetId.toString());
-//		System.out.println(printData.toString());
+		System.out.println(printData.toString());
 		
 		return null;
 	}
