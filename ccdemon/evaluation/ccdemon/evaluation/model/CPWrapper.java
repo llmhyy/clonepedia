@@ -1,4 +1,4 @@
-package ccdemon.test.model;
+package ccdemon.evaluation.model;
 
 import mcidiff.model.TokenSeq;
 import ccdemon.model.ConfigurationPoint;

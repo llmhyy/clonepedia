@@ -73,6 +73,10 @@
             </and>
          </activeWhen>
       </handler>
+      <handler
+            class="ccdemon.evaluation.handler.ProjectStatisticHandler"
+            commandId="ccdemon.evaluation.statistics">
+      </handler>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -81,6 +85,11 @@
             description="Recover the cloning assistance"
             id="ccdemon.cloning.assist.recover"
             name="Recover">
+      </command>
+      <command
+            defaultHandler="ccdemon.evaluation.handler.ProjectStatisticHandler"
+            id="ccdemon.evaluation.statistics"
+            name="Caculate project statistics">
       </command>
    </extension>
    <extension
@@ -93,21 +102,22 @@
       </key>
    </extension>
    <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            id="ccdemon.actionSet"
-            label="Evaluation"
-            visible="true">
-         <action
-               class="ccdemon.test.action.EvaluationAction"
-               icon="icons/evaluation.png"
-               id="ccdemon.evaluationAction"
-               label="Evaluate"
-               style="push"
-               toolbarPath="evaluate"
-               tooltip="Evaluate the correctness of recommendation technique">
-         </action>
-      </actionSet>
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.eclipse.ui.main.toolbar">
+         <toolbar
+               id="toolbar:org.eclipse.ui.main.toolbar"
+               label="Tools">
+            <command
+                  commandId="ccdemon.evaluation.statistics"
+                  icon="icons/evaluation.png"
+                  id="ccdemon.command.evaluation.statistics"
+                  label="Caculate project statistics"
+                  style="push">
+            </command>
+         </toolbar>
+      </menuContribution>
    </extension>
 
 

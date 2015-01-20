@@ -1,4 +1,4 @@
-package ccdemon.test.main;
+package ccdemon.evaluation.main;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -17,12 +17,12 @@ import org.eclipse.jdt.core.compiler.ITerminalSymbols;
 import org.eclipse.jdt.core.compiler.InvalidInputException;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
+import ccdemon.evaluation.model.CPWrapper;
+import ccdemon.evaluation.model.CPWrapperList;
 import ccdemon.model.Candidate;
 import ccdemon.model.ConfigurationPoint;
 import ccdemon.model.ConfigurationPointSet;
 import ccdemon.model.ReferrableCloneSet;
-import ccdemon.test.model.CPWrapper;
-import ccdemon.test.model.CPWrapperList;
 import ccdemon.util.CCDemonUtil;
 
 public class CloneRecoverer {

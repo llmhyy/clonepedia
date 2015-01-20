@@ -1,4 +1,4 @@
-package ccdemon.test.action;
+package ccdemon.evaluation.action;
 
 import java.util.ArrayList;
 
@@ -10,8 +10,8 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
-import ccdemon.test.main.CloneRecoverer;
-import ccdemon.test.main.CloneRecoverer.CollectedData;
+import ccdemon.evaluation.main.CloneRecoverer;
+import ccdemon.evaluation.main.CloneRecoverer.CollectedData;
 import ccdemon.util.CCDemonUtil;
 import clonepedia.model.ontology.CloneSets;
 
@@ -198,20 +198,4 @@ public class EvaluationAction implements IWorkbenchWindowActionDelegate {
 
 	}
 
-	private static double calculateScoreMean(ArrayList<Double> rawScores) {
-		double scoreAll = 0.0;
-		for (Double score : rawScores) {
-			scoreAll += score;
-		}
-		return scoreAll/rawScores.size();
-	}
-	
-	private static double calculateSTD(ArrayList<Double> rawScores, double scoreMean) {
-		double allSquare = 0.0;
-		for (Double rawScore : rawScores) {
-			allSquare += (rawScore - scoreMean)*(rawScore - scoreMean);
-		}
-		double denominator = rawScores.size() * (rawScores.size() - 1);
-		return Math.sqrt(allSquare/denominator);
-	}
 }
