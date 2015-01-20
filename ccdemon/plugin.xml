@@ -75,7 +75,15 @@
       </handler>
       <handler
             class="ccdemon.evaluation.handler.SearchTrialHandler"
-            commandId="ccdemon.evaluation.statistics">
+            commandId="ccdemon.evaluation.searchTrial">
+      </handler>
+      <handler
+            class="ccdemon.evaluation.handler.CalculateTrialNumHandler"
+            commandId="ccdemon.evaluation.calulateTrialNum">
+      </handler>
+      <handler
+            class="ccdemon.evaluation.handler.CalculateStatisticsHandler"
+            commandId="ccdemon.evaluation.calulateStatiastics">
       </handler>
    </extension>
    <extension
@@ -88,8 +96,18 @@
       </command>
       <command
             defaultHandler="ccdemon.evaluation.handler.SearchTrialHandler"
-            id="ccdemon.evaluation.statistics"
-            name="Caculate project statistics">
+            id="ccdemon.evaluation.searchTrial"
+            name="SearchTrial">
+      </command>
+      <command
+            defaultHandler="ccdemon.evaluation.handler.CalculateTrialNumHandler"
+            id="ccdemon.evaluation.calulateTrialNum"
+            name="CalculateTrialNum">
+      </command>
+      <command
+            defaultHandler="ccdemon.evaluation.handler.CalculateStatisticsHandler"
+            id="ccdemon.evaluation.calulateStatiastics"
+            name="CalculateStatistics">
       </command>
    </extension>
    <extension
@@ -110,10 +128,24 @@
                id="toolbar:org.eclipse.ui.main.toolbar"
                label="Tools">
             <command
-                  commandId="ccdemon.evaluation.statistics"
+                  commandId="ccdemon.evaluation.searchTrial"
+                  icon="icons/search.jpg"
+                  id="ccdemon.command.evaluation.searchTrial"
+                  label="Search Trial"
+                  style="push">
+            </command>
+            <command
+                  commandId="ccdemon.evaluation.calulateTrialNum"
+                  icon="icons/calculation.jpg"
+                  id="ccdemon.command.evaluation.trialNum"
+                  label="Calculate Trial Number"
+                  style="push">
+            </command>
+            <command
+                  commandId="ccdemon.evaluation.calulateStatiastics"
                   icon="icons/evaluation.png"
-                  id="ccdemon.command.evaluation.statistics"
-                  label="Caculate project statistics"
+                  id="ccdemon.command.evaluation.calulateStatiastics"
+                  label="CaculateStatistics"
                   style="push">
             </command>
          </toolbar>
