@@ -52,7 +52,7 @@ public class CCDemonUtil {
 		ArrayList<ReferrableCloneSet> materials = new ArrayList<>();
 		for(clonepedia.model.ontology.CloneSet clonepediaSet: cloneSets.getCloneList()){
 			
-			if(clonepediaSet.getId().equals("2869") || clonepediaSet.getId().equals("bb")/* || clonepediaSet.size() != 3*/){
+			if(clonepediaSet.getId().equals("2724") || clonepediaSet.getId().equals("2700") || clonepediaSet.getId().equals("3025") || clonepediaSet.getId().equals("3015") || clonepediaSet.getId().equals("3045")  || clonepediaSet.size() != 4){
 				continue;
 			}
 			

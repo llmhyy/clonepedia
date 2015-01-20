@@ -138,9 +138,16 @@ public class CloneRecoverer {
 		public void setTotalNum(int totalNum) {
 			this.totalNum = totalNum;
 		}
+
+		/**
+		 * @return the configurationPointNum
+		 */
 		public int getConfigurationPointNum() {
 			return configurationPointNum;
 		}
+		/**
+		 * @param configurationPointNum the configurationPointNum to set
+		 */
 		public void setConfigurationPointNum(int configurationPointNum) {
 			this.configurationPointNum = configurationPointNum;
 		}

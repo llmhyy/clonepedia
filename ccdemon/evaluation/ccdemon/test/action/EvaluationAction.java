@@ -39,7 +39,8 @@ public class EvaluationAction implements IWorkbenchWindowActionDelegate {
 		int total_ruleNum = 0;
 		int total_totalNum = 0;
 		ArrayList<Double> correctness = new ArrayList<Double>();
-		
+		ArrayList<String> cloneSetId = new ArrayList<String>();
+		CollectedData printData = null;
 		
 //		System.out.println("Clone Set number: " + sets.getCloneList().size());
 //		int trialNum = 0;
@@ -48,7 +49,7 @@ public class EvaluationAction implements IWorkbenchWindowActionDelegate {
 //			trialNum += clonepediaSet.size();
 			
 			
-//			if(!clonepediaSet.getId().equals("19633")){
+//			if(!clonepediaSet.getId().equals("3061")){
 //				continue;
 //			}
 			
@@ -58,6 +59,19 @@ public class EvaluationAction implements IWorkbenchWindowActionDelegate {
 			ArrayList<CollectedData> datas = recoverer.trial(set);
 			
 			for(CollectedData data : datas){
+				//collect trials when:
+				if(data.getSavedEditingEffort() == 1.0 && data.getCorrectness() > 0 && data.getCorrectness() < 1.0 
+						&& data.getConfigurationEffort() < 0.5
+//						&& data.getHistoryNum() > 0 && data.getRuleNum() > 0 && data.getEnvironmentNum() > 0 
+						&& data.getConfigurationPointNum() >= 10
+						&& data.getCloneInstance().getLength() >= 8){
+					if(!cloneSetId.contains(clonepediaSet.getId())){
+						cloneSetId.add(clonepediaSet.getId());
+					}
+					printData = data;
+				}
+				
+				/*
 				if(data.getCorrectness() == 1.0){
 					if(data.getSavedEditingEffort() == 1.0){
 						types[0].count++;
@@ -92,13 +106,13 @@ public class EvaluationAction implements IWorkbenchWindowActionDelegate {
 				total_environmentNum += data.getEnvironmentNum();
 				total_ruleNum += data.getRuleNum();
 				total_totalNum += data.getTotalNum();
-				correctness.add(data.getCorrectness());
+				correctness.add(data.getCorrectness());*/
 			}
 		}
 		
 //		System.out.println("Trail number: " + trialNum);
 		
-		int count_for_alltypes = 0;
+		/*int count_for_alltypes = 0;
 		for(TrialType t : types){
 			count_for_alltypes += t.count;
 		}
@@ -162,8 +176,11 @@ public class EvaluationAction implements IWorkbenchWindowActionDelegate {
 		System.out.println("Trial for type3: " + types[2].instances.toString());
 		System.out.println("Trial for type6: " + types[5].instances.toString());
 		System.out.println("Trial for type7: " + types[6].instances.toString());
-		
-		
+		*/
+
+		System.out.println("-------------------------------------- Result -----------------------------------");
+		System.out.println("ID: " + cloneSetId.toString());
+//		System.out.println(printData.toString());
 	}
 
 	@Override

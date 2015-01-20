@@ -29,7 +29,11 @@ public class SeqMCIDiff{
 		new Tokenizer().tokenize(set, project);
 		
 		ArrayList<Token>[] lists = set.getTokenLists();
+		
+		long t1 = System.currentTimeMillis();
 		CorrespondentListAndSet cls = DiffUtil.generateMatchedTokenListFromMultiSequence(lists);
+		long t2 = System.currentTimeMillis();
+		System.out.println("Time for optimal subsequence generation: " + (t2-t1));
 		
 		TokenSequence[] sequences = MCIDiffUtil.transferToModel(set);
 		ArrayList<Multiset> results = computeDiff(cls, sequences);
