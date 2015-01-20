@@ -42,7 +42,7 @@ public class CloneRecoverer {
 		
 		public String toString(){
 			return "configurationEffort: " + configurationEffort + ", savedEditingEffort: " + savedEditingEffort
-					+ ", correctness" + correctness + ", historyNum: " + historyNum 
+					+ ", correctness: " + correctness + ", historyNum: " + historyNum 
 					+ ", environmentNum: " + environmentNum + ", ruleNum: " + ruleNum 
 					+ ", configurationPointNum: " + configurationPointNum;
 		}
