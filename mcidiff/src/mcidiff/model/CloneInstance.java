@@ -107,6 +107,10 @@ public class CloneInstance {
 	public int getEndLine() {
 		return endLine;
 	}
+	
+	public int getLength(){
+		return getEndLine() - getStartLine() + 1;
+	}
 
 	/**
 	 * @param endLine the endLine to set
