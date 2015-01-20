@@ -160,7 +160,7 @@ public class CloneRecoverer {
 	private int ruleNum = 0;
 	private int totalNum = 0;
 	
-	public ArrayList<CollectedData> trial(CloneSet set){
+	public ArrayList<CollectedData> getTrials(CloneSet set){
 		ArrayList<CollectedData> datas = new ArrayList<CollectedData>();
 		
 		SeqMCIDiff diff = new SeqMCIDiff();

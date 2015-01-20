@@ -32,7 +32,7 @@ public class SearchTrialHandler extends AbstractHandler{
 			System.out.println("Clone set ID: " + clonepediaSet.getId());
 			
 			CloneSet set = CCDemonUtil.adaptMCIDiffModel(clonepediaSet);
-			ArrayList<CollectedData> datas = recoverer.trial(set);
+			ArrayList<CollectedData> datas = recoverer.getTrials(set);
 			
 			for(CollectedData data : datas){
 				//collect trials when:
