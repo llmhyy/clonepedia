@@ -577,11 +577,23 @@ public class SeqMCIDiff{
 	private Token findCorrespondenceToken(
 			ArrayList<TokenMultiset> tokenMultisets, Token t, CloneInstance cloneInstance) {
 		for(TokenMultiset set: tokenMultisets){
-			if(set.getTokens().contains(t)){
+			if(isTokenMultisetContainASpecificToken(set, t)){
 				return set.findToken(cloneInstance);
 			}
 		}
 		return null;
+	}
+	
+	private boolean isTokenMultisetContainASpecificToken(TokenMultiset set, Token t){
+		for(Token token: set.getTokens()){
+			if(token.getCloneInstance().equals(t.getCloneInstance()) &&
+					token.getStartPosition() == t.getStartPosition() &&
+					token.getEndPosition() == t.getEndPosition()){
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 	private ArrayList<ArrayList<TokenSeq>> findOtherLists(
