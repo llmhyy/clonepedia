@@ -8,6 +8,9 @@ import mcidiff.model.CloneSet;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.jobs.Job;
 
 import ccdemon.evaluation.main.CloneRecoverer;
 import ccdemon.evaluation.main.CloneRecoverer.CollectedData;
@@ -25,6 +28,24 @@ public class CalculateStatisticsHandler extends AbstractHandler{
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
+		
+		Job job = new Job("calculating project statistics"){
+
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				CalculateStatisticsHandler handler = new CalculateStatisticsHandler();
+				handler.run();
+				return null;
+			}
+			
+		};
+		job.schedule();
+		
+
+		return null;
+	}
+	
+	private void run(){
 		CloneRecoverer recoverer = new CloneRecoverer();
 		CloneSets sets = clonepedia.Activator.plainSets;;
 		
@@ -149,8 +170,6 @@ public class CalculateStatisticsHandler extends AbstractHandler{
 		System.out.println("Trial for type3: " + types[2].instances.toString());
 		System.out.println("Trial for type6: " + types[5].instances.toString());
 		System.out.println("Trial for type7: " + types[6].instances.toString());
-
-		return null;
 	}
 
 
