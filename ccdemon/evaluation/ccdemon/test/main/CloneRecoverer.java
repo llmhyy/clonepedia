@@ -38,6 +38,16 @@ public class CloneRecoverer {
 		private int ruleNum = 0;
 		private int totalNum = 0;
 		
+		private int configurationPointNum = 0;
+		
+		public String toString(){
+			return "configurationEffort: " + configurationEffort + ", savedEditingEffort: " + savedEditingEffort
+					+ ", correctness" + correctness + ", historyNum: " + historyNum 
+					+ ", environmentNum: " + environmentNum + ", ruleNum: " + ruleNum 
+					+ ", configurationPointNum: " + configurationPointNum;
+		}
+		
+		
 		/**
 		 * @return the configurationEffort
 		 */
@@ -128,6 +138,12 @@ public class CloneRecoverer {
 		public void setTotalNum(int totalNum) {
 			this.totalNum = totalNum;
 		}
+		public int getConfigurationPointNum() {
+			return configurationPointNum;
+		}
+		public void setConfigurationPointNum(int configurationPointNum) {
+			this.configurationPointNum = configurationPointNum;
+		}
 		
 		
 	}
@@ -176,6 +192,7 @@ public class CloneRecoverer {
 				data.setEnvironmentNum(this.environmentNum);
 				data.setRuleNum(this.ruleNum);
 				data.setTotalNum(this.totalNum);
+				data.setConfigurationPointNum(cps.getConfigurationPoints().size());
 				datas.add(data);
 				
 				System.out.println("===================================");
@@ -196,6 +213,11 @@ public class CloneRecoverer {
 	
 	private CollectedData simulate(ConfigurationPointSet cps,
 			CPWrapperList wrapperList) {
+		
+		this.historyNum = 0;
+		this.environmentNum = 0;
+		this.ruleNum = 0;
+		this.totalNum = 0;
 		
 		double totalConfigurationEffort = 0;
 		double totalEditingEffort = 0;
