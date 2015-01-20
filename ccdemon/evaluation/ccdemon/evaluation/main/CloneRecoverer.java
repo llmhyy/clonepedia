@@ -41,7 +41,7 @@ public class CloneRecoverer {
 		private int configurationPointNum = 0;
 		
 		public String toString(){
-			return "cloneInstance: " + cloneInstance.toString() + "\nconfigurationEffort: "
+			return "\ncloneInstance: " + cloneInstance.toString() + "\nconfigurationEffort: "
 					+ configurationEffort + ", savedEditingEffort: " + savedEditingEffort
 					+ ", correctness: " + correctness + ", historyNum: " + historyNum 
 					+ ", environmentNum: " + environmentNum + ", ruleNum: " + ruleNum 

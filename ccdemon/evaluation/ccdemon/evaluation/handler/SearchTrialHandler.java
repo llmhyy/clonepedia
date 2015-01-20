@@ -146,7 +146,7 @@ public class SearchTrialHandler extends AbstractHandler{
 			
 			for(CollectedData data : datas){
 				//collect trials when:
-				boolean isNeeded = determineTarget(3, data);
+				boolean isNeeded = determineTarget(5, data);
 				if(isNeeded){
 					dataList.add(data);				
 				}
