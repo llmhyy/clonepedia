@@ -5,6 +5,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
 import clonepedia.model.ontology.CloneSets;
@@ -19,7 +20,7 @@ public class CalculateTrialNumHandler extends AbstractHandler{
 			protected IStatus run(IProgressMonitor monitor) {
 				CalculateTrialNumHandler handler = new CalculateTrialNumHandler();
 				handler.run();
-				return null;
+				return Status.OK_STATUS;
 			}
 			
 		};

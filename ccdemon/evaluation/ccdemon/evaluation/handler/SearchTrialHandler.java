@@ -9,6 +9,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
 import ccdemon.evaluation.main.CloneRecoverer;
@@ -117,7 +118,7 @@ public class SearchTrialHandler extends AbstractHandler{
 			protected IStatus run(IProgressMonitor monitor) {
 				SearchTrialHandler handler = new SearchTrialHandler();
 				handler.run();
-				return null;
+				return Status.OK_STATUS;
 			}
 			
 		};
