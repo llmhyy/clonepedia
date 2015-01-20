@@ -74,7 +74,7 @@
          </activeWhen>
       </handler>
       <handler
-            class="ccdemon.evaluation.handler.ProjectStatisticHandler"
+            class="ccdemon.evaluation.handler.SearchTrialHandler"
             commandId="ccdemon.evaluation.statistics">
       </handler>
    </extension>
@@ -87,7 +87,7 @@
             name="Recover">
       </command>
       <command
-            defaultHandler="ccdemon.evaluation.handler.ProjectStatisticHandler"
+            defaultHandler="ccdemon.evaluation.handler.SearchTrialHandler"
             id="ccdemon.evaluation.statistics"
             name="Caculate project statistics">
       </command>
