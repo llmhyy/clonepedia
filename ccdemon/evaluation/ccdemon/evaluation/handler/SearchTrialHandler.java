@@ -67,7 +67,7 @@ public class SearchTrialHandler extends AbstractHandler{
 		return false;
 	}
 	
-	private boolean isTypeIIV(CollectedData data){
+	private boolean isTypeV(CollectedData data){
 		if(0<data.getCorrectness() && data.getCorrectness()<1 && 0 < data.getSavedEditingEffort() && data.getSavedEditingEffort() < 1
 				&& data.getConfigurationEffort() < 0.5
 				&& data.getHistoryNum() > 0 && data.getRuleNum() > 0 && data.getEnvironmentNum() > 0 
@@ -79,7 +79,7 @@ public class SearchTrialHandler extends AbstractHandler{
 		return false;
 	}
 	
-	private boolean isTypeIIIV(CollectedData data){
+	private boolean isTypeVI(CollectedData data){
 		if( 0<data.getCorrectness() && data.getCorrectness()<1 && data.getSavedEditingEffort() == 0.0
 				&& data.getConfigurationEffort() < 0.5
 //				&& data.getHistoryNum() > 0 && data.getRuleNum() > 0 && data.getEnvironmentNum() > 0 
@@ -100,9 +100,9 @@ public class SearchTrialHandler extends AbstractHandler{
 		case 3:
 			return isTypeIII(data);
 		case 4:
-			return isTypeIIIV(data);
+			return isTypeVI(data);
 		case 5:
-			return isTypeIIV(data);
+			return isTypeV(data);
 		case 6:
 			return isTypeIV(data);
 		default: return true;
