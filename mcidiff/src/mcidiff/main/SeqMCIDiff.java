@@ -112,6 +112,29 @@ public class SeqMCIDiff{
 		
 		return results;
 	}
+	
+	/**
+	 * if the preSet and postSet are separate syntactic unit, they should not be merged for
+	 * more flexible recommendation.
+	 * @param preSet
+	 * @param postSet
+	 * @return
+	 */
+	private boolean isSeparateSyntacticUnit(SeqMultiset preSet, SeqMultiset postSet){
+		for(TokenSeq seq: preSet.getSequences()){
+			if(!seq.isCompeleteSyntaxUnit()){
+				return false;
+			}
+		}
+		
+		for(TokenSeq seq: postSet.getSequences()){
+			if(!seq.isCompeleteSyntaxUnit()){
+				return false;
+			}
+		}
+		
+		return true;
+	}
 
 	/**
 	 * precondition: {@code candidateMultisetList} is in correct order.
@@ -123,6 +146,13 @@ public class SeqMCIDiff{
 	 * @return
 	 */
 	private SeqMultiset tryMergeMultipleMultisets(ArrayList<Multiset> candidateMultisetList) {
+		
+		SeqMultiset preSet = (SeqMultiset) candidateMultisetList.get(0);
+		SeqMultiset postSet = (SeqMultiset) candidateMultisetList.get(candidateMultisetList.size()-1);
+		boolean flag = isSeparateSyntacticUnit(preSet, postSet);
+		if(flag){
+			return null;
+		}
 		
 		SeqMultiset newSeqMultiset = new SeqMultiset();
 		

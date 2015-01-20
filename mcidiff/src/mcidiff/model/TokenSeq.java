@@ -46,6 +46,72 @@ public class TokenSeq {
 		return buffer.toString();
 	}
 	
+	public ASTNode getMinimumContainingASTNode(){
+		if(isEpisolonTokenSeq()){
+			return null;			
+		}
+		else{
+			int bestMargin = -1;
+			ASTNode bestNode = null;
+			
+			for(Token t: getTokens()){
+				ASTNode containingNode = t.getNode();
+				int margin = getContainingMargin(containingNode, getStartPosition(), getEndPosition());
+				while(margin == -1){
+					containingNode = containingNode.getParent();
+					margin = getContainingMargin(containingNode, getStartPosition(), getEndPosition());
+				}
+				
+				if(margin == 0){
+					return containingNode;
+				}
+				
+				if(bestMargin == -1){
+					bestMargin = margin;
+					bestNode = containingNode;
+				}
+				else{
+					if(margin < bestMargin){
+						bestMargin = margin;
+						bestNode = containingNode;
+					}
+				}
+			}
+			
+			return bestNode;
+		}
+	}
+	
+	/**
+	 * return how many position does a AST node contains a given range,
+	 * if the node does not contain the range, return -1.
+	 * @return
+	 */
+	private int getContainingMargin(ASTNode node, int start, int end){
+		int nodeStart = node.getStartPosition();
+		int nodeEnd = nodeStart + node.getLength();
+		
+		if(nodeStart <= start && nodeEnd >= end){
+			return (start-nodeStart) + (end-nodeEnd);
+		}
+		else{
+			return -1;
+		}
+	}
+	
+	public boolean isCompeleteSyntaxUnit(){
+		ASTNode node = getMinimumContainingASTNode();
+		if(node == null){
+			return true;
+		}
+		else{
+			int start = node.getStartPosition();
+			int end = start + node.getLength();
+			
+			return (start == getStartPosition() && end == getEndPosition());
+		}
+	}
+	
 	public int size(){
 		return this.tokens.size();
 	}
