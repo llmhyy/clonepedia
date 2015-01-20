@@ -119,41 +119,43 @@ public class ASTComparator implements BoolComparator {
 			SimpleName name1 = (SimpleName) node1;
 			SimpleName name2 = (SimpleName) node2;
 			
-			IBinding b1 = name1.resolveBinding();
-			IBinding b2 = name2.resolveBinding();
+			return name1.getIdentifier().equals(name2.getIdentifier());
 			
-			if((b1 instanceof IMethodBinding) && (b2 instanceof IMethodBinding)){
-				IMethodBinding mb1 = (IMethodBinding)b1;
-				IMethodBinding mb2 = (IMethodBinding)b2;
-				
-				boolean cond1 = matcher.match((SimpleName) node1, node2);
-				boolean cond2 = mb1.getDeclaringClass().getBinaryName().equals(mb2.getDeclaringClass().getBinaryName());
-				
-				String returnTypeName1 = mb1.getReturnType().getBinaryName();
-				String returnTypeName2 = mb2.getReturnType().getBinaryName();
-				boolean cond3 = (null != returnTypeName1) && (null != returnTypeName2) 
-						&& returnTypeName1.equals(returnTypeName2);
-				
-				return cond1 && cond2 && cond3;
-			}
-			
-			boolean isName1Null = name1.resolveTypeBinding() == null;
-			boolean isName2Null = name2.resolveTypeBinding() == null;
-			
-			if(isName1Null ^ isName2Null){
-				return false;
-			}
-			else if(isName1Null && isName2Null){
-				return /*(name1.resolveTypeBinding().getBinaryName().equals(name2.resolveTypeBinding().getBinaryName())) && */
-						matcher.match((SimpleName) node1, node2);
-			}
-			else{
-				String binaryName1 = name1.resolveTypeBinding().getBinaryName();
-				String binaryName2 = name2.resolveTypeBinding().getBinaryName();
-				
-				return (null != binaryName1) && (null != binaryName2) && binaryName1.equals(binaryName2) && 
-						matcher.match((SimpleName) node1, node2);				
-			}
+//			IBinding b1 = name1.resolveBinding();
+//			IBinding b2 = name2.resolveBinding();
+//			
+//			if((b1 instanceof IMethodBinding) && (b2 instanceof IMethodBinding)){
+//				IMethodBinding mb1 = (IMethodBinding)b1;
+//				IMethodBinding mb2 = (IMethodBinding)b2;
+//				
+//				boolean cond1 = matcher.match((SimpleName) node1, node2);
+//				boolean cond2 = mb1.getDeclaringClass().getBinaryName().equals(mb2.getDeclaringClass().getBinaryName());
+//				
+//				String returnTypeName1 = mb1.getReturnType().getBinaryName();
+//				String returnTypeName2 = mb2.getReturnType().getBinaryName();
+//				boolean cond3 = (null != returnTypeName1) && (null != returnTypeName2) 
+//						&& returnTypeName1.equals(returnTypeName2);
+//				
+//				return cond1 && cond2 && cond3;
+//			}
+//			
+//			boolean isName1Null = name1.resolveTypeBinding() == null;
+//			boolean isName2Null = name2.resolveTypeBinding() == null;
+//			
+//			if(isName1Null ^ isName2Null){
+//				return false;
+//			}
+//			else if(isName1Null && isName2Null){
+//				return /*(name1.resolveTypeBinding().getBinaryName().equals(name2.resolveTypeBinding().getBinaryName())) && */
+//						matcher.match((SimpleName) node1, node2);
+//			}
+//			else{
+//				String binaryName1 = name1.resolveTypeBinding().getBinaryName();
+//				String binaryName2 = name2.resolveTypeBinding().getBinaryName();
+//				
+//				return (null != binaryName1) && (null != binaryName2) && binaryName1.equals(binaryName2) && 
+//						matcher.match((SimpleName) node1, node2);				
+//			}
 		}
 		case ASTNode.CHARACTER_LITERAL:
 			return matcher.match((CharacterLiteral) node1, node2);
