@@ -95,7 +95,10 @@ public class TokenSimilarityComparator{
 			map2.put(character, count);
 		}
 		
-		double consine = 0;
+		double numberator = 0;
+		double delimeter1 = 0;
+		double delimeter2 = 0;
+		
 		for(Character key: set){
 			Integer count1 = map1.get(key);
 			count1 = (count1==null)? 0 : count1;
@@ -103,14 +106,16 @@ public class TokenSimilarityComparator{
 			Integer count2 = map2.get(key);
 			count2 = (count2==null)? 0 : count2;
 			
-			double count = count1 + count2;
-			double ratio1 = count1/count;
-			double ratio2 = count2/count;
+			//double count = count1 + count2;
+			//double ratio1 = count1/count;
+			//double ratio2 = count2/count;
 			
-			consine += ratio1*ratio2;
+			numberator += count1*count2;
+			delimeter1 += count1*count1;
+			delimeter2 += count2*count2;
 		}
 		
-		consine /= (set.size()*set.size());
+		double consine = numberator / (Math.sqrt(delimeter1)*Math.sqrt(delimeter2));
 		
 		return consine;
 	}
