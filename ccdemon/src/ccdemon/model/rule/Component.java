@@ -1,5 +1,7 @@
 package ccdemon.model.rule;
 
+import mcidiff.util.DiffUtil;
+
 public class Component {
 	public final static String ABS_LITERAL = "*";
 	
@@ -74,6 +76,16 @@ public class Component {
 		}
 		
 		return false;
+	}
+	
+	public boolean isIdentifierComponent(){
+		for(String str: this.supportingNames){
+			if(!DiffUtil.isJavaIdentifier(str)){
+				return false;
+			}
+		}
+		
+		return true;
 	}
 	
 	public double compareSupportingNamesWith(Component thatComp){
