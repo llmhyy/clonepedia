@@ -281,8 +281,9 @@ public class ConfigurationPointSet {
 							}
 							if(!candidateExist && !siblings.contains(sub)){
 								siblings.add(sub);
-								point.getCandidates().add(new Candidate(sub.getSimpleName(), 0 ,Candidate.ENVIRONMENT, point));
+								//point.getCandidates().add(new Candidate(sub.getSimpleName(), 0 ,Candidate.ENVIRONMENT, point));
 							}
+							point.addCandidate(new Candidate(sub.getSimpleName(), 0, Candidate.ENVIRONMENT, point));
 						}
 					}
 				}
@@ -304,14 +305,16 @@ public class ConfigurationPointSet {
 					VariableVisitor visitor = new VariableVisitor(types, superTypes, interfaceTypes, pastedVariableName);
 					node.accept(visitor);
 					for(String variable : visitor.getCompatibleVariables()){
-						point.getCandidates().add(new Candidate(variable, 0, Candidate.ENVIRONMENT, point));
+						//point.getCandidates().add(new Candidate(variable, 0, Candidate.ENVIRONMENT, point));
+						point.addCandidate(new Candidate(variable, 0, Candidate.ENVIRONMENT, point));
 					}
 				}
 				//otherwise, we just search those fields
 				FieldVisitor visitor = new FieldVisitor(types, superTypes, interfaceTypes, pastedVariableName);
 				pastedCompilationUnit.accept(visitor);
 				for(String variable : visitor.getCompatibleVariables()){
-					point.getCandidates().add(new Candidate(variable, 0, Candidate.ENVIRONMENT, point));
+					//point.getCandidates().add(new Candidate(variable, 0, Candidate.ENVIRONMENT, point));
+					point.addCandidate(new Candidate(variable, 0, Candidate.ENVIRONMENT, point));
 				}
 			}
 			else if(point.isMethod()){

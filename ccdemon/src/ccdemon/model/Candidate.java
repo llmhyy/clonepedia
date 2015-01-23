@@ -1,5 +1,7 @@
 package ccdemon.model;
 
+import java.util.ArrayList;
+
 import mcidiff.model.TokenSeq;
 
 
@@ -13,7 +15,7 @@ public class Candidate {
 	private double score;
 	private ConfigurationPoint configurationPoint;
 	
-	private String origin;
+	private ArrayList<String> originList = new ArrayList<>();
 	
 	/**
 	 * @param text
@@ -23,20 +25,27 @@ public class Candidate {
 		super();
 		this.text = text;
 		this.score = score;
-		this.origin = origin;
 		this.configurationPoint = configurationPoint;
+		
+		addOrigin(origin);
+	}
+	
+	public void addOrigin(String origin){
+		if(!this.originList.contains(origin)){
+			this.originList.add(origin);
+		}
 	}
 	
 	public boolean isHistoryBased(){
-		return getOrigin().equals(Candidate.HISTORY);
+		return getOriginList().contains(Candidate.HISTORY);
 	}
 	
 	public boolean isEnvironmentBased(){
-		return getOrigin().equals(Candidate.ENVIRONMENT);
+		return getOriginList().contains(Candidate.ENVIRONMENT);
 	}
 	
 	public boolean isRuleBased(){
-		return getOrigin().equals(Candidate.RULE);
+		return getOriginList().contains(Candidate.RULE);
 	}
 	
 	/**
@@ -69,15 +78,8 @@ public class Candidate {
 	/**
 	 * @return the origin
 	 */
-	public String getOrigin() {
-		return origin;
-	}
-
-	/**
-	 * @param origin the origin to set
-	 */
-	public void setOrigin(String origin) {
-		this.origin = origin;
+	public ArrayList<String> getOriginList() {
+		return this.originList;
 	}
 
 	@Override

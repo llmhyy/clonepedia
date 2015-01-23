@@ -73,11 +73,30 @@ public class ConfigurationPoint {
 		return false;
 	}
 	
+	public void addCandidate(Candidate candidate){
+		Candidate existingCandidate = null;
+		for(Candidate c: getCandidates()){
+			if(c.getText().toLowerCase().equals(candidate.getText().toLowerCase())){
+				existingCandidate = c;
+				break;
+			}
+		}
+		
+		if(existingCandidate == null){
+			getCandidates().add(candidate);
+		}
+		else{
+			for(String origin: candidate.getOriginList()){
+				existingCandidate.addOrigin(origin);
+			}
+		}
+	}
+	
 	public void clearRuleGeneratedCandidates(){
 		Iterator<Candidate> iterator = this.candidates.iterator();
 		while(iterator.hasNext()){
 			Candidate candidate = iterator.next();
-			if(candidate.getOrigin().equals(Candidate.RULE)){
+			if(candidate.isRuleBased() && candidate.getOriginList().size()==1){
 				iterator.remove();
 			}
 		}
