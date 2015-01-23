@@ -1,5 +1,6 @@
 package ccdemon.evaluation.handler;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import mcidiff.model.CloneSet;
@@ -45,10 +46,11 @@ public class SearchTrialHandler extends AbstractHandler{
 	
 	private boolean isTypeIII(CollectedData data){
 		if(0 == data.getSavedEditingEffort() && data.getCorrectness() == 1.0 
-				&& data.getConfigurationEffort() < 0.5
+//				&& data.getConfigurationEffort() < 0.5
 //				&& data.getHistoryNum() > 0 && data.getRuleNum() > 0 && data.getEnvironmentNum() > 0 
-				&& data.getConfigurationPointNum() >= 5
-				&& data.getCloneInstance().getLength() >= 8){
+				&& data.getConfigurationPointNum() > 1
+//				&& data.getCloneInstance().getLength() >= 8
+				){
 			return true;
 		}
 		
@@ -58,9 +60,9 @@ public class SearchTrialHandler extends AbstractHandler{
 	private boolean isTypeIV(CollectedData data){
 		if(0<data.getCorrectness() && data.getCorrectness()<1 && data.getSavedEditingEffort() == 1.0
 				&& data.getConfigurationEffort() < 0.5
-				&& data.getHistoryNum() > 0 && data.getRuleNum() > 0 && data.getEnvironmentNum() > 0 
+//				&& data.getHistoryNum() > 0 && data.getRuleNum() > 0 && data.getEnvironmentNum() > 0 
 				&& data.getConfigurationPointNum() >= 5
-				&& data.getCloneInstance().getLength() >= 8){
+				&& data.getCloneInstance().getLength() >= 5){
 			return true;
 		}
 		
@@ -70,9 +72,9 @@ public class SearchTrialHandler extends AbstractHandler{
 	private boolean isTypeV(CollectedData data){
 		if(0<data.getCorrectness() && data.getCorrectness()<1 && 0 < data.getSavedEditingEffort() && data.getSavedEditingEffort() < 1
 				&& data.getConfigurationEffort() < 0.5
-				&& data.getHistoryNum() > 0 && data.getRuleNum() > 0 && data.getEnvironmentNum() > 0 
+//				&& data.getHistoryNum() > 0 && data.getRuleNum() > 0 && data.getEnvironmentNum() > 0 
 				&& data.getConfigurationPointNum() >= 5
-				&& data.getCloneInstance().getLength() >= 8){
+				&& data.getCloneInstance().getLength() >= 5){
 			return true;
 		}
 		
@@ -81,10 +83,11 @@ public class SearchTrialHandler extends AbstractHandler{
 	
 	private boolean isTypeVI(CollectedData data){
 		if( 0<data.getCorrectness() && data.getCorrectness()<1 && data.getSavedEditingEffort() == 0.0
-				&& data.getConfigurationEffort() < 0.5
+//				&& data.getConfigurationEffort() < 0.5
 //				&& data.getHistoryNum() > 0 && data.getRuleNum() > 0 && data.getEnvironmentNum() > 0 
-				&& data.getConfigurationPointNum() >= 5
-				&& data.getCloneInstance().getLength() >= 8){
+				&& data.getConfigurationPointNum() > 1
+//				&& data.getCloneInstance().getLength() >= 8
+				){
 			return true;
 		}
 		
@@ -100,11 +103,11 @@ public class SearchTrialHandler extends AbstractHandler{
 		case 3:
 			return isTypeIII(data);
 		case 4:
-			return isTypeVI(data);
+			return isTypeIV(data);
 		case 5:
 			return isTypeV(data);
 		case 6:
-			return isTypeIV(data);
+			return isTypeVI(data);
 		default: return true;
 		}
 	}
@@ -131,11 +134,14 @@ public class SearchTrialHandler extends AbstractHandler{
 		CloneRecoverer recoverer = new CloneRecoverer();
 		CloneSets sets = clonepedia.Activator.plainSets;;
 		
-		ArrayList<CollectedData> dataList = new ArrayList<>();
+		ArrayList<CollectedData> type3_dataList = new ArrayList<>();
+		ArrayList<CollectedData> type4_dataList = new ArrayList<>();
+		ArrayList<CollectedData> type5_dataList = new ArrayList<>();
+		ArrayList<CollectedData> type6_dataList = new ArrayList<>();
 		
 		for(clonepedia.model.ontology.CloneSet clonepediaSet: sets.getCloneList()){
 			
-			if(!clonepediaSet.getId().equals("69358")){
+			if(!clonepediaSet.getId().equals("17896")){
 				continue;
 			}
 			
@@ -146,14 +152,29 @@ public class SearchTrialHandler extends AbstractHandler{
 			
 			for(CollectedData data : datas){
 				//collect trials when:
-				boolean isNeeded = determineTarget(5, data);
-				if(isNeeded){
-					dataList.add(data);				
+				if(determineTarget(3, data)){
+					type3_dataList.add(data);				
+				}
+				if(determineTarget(4, data)){
+					type4_dataList.add(data);				
+				}
+				if(determineTarget(5, data)){
+					type5_dataList.add(data);				
+				}
+				if(determineTarget(6, data)){
+					type6_dataList.add(data);				
 				}
 			}
 		}
-
+		
 		System.out.println("-------------------------------------- Result -----------------------------------");
-		System.out.println(dataList.toString());
+		System.out.println("=================================== Type3 ====================================");
+		System.out.println(type3_dataList.toString());
+		System.out.println("=================================== Type4 ====================================");
+		System.out.println(type4_dataList.toString());
+		System.out.println("=================================== Type5 ====================================");
+		System.out.println(type5_dataList.toString());
+		System.out.println("=================================== Type6 ====================================");
+		System.out.println(type6_dataList.toString());
 	}
 }
