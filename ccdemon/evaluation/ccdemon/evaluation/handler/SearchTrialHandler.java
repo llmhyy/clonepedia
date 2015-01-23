@@ -1,6 +1,5 @@
 package ccdemon.evaluation.handler;
 
-import java.io.File;
 import java.util.ArrayList;
 
 import mcidiff.model.CloneSet;
