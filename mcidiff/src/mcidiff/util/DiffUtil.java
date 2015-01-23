@@ -1,10 +1,12 @@
 package mcidiff.util;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import mcidiff.model.CorrespondentListAndSet;
-import mcidiff.model.TokenMultiset;
 import mcidiff.model.Token;
+import mcidiff.model.TokenMultiset;
 
 public class DiffUtil {
 //	public static double computeAdjustedLevenshteinDistance(ArrayList<? extends Object> seq1, 
@@ -258,7 +260,26 @@ public class DiffUtil {
 		return commonLengthTable;
 	}
 	
+	public static boolean isJavaIdentifier(String s){
+		String regex = "[_a-zA-Z][_a-zA-Z\\d]*";
+		Pattern p = Pattern.compile(regex);
+		Matcher m = p.matcher(s);
+		
+		return m.matches();
+	}
 	
+	/**
+	 * This method try to split the expression according to java identifier.
+	 * For example, "((Element)ele)" will be splited into "((", "Element", ")", "ele" and ")". 
+	 * @param s
+	 * @return
+	 */
+	public static String[] splitExpressionOrTokenWRTIdentifier(String s){
+		String regex = "(?<=\\W)(?=\\w)|(?<=\\w)(?=\\W)";
+		String[] list = s.split(regex);
+		
+		return list;
+	}
 	
 	public static String[] splitCamelString(String s) {
 		return s.split("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])|(?<!^)(?=(\\*)+)");

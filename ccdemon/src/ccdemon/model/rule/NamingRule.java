@@ -86,9 +86,9 @@ public class NamingRule {
 		RuleItem ruleItem = this.equivalentComponentGroupList.findMatchingRuleItem(currentPoint);
 		matchingCandidateStringToNamingPattern(candidateString, false, group, ruleItem);
 		
-		if(!currentPoint.getCopiedTokenSeq().isSingleToken()){
+		/*if(!currentPoint.getCopiedTokenSeq().isSingleToken()){
 			return;
-		}
+		}*/
 		
 		updateCandidatesByNewValue();
 		
@@ -126,7 +126,7 @@ public class NamingRule {
 				String newValue = buffer.toString();
 				newValue = parseStringToCamel(0, item, newValue);
 				ConfigurationPoint point = item.getConfigurationPoint();
-				point.clearRuleGeneratedCandidates();
+				//point.clearRuleGeneratedCandidates();
 				if(!point.containsByIgnoringCase(newValue)){
 					point.getCandidates().add(new Candidate(newValue, 0, Candidate.RULE, point));							
 				}
@@ -142,7 +142,10 @@ public class NamingRule {
 			return currentValue;
 		}
 		
-		if(position == 0 && !(item.getConfigurationPoint().isType() || item.getConfigurationPoint().isConstructor())){
+		if(position == 0 && 
+				!(item.getConfigurationPoint().isType() || 
+						item.getConfigurationPoint().isConstructor() || 
+						item.getConfigurationPoint().containsExpression())){
 			char[] chars = currentValue.toCharArray();
 			chars[0] = String.valueOf(chars[0]).toLowerCase().charAt(0);
 			currentValue = String.valueOf(chars);
@@ -165,7 +168,9 @@ public class NamingRule {
 		
 		if(group != null && ruleItem != null){
 			ArrayList<Component> components = ruleItem.getComponentList();
-			String[] instanceArray = DiffUtil.splitCamelString(candidateString);
+			String[] comps0 = DiffUtil.splitExpressionOrTokenWRTIdentifier(candidateString);
+			String[] instanceArray = splitCamelStrings(comps0);
+			//String[] instanceArray = DiffUtil.splitCamelString(candidateString);
 			
 			String[] patternArray = new String[components.size()];
 			for(int i=0; i<components.size(); i++){
@@ -276,12 +281,13 @@ public class NamingRule {
 			String[] names = new String[instanceList.size()];
 			for(int i=0; i<instanceList.size(); i++){
 				NameInstance nameInstance = instanceList.get(i);
-				if(nameInstance.isSingleToken()){
+				/*if(nameInstance.isSingleToken()){
 					names[i] = nameInstance.getName();
 				}
 				else{
 					names[i] = null;
-				}
+				}*/
+				names[i] = nameInstance.getName();
 			}
 			
 			ArrayList<Component> components = parseComponents(names, item);
@@ -314,20 +320,25 @@ public class NamingRule {
 		while(compList.size() != 0){
 			EquivalentComponentGroup group = new EquivalentComponentGroup();
 			Component component = compList.get(0);
+			
 			group.addComponent(component);
 			component.setGroup(group);
 			compList.remove(0);
-			
-			Iterator<Component> iter = compList.iterator();
-			while(iter.hasNext()){
-				Component comp = iter.next();
-				if(/*comp.equals(component)*/comp.compareSupportingNamesWith(component) 
-						>= Settings.equivalentComponentThreshold){
-					group.addComponent(comp);
-					comp.setGroup(group);
-					iter.remove();
-				}
+			//component containing non-identifier will not be equivalent to any other component.
+			if(component.isIdentifierComponent()){
+				Iterator<Component> iter = compList.iterator();
+				while(iter.hasNext()){
+					Component comp = iter.next();
+					if(/*comp.equals(component)*/comp.compareSupportingNamesWith(component) 
+							>= Settings.equivalentComponentThreshold){
+						group.addComponent(comp);
+						comp.setGroup(group);
+						iter.remove();
+					}
+				}				
 			}
+			
+			
 			this.equivalentComponentGroupList.addGroup(group);
 		}
 		
@@ -342,7 +353,9 @@ public class NamingRule {
 		for(int i=0; i<names.length; i++){
 			String name = names[i];
 			if(name != null && name.length() > 0){
-				String[] comps = DiffUtil.splitCamelString(name);
+				//String[] comps = DiffUtil.splitCamelString(name);
+				String[] comps0 = DiffUtil.splitExpressionOrTokenWRTIdentifier(name);
+				String[] comps = splitCamelStrings(comps0);
 				ArrayList<String> list = new ArrayList<>();
 				list.add("$");
 				for(String comp: comps){
@@ -420,6 +433,23 @@ public class NamingRule {
 			}
 		}
 		return componentList;
+	}
+	
+	private String[] splitCamelStrings(String[] list){
+		ArrayList<String> strList = new ArrayList<>();
+		for(String str: list){
+			if(DiffUtil.isJavaIdentifier(str)){
+				String[] subStrList = DiffUtil.splitCamelString(str);
+				for(String subStr: subStrList){
+					strList.add(subStr);
+				}
+			}
+			else{
+				strList.add(str);
+			}
+		}
+		
+		return strList.toArray(new String[0]);
 	}
 
 	private boolean isNotAllNull(String[] supportingNames) {

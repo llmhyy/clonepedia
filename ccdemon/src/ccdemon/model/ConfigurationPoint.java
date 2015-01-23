@@ -63,6 +63,16 @@ public class ConfigurationPoint {
 		organizeHistoricalCandidate(getSeqMultiset());
 	}
 	
+	public boolean containsExpression(){
+		for(TokenSeq seq: this.seqMultiset.getSequences()){
+			if(!seq.isSingleToken()){
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	public void clearRuleGeneratedCandidates(){
 		Iterator<Candidate> iterator = this.candidates.iterator();
 		while(iterator.hasNext()){
