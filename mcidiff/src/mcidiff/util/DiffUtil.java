@@ -261,7 +261,11 @@ public class DiffUtil {
 	}
 	
 	public static boolean isJavaIdentifier(String s){
-		String regex = "[_a-zA-Z][_a-zA-Z\\d]*";
+		if(s == null){
+			return false;
+		}
+		
+		String regex = "[_a-zA-Z][_a-zA-Z0-9]*";
 		Pattern p = Pattern.compile(regex);
 		Matcher m = p.matcher(s);
 		
