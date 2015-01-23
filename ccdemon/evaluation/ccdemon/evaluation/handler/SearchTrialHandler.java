@@ -135,7 +135,7 @@ public class SearchTrialHandler extends AbstractHandler{
 		
 		for(clonepedia.model.ontology.CloneSet clonepediaSet: sets.getCloneList()){
 			
-			if(!clonepediaSet.getId().equals("69358")){
+			if(!clonepediaSet.getId().equals("17185")){
 				continue;
 			}
 			
