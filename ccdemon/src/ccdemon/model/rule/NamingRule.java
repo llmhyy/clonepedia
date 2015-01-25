@@ -100,7 +100,7 @@ public class NamingRule {
 	private void updateCandidatesByNewValue() {
 		for(RuleItem item: itemList){
 			if(item.isChangeable() && item.getComponentList().size() > 0){
-				//boolean isValidForAdding = true;
+				boolean isValidForAdding = false;
 				StringBuffer buffer = new StringBuffer();
 				for(int i=0; i<item.getComponentList().size(); i++){
 					Component comp = item.getComponentList().get(i);
@@ -109,6 +109,7 @@ public class NamingRule {
 						//The first non-type component is usually in lower case.
 						currentValue = parseStringToCamel(i, item, currentValue);
 						buffer.append(currentValue);
+						isValidForAdding = true;
 					}
 					else if(!comp.isAbstract()){
 						currentValue = (currentValue != null) ? currentValue : comp.getAbstractName();
@@ -117,21 +118,23 @@ public class NamingRule {
 						buffer.append(currentValue);
 					}
 					else{
-						//isValidForAdding = false;
 						//break;
-						buffer.append(comp.getOriginName());
+						//isValidForAdding = false;
+						buffer.append(comp.getOriginName());						
 					}
 				}
 				
-				String newValue = buffer.toString();
-				newValue = parseStringToCamel(0, item, newValue);
-				ConfigurationPoint point = item.getConfigurationPoint();
-				//point.clearRuleGeneratedCandidates();
-				/*if(!point.containsByIgnoringCase(newValue)){
+				if(isValidForAdding){
+					String newValue = buffer.toString();
+					newValue = parseStringToCamel(0, item, newValue);
+					ConfigurationPoint point = item.getConfigurationPoint();
+					//point.clearRuleGeneratedCandidates();
+					/*if(!point.containsByIgnoringCase(newValue)){
 					point.getCandidates().add(new Candidate(newValue, 0, Candidate.RULE, point));							
-				}*/
-				Candidate candidate = new Candidate(newValue, 0, Candidate.RULE, point);
-				point.addCandidate(candidate);
+					}*/
+					Candidate candidate = new Candidate(newValue, 0, Candidate.RULE, point);
+					point.addCandidate(candidate);
+				}
 			}
 		}
 	}
