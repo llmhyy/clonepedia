@@ -85,6 +85,10 @@
             class="ccdemon.evaluation.handler.CalculateStatisticsHandler"
             commandId="ccdemon.evaluation.calulateStatiastics">
       </handler>
+      <handler
+            class="ccdemon.evaluation.handler.RecordBehaviorHandler"
+            commandId="ccdemon.evaluation.recordBehavior">
+      </handler>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -108,6 +112,11 @@
             defaultHandler="ccdemon.evaluation.handler.CalculateStatisticsHandler"
             id="ccdemon.evaluation.calulateStatiastics"
             name="CalculateStatistics">
+      </command>
+      <command
+            defaultHandler="ccdemon.evaluation.handler.RecordBehaviorHandler"
+            id="ccdemon.evaluation.recordBehavior"
+            name="RecordBehavior">
       </command>
    </extension>
    <extension
@@ -146,6 +155,13 @@
                   icon="icons/evaluation.png"
                   id="ccdemon.command.evaluation.calulateStatiastics"
                   label="CaculateStatistics"
+                  style="push">
+            </command>
+            <command
+                  commandId="ccdemon.evaluation.recordBehavior"
+                  icon="icons/record.png"
+                  id="ccdemon.command.evaluation.recordBehavior"
+                  label="RecordBehavior"
                   style="push">
             </command>
          </toolbar>
