@@ -136,7 +136,7 @@
          <toolbar
                id="toolbar:org.eclipse.ui.main.toolbar"
                label="Tools">
-            <command
+            <!--<command
                   commandId="ccdemon.evaluation.searchTrial"
                   icon="icons/search.jpg"
                   id="ccdemon.command.evaluation.searchTrial"
@@ -156,12 +156,12 @@
                   id="ccdemon.command.evaluation.calulateStatiastics"
                   label="CaculateStatistics"
                   style="push">
-            </command>
+            </command>-->
             <command
                   commandId="ccdemon.evaluation.recordBehavior"
                   icon="icons/record.png"
                   id="ccdemon.command.evaluation.recordBehavior"
-                  label="RecordBehavior"
+                  label="Record Behavior"
                   style="push">
             </command>
          </toolbar>
