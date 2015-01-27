@@ -51,6 +51,7 @@ public class CustomLinkedModeUIFocusListener implements
 		
 		//record intervals
 		focusLostTime = System.currentTimeMillis();
+		DataRecord.addTimeToTimes(DataRecord.focusLostTimes);
 		DataRecord.focusIntervals.add(focusLostTime - focusGainTime);
 		//record manual edit
 		boolean inCandidate = false;
@@ -125,6 +126,7 @@ public class CustomLinkedModeUIFocusListener implements
 	public void linkingFocusGained(LinkedPosition position, LinkedModeUITarget target) {
 		
 		focusGainTime = System.currentTimeMillis();
+		DataRecord.addTimeToTimes(DataRecord.focusGainTimes);
 		
 		//find current configuration point that has the same offset and length
 		try {

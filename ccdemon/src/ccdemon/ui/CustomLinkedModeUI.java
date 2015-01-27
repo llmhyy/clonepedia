@@ -801,6 +801,7 @@ public class CustomLinkedModeUI {
 
 	void next() {
 		DataRecord.toNextTime++;
+		DataRecord.addTimeToTimes(DataRecord.toNextTimes);
 		
 		if (fIterator.hasNext(fFramePosition)) {
 			switchPosition(fIterator.next(fFramePosition), true, true);
@@ -811,6 +812,7 @@ public class CustomLinkedModeUI {
 
 	void previous() {
 		DataRecord.toPrevTime++;
+		DataRecord.addTimeToTimes(DataRecord.toPrevTimes);
 		
 		if (fIterator.hasPrevious(fFramePosition)) {
 			switchPosition(fIterator.previous(fFramePosition), true, true);
