@@ -14,6 +14,8 @@ public class DataRecord {
 	public static ArrayList<String> toNextTimes = new ArrayList<String>();
 	public static int toPrevTime = 0;
 	public static ArrayList<String> toPrevTimes = new ArrayList<String>();
+	
+	public static ArrayList<String> manualEditTimes = new ArrayList<String>();
 	public static int manualEditTime = 0;
 	public static ArrayList<String> focusGainTimes = new ArrayList<String>();
 	public static ArrayList<String> focusLostTimes = new ArrayList<String>();
@@ -25,6 +27,7 @@ public class DataRecord {
 		toPrevTime = 0;
 		toPrevTimes = new ArrayList<String>();
 		manualEditTime = 0;
+		manualEditTimes = new ArrayList<>();
 		focusGainTimes = new ArrayList<String>();
 		focusLostTimes = new ArrayList<String>();
 	}

@@ -3,6 +3,9 @@ package ccdemon.evaluation.handler;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -47,10 +50,16 @@ public class RecordBehaviorHandler extends AbstractHandler {
 		for(String time : DataRecord.toPrevTimes){
 			content += time + ",";
 		}
-		
+		content += "\nEach Manual Editing Time: " + "\n";
+		for(String time : DataRecord.manualEditTimes){
+			content += time + ",";
+		}
 		
 		try {
-			FileWriter writer = new FileWriter(uri.getPath() + "/record_data" + (++DataRecord.recordTime));
+			SimpleDateFormat sdf = new SimpleDateFormat("HH-mm-ss-SS",Locale.SIMPLIFIED_CHINESE);
+			String timeStr = sdf.format(new Date());
+			
+			FileWriter writer = new FileWriter(uri.getPath() + "/record_data" + timeStr);
 			writer.write(content);
 			writer.close();
 			

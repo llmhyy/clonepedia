@@ -66,6 +66,7 @@ public class CustomLinkedModeUIFocusListener implements
 		}
 		if(!inCandidate){
 			DataRecord.manualEditTime++;
+			DataRecord.addTimeToTimes(DataRecord.manualEditTimes);
 		}
 		
 		try {
