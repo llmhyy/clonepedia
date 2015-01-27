@@ -1,6 +1,7 @@
 package ccdemon.model.rule;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 
 import mcidiff.util.DiffUtil;
@@ -187,53 +188,26 @@ public class NamingRule {
 				/**
 				 * find which component in the new candidate string are corresponded to the abstract component
 				 */
+				//matchEquivalence(isSetOriginName, components, instanceArray, templateMatch);
+				HashSet<Integer> matchedInstaceCursorSet = getMatchableInstanceCursor(templateMatch);
 				for(int i=0; i<components.size(); i++){
 					Component comp = components.get(i);
-					if(comp.isAbstract()){
-						int startTemplateCursor = i-1;
-						int endTempalteCursor = i+1;
-						
-						int startInstanceCursor = 0;
-						int endInstanceCursor = 0;
-						
-						if(startTemplateCursor < 0){
-							startInstanceCursor = -1;
+					
+					Integer instanceStartCursor = templateMatch.getValue(i);
+					if(instanceStartCursor == -1){
+						if(isSetOriginName){
+							comp.setOriginName("");
 						}
 						else{
-							startInstanceCursor = templateMatch.getValue(startTemplateCursor);
-							if(startInstanceCursor == -1){
-								int index = templateMatch.getValue(i);
-								if(index != -1){
-									startInstanceCursor = index - 1;
-								}
-								else{
-									startInstanceCursor = instanceArray.length;
-								}
-							} 
+							comp.getGroup().setCurrentValue("");					
 						}
-						
-						if(endTempalteCursor > components.size()-1){
-							endInstanceCursor = instanceArray.length;
-						}
-						else{
-							endInstanceCursor = templateMatch.getValue(endTempalteCursor);
-							if(endInstanceCursor == -1){
-								int index = templateMatch.getValue(i);
-								if(index != -1){
-									endInstanceCursor = index + 1;
-								}
-								else {
-									endInstanceCursor = -1;
-								}
-							}
-							//endInstanceCursor = (endInstanceCursor == -1)? instanceArray.length : endInstanceCursor;
-						}
-						
+					}
+					else{
+						int instanceEndCursor = findEndCursor(instanceStartCursor, instanceArray.length-1, 
+								matchedInstaceCursorSet);
 						StringBuffer buffer = new StringBuffer();
-						for(int j=startInstanceCursor+1; j<=endInstanceCursor-1; j++){
-							if(j != -1){
-								buffer.append(instanceArray[j]);							
-							}
+						for(int j=instanceStartCursor; j<=instanceEndCursor; j++){
+							buffer.append(instanceArray[j]);
 						}
 						String newComponentName = buffer.toString();
 						if(isSetOriginName){
@@ -243,27 +217,124 @@ public class NamingRule {
 							comp.getGroup().setCurrentValue(newComponentName);					
 						}
 					}
-					else{
+				}
+			}
+		}
+	}
+	
+	/**
+	 * find the cursor after instanceStartCursor and not in matchedInstanceCursorSet
+	 * @param instanceStartCursor
+	 * @param matchedInstaceCursorSet
+	 * @return
+	 */
+	private int findEndCursor(Integer instanceStartCursor, int maxCursor,
+			HashSet<Integer> matchedInstaceCursorSet) {
+		int afterCursor = instanceStartCursor + 1;
+		while(!matchedInstaceCursorSet.contains(afterCursor) && afterCursor <= maxCursor){
+			afterCursor++;
+		}
+		return afterCursor - 1;
+	}
+
+	private HashSet<Integer> getMatchableInstanceCursor(TemplateMatch templateMatch){
+		HashSet<Integer> set = new HashSet<>();
+		for(int i=0; i<templateMatch.getSize(); i++){
+			Integer index = templateMatch.getValue(i);
+			if(index != -1){
+				set.add(index);
+			}
+		}
+		
+		return set;
+	}
+
+	/**
+	 * find which component in the new candidate string are corresponded to the abstract component
+	 * 
+	 * @param isSetOriginName
+	 * @param components
+	 * @param instanceArray
+	 * @param templateMatch
+	 */
+	public void matchEquivalence(boolean isSetOriginName,
+			ArrayList<Component> components, String[] instanceArray,
+			TemplateMatch templateMatch) {
+		for(int i=0; i<components.size(); i++){
+			Component comp = components.get(i);
+			if(comp.isAbstract()){
+				int startTemplateCursor = i-1;
+				int endTempalteCursor = i+1;
+				
+				int startInstanceCursor = 0;
+				int endInstanceCursor = 0;
+				
+				if(startTemplateCursor < 0){
+					startInstanceCursor = -1;
+				}
+				else{
+					startInstanceCursor = templateMatch.getValue(startTemplateCursor);
+					if(startInstanceCursor == -1){
 						int index = templateMatch.getValue(i);
 						if(index != -1){
-							String newComponentName = instanceArray[index];
-							if(isSetOriginName){
-								comp.setOriginName(newComponentName);
-							}
-							else{
-								comp.getGroup().setCurrentValue(newComponentName);					
-							}			
+							startInstanceCursor = index - 1;
 						}
 						else{
-							if(isSetOriginName){
-								comp.setOriginName("");
-							}
-							else{
-								comp.getGroup().setCurrentValue("");					
-							}
+							startInstanceCursor = instanceArray.length;
+						}
+					} 
+				}
+				
+				if(endTempalteCursor > components.size()-1){
+					endInstanceCursor = instanceArray.length;
+				}
+				else{
+					endInstanceCursor = templateMatch.getValue(endTempalteCursor);
+					if(endInstanceCursor == -1){
+						int index = templateMatch.getValue(i);
+						if(index != -1){
+							endInstanceCursor = index + 1;
+						}
+						else {
+							endInstanceCursor = -1;
 						}
 					}
-				}			
+					//endInstanceCursor = (endInstanceCursor == -1)? instanceArray.length : endInstanceCursor;
+				}
+				
+				StringBuffer buffer = new StringBuffer();
+				for(int j=startInstanceCursor+1; j<=endInstanceCursor-1; j++){
+					if(j != -1){
+						buffer.append(instanceArray[j]);							
+					}
+				}
+				String newComponentName = buffer.toString();
+				if(isSetOriginName){
+					comp.setOriginName(newComponentName);
+				}
+				else{
+					comp.getGroup().setCurrentValue(newComponentName);					
+				}
+			}
+			else{
+				int index = templateMatch.getValue(i);
+				if(index != -1){
+					String newComponentName = instanceArray[index];
+					if(isSetOriginName){
+						comp.setOriginName(newComponentName);
+					}
+					else{
+						comp.getGroup().setCurrentValue(newComponentName);					
+					}			
+				}
+				else{
+					if(isSetOriginName){
+						comp.setOriginName("");
+					}
+					else{
+						comp.getGroup().setCurrentValue("");					
+					}
+				}
 			}
 		}
 	}
