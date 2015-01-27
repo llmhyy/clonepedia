@@ -8,6 +8,7 @@ public class CloneDiffPerspective implements IPerspectiveFactory {
 	public static String CLONE_REPORT_VIEW = "Clonepedia.cloneReportView";
 	public static String CLONE_DIFF_VIEW = "Clonepedia.CloneDiffView";
 	public static String DIFF_PROPERTY_VIEW = "Clonepedia.DiffPropertyView";
+	public static String TASK_LIST_VIEW = "org.eclipse.ui.views.TaskList";
 	
 	@Override
 	public void createInitialLayout(IPageLayout layout) {
@@ -17,7 +18,7 @@ public class CloneDiffPerspective implements IPerspectiveFactory {
 		layout.addView(CLONE_DIFF_VIEW, IPageLayout.BOTTOM, 0.55f, editorArea);
 		
 		layout.addView(DIFF_PROPERTY_VIEW, IPageLayout.RIGHT, 0.3f, editorArea);
-
+		layout.addView(TASK_LIST_VIEW, IPageLayout.RIGHT, 0.3f, editorArea);
 	}
 
 }
