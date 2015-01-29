@@ -39,4 +39,8 @@ public class TemplateMatch {
 	public void setMatchable(boolean matchable) {
 		this.matchable = matchable;
 	}
+	
+	public int getSize(){
+		return this.templateMatch.length;
+	}
 }

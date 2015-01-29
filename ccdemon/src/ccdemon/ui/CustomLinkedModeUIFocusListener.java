@@ -9,6 +9,8 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.link.LinkedPosition;
 
+import ccdemon.evaluation.model.DataRecord;
+import ccdemon.model.Candidate;
 import ccdemon.model.ConfigurationPoint;
 import ccdemon.model.ConfigurationPointSet;
 import ccdemon.ui.CustomLinkedModeUI.ILinkedModeUIFocusListener;
@@ -16,6 +18,10 @@ import ccdemon.ui.CustomLinkedModeUI.LinkedModeUITarget;
 
 public class CustomLinkedModeUIFocusListener implements
 		ILinkedModeUIFocusListener {
+	
+	//record every configuration time cost
+	long focusGainTime; 
+	long focusLostTime;
 	
 	/**
 	 * the following two fields, {@code positionList} and {@code configurationPointSet} represents the model
@@ -42,6 +48,27 @@ public class CustomLinkedModeUIFocusListener implements
 
 	@Override
 	public void linkingFocusLost(LinkedPosition position, LinkedModeUITarget target) {
+		
+		//record intervals
+		focusLostTime = System.currentTimeMillis();
+		DataRecord.addTimeToTimes(DataRecord.focusLostTimes);
+		DataRecord.focusIntervals.add(focusLostTime - focusGainTime);
+		//record manual edit
+		boolean inCandidate = false;
+		for(Candidate candidate : currentPoint.getCandidates()){
+			try {
+				if(position.getContent().equals(candidate.getText())){
+					inCandidate = true;
+				}
+			} catch (BadLocationException e) {
+				e.printStackTrace();
+			}
+		}
+		if(!inCandidate){
+			DataRecord.manualEditTime++;
+			DataRecord.addTimeToTimes(DataRecord.manualEditTimes);
+		}
+		
 		try {
 			currentContent = position.getContent();
 			//((RankedProposalPosition) position).setConfigured(true);
@@ -93,10 +120,15 @@ public class CustomLinkedModeUIFocusListener implements
 				proposals[0].apply(document);
 			}
 		}
+		
 	}
 
 	@Override
 	public void linkingFocusGained(LinkedPosition position, LinkedModeUITarget target) {
+		
+		focusGainTime = System.currentTimeMillis();
+		DataRecord.addTimeToTimes(DataRecord.focusGainTimes);
+		
 		//find current configuration point that has the same offset and length
 		try {
 			formerContent = position.getContent();

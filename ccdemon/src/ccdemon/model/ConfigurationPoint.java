@@ -358,7 +358,11 @@ public class ConfigurationPoint {
 						//super class
 						if(((IVariableBinding)binding).getType().getSuperclass() != null &&
 								!superTypeList.contains(((IVariableBinding)binding).getType().getSuperclass().getQualifiedName())){
-							superTypeList.add(((IVariableBinding)binding).getType().getSuperclass().getQualifiedName());
+							String superTypeName = ((IVariableBinding)binding).getType().getSuperclass().getQualifiedName();
+							if(!superTypeName.equals("java.lang.Object")){
+								superTypeList.add(superTypeName);								
+							}
+							
 						}
 					}
 				}
@@ -382,7 +386,10 @@ public class ConfigurationPoint {
 						if(((IVariableBinding)binding).getType().getInterfaces().length != 0){
 							for(ITypeBinding interfaceType : ((IVariableBinding)binding).getType().getInterfaces()){
 								if(!interfaceTypeList.contains(interfaceType.getQualifiedName())){
-									interfaceTypeList.add(interfaceType.getQualifiedName());
+									String interfaceName = interfaceType.getQualifiedName();
+									if(!interfaceName.equals("java.io.Serializable")){
+										interfaceTypeList.add(interfaceName);										
+									}
 								}
 							}
 						}

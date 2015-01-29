@@ -68,6 +68,8 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
+import ccdemon.evaluation.model.DataRecord;
+
 
 /**
  * The UI for linked mode. Detects events that influence behavior of the linked mode
@@ -798,6 +800,9 @@ public class CustomLinkedModeUI {
 	}
 
 	void next() {
+		DataRecord.toNextTime++;
+		DataRecord.addTimeToTimes(DataRecord.toNextTimes);
+		
 		if (fIterator.hasNext(fFramePosition)) {
 			switchPosition(fIterator.next(fFramePosition), true, true);
 			return;
@@ -806,6 +811,9 @@ public class CustomLinkedModeUI {
 	}
 
 	void previous() {
+		DataRecord.toPrevTime++;
+		DataRecord.addTimeToTimes(DataRecord.toPrevTimes);
+		
 		if (fIterator.hasPrevious(fFramePosition)) {
 			switchPosition(fIterator.previous(fFramePosition), true, true);
 		} else
