@@ -357,6 +357,7 @@ public class ConfigurationPoint {
 					if(binding != null && binding instanceof IVariableBinding){
 						//super class
 						if(((IVariableBinding)binding).getType().getSuperclass() != null &&
+								!((IVariableBinding)binding).getType().getSuperclass().getQualifiedName().equals("java.lang.Object") &&
 								!superTypeList.contains(((IVariableBinding)binding).getType().getSuperclass().getQualifiedName())){
 							String superTypeName = ((IVariableBinding)binding).getType().getSuperclass().getQualifiedName();
 							if(!superTypeName.equals("java.lang.Object")){

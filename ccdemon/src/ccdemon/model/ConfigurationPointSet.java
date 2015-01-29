@@ -409,6 +409,7 @@ public class ConfigurationPointSet {
 			if(binding != null && binding instanceof IVariableBinding){
 				if(types.contains(((IVariableBinding) binding).getType().getQualifiedName()) ||
 						(((IVariableBinding) binding).getType().getSuperclass() != null &&
+						!((IVariableBinding)binding).getType().getSuperclass().getQualifiedName().equals("java.lang.Object") &&
 						superTypes.contains(((IVariableBinding) binding).getType().getSuperclass().getQualifiedName()))){
 					//don't add the just pasted variable in, otherwise will cause duplication
 					if(!name.toString().equals(pastedVariableName) && !this.compatibleVariables.contains(name.toString())){
@@ -453,6 +454,7 @@ public class ConfigurationPointSet {
 			}
 			if(types.contains(field.getType().resolveBinding().getQualifiedName()) ||
 					(field.getType().resolveBinding().getSuperclass() != null &&
+					!field.getType().resolveBinding().getSuperclass().getQualifiedName().equals("java.lang.Object") &&
 					superTypes.contains(field.getType().resolveBinding().getSuperclass().getQualifiedName()))){
 				//don't add the just pasted variable in, otherwise will cause duplication
 				String fieldName = ((VariableDeclarationFragment)field.fragments().get(0)).getName().toString();
