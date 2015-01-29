@@ -214,11 +214,11 @@ public class NamingRule {
 							
 							
 							if(isMoreSim(extraString, preComp, postComp)){
-								newComponentName = preString + instanceArray[i] + extraString;
+								newComponentName = preString + instanceArray[instanceStartCursor] + extraString;
 								preString = "";
 							}
 							else{
-								newComponentName = preString + instanceArray[i];
+								newComponentName = preString + instanceArray[instanceStartCursor];
 								preString = extraString;
 							}
 						}
