@@ -42,6 +42,10 @@ public class CandidateComparator implements Comparator<Candidate>{
 		double score1 = candidate1.computeScore(ruleWeight, environmentWeight, historyWeight, points);
 		double score2 = candidate2.computeScore(ruleWeight, environmentWeight, historyWeight, points);
 
+		if(score1 == score2){
+			return 0;
+		}
+		
 		int flag = (score1 - score2 > 0) ? -1 : 1; 
 		
 		return flag;
