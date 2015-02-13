@@ -23,7 +23,7 @@ public class SearchTrialHandler extends AbstractHandler{
 		if(data.getCorrectness() == 1.0 && data.getSavedEditingEffort() == 1.0
 				&& data.getConfigurationEffort() < 0.5
 				&& data.getHistoryNum() > 0 && data.getRuleNum() > 0 && data.getEnvironmentNum() > 0 
-				&& data.getConfigurationPointNum() >= 5
+				&& data.getConfigurationPointNum() >= 8
 				&& data.getCloneInstance().getLength() >= 8){
 			return true;
 		}
@@ -132,7 +132,9 @@ public class SearchTrialHandler extends AbstractHandler{
 	private void run(){
 		CloneRecoverer recoverer = new CloneRecoverer();
 		CloneSets sets = clonepedia.Activator.plainSets;;
-		
+
+		ArrayList<CollectedData> type1_dataList = new ArrayList<>();
+		ArrayList<CollectedData> type2_dataList = new ArrayList<>();
 		ArrayList<CollectedData> type3_dataList = new ArrayList<>();
 		ArrayList<CollectedData> type4_dataList = new ArrayList<>();
 		ArrayList<CollectedData> type5_dataList = new ArrayList<>();
@@ -140,9 +142,9 @@ public class SearchTrialHandler extends AbstractHandler{
 		
 		for(clonepedia.model.ontology.CloneSet clonepediaSet: sets.getCloneList()){
 			
-			if(!clonepediaSet.getId().equals("17185")){
-				continue;
-			}
+//			if(!clonepediaSet.getId().equals("69196")){
+//				continue;
+//			}
 			
 			System.out.println("Clone set ID: " + clonepediaSet.getId());
 			
@@ -151,6 +153,12 @@ public class SearchTrialHandler extends AbstractHandler{
 			
 			for(CollectedData data : datas){
 				//collect trials when:
+				if(determineTarget(1, data)){
+					type1_dataList.add(data);				
+				}
+				if(determineTarget(2, data)){
+					type2_dataList.add(data);				
+				}
 				if(determineTarget(3, data)){
 					type3_dataList.add(data);				
 				}
@@ -167,6 +175,10 @@ public class SearchTrialHandler extends AbstractHandler{
 		}
 		
 		System.out.println("-------------------------------------- Result -----------------------------------");
+		System.out.println("=================================== Type1 ====================================");
+		System.out.println(type1_dataList.toString());
+		System.out.println("=================================== Type2 ====================================");
+		System.out.println(type2_dataList.toString());
 		System.out.println("=================================== Type3 ====================================");
 		System.out.println(type3_dataList.toString());
 		System.out.println("=================================== Type4 ====================================");
