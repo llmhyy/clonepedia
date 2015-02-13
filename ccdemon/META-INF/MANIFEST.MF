@@ -22,4 +22,5 @@ Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/guava-18.0.jar,
  lib/javassist.jar,
  lib/reflections-0.9.9-RC1-uberjar.jar,
+ lib/jxl.jar,
  .

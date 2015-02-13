@@ -40,6 +40,8 @@ public class CloneRecoverer {
 		
 		private int configurationPointNum = 0;
 		
+		private String typeIIorIII;
+		
 		public String toString(){
 			return "\ncloneInstance: " + cloneInstance.toString() + "\nconfigurationEffort: "
 					+ configurationEffort + ", savedEditingEffort: " + savedEditingEffort
@@ -152,6 +154,16 @@ public class CloneRecoverer {
 		public void setConfigurationPointNum(int configurationPointNum) {
 			this.configurationPointNum = configurationPointNum;
 		}
+
+
+		public String getTypeIIorIII() {
+			return typeIIorIII;
+		}
+
+
+		public void setTypeIIorIII(String TypeIIorIII) {
+			this.typeIIorIII = TypeIIorIII;
+		}
 		
 		
 	}
@@ -201,6 +213,21 @@ public class CloneRecoverer {
 				data.setRuleNum(this.ruleNum);
 				data.setTotalNum(this.totalNum);
 				data.setConfigurationPointNum(cps.getConfigurationPoints().size());
+				boolean isTypeIII = false;
+				for(int i = 0; i < matchableDiffs.size() && !isTypeIII; i++){
+					SeqMultiset seqMulti = matchableDiffs.get(i);
+					for(TokenSeq seq : seqMulti.getSequences()){
+						if(seq.isEpisolonTokenSeq()){
+							isTypeIII = true;
+							break;
+						}
+					}
+				}
+				if(isTypeIII){
+					data.setTypeIIorIII("3");
+				}else{
+					data.setTypeIIorIII("2");
+				}
 				datas.add(data);
 				
 				System.out.println("===================================");

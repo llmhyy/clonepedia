@@ -89,6 +89,10 @@
             class="ccdemon.evaluation.handler.RecordBehaviorHandler"
             commandId="ccdemon.evaluation.recordBehavior">
       </handler>
+      <handler
+            class="ccdemon.evaluation.handler.AnalyzeStatisticsHandler"
+            commandId="ccdemon.evaluation.analyzeStatistics">
+      </handler>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -110,13 +114,18 @@
       </command>
       <command
             defaultHandler="ccdemon.evaluation.handler.CalculateStatisticsHandler"
-            id="ccdemon.evaluation.calulateStatiastics"
+            id="ccdemon.evaluation.calulateStatistics"
             name="CalculateStatistics">
       </command>
       <command
             defaultHandler="ccdemon.evaluation.handler.RecordBehaviorHandler"
             id="ccdemon.evaluation.recordBehavior"
             name="RecordBehavior">
+      </command>
+      <command
+            defaultHandler="ccdemon.evaluation.handler.AnalyzeStatisticsHandler"
+            id="ccdemon.evaluation.analyzeStatistics"
+            name="AnalyzeStatistics">
       </command>
    </extension>
    <extension
@@ -151,9 +160,9 @@
                   style="push">
             </command>
             <command
-                  commandId="ccdemon.evaluation.calulateStatiastics"
+                  commandId="ccdemon.evaluation.calulateStatistics"
                   icon="icons/evaluation.png"
-                  id="ccdemon.command.evaluation.calulateStatiastics"
+                  id="ccdemon.command.evaluation.calulateStatistics"
                   label="CaculateStatistics"
                   style="push">
             </command>
@@ -162,6 +171,13 @@
                   icon="icons/record.png"
                   id="ccdemon.command.evaluation.recordBehavior"
                   label="Record Behavior"
+                  style="push">
+            </command>
+            <command
+                  commandId="ccdemon.evaluation.analyzeStatistics"
+                  icon="icons/analyzeStatistics.png"
+                  id="ccdemon.command.evaluation.analyzeStatistics"
+                  label="AnalyzeStatistics"
                   style="push">
             </command>
          </toolbar>
