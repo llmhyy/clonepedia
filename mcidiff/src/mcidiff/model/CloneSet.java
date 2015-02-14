@@ -54,6 +54,17 @@ public class CloneSet {
 		return null;
 	}
 	
+	public ArrayList<CloneInstance> getOtherCloneInstance(CloneInstance instance){
+		ArrayList<CloneInstance> otherInstanceList = new ArrayList<>();
+		for(CloneInstance ins: this.instances){
+			if(!ins.equals(instance)){
+				otherInstanceList.add(ins);
+			}
+		}
+		
+		return otherInstanceList;
+	}
+	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public ArrayList<Token>[] getTokenLists(){
 		ArrayList[] lists = new ArrayList[this.instances.size()];

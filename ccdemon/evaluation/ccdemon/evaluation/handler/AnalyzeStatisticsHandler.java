@@ -64,7 +64,7 @@ public class AnalyzeStatisticsHandler extends AbstractHandler {
 				exportList.add(data.getTypeIIorIII());
 
 				//type1to7;
-				if(data.getCorrectness() == 1.0){
+				if(data.getRecall() == 1.0){
 					if(data.getSavedEditingEffort() == 1.0){
 						exportList.add("1");
 					}else if(data.getSavedEditingEffort() > 0){
@@ -72,7 +72,7 @@ public class AnalyzeStatisticsHandler extends AbstractHandler {
 					}else{
 						exportList.add("3");
 					}
-				}else if(data.getCorrectness() > 0){
+				}else if(data.getRecall() > 0){
 					if(data.getSavedEditingEffort() == 1.0){
 						exportList.add("4");
 					}else if(data.getSavedEditingEffort() > 0){
@@ -84,7 +84,7 @@ public class AnalyzeStatisticsHandler extends AbstractHandler {
 					exportList.add("7");
 				}
 				//correctness;
-				exportList.add(data.getCorrectness() + "");
+				exportList.add(data.getRecall() + "");
 				//configurationEffort;
 				exportList.add(data.getConfigurationEffort() + "");
 				//savedEditingEffort;
