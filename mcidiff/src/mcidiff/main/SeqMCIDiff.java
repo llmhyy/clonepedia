@@ -24,7 +24,7 @@ import org.eclipse.jdt.core.dom.Statement;
 
 public class SeqMCIDiff{
 	
-	public ArrayList<SeqMultiset> diff(CloneSet set, IJavaProject project){
+	public ArrayList<SeqMultiset> diff(CloneSet set, IJavaProject project) throws Exception{
 		
 		new Tokenizer().tokenize(set, project);
 		

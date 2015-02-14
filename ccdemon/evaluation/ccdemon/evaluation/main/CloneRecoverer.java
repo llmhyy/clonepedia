@@ -229,7 +229,13 @@ public class CloneRecoverer {
 		
 		SeqMCIDiff diff = new SeqMCIDiff();
 		IJavaProject proj = CCDemonUtil.retrieveWorkingJavaProject();
-		ArrayList<SeqMultiset> diffList = diff.diff(set, proj);
+		ArrayList<SeqMultiset> diffList;
+		try {
+			diffList = diff.diff(set, proj);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return datas;
+		}
 		
 		/**
 		 * choose the target clone instance to be recovered
