@@ -83,8 +83,10 @@ public class AnalyzeStatisticsHandler extends AbstractHandler {
 				}else{
 					exportList.add("7");
 				}
-				//correctness;
+				//recall;
 				exportList.add(data.getRecall() + "");
+				//precision;
+				exportList.add(data.getPrecision() + "");
 				//configurationEffort;
 				exportList.add(data.getConfigurationEffort() + "");
 				//savedEditingEffort;

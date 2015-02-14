@@ -14,7 +14,7 @@ public class ExcelExporter {
 
 	public void start(String fileName){
 		//title
-        String titles[] = {"cloneSetID","typeIIorIII","type1to7","correctness","configurationEffort","savedEditingEffort","cloneInstance"};
+        String titles[] = {"cloneSetID","typeIIorIII","type1to7","recall","precision","configurationEffort","savedEditingEffort","cloneInstance"};
 
         try {
         	book = Workbook.createWorkbook(new File(fileName + ".xls")); 

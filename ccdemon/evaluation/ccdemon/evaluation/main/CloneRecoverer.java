@@ -50,7 +50,7 @@ public class CloneRecoverer {
 			return "\ntarget: " + targetInstance.toString() + "\nsource: " + sourceInstance.toString()
 					+ "\nconfigurationEffort: "
 					+ configurationEffort + ", savedEditingEffort: " + savedEditingEffort
-					+ ", correctness: " + recall + ", historyNum: " + historyNum 
+					+ ", recall: " + recall + ", precision: " + precision + ", historyNum: " + historyNum 
 					+ ", environmentNum: " + environmentNum + ", ruleNum: " + ruleNum 
 					+ ", configurationPointNum: " + configurationPointNum;
 		}
