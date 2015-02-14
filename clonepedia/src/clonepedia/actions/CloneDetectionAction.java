@@ -151,9 +151,14 @@ public class CloneDetectionAction implements IWorkbenchWindowActionDelegate {
 					mcidiff.model.CloneInstance diffins = new mcidiff.model.CloneInstance(diffset, ins.getFileLocation(), ins.getStartLine(), ins.getEndLine());
 					diffset.addInstance(diffins);
 				}
-				ArrayList<SeqMultiset> diffList = mcidiff.diff(diffset, javaProject);
-				if(diffList.size() == 0){
-					iterator.remove();
+				ArrayList<SeqMultiset> diffList;
+				try {
+					diffList = mcidiff.diff(diffset, javaProject);
+					if(diffList.size() == 0){
+						iterator.remove();
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 			}
 			count++;
