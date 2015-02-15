@@ -43,6 +43,7 @@ public class CloneRecoverer {
 		private int totalNum = 0;
 		
 		private int configurationPointNum = 0;
+		private int lineNum = 0;
 		
 		private String typeIIorIII;
 		
@@ -229,6 +230,16 @@ public class CloneRecoverer {
 		public void setTrialTime(long trialTime) {
 			this.trialTime = trialTime;
 		}
+
+
+		public int getLineNum() {
+			return lineNum;
+		}
+
+
+		public void setLineNum(int lineNum) {
+			this.lineNum = lineNum;
+		}
 	}
 	
 	private int historyNum = 0;
@@ -291,6 +302,16 @@ public class CloneRecoverer {
 				data.setRuleNum(this.ruleNum);
 				data.setTotalNum(this.totalNum);
 				data.setConfigurationPointNum(cps.getConfigurationPoints().size());
+				
+				int totalLineNum = 0;
+				for(CloneInstance nonTargetInstance: set.getInstances()){
+					if(nonTargetInstance.equals(targetInstance)){
+						continue;
+					}
+					totalLineNum += nonTargetInstance.getLength();
+				}
+				data.setLineNum(totalLineNum/(set.getInstances().size()-1));
+				
 				boolean isTypeIII = false;
 				for(int i = 0; i < matchableDiffs.size() && !isTypeIII; i++){
 					SeqMultiset seqMulti = matchableDiffs.get(i);

@@ -60,9 +60,12 @@ public class AnalyzeStatisticsHandler extends AbstractHandler {
 				ArrayList<String> exportList = new ArrayList<String>();
 				//cloneSetID
 				exportList.add(clonepediaSet.getId());
+				//instanceNum
+				exportList.add(set.getInstances().size() + "");
+				//avgLineNum
+				exportList.add(data.getLineNum() + "");
 				//typeIIorIII
 				exportList.add(data.getTypeIIorIII());
-
 				//type1to7;
 				if(data.getRecall() == 1.0){
 					if(data.getSavedEditingEffort() == 1.0){

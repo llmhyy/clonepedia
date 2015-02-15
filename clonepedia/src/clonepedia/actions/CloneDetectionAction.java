@@ -115,7 +115,7 @@ public class CloneDetectionAction implements IWorkbenchWindowActionDelegate {
 				
 				CloneSets sets = convertToCloneSets(simGroups);
 				
-				//filterCloneSetByCriteria(proj, javaProject, sets);
+				filterCloneSetByCriteria(proj, javaProject, sets);
 				
 				CloneDetectionFileWriter writer = new CloneDetectionFileWriter();
 				writer.writeToXML(sets);
@@ -143,7 +143,7 @@ public class CloneDetectionAction implements IWorkbenchWindowActionDelegate {
 		int size = sets.getCloneList().size();
 		while(iterator.hasNext()){
 			CloneSet set = iterator.next();
-			if(set.size()<3 || set.size()>8){
+			if(set.size()<3){
 				iterator.remove();
 			}else{
 				mcidiff.model.CloneSet diffset = new mcidiff.model.CloneSet(set.getId());
