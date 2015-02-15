@@ -288,7 +288,7 @@ public class CloneRecoverer {
 				ConfigurationPointSet cps = identifyPartialConfigurationPointSet(proj, 
 						pointList, targetInstance, sourceInstance, set);
 				
-				CollectedData data = simulate(cps, wrapperList, falsePositivesNum);
+				CollectedData data = simulate(cps, wrapperList, falsePositivesNum, matchableDiffs.size());
 
 				long endTrialTime = System.currentTimeMillis();
 				data.setTrialTime(endTrialTime-startTrialTime);
@@ -362,7 +362,7 @@ public class CloneRecoverer {
 	}
 
 	private CollectedData simulate(ConfigurationPointSet cps,
-			CPWrapperList wrapperList, int unnecessityNum) {
+			CPWrapperList wrapperList, int unnecessityNum, int totalModificationNum) {
 		
 		this.historyNum = 0;
 		this.environmentNum = 0;
@@ -397,7 +397,7 @@ public class CloneRecoverer {
 		}
 		
 		totalConfigurationEffort /= configurableSize;
-		double savedEditingEffort = 1 - ((double)totalEditingEffort-unnecessityNum)/(cps.size()-unnecessityNum);
+		double savedEditingEffort = 1 - ((double)totalEditingEffort-unnecessityNum)/totalModificationNum;
 		
 		CollectedData data = new CollectedData();
 		data.setConfigurationEffort(totalConfigurationEffort);
