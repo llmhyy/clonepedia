@@ -91,6 +91,8 @@ public class AnalyzeStatisticsHandler extends AbstractHandler {
 				exportList.add(data.getConfigurationEffort() + "");
 				//savedEditingEffort;
 				exportList.add(data.getSavedEditingEffort() + "");
+				//trialTime;
+				exportList.add(data.getTrialTime() + "");
 				//cloneInstance;;
 				exportList.add(data.getCloneInstance().toString());
 				

@@ -46,6 +46,8 @@ public class CloneRecoverer {
 		
 		private String typeIIorIII;
 		
+		private long trialTime = 0;
+		
 		public String toString(){
 			return "\ntarget: " + targetInstance.toString() + "\nsource: " + sourceInstance.toString()
 					+ "\nconfigurationEffort: "
@@ -217,6 +219,16 @@ public class CloneRecoverer {
 		public void setSourceInstance(CloneInstance sourceInstance) {
 			this.sourceInstance = sourceInstance;
 		}
+
+
+		public long getTrialTime() {
+			return trialTime;
+		}
+
+
+		public void setTrialTime(long trialTime) {
+			this.trialTime = trialTime;
+		}
 	}
 	
 	private int historyNum = 0;
@@ -250,6 +262,8 @@ public class CloneRecoverer {
 					continue;
 				}
 				
+				long startTrialTime = System.currentTimeMillis();
+				
 				ArrayList<SeqMultiset> unnecessaryMultisets = findUnnecessaryDiff(sourceInstance, targetInstance, matchableDiffs);
 				//ArrayList<SeqMultiset> typeIDiffs = findTypeIDiff(diffList, targetInstance);
 				int falsePositivesNum = unnecessaryMultisets.size();
@@ -264,6 +278,9 @@ public class CloneRecoverer {
 						pointList, targetInstance, sourceInstance, set);
 				
 				CollectedData data = simulate(cps, wrapperList, falsePositivesNum);
+
+				long endTrialTime = System.currentTimeMillis();
+				data.setTrialTime(endTrialTime-startTrialTime);
 				data.setSourceInstance(sourceInstance);
 				data.setTargetInstance(targetInstance);
 				data.setRecall(recall);
