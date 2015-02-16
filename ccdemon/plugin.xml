@@ -93,6 +93,10 @@
             class="ccdemon.evaluation.handler.AnalyzeStatisticsHandler"
             commandId="ccdemon.evaluation.analyzeStatistics">
       </handler>
+      <handler
+            class="ccdemon.evaluation.handler.CountTypeIIorIIIHandler"
+            commandId="ccdemon.evaluation.countTypeIIorIII">
+      </handler>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -126,6 +130,11 @@
             defaultHandler="ccdemon.evaluation.handler.AnalyzeStatisticsHandler"
             id="ccdemon.evaluation.analyzeStatistics"
             name="AnalyzeStatistics">
+      </command>
+      <command
+            defaultHandler="ccdemon.evaluation.handler.CountTypeIIorIIIHandler"
+            id="ccdemon.evaluation.countTypeIIorIII"
+            name="CountTypeIIorIII">
       </command>
    </extension>
    <extension
@@ -178,6 +187,13 @@
                   icon="icons/analyzeStatistics.png"
                   id="ccdemon.command.evaluation.analyzeStatistics"
                   label="AnalyzeStatistics"
+                  style="push">
+            </command>
+            <command
+                  commandId="ccdemon.evaluation.countTypeIIorIII"
+                  icon="icons/countType.png"
+                  id="ccdemon.command.evaluation.countType"
+                  label="Count Type II or III"
                   style="push">
             </command>
          </toolbar>
