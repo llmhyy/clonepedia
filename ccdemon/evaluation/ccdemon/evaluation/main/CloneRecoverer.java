@@ -39,6 +39,7 @@ public class CloneRecoverer {
 		private int totalNum = 0;
 		
 		private int configurationPointNum = 0;
+		private ConfigurationPointSet cps;
 		
 		public String toString(){
 			return "\ncloneInstance: " + cloneInstance.toString() + "\nconfigurationEffort: "
@@ -152,6 +153,16 @@ public class CloneRecoverer {
 		public void setConfigurationPointNum(int configurationPointNum) {
 			this.configurationPointNum = configurationPointNum;
 		}
+
+
+		public ConfigurationPointSet getCps() {
+			return cps;
+		}
+
+
+		public void setCps(ConfigurationPointSet cps) {
+			this.cps = cps;
+		}
 		
 		
 	}
@@ -201,6 +212,7 @@ public class CloneRecoverer {
 				data.setRuleNum(this.ruleNum);
 				data.setTotalNum(this.totalNum);
 				data.setConfigurationPointNum(cps.getConfigurationPoints().size());
+				data.setCps(cps);
 				datas.add(data);
 				
 				System.out.println("===================================");

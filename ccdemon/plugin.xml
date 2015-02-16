@@ -89,6 +89,10 @@
             class="ccdemon.evaluation.handler.RecordBehaviorHandler"
             commandId="ccdemon.evaluation.recordBehavior">
       </handler>
+      <handler
+            class="ccdemon.evaluation.handler.SearchTypeConfigurationPointHandler"
+            commandId="ccdemon.evaluation.recordTCP">
+      </handler>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -118,6 +122,11 @@
             id="ccdemon.evaluation.recordBehavior"
             name="RecordBehavior">
       </command>
+      <command
+            defaultHandler="ccdemon.evaluation.handler.SearchTypeConfigurationPointHandler"
+            id="ccdemon.evaluation.searchTCP"
+            name="SearchTCP">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
@@ -136,7 +145,7 @@
          <toolbar
                id="toolbar:org.eclipse.ui.main.toolbar"
                label="Tools">
-            <!--<command
+            <command
                   commandId="ccdemon.evaluation.searchTrial"
                   icon="icons/search.jpg"
                   id="ccdemon.command.evaluation.searchTrial"
@@ -156,12 +165,19 @@
                   id="ccdemon.command.evaluation.calulateStatiastics"
                   label="CaculateStatistics"
                   style="push">
-            </command>-->
+            </command>
             <command
                   commandId="ccdemon.evaluation.recordBehavior"
                   icon="icons/record.png"
                   id="ccdemon.command.evaluation.recordBehavior"
                   label="Record Behavior"
+                  style="push">
+            </command>
+            <command
+                  commandId="ccdemon.evaluation.searchTCP"
+                  icon="icons/searchTCP.png"
+                  id="ccdemon.command.evaluation.searchTCP"
+                  label="Search Type Configuration Points"
                   style="push">
             </command>
          </toolbar>
