@@ -14,7 +14,7 @@ import org.eclipse.core.runtime.jobs.Job;
 
 import ccdemon.evaluation.main.CloneRecoverer;
 import ccdemon.evaluation.main.CloneRecoverer.CollectedData;
-import ccdemon.evaluation.util.ExcelExporter;
+import ccdemon.evaluation.util.ExcelExporterWithPOI;
 import ccdemon.util.CCDemonUtil;
 import clonepedia.model.ontology.CloneSets;
 
@@ -43,11 +43,12 @@ public class AnalyzeStatisticsHandler extends AbstractHandler {
 		CloneRecoverer recoverer = new CloneRecoverer();
 		CloneSets sets = clonepedia.Activator.plainSets;
 		int count = 0;
-		ExcelExporter exporter = new ExcelExporter();
-		exporter.start("JHotDraw");
+		ExcelExporterWithPOI exporter = new ExcelExporterWithPOI();
+		exporter.start();
 
 		for(clonepedia.model.ontology.CloneSet clonepediaSet: sets.getCloneList()){
-			
+
+			System.out.println("--------------------current: " + sets.getCloneList().indexOf(clonepediaSet) + ", total: " + sets.getCloneList().size() + " -----------------------");
 			System.out.println("Clone set ID: " + clonepediaSet.getId());
 			
 			CloneSet set = CCDemonUtil.adaptMCIDiffModel(clonepediaSet);
@@ -105,8 +106,7 @@ public class AnalyzeStatisticsHandler extends AbstractHandler {
 			
 		}
 		
-		exporter.end();
-		System.out.println("excel exported.");
+		exporter.end("JHotDraw");
 	}
 
 }
