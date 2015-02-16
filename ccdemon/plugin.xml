@@ -92,6 +92,12 @@
       <handler
             class="ccdemon.evaluation.handler.SearchTypeConfigurationPointHandler"
             commandId="ccdemon.evaluation.recordTCP">
+            class="ccdemon.evaluation.handler.AnalyzeStatisticsHandler"
+            commandId="ccdemon.evaluation.analyzeStatistics">
+      </handler>
+      <handler
+            class="ccdemon.evaluation.handler.CountTypeIIorIIIHandler"
+            commandId="ccdemon.evaluation.countTypeIIorIII">
       </handler>
    </extension>
    <extension
@@ -114,13 +120,23 @@
       </command>
       <command
             defaultHandler="ccdemon.evaluation.handler.CalculateStatisticsHandler"
-            id="ccdemon.evaluation.calulateStatiastics"
+            id="ccdemon.evaluation.calulateStatistics"
             name="CalculateStatistics">
       </command>
       <command
             defaultHandler="ccdemon.evaluation.handler.RecordBehaviorHandler"
             id="ccdemon.evaluation.recordBehavior"
             name="RecordBehavior">
+      </command>
+      <command
+            defaultHandler="ccdemon.evaluation.handler.AnalyzeStatisticsHandler"
+            id="ccdemon.evaluation.analyzeStatistics"
+            name="AnalyzeStatistics">
+      </command>
+      <command
+            defaultHandler="ccdemon.evaluation.handler.CountTypeIIorIIIHandler"
+            id="ccdemon.evaluation.countTypeIIorIII"
+            name="CountTypeIIorIII">
       </command>
       <command
             defaultHandler="ccdemon.evaluation.handler.SearchTypeConfigurationPointHandler"
@@ -160,9 +176,9 @@
                   style="push">
             </command>
             <command
-                  commandId="ccdemon.evaluation.calulateStatiastics"
+                  commandId="ccdemon.evaluation.calulateStatistics"
                   icon="icons/evaluation.png"
-                  id="ccdemon.command.evaluation.calulateStatiastics"
+                  id="ccdemon.command.evaluation.calulateStatistics"
                   label="CaculateStatistics"
                   style="push">
             </command>
@@ -178,6 +194,20 @@
                   icon="icons/searchTCP.png"
                   id="ccdemon.command.evaluation.searchTCP"
                   label="Search Type Configuration Points"
+                  style="push">
+ 			</command>
+            <command
+                  commandId="ccdemon.evaluation.analyzeStatistics"
+                  icon="icons/analyzeStatistics.png"
+                  id="ccdemon.command.evaluation.analyzeStatistics"
+                  label="AnalyzeStatistics"
+                  style="push">
+            </command>
+            <command
+                  commandId="ccdemon.evaluation.countTypeIIorIII"
+                  icon="icons/countType.png"
+                  id="ccdemon.command.evaluation.countType"
+                  label="Count Type II or III"
                   style="push">
             </command>
          </toolbar>

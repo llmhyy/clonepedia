@@ -28,10 +28,14 @@ import ccdemon.util.CCDemonUtil;
 public class CloneRecoverer {
 	
 	public class CollectedData{
-		private CloneInstance cloneInstance;
+		
+		private double recall;
+		private double precision;
+		
+		private CloneInstance targetInstance;
+		private CloneInstance sourceInstance;
 		private double configurationEffort;
 		private double savedEditingEffort;
-		private double correctness;
 		
 		private int historyNum = 0;
 		private int environmentNum = 0;
@@ -40,11 +44,17 @@ public class CloneRecoverer {
 		
 		private int configurationPointNum = 0;
 		private ConfigurationPointSet cps;
+		private int lineNum = 0;
+		
+		private String typeIIorIII;
+		
+		private long trialTime = 0;
 		
 		public String toString(){
-			return "\ncloneInstance: " + cloneInstance.toString() + "\nconfigurationEffort: "
+			return "\ntarget: " + targetInstance.toString() + "\nsource: " + sourceInstance.toString()
+					+ "\nconfigurationEffort: "
 					+ configurationEffort + ", savedEditingEffort: " + savedEditingEffort
-					+ ", correctness: " + correctness + ", historyNum: " + historyNum 
+					+ ", recall: " + recall + ", precision: " + precision + ", historyNum: " + historyNum 
 					+ ", environmentNum: " + environmentNum + ", ruleNum: " + ruleNum 
 					+ ", configurationPointNum: " + configurationPointNum;
 		}
@@ -77,20 +87,20 @@ public class CloneRecoverer {
 		/**
 		 * @return the correctness
 		 */
-		public double getCorrectness() {
-			return correctness;
+		public double getRecall() {
+			return recall;
 		}
 		/**
 		 * @param correctness the correctness to set
 		 */
-		public void setCorrectness(double correctness) {
-			this.correctness = correctness;
+		public void setRecall(double correctness) {
+			this.recall = correctness;
 		}
 		public CloneInstance getCloneInstance() {
-			return cloneInstance;
+			return targetInstance;
 		}
 		public void setCloneInstance(CloneInstance cloneInstance) {
-			this.cloneInstance = cloneInstance;
+			this.targetInstance = cloneInstance;
 		}
 		/**
 		 * @return the historyNum
@@ -165,6 +175,82 @@ public class CloneRecoverer {
 		}
 		
 		
+		public String getTypeIIorIII() {
+			return typeIIorIII;
+		}
+
+
+		public void setTypeIIorIII(String TypeIIorIII) {
+			this.typeIIorIII = TypeIIorIII;
+		}
+
+
+		/**
+		 * @return the precision
+		 */
+		public double getPrecision() {
+			return precision;
+		}
+
+
+		/**
+		 * @param precision the precision to set
+		 */
+		public void setPrecision(double precision) {
+			this.precision = precision;
+		}
+
+
+		/**
+		 * @return the targetInstance
+		 */
+		public CloneInstance getTargetInstance() {
+			return targetInstance;
+		}
+
+
+		/**
+		 * @param targetInstance the targetInstance to set
+		 */
+		public void setTargetInstance(CloneInstance targetInstance) {
+			this.targetInstance = targetInstance;
+		}
+
+
+		/**
+		 * @return the sourceInstance
+		 */
+		public CloneInstance getSourceInstance() {
+			return sourceInstance;
+		}
+
+
+		/**
+		 * @param sourceInstance the sourceInstance to set
+		 */
+		public void setSourceInstance(CloneInstance sourceInstance) {
+			this.sourceInstance = sourceInstance;
+		}
+
+
+		public long getTrialTime() {
+			return trialTime;
+		}
+
+
+		public void setTrialTime(long trialTime) {
+			this.trialTime = trialTime;
+		}
+
+
+		public int getLineNum() {
+			return lineNum;
+		}
+
+
+		public void setLineNum(int lineNum) {
+			this.lineNum = lineNum;
+		}
 	}
 	
 	private int historyNum = 0;
@@ -177,18 +263,19 @@ public class CloneRecoverer {
 		
 		SeqMCIDiff diff = new SeqMCIDiff();
 		IJavaProject proj = CCDemonUtil.retrieveWorkingJavaProject();
-		ArrayList<SeqMultiset> diffList = diff.diff(set, proj);
+		ArrayList<SeqMultiset> diffList;
+		try {
+			diffList = diff.diff(set, proj);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return datas;
+		}
 		
 		/**
 		 * choose the target clone instance to be recovered
 		 */
 		for(CloneInstance targetInstance: set.getInstances()){
-			
-			//ArrayList<SeqMultiset> typeIDiffs = findTypeIDiff(diffList, targetInstance);
 			ArrayList<SeqMultiset> matchableDiffs = findMatchableDiff(diffList, targetInstance);
-			
-			double correctness = matchableDiffs.size()/((double)diffList.size());
-			
 			/**
 			 * choose the source clone instance as the copied instance
 			 */
@@ -196,6 +283,14 @@ public class CloneRecoverer {
 				if(sourceInstance.equals(targetInstance)){
 					continue;
 				}
+				
+				long startTrialTime = System.currentTimeMillis();
+				
+				ArrayList<SeqMultiset> unnecessaryMultisets = findUnnecessaryDiff(sourceInstance, targetInstance, matchableDiffs);
+				//ArrayList<SeqMultiset> typeIDiffs = findTypeIDiff(diffList, targetInstance);
+				int falsePositivesNum = unnecessaryMultisets.size();
+				double recall = (matchableDiffs.size()-falsePositivesNum)/((double)diffList.size() - falsePositivesNum);
+				double precision = (matchableDiffs.size()-falsePositivesNum)/((double)matchableDiffs.size());
 
 				CPWrapperList wrapperList = 
 						constructPartialConfigurationPoints(sourceInstance, targetInstance, matchableDiffs);
@@ -204,8 +299,14 @@ public class CloneRecoverer {
 				ConfigurationPointSet cps = identifyPartialConfigurationPointSet(proj, 
 						pointList, targetInstance, sourceInstance, set);
 				
-				CollectedData data = simulate(cps, wrapperList);
-				data.setCorrectness(correctness);
+				CollectedData data = simulate(cps, wrapperList, falsePositivesNum, matchableDiffs.size());
+
+				long endTrialTime = System.currentTimeMillis();
+				data.setTrialTime(endTrialTime-startTrialTime);
+				data.setSourceInstance(sourceInstance);
+				data.setTargetInstance(targetInstance);
+				data.setRecall(recall);
+				data.setPrecision(precision);
 				data.setCloneInstance(targetInstance);
 				data.setHistoryNum(this.historyNum);
 				data.setEnvironmentNum(this.environmentNum);
@@ -213,26 +314,68 @@ public class CloneRecoverer {
 				data.setTotalNum(this.totalNum);
 				data.setConfigurationPointNum(cps.getConfigurationPoints().size());
 				data.setCps(cps);
+				
+				int totalLineNum = 0;
+				for(CloneInstance nonTargetInstance: set.getInstances()){
+					if(nonTargetInstance.equals(targetInstance)){
+						continue;
+					}
+					totalLineNum += nonTargetInstance.getLength();
+				}
+				data.setLineNum(totalLineNum/(set.getInstances().size()-1));
+				
+				boolean isTypeIII = false;
+				for(int i = 0; i < matchableDiffs.size() && !isTypeIII; i++){
+					SeqMultiset seqMulti = matchableDiffs.get(i);
+					for(TokenSeq seq : seqMulti.getSequences()){
+						if(seq.isEpisolonTokenSeq()){
+							isTypeIII = true;
+							break;
+						}
+					}
+				}
+				if(isTypeIII){
+					data.setTypeIIorIII("3");
+				}else{
+					data.setTypeIIorIII("2");
+				}
+				
 				datas.add(data);
 				
 				System.out.println("===================================");
 				System.out.println("copied source:" + sourceInstance.toString());
 				System.out.println("target source:" + targetInstance.toString());
-				System.out.println("correctness: " + data.getCorrectness());
+				System.out.println("recall: " + data.getRecall());
+				System.out.println("precision: " + data.getPrecision());
 				System.out.println("configuration effort: " + data.getConfigurationEffort());
 				System.out.println("saved editing effort: " + data.getSavedEditingEffort());
 				System.out.println("===================================");
 				
 				System.currentTimeMillis();
 				
-				break;
+				//break;
 			}
 		}
 		return datas;
 	}
 	
+	private ArrayList<SeqMultiset> findUnnecessaryDiff(CloneInstance sourceInstance, CloneInstance targetInstance,
+			ArrayList<SeqMultiset> matchableDiffs) {
+		ArrayList<SeqMultiset> list = new ArrayList<>();
+		for(SeqMultiset multiset: matchableDiffs){
+			TokenSeq sourceSeq = multiset.findTokenSeqByCloneInstance(sourceInstance);
+			TokenSeq targetSeq = multiset.findTokenSeqByCloneInstance(targetInstance);
+			
+			if(sourceSeq.equals(targetSeq)){
+				list.add(multiset);
+			}
+		}
+		
+		return list;
+	}
+
 	private CollectedData simulate(ConfigurationPointSet cps,
-			CPWrapperList wrapperList) {
+			CPWrapperList wrapperList, int unnecessityNum, int totalModificationNum) {
 		
 		this.historyNum = 0;
 		this.environmentNum = 0;
@@ -267,7 +410,7 @@ public class CloneRecoverer {
 		}
 		
 		totalConfigurationEffort /= configurableSize;
-		double savedEditingEffort = 1 - ((double)totalEditingEffort)/cps.size();
+		double savedEditingEffort = 1 - ((double)totalEditingEffort-unnecessityNum)/totalModificationNum;
 		
 		CollectedData data = new CollectedData();
 		data.setConfigurationEffort(totalConfigurationEffort);

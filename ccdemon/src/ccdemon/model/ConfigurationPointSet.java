@@ -283,7 +283,9 @@ public class ConfigurationPointSet {
 								siblings.add(sub);
 								//point.getCandidates().add(new Candidate(sub.getSimpleName(), 0 ,Candidate.ENVIRONMENT, point));
 							}
-							point.addCandidate(new Candidate(sub.getSimpleName(), 0, Candidate.ENVIRONMENT, point));
+							if(!point.contains(sub.getSimpleName())){
+								point.addCandidate(new Candidate(sub.getSimpleName(), 0, Candidate.ENVIRONMENT, point));								
+							}
 						}
 					}
 				}

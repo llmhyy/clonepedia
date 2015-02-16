@@ -175,7 +175,13 @@ public class PasteHandler extends AbstractHandler {
 			IJavaProject proj = CCDemonUtil.retrieveWorkingJavaProject();
 			
 			long t1 = System.currentTimeMillis();
-			ArrayList<SeqMultiset> diffList = diff.diff(set, proj);
+			ArrayList<SeqMultiset> diffList;
+			try {
+				diffList = diff.diff(set, proj);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return new ConfigurationPointSet();
+			}
 			long t2 = System.currentTimeMillis();
 			System.out.println("Time for MCIDiff: " + (t2-t1));
 			

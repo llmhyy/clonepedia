@@ -69,7 +69,7 @@ public class CalculateStatisticsHandler extends AbstractHandler{
 			ArrayList<CollectedData> datas = recoverer.getTrials(set);
 			
 			for(CollectedData data : datas){
-				if(data.getCorrectness() == 1.0){
+				if(data.getRecall() == 1.0){
 					if(data.getSavedEditingEffort() == 1.0){
 						types[0].count++;
 						types[0].config_effort.add(data.getConfigurationEffort());
@@ -82,7 +82,7 @@ public class CalculateStatisticsHandler extends AbstractHandler{
 						types[2].count++;
 						types[2].instances.add(data.getCloneInstance());
 					}
-				}else if(data.getCorrectness() > 0){
+				}else if(data.getRecall() > 0){
 					if(data.getSavedEditingEffort() == 1.0){
 						types[3].count++;
 						types[3].config_effort.add(data.getConfigurationEffort());
@@ -103,7 +103,7 @@ public class CalculateStatisticsHandler extends AbstractHandler{
 				total_environmentNum += data.getEnvironmentNum();
 				total_ruleNum += data.getRuleNum();
 				total_totalNum += data.getTotalNum();
-				correctness.add(data.getCorrectness());
+				correctness.add(data.getRecall());
 			}
 		}
 		

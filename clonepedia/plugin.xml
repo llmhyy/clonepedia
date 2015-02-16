@@ -8,7 +8,7 @@
             label="Clonepedia"
             visible="true"
             id="Clonepedia.actionSet">
-         <!--<menu
+         <menu
                id="Clonepedia"
                label="Clonepedia">
             <groupMarker
@@ -101,7 +101,7 @@
                menubarPath="Clonepedia/output"
                style="push"
                toolbarPath="output">
-         </action>-->
+         </action>
       </actionSet>
    </extension>
    <extension

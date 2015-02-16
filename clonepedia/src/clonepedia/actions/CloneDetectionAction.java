@@ -115,32 +115,57 @@ public class CloneDetectionAction implements IWorkbenchWindowActionDelegate {
 				
 				CloneSets sets = convertToCloneSets(simGroups);
 				
-				//for collecting test data
-				SeqMCIDiff mcidiff = new SeqMCIDiff();
+				filterCloneSetByCriteria(proj, javaProject, sets);
+				
+				CloneDetectionFileWriter writer = new CloneDetectionFileWriter();
+				writer.writeToXML(sets);
+				
+			}
+		} catch (JavaModelException e) {
+			e.printStackTrace();
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * @param proj
+	 * @param javaProject
+	 * @param sets
+	 */
+	private void filterCloneSetByCriteria(IProject proj,
+			IJavaProject javaProject, CloneSets sets) {
+		//for collecting test data
+		SeqMCIDiff mcidiff = new SeqMCIDiff();
 //				ArrayList<CloneSet> toRemove = new ArrayList<CloneSet>();
-				Iterator<CloneSet> iterator = sets.getCloneList().iterator();
-				int count = 0;
-				int size = sets.getCloneList().size();
-				while(iterator.hasNext()){
-					CloneSet set = iterator.next();
-					if(set.size()<3 || set.size()>8){
-						iterator.remove();
-					}else{
-						mcidiff.model.CloneSet diffset = new mcidiff.model.CloneSet(set.getId());
-						for(CloneInstance ins : set){
-							mcidiff.model.CloneInstance diffins = new mcidiff.model.CloneInstance(diffset, ins.getFileLocation(), ins.getStartLine(), ins.getEndLine());
-							diffset.addInstance(diffins);
-						}
-						ArrayList<SeqMultiset> diffList = mcidiff.diff(diffset, javaProject);
-						if(diffList.size() == 0){
-							iterator.remove();
-						}
-					}
-					count++;
-					System.out.println("=============== Count: " + count + ", Size: " + size + " ================");
+		Iterator<CloneSet> iterator = sets.getCloneList().iterator();
+		int count = 0;
+		int size = sets.getCloneList().size();
+		while(iterator.hasNext()){
+			CloneSet set = iterator.next();
+			if(set.size()<3){
+				iterator.remove();
+			}else{
+				mcidiff.model.CloneSet diffset = new mcidiff.model.CloneSet(set.getId());
+				for(CloneInstance ins : set){
+					mcidiff.model.CloneInstance diffins = new mcidiff.model.CloneInstance(diffset, ins.getFileLocation(), ins.getStartLine(), ins.getEndLine());
+					diffset.addInstance(diffins);
 				}
-				
-				
+				ArrayList<SeqMultiset> diffList;
+				try {
+					diffList = mcidiff.diff(diffset, javaProject);
+					if(diffList.size() == 0){
+						iterator.remove();
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			count++;
+			System.out.println("=============== Count: " + count + ", Size: " + size + " ================");
+		}
+		
+		
 //				for(CloneSet set : sets.getCloneList()){
 //					if(set.size()<3 || set.size()>8){
 //						toRemove.add(set);
@@ -158,19 +183,9 @@ public class CloneDetectionAction implements IWorkbenchWindowActionDelegate {
 //					}
 //				}
 //				sets.getCloneList().removeAll(toRemove);
-				System.out.println("----------------------------------------------------------------------------------------------");
-				System.out.println("Project:" + proj.getName() + ", clone set size:" + sets.getCloneList().size());
-				System.out.println("----------------------------------------------------------------------------------------------");
-				
-				CloneDetectionFileWriter writer = new CloneDetectionFileWriter();
-				writer.writeToXML(sets);
-				
-			}
-		} catch (JavaModelException e) {
-			e.printStackTrace();
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
+		System.out.println("----------------------------------------------------------------------------------------------");
+		System.out.println("Project:" + proj.getName() + ", clone set size:" + sets.getCloneList().size());
+		System.out.println("----------------------------------------------------------------------------------------------");
 	}
 	
 	private CloneSets convertToCloneSets(SimilarityGroup[] simGroups){

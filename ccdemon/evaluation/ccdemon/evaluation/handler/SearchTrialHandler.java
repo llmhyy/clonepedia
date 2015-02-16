@@ -20,7 +20,7 @@ import clonepedia.model.ontology.CloneSets;
 public class SearchTrialHandler extends AbstractHandler{
 	
 	private boolean isTypeI(CollectedData data){
-		if(data.getCorrectness() == 1.0 && data.getSavedEditingEffort() == 1.0
+		if(data.getRecall() == 1.0 && data.getSavedEditingEffort() == 1.0
 				&& data.getConfigurationEffort() < 0.5
 				&& data.getHistoryNum() > 0 && data.getRuleNum() > 0 && data.getEnvironmentNum() > 0 
 				&& data.getConfigurationPointNum() >= 8
@@ -32,7 +32,7 @@ public class SearchTrialHandler extends AbstractHandler{
 	}
 	
 	private boolean isTypeII(CollectedData data){
-		if(data.getCorrectness() == 1.0 && 0 < data.getSavedEditingEffort() && data.getSavedEditingEffort() < 1
+		if(data.getRecall() == 1.0 && 0 < data.getSavedEditingEffort() && data.getSavedEditingEffort() < 1
 				&& data.getConfigurationEffort() < 0.5
 				&& data.getHistoryNum() > 0 && data.getRuleNum() > 0 && data.getEnvironmentNum() > 0 
 				&& data.getConfigurationPointNum() >= 5
@@ -44,7 +44,7 @@ public class SearchTrialHandler extends AbstractHandler{
 	}
 	
 	private boolean isTypeIII(CollectedData data){
-		if(0 == data.getSavedEditingEffort() && data.getCorrectness() == 1.0 
+		if(0 == data.getSavedEditingEffort() && data.getRecall() == 1.0 
 //				&& data.getConfigurationEffort() < 0.5
 //				&& data.getHistoryNum() > 0 && data.getRuleNum() > 0 && data.getEnvironmentNum() > 0 
 				&& data.getConfigurationPointNum() > 1
@@ -57,7 +57,7 @@ public class SearchTrialHandler extends AbstractHandler{
 	}
 	
 	private boolean isTypeIV(CollectedData data){
-		if(0<data.getCorrectness() && data.getCorrectness()<1 && data.getSavedEditingEffort() == 1.0
+		if(0<data.getRecall() && data.getRecall()<1 && data.getSavedEditingEffort() == 1.0
 				&& data.getConfigurationEffort() < 0.5
 //				&& data.getHistoryNum() > 0 && data.getRuleNum() > 0 && data.getEnvironmentNum() > 0 
 				&& data.getConfigurationPointNum() >= 5
@@ -69,7 +69,7 @@ public class SearchTrialHandler extends AbstractHandler{
 	}
 	
 	private boolean isTypeV(CollectedData data){
-		if(0<data.getCorrectness() && data.getCorrectness()<1 && 0 < data.getSavedEditingEffort() && data.getSavedEditingEffort() < 1
+		if(0<data.getRecall() && data.getRecall()<1 && 0 < data.getSavedEditingEffort() && data.getSavedEditingEffort() < 1
 				&& data.getConfigurationEffort() < 0.5
 //				&& data.getHistoryNum() > 0 && data.getRuleNum() > 0 && data.getEnvironmentNum() > 0 
 				&& data.getConfigurationPointNum() >= 5
@@ -81,7 +81,7 @@ public class SearchTrialHandler extends AbstractHandler{
 	}
 	
 	private boolean isTypeVI(CollectedData data){
-		if( 0<data.getCorrectness() && data.getCorrectness()<1 && data.getSavedEditingEffort() == 0.0
+		if( 0<data.getRecall() && data.getRecall()<1 && data.getSavedEditingEffort() == 0.0
 //				&& data.getConfigurationEffort() < 0.5
 //				&& data.getHistoryNum() > 0 && data.getRuleNum() > 0 && data.getEnvironmentNum() > 0 
 				&& data.getConfigurationPointNum() > 1
