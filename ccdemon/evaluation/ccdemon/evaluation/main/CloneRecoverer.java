@@ -251,6 +251,16 @@ public class CloneRecoverer {
 		public void setLineNum(int lineNum) {
 			this.lineNum = lineNum;
 		}
+
+
+		/**
+		 * @return the fMeature
+		 */
+		public double getfMeature() {
+			double beta = 2;
+			double fScore = (1+beta*beta)*precision*recall/(beta*beta*precision+recall);
+			return fScore;
+		}
 	}
 	
 	private int historyNum = 0;
@@ -347,6 +357,7 @@ public class CloneRecoverer {
 				System.out.println("target source:" + targetInstance.toString());
 				System.out.println("recall: " + data.getRecall());
 				System.out.println("precision: " + data.getPrecision());
+				System.out.println("fMeature: " + data.getfMeature());
 				System.out.println("configuration effort: " + data.getConfigurationEffort());
 				System.out.println("saved editing effort: " + data.getSavedEditingEffort());
 				System.out.println("===================================");
