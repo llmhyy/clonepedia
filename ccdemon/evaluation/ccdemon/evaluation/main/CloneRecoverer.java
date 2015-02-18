@@ -299,8 +299,10 @@ public class CloneRecoverer {
 				ArrayList<SeqMultiset> unnecessaryMultisets = findUnnecessaryDiff(sourceInstance, targetInstance, matchableDiffs);
 				//ArrayList<SeqMultiset> typeIDiffs = findTypeIDiff(diffList, targetInstance);
 				int falsePositivesNum = unnecessaryMultisets.size();
-				double recall = (matchableDiffs.size()-falsePositivesNum)/((double)diffList.size() - falsePositivesNum);
-				double precision = (matchableDiffs.size()-falsePositivesNum)/((double)matchableDiffs.size());
+				int goldNum = diffList.size() - falsePositivesNum;
+				double correctNum = matchableDiffs.size()-falsePositivesNum;
+				double recall = correctNum/goldNum;
+				double precision = correctNum/matchableDiffs.size();
 
 				CPWrapperList wrapperList = 
 						constructPartialConfigurationPoints(sourceInstance, targetInstance, matchableDiffs);
@@ -309,7 +311,7 @@ public class CloneRecoverer {
 				ConfigurationPointSet cps = identifyPartialConfigurationPointSet(proj, 
 						pointList, targetInstance, sourceInstance, set);
 				
-				CollectedData data = simulate(cps, wrapperList, falsePositivesNum, matchableDiffs.size());
+				CollectedData data = simulate(cps, wrapperList, falsePositivesNum, goldNum);
 
 				long endTrialTime = System.currentTimeMillis();
 				data.setTrialTime(endTrialTime-startTrialTime);
@@ -421,7 +423,13 @@ public class CloneRecoverer {
 		}
 		
 		totalConfigurationEffort /= configurableSize;
-		double savedEditingEffort = 1 - ((double)totalEditingEffort-unnecessityNum)/totalModificationNum;
+		
+		
+		double savedEditingEffort = 1 - ((double)totalEditingEffort)/totalModificationNum;
+		
+		if(savedEditingEffort > 1){
+			System.currentTimeMillis();
+		}
 		
 		CollectedData data = new CollectedData();
 		data.setConfigurationEffort(totalConfigurationEffort);
