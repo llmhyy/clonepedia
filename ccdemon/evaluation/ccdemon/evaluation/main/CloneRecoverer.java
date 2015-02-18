@@ -49,6 +49,8 @@ public class CloneRecoverer {
 		private String typeIIorIII;
 		
 		private long trialTime = 0;
+		private long diffTime = 0;
+		private long APITime = 0;
 		
 		public String toString(){
 			return "\ntarget: " + targetInstance.toString() + "\nsource: " + sourceInstance.toString()
@@ -250,6 +252,26 @@ public class CloneRecoverer {
 
 		public void setLineNum(int lineNum) {
 			this.lineNum = lineNum;
+		}
+
+
+		public long getDiffTime() {
+			return diffTime;
+		}
+
+
+		public void setDiffTime(long diffTime) {
+			this.diffTime = diffTime;
+		}
+
+
+		public long getAPITime() {
+			return APITime;
+		}
+
+
+		public void setAPITime(long aPITime) {
+			APITime = aPITime;
 		}
 	}
 	

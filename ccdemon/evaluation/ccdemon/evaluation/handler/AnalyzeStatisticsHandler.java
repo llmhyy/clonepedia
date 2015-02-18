@@ -45,23 +45,16 @@ public class AnalyzeStatisticsHandler extends AbstractHandler {
 		int count = 0;
 		ExcelExporterWithPOI exporter = new ExcelExporterWithPOI();
 		exporter.start();
-		
-		ArrayList<String> alreadyExportedId = getExportedIds();
-		ArrayList<String> nowExportedId = new ArrayList<String>();
 
-//		for(clonepedia.model.ontology.CloneSet clonepediaSet: sets.getCloneList()){
-		for(int countTo75 = 0; countTo75 < 75; countTo75++){
-			clonepedia.model.ontology.CloneSet clonepediaSet = sets.getCloneList().get(countTo75);
-			if(alreadyExportedId.contains(clonepediaSet.getId())){
-				continue;
-			}else{
-				nowExportedId.add(clonepediaSet.getId());
-			}
-			
+		for(clonepedia.model.ontology.CloneSet clonepediaSet: sets.getCloneList()){
+
 			System.out.println("--------------------current: " + sets.getCloneList().indexOf(clonepediaSet) + ", total: " + sets.getCloneList().size() + " -----------------------");
 			System.out.println("Clone set ID: " + clonepediaSet.getId());
 			
 			CloneSet set = CCDemonUtil.adaptMCIDiffModel(clonepediaSet);
+			if(set.getInstances().size() < 3){
+				continue;
+			}
 			ArrayList<CollectedData> datas = recoverer.getTrials(set);
 			
 			for(CollectedData data : datas){
@@ -104,6 +97,10 @@ public class AnalyzeStatisticsHandler extends AbstractHandler {
 				exportList.add(data.getSavedEditingEffort() + "");
 				//trialTime;
 				exportList.add(data.getTrialTime() + "");
+				//diffTime;
+				
+				//APITime;
+				
 				//cloneInstance;;
 				exportList.add(data.getCloneInstance().toString());
 				
@@ -113,22 +110,7 @@ public class AnalyzeStatisticsHandler extends AbstractHandler {
 			
 		}
 		
-		exporter.end("jasperreports-1");
-		System.out.println("export ids:");
-		for(String id : nowExportedId){
-			System.out.print(id + ",");
-		}
+		exporter.end("JHotDraw");
 	}
 
-	private ArrayList<String> getExportedIds(){
-		ArrayList<String> exportedList = new ArrayList<String>();
-		String alreadyExportedString = "";
-		
-		String[] exportedArray = alreadyExportedString.split(",");
-		for(String s : exportedArray){
-			exportedList.add(s);
-		}
-		
-		return exportedList;
-	}
 }
