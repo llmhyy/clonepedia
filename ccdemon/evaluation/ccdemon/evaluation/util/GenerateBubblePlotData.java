@@ -24,20 +24,49 @@ public class GenerateBubblePlotData {
 			this.x = x;
 			this.y = y;
 		}
-		
-		public boolean equals(Object o){
-			if (!(o instanceof Data))
-		           return false;
-			Data data = (Data)o;
-			return data.x == this.x && data.y == this.y;
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + getOuterType().hashCode();
+			long temp;
+			temp = Double.doubleToLongBits(x);
+			result = prime * result + (int) (temp ^ (temp >>> 32));
+			temp = Double.doubleToLongBits(y);
+			result = prime * result + (int) (temp ^ (temp >>> 32));
+			return result;
 		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			Data other = (Data) obj;
+			if (!getOuterType().equals(other.getOuterType()))
+				return false;
+			if (Double.doubleToLongBits(x) != Double.doubleToLongBits(other.x))
+				return false;
+			if (Double.doubleToLongBits(y) != Double.doubleToLongBits(other.y))
+				return false;
+			return true;
+		}
+
+		private GenerateBubblePlotData getOuterType() {
+			return GenerateBubblePlotData.this;
+		}
+		
 	}
 	
 	public static void main(String[] args){
 	    
 		GenerateBubblePlotData generate = new GenerateBubblePlotData();
 		try {
-			generate.run("JHotDraw");
+			generate.run("twe");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -103,6 +132,6 @@ public class GenerateBubblePlotData {
 	    outputWB.write(fileOut);
 	    fileOut.close();
 	    
-	    System.out.println("done");
+	    System.out.println(projectName + " done");
 	}
 }
