@@ -43,6 +43,7 @@ public class AnalyzeStatisticsHandler extends AbstractHandler {
 		CloneRecoverer recoverer = new CloneRecoverer();
 		CloneSets sets = clonepedia.Activator.plainSets;
 		int count = 0;
+		String projectName = "JHotDraw";
 		ExcelExporterWithPOI exporter = new ExcelExporterWithPOI();
 		exporter.start();
 
@@ -91,6 +92,8 @@ public class AnalyzeStatisticsHandler extends AbstractHandler {
 				exportList.add(data.getRecall() + "");
 				//precision;
 				exportList.add(data.getPrecision() + "");
+				//Fmeasure
+				exportList.add(data.getfMeature() + "");
 				//configurationEffort;
 				exportList.add(data.getConfigurationEffort() + "");
 				//savedEditingEffort;
@@ -106,11 +109,18 @@ public class AnalyzeStatisticsHandler extends AbstractHandler {
 				
 				exporter.export(exportList, count);
 				count++;
+				//write excel whenever reach 1000 lines
+				if(count % 1000 == 0){
+					exporter.end(projectName);
+					exporter.startAgain(projectName);
+				}
+				System.out.println("current line number: " + count);
 			}
 			
 		}
 		
-		exporter.end("JHotDraw");
+		exporter.end(projectName);
+        System.out.println("excel export done");
 	}
 
 }
