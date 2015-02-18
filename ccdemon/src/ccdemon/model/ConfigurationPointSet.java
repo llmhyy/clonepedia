@@ -42,6 +42,8 @@ public class ConfigurationPointSet {
 	
 	private NamingRule rule;
 	private OccurrenceTable occurrences;
+	
+	public static long APITime = 0;
 
 	public class ContextContent{
 		private AbstractTypeDeclaration typeDeclaration;
@@ -259,16 +261,20 @@ public class ConfigurationPointSet {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void expandEnvironmentBasedCandidates(
 			ArrayList<ConfigurationPoint> configurationPoints) {
+		APITime = 0;
 		for(ConfigurationPoint point: configurationPoints){
 			if(point.isType()){
 				//find its sibling types
 				ArrayList<Class> types = point.getSuperClasses();
 				ArrayList<Class> siblings = new ArrayList<Class>();
 				for(Class c : types){
+					long startAPITime = System.currentTimeMillis();
 					ConfigurationBuilder cb = new ConfigurationBuilder().setScanners(new SubTypesScanner());
 					cb.addUrls(ClasspathHelper.forClass(c));
 				    Reflections reflections = new Reflections(cb);				
 					Set<Class<?>> subset = reflections.getSubTypesOf(c);
+					long endAPITime = System.currentTimeMillis();
+					APITime += endAPITime - startAPITime;
 					if(subset.size() != 0){
 						for(Class sub : subset){
 							//avoid duplication with existing type candidate

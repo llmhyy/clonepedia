@@ -98,9 +98,9 @@ public class AnalyzeStatisticsHandler extends AbstractHandler {
 				//trialTime;
 				exportList.add(data.getTrialTime() + "");
 				//diffTime;
-				
+				exportList.add(data.getDiffTime() + "");
 				//APITime;
-				
+				exportList.add(data.getAPITime() + "");
 				//cloneInstance;;
 				exportList.add(data.getCloneInstance().toString());
 				
