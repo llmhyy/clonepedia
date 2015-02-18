@@ -294,12 +294,17 @@ public class CloneRecoverer {
 		SeqMCIDiff diff = new SeqMCIDiff();
 		IJavaProject proj = CCDemonUtil.retrieveWorkingJavaProject();
 		ArrayList<SeqMultiset> diffList;
+
+		long startDiffTime = System.currentTimeMillis();
+		
 		try {
 			diffList = diff.diff(set, proj);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return datas;
 		}
+
+		long endDiffTime = System.currentTimeMillis();
 		
 		/**
 		 * choose the target clone instance to be recovered
@@ -335,6 +340,8 @@ public class CloneRecoverer {
 
 				long endTrialTime = System.currentTimeMillis();
 				data.setTrialTime(endTrialTime-startTrialTime);
+				data.setDiffTime(endDiffTime-startDiffTime);
+				data.setAPITime(ConfigurationPointSet.APITime);
 				data.setSourceInstance(sourceInstance);
 				data.setTargetInstance(targetInstance);
 				data.setRecall(recall);

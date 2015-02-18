@@ -88,9 +88,10 @@ public class GenerateBubblePlotData {
 	    	Cell yCell = row.getCell(7);
 	    	Cell xCell = row.getCell(9);
 	    	
-	    	if(yCell.getCachedFormulaResultType() == Cell.CELL_TYPE_ERROR
+//	    	if(yCell.getCachedFormulaResultType() == Cell.CELL_TYPE_ERROR
+	    	if(yCell.getCellType() == Cell.CELL_TYPE_STRING
 	    			|| xCell.getCellType() == Cell.CELL_TYPE_STRING){
-	    		//Fmeasure is #VALUE!, or saved_edit is NaN
+	    		//Fmeasure is NaN, or saved_edit is NaN/-Infinity
 	    		continue;
 	    	}else{
 		    	double x = xCell.getNumericCellValue();
