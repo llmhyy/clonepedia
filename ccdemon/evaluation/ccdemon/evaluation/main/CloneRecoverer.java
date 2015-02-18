@@ -331,7 +331,7 @@ public class CloneRecoverer {
 				ConfigurationPointSet cps = identifyPartialConfigurationPointSet(proj, 
 						pointList, targetInstance, sourceInstance, set);
 				
-				CollectedData data = simulate(cps, wrapperList, falsePositivesNum, goldNum);
+				CollectedData data = simulate(cps, wrapperList, sourceInstance, goldNum);
 
 				long endTrialTime = System.currentTimeMillis();
 				data.setTrialTime(endTrialTime-startTrialTime);
@@ -408,7 +408,7 @@ public class CloneRecoverer {
 	}
 
 	private CollectedData simulate(ConfigurationPointSet cps,
-			CPWrapperList wrapperList, int unnecessityNum, int totalModificationNum) {
+			CPWrapperList wrapperList, CloneInstance sourceInstance, int totalModificationNum) {
 		
 		this.historyNum = 0;
 		this.environmentNum = 0;
@@ -432,7 +432,10 @@ public class CloneRecoverer {
 				this.totalNum++;
 			}
 			else{
-				totalEditingEffort++;
+				TokenSeq sourceSeq = cp.getSeqMultiset().findTokenSeqByCloneInstance(sourceInstance);
+				if(!sourceSeq.equals(correctSeq)){
+					totalEditingEffort++;					
+				}
 			}
 			
 			String text = correctSeq.getText();
@@ -447,7 +450,7 @@ public class CloneRecoverer {
 		
 		double savedEditingEffort = 1 - ((double)totalEditingEffort)/totalModificationNum;
 		
-		if(savedEditingEffort > 1){
+		if(savedEditingEffort > 1 || savedEditingEffort < 0){
 			System.currentTimeMillis();
 		}
 		
