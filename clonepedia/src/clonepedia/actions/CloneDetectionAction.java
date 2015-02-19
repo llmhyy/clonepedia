@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import mcidiff.main.SeqMCIDiff;
 import mcidiff.model.SeqMultiset;
+import mcidiff.model.TokenSeq;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -140,6 +141,8 @@ public class CloneDetectionAction implements IWorkbenchWindowActionDelegate {
 //				ArrayList<CloneSet> toRemove = new ArrayList<CloneSet>();
 		Iterator<CloneSet> iterator = sets.getCloneList().iterator();
 		int count = 0;
+		int type2Count = 0;
+		int type3Count = 0;
 		int size = sets.getCloneList().size();
 		while(iterator.hasNext()){
 			CloneSet set = iterator.next();
@@ -156,6 +159,12 @@ public class CloneDetectionAction implements IWorkbenchWindowActionDelegate {
 					diffList = mcidiff.diff(diffset, javaProject);
 					if(diffList.size() == 0){
 						iterator.remove();
+					}
+					else if(containEpisolon(diffList)){
+						type3Count++;
+					}
+					else{
+						type2Count++;
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -184,10 +193,22 @@ public class CloneDetectionAction implements IWorkbenchWindowActionDelegate {
 //				}
 //				sets.getCloneList().removeAll(toRemove);
 		System.out.println("----------------------------------------------------------------------------------------------");
-		System.out.println("Project:" + proj.getName() + ", clone set size:" + sets.getCloneList().size());
+		System.out.println("Project:" + proj.getName() + ", clone set size:" + sets.getCloneList().size() +
+				", type 2: " + type2Count + ", " + type3Count);
 		System.out.println("----------------------------------------------------------------------------------------------");
 	}
 	
+	private boolean containEpisolon(ArrayList<SeqMultiset> diffList) {
+		for(SeqMultiset set: diffList){
+			for(TokenSeq seq: set.getSequences()){
+				if(seq.isEpisolonTokenSeq()){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	private CloneSets convertToCloneSets(SimilarityGroup[] simGroups){
 		CloneSets sets = new CloneSets();
 		
