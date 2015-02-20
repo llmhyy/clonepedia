@@ -354,14 +354,16 @@ public class CloneRecoverer {
 				data.setConfigurationPointNum(cps.getConfigurationPoints().size());
 				data.setCps(cps);
 				
-				int totalLineNum = 0;
-				for(CloneInstance nonTargetInstance: set.getInstances()){
-					if(nonTargetInstance.equals(targetInstance)){
-						continue;
-					}
-					totalLineNum += nonTargetInstance.getLength();
-				}
-				data.setLineNum(totalLineNum/(set.getInstances().size()-1));
+//				int totalLineNum = 0;
+//				for(CloneInstance nonTargetInstance: set.getInstances()){
+//					if(nonTargetInstance.equals(targetInstance)){
+//						continue;
+//					}
+//					totalLineNum += nonTargetInstance.getLength();
+//				}
+//				data.setLineNum(totalLineNum/(set.getInstances().size()-1));
+				data.setLineNum(targetInstance.getTokenList().size());
+				System.out.println(data.getLineNum());
 				
 				boolean isTypeIII = false;
 				for(int i = 0; i < matchableDiffs.size() && !isTypeIII; i++){
@@ -382,6 +384,7 @@ public class CloneRecoverer {
 				datas.add(data);
 				
 				System.out.println("===================================");
+				System.out.println("diff time:" + (endDiffTime-startDiffTime));
 				System.out.println("copied source:" + sourceInstance.toString());
 				System.out.println("target source:" + targetInstance.toString());
 				System.out.println("recall: " + data.getRecall());
