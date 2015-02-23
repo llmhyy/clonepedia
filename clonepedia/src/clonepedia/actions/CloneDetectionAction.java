@@ -143,11 +143,13 @@ public class CloneDetectionAction implements IWorkbenchWindowActionDelegate {
 		int count = 0;
 		int type2Count = 0;
 		int type3Count = 0;
+		int filteredCount = 0;
 		int size = sets.getCloneList().size();
 		while(iterator.hasNext()){
 			CloneSet set = iterator.next();
 			if(set.size()<3){
 				iterator.remove();
+				filteredCount++;
 			}else{
 				mcidiff.model.CloneSet diffset = new mcidiff.model.CloneSet(set.getId());
 				for(CloneInstance ins : set){
@@ -159,6 +161,7 @@ public class CloneDetectionAction implements IWorkbenchWindowActionDelegate {
 					diffList = mcidiff.diff(diffset, javaProject);
 					if(diffList.size() == 0){
 						iterator.remove();
+						filteredCount++;
 					}
 					else if(containEpisolon(diffList)){
 						type3Count++;
@@ -171,7 +174,7 @@ public class CloneDetectionAction implements IWorkbenchWindowActionDelegate {
 				}
 			}
 			count++;
-			System.out.println("=============== Count: " + count + ", Size: " + size + " ================");
+			System.out.println("=============== Current: " + count + ", Size: " + size + " ================");
 		}
 		
 		
@@ -194,7 +197,8 @@ public class CloneDetectionAction implements IWorkbenchWindowActionDelegate {
 //				sets.getCloneList().removeAll(toRemove);
 		System.out.println("----------------------------------------------------------------------------------------------");
 		System.out.println("Project:" + proj.getName() + ", clone set size:" + sets.getCloneList().size() +
-				", type 2: " + type2Count + ", " + type3Count);
+				", type 2: " + type2Count + ", type 3: " + type3Count);
+		System.out.println("Total clone set size (include filtered): " + size + ", filtered size: " + filteredCount);
 		System.out.println("----------------------------------------------------------------------------------------------");
 	}
 	
