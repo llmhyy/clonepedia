@@ -43,14 +43,37 @@ public class AnalyzeStatisticsHandler extends AbstractHandler {
 		CloneRecoverer recoverer = new CloneRecoverer();
 		CloneSets sets = clonepedia.Activator.plainSets;
 		int count = 0;
-		String projectName = "JHotDraw";
+		//TODO how many times we have run this program
+		int globalRunTimeCount = 0;
+		//TODO what is the program name
+		String projectName = "JHotDraw" + globalRunTimeCount;
 		ExcelExporterWithPOI exporter = new ExcelExporterWithPOI();
 		exporter.start();
+		
+		//TODO all ID that already been analyzed
+		String analyzedIds = "";
+		String[] analyzedIdsArray = analyzedIds.split(",");
+		ArrayList<String> analyzedIdsList = new ArrayList<String>();
+		for(String id : analyzedIdsArray){
+			analyzedIdsList.add(id);
+		}
+		//TODO how many clone sets in one time
+		int limitSetNum = 53;
+		int limitCount = 0;
+		String thisTimeIds = "";
 
 		for(clonepedia.model.ontology.CloneSet clonepediaSet: sets.getCloneList()){
 
 			System.out.println("--------------------current: " + sets.getCloneList().indexOf(clonepediaSet) + ", total: " + sets.getCloneList().size() + " -----------------------");
 			System.out.println("Clone set ID: " + clonepediaSet.getId());
+			if(analyzedIdsList.contains(clonepediaSet.getId())){
+				continue;
+			}else if(limitCount >= limitSetNum){
+				break;
+			}else{
+				thisTimeIds += clonepediaSet.getId() + ",";
+				limitCount++;
+			}
 			
 			CloneSet set = CCDemonUtil.adaptMCIDiffModel(clonepediaSet);
 			if(set.getInstances().size() < 3){
@@ -121,6 +144,8 @@ public class AnalyzeStatisticsHandler extends AbstractHandler {
 		
 		exporter.end(projectName);
         System.out.println("excel export done");
+        System.out.println("thisTimeIds:");
+        System.out.println(thisTimeIds);
 	}
 
 }
