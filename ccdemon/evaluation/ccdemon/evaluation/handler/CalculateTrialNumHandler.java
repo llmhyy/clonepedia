@@ -36,7 +36,7 @@ public class CalculateTrialNumHandler extends AbstractHandler{
 		System.out.println("Clone Set number: " + sets.getCloneList().size());
 		int trialNum = 0;
 		for(clonepedia.model.ontology.CloneSet clonepediaSet: sets.getCloneList()){
-			trialNum += clonepediaSet.size();
+			trialNum += clonepediaSet.size() * (clonepediaSet.size() - 1);
 		}
 		
 		System.out.println("Trial number: " + trialNum);
