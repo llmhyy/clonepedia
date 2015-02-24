@@ -110,10 +110,10 @@ public class AnalyzeStatisticsHandler extends AbstractHandler {
 				exporter.export(exportList, count);
 				count++;
 				//write excel whenever reach 1000 lines
-				if(count % 1000 == 0){
+				/*if(count % 1000 == 0){
 					exporter.end(projectName);
 					exporter.startAgain(projectName);
-				}
+				}*/
 				System.out.println("current line number: " + count);
 			}
 			
