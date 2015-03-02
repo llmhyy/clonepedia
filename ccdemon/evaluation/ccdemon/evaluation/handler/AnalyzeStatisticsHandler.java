@@ -23,7 +23,7 @@ public class AnalyzeStatisticsHandler extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
-		Job job = new Job("analyzing project statistics"){
+		Job job = new Job("analyzing project statistics and exporting as excel"){
 
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
@@ -43,42 +43,33 @@ public class AnalyzeStatisticsHandler extends AbstractHandler {
 		CloneRecoverer recoverer = new CloneRecoverer();
 		CloneSets sets = clonepedia.Activator.plainSets;
 		int count = 0;
-		//TODO how many times we have run this program
-		int globalRunTimeCount = 0;
 		//TODO what is the program name
-		String projectName = "JHotDraw" + globalRunTimeCount;
+		String projectName = "JHotDraw";
 		ExcelExporterWithPOI exporter = new ExcelExporterWithPOI();
 		exporter.start();
+
+		//how many times we have run this program
+		int globalRunTimeCount = 0;
 		
-		//TODO all ID that already been analyzed
-		String analyzedIds = "";
-		String[] analyzedIdsArray = analyzedIds.split(",");
-		ArrayList<String> analyzedIdsList = new ArrayList<String>();
-		for(String id : analyzedIdsArray){
-			analyzedIdsList.add(id);
-		}
-		//TODO how many clone sets in one time
-		int limitSetNum = 53;
-		int limitCount = 0;
-		String thisTimeIds = "";
+		//TODO the max trial number to output one time
+		int limitTrialNum = 20000;
 
 		for(clonepedia.model.ontology.CloneSet clonepediaSet: sets.getCloneList()){
 
 			System.out.println("--------------------current: " + sets.getCloneList().indexOf(clonepediaSet) + ", total: " + sets.getCloneList().size() + " -----------------------");
 			System.out.println("Clone set ID: " + clonepediaSet.getId());
-			if(analyzedIdsList.contains(clonepediaSet.getId())){
-				continue;
-			}else if(limitCount >= limitSetNum){
-				break;
-			}else{
-				thisTimeIds += clonepediaSet.getId() + ",";
-				limitCount++;
+
+			if(count >= limitTrialNum){
+				String fileName = projectName + globalRunTimeCount;
+				exporter.end(fileName);
+				globalRunTimeCount++;
+				exporter = new ExcelExporterWithPOI();
+				exporter.start();
+				count = 0;
 			}
 			
 			CloneSet set = CCDemonUtil.adaptMCIDiffModel(clonepediaSet);
-			if(set.getInstances().size() < 3){
-				continue;
-			}
+			
 			ArrayList<CollectedData> datas = recoverer.getTrials(set);
 			
 			for(CollectedData data : datas){
@@ -132,20 +123,14 @@ public class AnalyzeStatisticsHandler extends AbstractHandler {
 				
 				exporter.export(exportList, count);
 				count++;
-				//write excel whenever reach 1000 lines
-				/*if(count % 1000 == 0){
-					exporter.end(projectName);
-					exporter.startAgain(projectName);
-				}*/
 				System.out.println("current line number: " + count);
 			}
 			
 		}
-		
-		exporter.end(projectName);
+
+		String fileName = projectName + globalRunTimeCount;
+		exporter.end(fileName);
         System.out.println("excel export done");
-        System.out.println("thisTimeIds:");
-        System.out.println(thisTimeIds);
 	}
 
 }
