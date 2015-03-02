@@ -198,7 +198,7 @@
  			</command>
             <command
                   commandId="ccdemon.evaluation.analyzeStatistics"
-                  icon="icons/analyzeStatistics.png"
+                  icon="icons/excel.png"
                   id="ccdemon.command.evaluation.analyzeStatistics"
                   label="AnalyzeStatistics"
                   style="push">
