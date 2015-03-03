@@ -315,6 +315,11 @@ public class CloneRecoverer {
 			 * choose the source clone instance as the copied instance
 			 */
 			for(CloneInstance sourceInstance: set.getInstances()){
+				
+				if(/*sourceInstance.getStartLine() == 319 && */targetInstance.getStartLine() == 224){
+					System.currentTimeMillis();
+				}
+				
 				if(sourceInstance.equals(targetInstance)){
 					continue;
 				}
@@ -401,7 +406,7 @@ public class CloneRecoverer {
 		}
 		return datas;
 	}
-	
+		
 	private ArrayList<SeqMultiset> findUnnecessaryDiff(CloneInstance sourceInstance, CloneInstance targetInstance,
 			ArrayList<SeqMultiset> matchableDiffs) {
 		ArrayList<SeqMultiset> list = new ArrayList<>();
@@ -426,7 +431,7 @@ public class CloneRecoverer {
 		this.totalNum = 0;
 		
 		double totalConfigurationEffort = 0;
-		double totalEditingEffort = 0;
+		/*double totalEditingEffort = 0;*/
 		
 		int configurableSize = 0;
 		
@@ -441,12 +446,12 @@ public class CloneRecoverer {
 				
 				this.totalNum++;
 			}
-			else{
+			/*else{
 				TokenSeq sourceSeq = cp.getSeqMultiset().findTokenSeqByCloneInstance(sourceInstance);
 				if(!sourceSeq.equals(correctSeq)){
 					totalEditingEffort++;					
 				}
-			}
+			}*/
 			
 			String text = correctSeq.getText();
 			cps.getRule().applyRule(text, cp);
@@ -458,7 +463,8 @@ public class CloneRecoverer {
 		totalConfigurationEffort /= configurableSize;
 		
 		
-		double savedEditingEffort = 1 - ((double)totalEditingEffort)/totalModificationNum;
+//		double savedEditingEffort = 1 - ((double)totalEditingEffort)/totalModificationNum;
+		double savedEditingEffort = ((double)configurableSize)/totalModificationNum;
 		
 		if(savedEditingEffort > 1 || savedEditingEffort < 0){
 			System.currentTimeMillis();

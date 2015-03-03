@@ -147,7 +147,7 @@ public class CloneDetectionAction implements IWorkbenchWindowActionDelegate {
 		int size = sets.getCloneList().size();
 		while(iterator.hasNext()){
 			CloneSet set = iterator.next();
-			if(set.size()<3){
+			if(set.size()<3 || set.size()>30){
 				iterator.remove();
 				filteredCount++;
 			}else{
