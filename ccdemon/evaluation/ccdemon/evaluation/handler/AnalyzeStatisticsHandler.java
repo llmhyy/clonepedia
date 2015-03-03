@@ -44,7 +44,7 @@ public class AnalyzeStatisticsHandler extends AbstractHandler {
 		CloneSets sets = clonepedia.Activator.plainSets;
 		int count = 0;
 		//TODO what is the program name
-		String projectName = "JHotDraw";
+		String projectName = "twe";
 		ExcelExporterWithPOI exporter = new ExcelExporterWithPOI();
 		exporter.start();
 
@@ -52,7 +52,7 @@ public class AnalyzeStatisticsHandler extends AbstractHandler {
 		int globalRunTimeCount = 0;
 		
 		//TODO the max trial number to output one time
-		int limitTrialNum = 20000;
+		int limitTrialNum = 30000;
 
 		for(clonepedia.model.ontology.CloneSet clonepediaSet: sets.getCloneList()){
 

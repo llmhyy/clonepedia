@@ -85,8 +85,8 @@ public class GenerateBubblePlotData {
 	    		continue;
 	    	}
 	    	
-	    	Cell yCell = row.getCell(7);
-	    	Cell xCell = row.getCell(9);
+	    	Cell yCell = row.getCell(8);
+	    	Cell xCell = row.getCell(10);
 	    	
 //	    	if(yCell.getCachedFormulaResultType() == Cell.CELL_TYPE_ERROR
 	    	if(yCell.getCellType() == Cell.CELL_TYPE_STRING

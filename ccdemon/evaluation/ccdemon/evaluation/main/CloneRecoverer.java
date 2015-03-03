@@ -316,9 +316,9 @@ public class CloneRecoverer {
 			 */
 			for(CloneInstance sourceInstance: set.getInstances()){
 				
-				if(/*sourceInstance.getStartLine() == 319 && */targetInstance.getStartLine() == 224){
-					System.currentTimeMillis();
-				}
+//				if(/*sourceInstance.getStartLine() == 319 && */targetInstance.getStartLine() == 224){
+//					System.currentTimeMillis();
+//				}
 				
 				if(sourceInstance.equals(targetInstance)){
 					continue;
@@ -341,7 +341,7 @@ public class CloneRecoverer {
 				ConfigurationPointSet cps = identifyPartialConfigurationPointSet(proj, 
 						pointList, targetInstance, sourceInstance, set);
 				
-				CollectedData data = simulate(cps, wrapperList, sourceInstance, goldNum);
+				CollectedData data = simulate(cps, wrapperList, sourceInstance, goldNum, falsePositivesNum);
 
 				long endTrialTime = System.currentTimeMillis();
 				data.setTrialTime(endTrialTime-startTrialTime);
@@ -423,7 +423,7 @@ public class CloneRecoverer {
 	}
 
 	private CollectedData simulate(ConfigurationPointSet cps,
-			CPWrapperList wrapperList, CloneInstance sourceInstance, int totalModificationNum) {
+			CPWrapperList wrapperList, CloneInstance sourceInstance, int totalModificationNum, int unnecessaryNum) {
 		
 		this.historyNum = 0;
 		this.environmentNum = 0;
@@ -464,7 +464,7 @@ public class CloneRecoverer {
 		
 		
 //		double savedEditingEffort = 1 - ((double)totalEditingEffort)/totalModificationNum;
-		double savedEditingEffort = ((double)configurableSize)/totalModificationNum;
+		double savedEditingEffort = ((double)configurableSize - unnecessaryNum) / totalModificationNum;
 		
 		if(savedEditingEffort > 1 || savedEditingEffort < 0){
 			System.currentTimeMillis();
