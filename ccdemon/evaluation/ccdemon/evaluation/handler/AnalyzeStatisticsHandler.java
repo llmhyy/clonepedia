@@ -82,7 +82,7 @@ public class AnalyzeStatisticsHandler extends AbstractHandler {
 				exportList.add(data.getLineNum() + "");
 				//typeIIorIII
 				exportList.add(data.getTypeIIorIII());
-				//type1to7;
+				//type1to7-recall;
 				if(data.getRecall() == 1.0){
 					if(data.getSavedEditingEffort() == 1.0){
 						exportList.add("1");
@@ -99,8 +99,32 @@ public class AnalyzeStatisticsHandler extends AbstractHandler {
 					}else{
 						exportList.add("6");
 					}
-				}else{
+				}else if(data.getRecall() == 0.0){
 					exportList.add("7");
+				}else{
+					exportList.add("8");
+				}
+				//type1to7-Fmeasure;
+				if(data.getfMeature() == 1.0){
+					if(data.getSavedEditingEffort() == 1.0){
+						exportList.add("1");
+					}else if(data.getSavedEditingEffort() > 0){
+						exportList.add("2");
+					}else{
+						exportList.add("3");
+					}
+				}else if(data.getfMeature() > 0){
+					if(data.getSavedEditingEffort() == 1.0){
+						exportList.add("4");
+					}else if(data.getSavedEditingEffort() > 0){
+						exportList.add("5");
+					}else{
+						exportList.add("6");
+					}
+				}else if(data.getfMeature() == 0.0){
+					exportList.add("7");
+				}else{
+					exportList.add("8");
 				}
 				//recall;
 				exportList.add(data.getRecall() + "");
