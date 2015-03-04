@@ -364,18 +364,21 @@ public class ConfigurationPointSet {
 		if(isFirstRanking){
 			for(ConfigurationPoint point: this.configurationPoints){
 				Candidate originalCandidate = point.getOriginalCandidate();
-				int index = -1;
-				for(int i=0; i<point.getCandidates().size(); i++){
-					if(point.getCandidates().get(i) == originalCandidate){
-						index = i;
+				if(originalCandidate != null){
+					int index = -1;
+					for(int i=0; i<point.getCandidates().size(); i++){
+						if(point.getCandidates().get(i) == originalCandidate){
+							index = i;
+						}
 					}
+					
+					for(int i=0; i<index; i++){
+						Candidate cand = point.getCandidates().get(i);
+						point.getCandidates().set(i+1, cand);
+					}
+					point.getCandidates().set(0, originalCandidate);
 				}
 				
-				for(int i=0; i<index; i++){
-					Candidate cand = point.getCandidates().get(i);
-					point.getCandidates().set(i+1, cand);
-				}
-				point.getCandidates().set(0, originalCandidate);
 			}
 			
 			isFirstRanking = false;
