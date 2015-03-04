@@ -339,9 +339,9 @@ public class CloneRecoverer {
 			 */
 			for(CloneInstance sourceInstance: set.getInstances()){
 				
-//				if(/*sourceInstance.getStartLine() == 319 && */targetInstance.getStartLine() == 224){
-//					System.currentTimeMillis();
-//				}
+				if(sourceInstance.getStartLine() == 66 && targetInstance.getStartLine() == 69){
+					System.currentTimeMillis();
+				}
 				
 				if(sourceInstance.equals(targetInstance)){
 					continue;
@@ -364,7 +364,7 @@ public class CloneRecoverer {
 				ConfigurationPointSet cps = identifyPartialConfigurationPointSet(proj, 
 						pointList, targetInstance, sourceInstance, set);
 				
-				CollectedData data = simulate(cps, wrapperList, sourceInstance, targetInstance, goldNum, falsePositivesNum);
+				CollectedData data = simulate(cps, wrapperList, sourceInstance, goldNum, falsePositivesNum);
 
 				long endTrialTime = System.currentTimeMillis();
 				data.setTrialTime(endTrialTime-startTrialTime);
@@ -446,7 +446,7 @@ public class CloneRecoverer {
 	}
 
 	private CollectedData simulate(ConfigurationPointSet cps,
-			CPWrapperList wrapperList, CloneInstance sourceInstance, CloneInstance targetInstance, int totalModificationNum, int unnecessaryNum) {
+			CPWrapperList wrapperList, CloneInstance sourceInstance, int totalModificationNum, int unnecessaryNum) {
 		
 		this.historyNum = 0;
 		this.environmentNum = 0;
@@ -473,8 +473,7 @@ public class CloneRecoverer {
 				
 				SeqMultiset set = cp.getSeqMultiset();
 				TokenSeq sourceSeq = set.findTokenSeqByCloneInstance(sourceInstance);
-				TokenSeq targetSeq = set.findTokenSeqByCloneInstance(targetInstance);
-				if(sourceSeq.equals(targetSeq)){
+				if(sourceSeq.equals(correctSeq)){
 					totalFalsePositiveNum++;
 					if(configurationEffort == 0){
 						goodCaseNum++;

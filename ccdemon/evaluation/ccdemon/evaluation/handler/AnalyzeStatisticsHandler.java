@@ -44,7 +44,7 @@ public class AnalyzeStatisticsHandler extends AbstractHandler {
 		CloneSets sets = clonepedia.Activator.plainSets;
 		int count = 0;
 		//TODO what is the program name
-		String projectName = "jasperreports";
+		String projectName = "twe";
 		ExcelExporterWithPOI exporter = new ExcelExporterWithPOI();
 		exporter.start();
 
