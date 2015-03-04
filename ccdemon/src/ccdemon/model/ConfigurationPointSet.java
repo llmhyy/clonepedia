@@ -371,7 +371,7 @@ public class ConfigurationPointSet {
 					}
 				}
 				
-				for(int i=0; i<=index; i++){
+				for(int i=0; i<index; i++){
 					Candidate cand = point.getCandidates().get(i);
 					point.getCandidates().set(i+1, cand);
 				}
