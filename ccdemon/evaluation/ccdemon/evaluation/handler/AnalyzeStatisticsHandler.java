@@ -44,7 +44,7 @@ public class AnalyzeStatisticsHandler extends AbstractHandler {
 		CloneSets sets = clonepedia.Activator.plainSets;
 		int count = 0;
 		//TODO what is the program name
-		String projectName = "twe";
+		String projectName = "osworkflow";
 		ExcelExporterWithPOI exporter = new ExcelExporterWithPOI();
 		exporter.start();
 
@@ -132,6 +132,12 @@ public class AnalyzeStatisticsHandler extends AbstractHandler {
 				exportList.add(data.getPrecision() + "");
 				//Fmeasure
 				exportList.add(data.getfMeature() + "");
+				//historyNum
+				exportList.add(data.getHistoryNum() + "");
+				//environmentNum
+				exportList.add(data.getEnvironmentNum() + "");
+				//ruleNum
+				exportList.add(data.getRuleNum() + "");
 				//configurationEffort;
 				exportList.add(data.getConfigurationEffort() + "");
 				//savedEditingEffort;
