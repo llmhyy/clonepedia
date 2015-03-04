@@ -92,6 +92,16 @@ public class ConfigurationPoint {
 		}
 	}
 	
+	public Candidate getOriginalCandidate(){
+		for(Candidate candidate: getCandidates()){
+			if(candidate.getText().equals(copiedTokenSeq.getText())){
+				return candidate;
+			}
+		}
+		
+		return null;
+	}
+	
 	public void clearRuleGeneratedCandidates(){
 		Iterator<Candidate> iterator = this.candidates.iterator();
 		while(iterator.hasNext()){

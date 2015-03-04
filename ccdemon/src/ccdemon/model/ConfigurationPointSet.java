@@ -34,6 +34,8 @@ import ccdemon.model.rule.RuleItem;
 
 
 public class ConfigurationPointSet {
+	private boolean isFirstRanking = true;
+	
 	private ArrayList<ConfigurationPoint> configurationPoints = new ArrayList<>();
 	//private CloneSet referrableCloneSet;
 	
@@ -357,6 +359,26 @@ public class ConfigurationPointSet {
 		
 		for(ConfigurationPoint point: this.configurationPoints){
 			Collections.sort(point.getCandidates(), comparator);
+		}
+		
+		if(isFirstRanking){
+			for(ConfigurationPoint point: this.configurationPoints){
+				Candidate originalCandidate = point.getOriginalCandidate();
+				int index = -1;
+				for(int i=0; i<point.getCandidates().size(); i++){
+					if(point.getCandidates().get(i) == originalCandidate){
+						index = i;
+					}
+				}
+				
+				for(int i=0; i<=index; i++){
+					Candidate cand = point.getCandidates().get(i);
+					point.getCandidates().set(i+1, cand);
+				}
+				point.getCandidates().set(0, originalCandidate);
+			}
+			
+			isFirstRanking = false;
 		}
 		
 	}
