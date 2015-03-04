@@ -136,6 +136,10 @@ public class AnalyzeStatisticsHandler extends AbstractHandler {
 				exportList.add(data.getConfigurationEffort() + "");
 				//savedEditingEffort;
 				exportList.add(data.getSavedEditingEffort() + "");
+				//totalFalsePositiveNum;
+				exportList.add(data.getTotalFalsePositiveNum() + "");
+				//goodCaseNum;
+				exportList.add(data.getGoodCaseNum() + "");
 				//trialTime;
 				exportList.add(data.getTrialTime() + "");
 				//diffTime;

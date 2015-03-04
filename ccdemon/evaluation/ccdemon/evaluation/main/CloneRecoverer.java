@@ -37,6 +37,9 @@ public class CloneRecoverer {
 		private double configurationEffort;
 		private double savedEditingEffort;
 		
+		private int totalFalsePositiveNum;
+		private int goodCaseNum;
+		
 		private int historyNum = 0;
 		private int environmentNum = 0;
 		private int ruleNum = 0;
@@ -281,6 +284,26 @@ public class CloneRecoverer {
 			double fScore = (1+beta*beta)*precision*recall/(beta*beta*precision+recall);
 			return fScore;
 		}
+
+
+		public int getTotalFalsePositiveNum() {
+			return totalFalsePositiveNum;
+		}
+
+
+		public void setTotalFalsePositiveNum(int totalFalsePositiveNum) {
+			this.totalFalsePositiveNum = totalFalsePositiveNum;
+		}
+
+
+		public int getGoodCaseNum() {
+			return goodCaseNum;
+		}
+
+
+		public void setGoodCaseNum(int goodCaseNum) {
+			this.goodCaseNum = goodCaseNum;
+		}
 	}
 	
 	private int historyNum = 0;
@@ -341,7 +364,7 @@ public class CloneRecoverer {
 				ConfigurationPointSet cps = identifyPartialConfigurationPointSet(proj, 
 						pointList, targetInstance, sourceInstance, set);
 				
-				CollectedData data = simulate(cps, wrapperList, sourceInstance, goldNum, falsePositivesNum);
+				CollectedData data = simulate(cps, wrapperList, sourceInstance, targetInstance, goldNum, falsePositivesNum);
 
 				long endTrialTime = System.currentTimeMillis();
 				data.setTrialTime(endTrialTime-startTrialTime);
@@ -423,7 +446,7 @@ public class CloneRecoverer {
 	}
 
 	private CollectedData simulate(ConfigurationPointSet cps,
-			CPWrapperList wrapperList, CloneInstance sourceInstance, int totalModificationNum, int unnecessaryNum) {
+			CPWrapperList wrapperList, CloneInstance sourceInstance, CloneInstance targetInstance, int totalModificationNum, int unnecessaryNum) {
 		
 		this.historyNum = 0;
 		this.environmentNum = 0;
@@ -434,6 +457,8 @@ public class CloneRecoverer {
 		/*double totalEditingEffort = 0;*/
 		
 		int configurableSize = 0;
+		int totalFalsePositiveNum = 0;
+		int goodCaseNum = 0;
 		
 		for(int i=0; i<cps.getConfigurationPoints().size(); i++){
 			ConfigurationPoint cp = cps.getConfigurationPoints().get(i);
@@ -445,6 +470,17 @@ public class CloneRecoverer {
 				configurableSize++;
 				
 				this.totalNum++;
+			}
+			else{
+				SeqMultiset set = cp.getSeqMultiset();
+				TokenSeq sourceSeq = set.findTokenSeqByCloneInstance(sourceInstance);
+				TokenSeq targetSeq = set.findTokenSeqByCloneInstance(targetInstance);
+				if(sourceSeq.equals(targetSeq)){
+					totalFalsePositiveNum++;
+					if(configurationEffort == 0){
+						goodCaseNum++;
+					}
+				}
 			}
 			/*else{
 				TokenSeq sourceSeq = cp.getSeqMultiset().findTokenSeqByCloneInstance(sourceInstance);
@@ -473,6 +509,8 @@ public class CloneRecoverer {
 		CollectedData data = new CollectedData();
 		data.setConfigurationEffort(totalConfigurationEffort);
 		data.setSavedEditingEffort(savedEditingEffort);
+		data.setTotalFalsePositiveNum(totalFalsePositiveNum);
+		data.setGoodCaseNum(goodCaseNum);
 		
 		return data;
 	}
