@@ -470,8 +470,7 @@ public class CloneRecoverer {
 				configurableSize++;
 				
 				this.totalNum++;
-			}
-			else{
+				
 				SeqMultiset set = cp.getSeqMultiset();
 				TokenSeq sourceSeq = set.findTokenSeqByCloneInstance(sourceInstance);
 				TokenSeq targetSeq = set.findTokenSeqByCloneInstance(targetInstance);
