@@ -61,9 +61,13 @@ public class CloneRecoverer {
 					+ configurationEffort + ", savedEditingEffort: " + savedEditingEffort
 					+ ", recall: " + recall + ", precision: " + precision + ", historyNum: " + historyNum 
 					+ ", environmentNum: " + environmentNum + ", ruleNum: " + ruleNum 
-					+ ", configurationPointNum: " + configurationPointNum;
+					+ ", configurationPointNum: " + configurationPointNum
+					+ ", isInfluencedByFalsePositive" + isInfluencedByFalsePositive();
 		}
 		
+		public int isInfluencedByFalsePositive(){
+			return (goodCaseNum != totalFalsePositiveNum)? 1 : 0;
+		}
 		
 		/**
 		 * @return the configurationEffort

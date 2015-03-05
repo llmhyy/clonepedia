@@ -23,7 +23,11 @@ public class ExcelExporterWithPOI {
 		sheet = book.createSheet("data");  
         Row row = sheet.createRow((short) 0); 
         //title
-        String titles[] = {"cloneSetID","instanceNum","avgLineNum","typeIIorIII","type1to7-recall","type1to7-Fmeasure","recall","precision","Fmeasure","historyNum","environmentNum","ruleNum","configurationEffort","savedEditingEffort","totalFalsePositiveNum","goodCaseNum","trialTime","diffTime","APITime","cloneInstance"};
+        String titles[] = {"cloneSetID","instanceNum","avgLineNum","typeIIorIII",
+        		"type1to7-recall","type1to7-Fmeasure","recall","precision","Fmeasure",
+        		"historyNum","environmentNum","ruleNum","configurationEffort","savedEditingEffort",
+        				"totalFalsePositiveNum","goodCaseNum","isInfluencedByFP",
+        				"trialTime","diffTime","APITime","cloneInstance"};
         for(int i = 0; i < titles.length; i++){
         	row.createCell(i).setCellValue(titles[i]); 
         }

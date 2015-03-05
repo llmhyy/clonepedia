@@ -44,7 +44,7 @@ public class AnalyzeStatisticsHandler extends AbstractHandler {
 		CloneSets sets = clonepedia.Activator.plainSets;
 		int count = 0;
 		//TODO what is the program name
-		String projectName = "twe";
+		String projectName = "JFreeChart";
 		ExcelExporterWithPOI exporter = new ExcelExporterWithPOI();
 		exporter.start();
 
@@ -58,6 +58,13 @@ public class AnalyzeStatisticsHandler extends AbstractHandler {
 
 			System.out.println("--------------------current: " + sets.getCloneList().indexOf(clonepediaSet) + ", total: " + sets.getCloneList().size() + " -----------------------");
 			System.out.println("Clone set ID: " + clonepediaSet.getId());
+			
+			/*if(clonepediaSet.size() > 10){
+				continue;
+			}*/
+			/*if(!clonepediaSet.getId().equals("4100")){
+				continue;
+			}*/
 
 			if(count >= limitTrialNum){
 				String fileName = projectName + globalRunTimeCount;
@@ -146,6 +153,8 @@ public class AnalyzeStatisticsHandler extends AbstractHandler {
 				exportList.add(data.getTotalFalsePositiveNum() + "");
 				//goodCaseNum;
 				exportList.add(data.getGoodCaseNum() + "");
+				//goodCaseNum;
+				exportList.add(data.isInfluencedByFalsePositive() + "");
 				//trialTime;
 				exportList.add(data.getTrialTime() + "");
 				//diffTime;
