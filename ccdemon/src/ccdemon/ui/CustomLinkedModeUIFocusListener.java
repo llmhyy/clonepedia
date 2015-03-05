@@ -6,7 +6,6 @@ import mcidiff.model.Token;
 import mcidiff.model.TokenSeq;
 
 import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.link.LinkedPosition;
 
 import ccdemon.evaluation.model.DataRecord;
@@ -115,10 +114,10 @@ public class CustomLinkedModeUIFocusListener implements
 			
 			//Step 3: update the code by ranking
 			//only update when the position is not configured
-			if(!cp.isConfigured()){
+			/*if(!cp.isConfigured()){
 				IDocument document = target.getViewer().getDocument();
 				proposals[0].apply(document);
-			}
+			}*/ //don't update now
 		}
 		
 	}
