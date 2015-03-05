@@ -469,7 +469,10 @@ public class CloneRecoverer {
 			TokenSeq correctSeq = wrapperList.findCorrectSeq(cp);
 			int configurationEffort = 0;
 			if(cp.getOriginalCandidate() == null || !correctSeq.getText().equals(cp.getOriginalCandidate().getText())){
-				configurationEffort = findCandidate(cp.getCandidates(), correctSeq) + 1;
+				configurationEffort = findCandidate(cp.getCandidates(), correctSeq);
+				if(configurationEffort != -1){
+					configurationEffort++;
+				}
 			}
 			
 			if(configurationEffort != -1){
