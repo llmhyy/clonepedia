@@ -468,7 +468,7 @@ public class CloneRecoverer {
 			ConfigurationPoint cp = cps.getConfigurationPoints().get(i);
 			TokenSeq correctSeq = wrapperList.findCorrectSeq(cp);
 			int configurationEffort = 0;
-			if(!correctSeq.getText().equals(cp.getOriginalCandidate().getText())){
+			if(cp.getOriginalCandidate() == null || !correctSeq.getText().equals(cp.getOriginalCandidate().getText())){
 				configurationEffort = findCandidate(cp.getCandidates(), correctSeq) + 1;
 			}
 			
