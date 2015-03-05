@@ -112,13 +112,14 @@ public class Candidate {
 		double historyValue = 0; 
 				
 		if(isHistoryBased()){
-			if(isOriginal()){
+			historyValue = computeHistoryValue(points);		
+			/*if(isOriginal()){
 				historyValue = 1;
 				environmentValue = 1;
 			}
 			else{
 				historyValue = computeHistoryValue(points);				
-			}
+			}*/
 		}
 		
 		return ruleWeight*ruleValue + environmentWeight*environmentValue + historyWeight*historyValue;
