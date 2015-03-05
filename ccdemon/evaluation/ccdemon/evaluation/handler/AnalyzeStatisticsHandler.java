@@ -154,7 +154,7 @@ public class AnalyzeStatisticsHandler extends AbstractHandler {
 				//goodCaseNum;
 				exportList.add(data.getGoodCaseNum() + "");
 				//goodCaseNum;
-				//exportList.add(data.isInfluencedByFalsePositive() + "");
+				exportList.add(data.isInfluencedByFalsePositive() + "");
 				//trialTime;
 				exportList.add(data.getTrialTime() + "");
 				//diffTime;
