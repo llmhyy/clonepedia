@@ -100,14 +100,25 @@ public class Candidate {
 	public void setConfigurationPoint(ConfigurationPoint configurationPoint) {
 		this.configurationPoint = configurationPoint;
 	}
+	
+	public boolean isOriginal(){
+		return this.getText().equals(this.configurationPoint.getCopiedTokenSeq().getText());
+	}
 
 	public double computeScore(double ruleWeight, double environmentWeight,
 			double historyWeight, ConfigurationPointSet points) {
 		double ruleValue = isRuleBased() ? 1 : 0;
 		double environmentValue = isEnvironmentBased() ? 1 : 0;
 		double historyValue = 0; 
+				
 		if(isHistoryBased()){
-			historyValue = computeHistoryValue(points);
+			if(isOriginal()){
+				historyValue = 1;
+				environmentValue = 1;
+			}
+			else{
+				historyValue = computeHistoryValue(points);				
+			}
 		}
 		
 		return ruleWeight*ruleValue + environmentWeight*environmentValue + historyWeight*historyValue;
