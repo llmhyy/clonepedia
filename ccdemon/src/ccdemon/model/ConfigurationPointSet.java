@@ -361,7 +361,7 @@ public class ConfigurationPointSet {
 			Collections.sort(point.getCandidates(), comparator);
 		}
 		
-		if(isFirstRanking){
+		/*if(isFirstRanking){
 			for(ConfigurationPoint point: this.configurationPoints){
 				Candidate originalCandidate = point.getOriginalCandidate();
 				if(originalCandidate != null){
@@ -382,7 +382,7 @@ public class ConfigurationPointSet {
 			}
 			
 			isFirstRanking = false;
-		}
+		}*/
 		
 	}
 	
