@@ -463,7 +463,10 @@ public class CloneRecoverer {
 		for(int i=0; i<cps.getConfigurationPoints().size(); i++){
 			ConfigurationPoint cp = cps.getConfigurationPoints().get(i);
 			TokenSeq correctSeq = wrapperList.findCorrectSeq(cp);
-			int configurationEffort = findCandidate(cp.getCandidates(), correctSeq);
+			int configurationEffort = 0;
+			if(!correctSeq.getText().equals(cp.getOriginalCandidate().getText())){
+				configurationEffort = findCandidate(cp.getCandidates(), correctSeq) + 1;
+			}
 			
 			if(configurationEffort != -1){
 				totalConfigurationEffort += (double)configurationEffort/cp.getCandidates().size();
