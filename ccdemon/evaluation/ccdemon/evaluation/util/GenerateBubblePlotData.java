@@ -66,7 +66,7 @@ public class GenerateBubblePlotData {
 	    
 		GenerateBubblePlotData generate = new GenerateBubblePlotData();
 		try {
-			generate.run("twe");
+			generate.run("twe0");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -86,7 +86,7 @@ public class GenerateBubblePlotData {
 	    	}
 	    	
 	    	Cell yCell = row.getCell(8);
-	    	Cell xCell = row.getCell(10);
+	    	Cell xCell = row.getCell(13);
 	    	
 //	    	if(yCell.getCachedFormulaResultType() == Cell.CELL_TYPE_ERROR
 	    	if(yCell.getCellType() == Cell.CELL_TYPE_STRING
