@@ -381,60 +381,15 @@ public class CloneRecoverer {
 				CollectedData data = simulate(cps, wrapperList, sourceInstance, goldNum, matchableDiffs.size(), falsePositivesNum);
 
 				long endTrialTime = System.currentTimeMillis();
-				data.setTrialTime(endTrialTime-startTrialTime);
-				data.setDiffTime(endDiffTime-startDiffTime);
-				data.setAPITime(ConfigurationPointSet.APITime);
-				data.setSourceInstance(sourceInstance);
-				data.setTargetInstance(targetInstance);
-				data.setRecall(recall);
-				data.setPrecision(precision);
-				data.setCloneInstance(targetInstance);
-				data.setHistoryNum(this.historyNum);
-				data.setEnvironmentNum(this.environmentNum);
-				data.setRuleNum(this.ruleNum);
-				data.setTotalNum(this.totalNum);
-				data.setConfigurationPointNum(cps.getConfigurationPoints().size());
-				data.setCps(cps);
-				
-//				int totalLineNum = 0;
-//				for(CloneInstance nonTargetInstance: set.getInstances()){
-//					if(nonTargetInstance.equals(targetInstance)){
-//						continue;
-//					}
-//					totalLineNum += nonTargetInstance.getLength();
-//				}
-//				data.setLineNum(totalLineNum/(set.getInstances().size()-1));
-				data.setLineNum(targetInstance.getTokenList().size());
-				System.out.println(data.getLineNum());
-				
-				boolean isTypeIII = false;
-				for(int i = 0; i < matchableDiffs.size() && !isTypeIII; i++){
-					SeqMultiset seqMulti = matchableDiffs.get(i);
-					for(TokenSeq seq : seqMulti.getSequences()){
-						if(seq.isEpisolonTokenSeq()){
-							isTypeIII = true;
-							break;
-						}
-					}
-				}
-				if(isTypeIII){
-					data.setTypeIIorIII("3");
-				}else{
-					data.setTypeIIorIII("2");
-				}
+				setDataInfo(startDiffTime, endDiffTime,
+						targetInstance, matchableDiffs, sourceInstance,
+						startTrialTime, recall, precision, cps, data,
+						endTrialTime);
 				
 				datas.add(data);
 				
-				System.out.println("===================================");
-				System.out.println("diff time:" + (endDiffTime-startDiffTime));
-				System.out.println("copied source:" + sourceInstance.toString());
-				System.out.println("target source:" + targetInstance.toString());
-				System.out.println("recall: " + data.getRecall());
-				System.out.println("precision: " + data.getPrecision());
-				System.out.println("fMeature: " + data.getfMeature());
-				System.out.println("configuration effort: " + data.getConfigurationEffort());
-				System.out.println("saved editing effort: " + data.getSavedEditingEffort());
-				System.out.println("===================================");
+				printData(startDiffTime, endDiffTime, targetInstance,
+						sourceInstance, data);
 				
 				System.currentTimeMillis();
 				
@@ -443,22 +398,7 @@ public class CloneRecoverer {
 		}
 		return datas;
 	}
-		
-	private ArrayList<SeqMultiset> findUnnecessaryDiff(CloneInstance sourceInstance, CloneInstance targetInstance,
-			ArrayList<SeqMultiset> matchableDiffs) {
-		ArrayList<SeqMultiset> list = new ArrayList<>();
-		for(SeqMultiset multiset: matchableDiffs){
-			TokenSeq sourceSeq = multiset.findTokenSeqByCloneInstance(sourceInstance);
-			TokenSeq targetSeq = multiset.findTokenSeqByCloneInstance(targetInstance);
-			
-			if(sourceSeq.equals(targetSeq)){
-				list.add(multiset);
-			}
-		}
-		
-		return list;
-	}
-
+	
 	private CollectedData simulate(ConfigurationPointSet cps,
 			CPWrapperList wrapperList, CloneInstance sourceInstance, int totalModificationNum, int totalRecNum, int unnecessaryNum) {
 		
@@ -533,6 +473,107 @@ public class CloneRecoverer {
 		data.setPartialSEE(partialSEE);
 		
 		return data;
+	}
+	
+	/**
+	 * @param startDiffTime
+	 * @param endDiffTime
+	 * @param targetInstance
+	 * @param matchableDiffs
+	 * @param sourceInstance
+	 * @param startTrialTime
+	 * @param recall
+	 * @param precision
+	 * @param cps
+	 * @param data
+	 * @param endTrialTime
+	 * @return
+	 */
+	private boolean setDataInfo(long startDiffTime, long endDiffTime,
+			CloneInstance targetInstance,
+			ArrayList<SeqMultiset> matchableDiffs,
+			CloneInstance sourceInstance, long startTrialTime, double recall,
+			double precision, ConfigurationPointSet cps, CollectedData data,
+			long endTrialTime) {
+		data.setTrialTime(endTrialTime-startTrialTime);
+		data.setDiffTime(endDiffTime-startDiffTime);
+		data.setAPITime(ConfigurationPointSet.APITime);
+		data.setSourceInstance(sourceInstance);
+		data.setTargetInstance(targetInstance);
+		data.setRecall(recall);
+		data.setPrecision(precision);
+		data.setCloneInstance(targetInstance);
+		data.setHistoryNum(this.historyNum);
+		data.setEnvironmentNum(this.environmentNum);
+		data.setRuleNum(this.ruleNum);
+		data.setTotalNum(this.totalNum);
+		data.setConfigurationPointNum(cps.getConfigurationPoints().size());
+		data.setCps(cps);
+		
+//				int totalLineNum = 0;
+//				for(CloneInstance nonTargetInstance: set.getInstances()){
+//					if(nonTargetInstance.equals(targetInstance)){
+//						continue;
+//					}
+//					totalLineNum += nonTargetInstance.getLength();
+//				}
+//				data.setLineNum(totalLineNum/(set.getInstances().size()-1));
+		data.setLineNum(targetInstance.getTokenList().size());
+		System.out.println(data.getLineNum());
+		
+		boolean isTypeIII = false;
+		for(int i = 0; i < matchableDiffs.size() && !isTypeIII; i++){
+			SeqMultiset seqMulti = matchableDiffs.get(i);
+			for(TokenSeq seq : seqMulti.getSequences()){
+				if(seq.isEpisolonTokenSeq()){
+					isTypeIII = true;
+					break;
+				}
+			}
+		}
+		if(isTypeIII){
+			data.setTypeIIorIII("3");
+		}else{
+			data.setTypeIIorIII("2");
+		}
+		return isTypeIII;
+	}
+
+	/**
+	 * @param startDiffTime
+	 * @param endDiffTime
+	 * @param targetInstance
+	 * @param sourceInstance
+	 * @param data
+	 */
+	private void printData(long startDiffTime, long endDiffTime,
+			CloneInstance targetInstance, CloneInstance sourceInstance,
+			CollectedData data) {
+		System.out.println("===================================");
+		System.out.println("diff time:" + (endDiffTime-startDiffTime));
+		System.out.println("copied source:" + sourceInstance.toString());
+		System.out.println("target source:" + targetInstance.toString());
+		System.out.println("recall: " + data.getRecall());
+		System.out.println("precision: " + data.getPrecision());
+		System.out.println("fMeature: " + data.getfMeature());
+		System.out.println("configuration effort: " + data.getConfigurationEffort());
+		System.out.println("saved editing effort: " + data.getSavedEditingEffort());
+		System.out.println("===================================");
+	}
+		
+	private ArrayList<SeqMultiset> findUnnecessaryDiff(CloneInstance sourceInstance, CloneInstance targetInstance,
+			ArrayList<SeqMultiset> matchableDiffs) {
+		ArrayList<SeqMultiset> list = new ArrayList<>();
+		for(SeqMultiset multiset: matchableDiffs){
+			TokenSeq sourceSeq = multiset.findTokenSeqByCloneInstance(sourceInstance);
+			TokenSeq targetSeq = multiset.findTokenSeqByCloneInstance(targetInstance);
+			
+			if(sourceSeq.equals(targetSeq)){
+				list.add(multiset);
+			}
+		}
+		
+		return list;
 	}
 
 	private int findCandidate(ArrayList<Candidate> candidates, TokenSeq correctSeq) {
