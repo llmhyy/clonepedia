@@ -37,6 +37,8 @@ public class CloneRecoverer {
 		private double configurationEffort;
 		private double savedEditingEffort;
 		
+		private double partialSEE;
+		
 		private int totalFalsePositiveNum;
 		private int goodCaseNum;
 		
@@ -62,7 +64,7 @@ public class CloneRecoverer {
 					+ ", recall: " + recall + ", precision: " + precision + ", historyNum: " + historyNum 
 					+ ", environmentNum: " + environmentNum + ", ruleNum: " + ruleNum 
 					+ ", configurationPointNum: " + configurationPointNum
-					+ ", isInfluencedByFalsePositive" + isInfluencedByFalsePositive();
+					+ ", partialSEE" + partialSEE;
 		}
 		
 		public int isInfluencedByFalsePositive(){
@@ -308,6 +310,14 @@ public class CloneRecoverer {
 		public void setGoodCaseNum(int goodCaseNum) {
 			this.goodCaseNum = goodCaseNum;
 		}
+
+		public double getPartialSEE() {
+			return partialSEE;
+		}
+
+		public void setPartialSEE(double partialSEE) {
+			this.partialSEE = partialSEE;
+		}
 	}
 	
 	private int historyNum = 0;
@@ -368,7 +378,7 @@ public class CloneRecoverer {
 				ConfigurationPointSet cps = identifyPartialConfigurationPointSet(proj, 
 						pointList, targetInstance, sourceInstance, set);
 				
-				CollectedData data = simulate(cps, wrapperList, sourceInstance, goldNum, falsePositivesNum);
+				CollectedData data = simulate(cps, wrapperList, sourceInstance, goldNum, matchableDiffs.size(), falsePositivesNum);
 
 				long endTrialTime = System.currentTimeMillis();
 				data.setTrialTime(endTrialTime-startTrialTime);
@@ -450,7 +460,7 @@ public class CloneRecoverer {
 	}
 
 	private CollectedData simulate(ConfigurationPointSet cps,
-			CPWrapperList wrapperList, CloneInstance sourceInstance, int totalModificationNum, int unnecessaryNum) {
+			CPWrapperList wrapperList, CloneInstance sourceInstance, int totalModificationNum, int totalRecNum, int unnecessaryNum) {
 		
 		this.historyNum = 0;
 		this.environmentNum = 0;
@@ -509,6 +519,7 @@ public class CloneRecoverer {
 		
 //		double savedEditingEffort = 1 - ((double)totalEditingEffort)/totalModificationNum;
 		double savedEditingEffort = ((double)configurableSize - unnecessaryNum) / totalModificationNum;
+		double partialSEE = ((double)configurableSize - unnecessaryNum) / (totalRecNum - unnecessaryNum);
 		
 		if(savedEditingEffort > 1 || savedEditingEffort < 0){
 			System.currentTimeMillis();
@@ -519,6 +530,7 @@ public class CloneRecoverer {
 		data.setSavedEditingEffort(savedEditingEffort);
 		data.setTotalFalsePositiveNum(totalFalsePositiveNum);
 		data.setGoodCaseNum(goodCaseNum);
+		data.setPartialSEE(partialSEE);
 		
 		return data;
 	}

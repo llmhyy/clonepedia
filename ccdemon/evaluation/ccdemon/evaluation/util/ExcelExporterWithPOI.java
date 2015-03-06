@@ -25,7 +25,7 @@ public class ExcelExporterWithPOI {
         //title
         String titles[] = {"cloneSetID","instanceNum","avgLineNum","typeIIorIII",
         		"type1to7-recall","type1to7-Fmeasure","recall","precision","Fmeasure",
-        		"historyNum","environmentNum","ruleNum","configurationEffort","savedEditingEffort",
+        		"historyNum","environmentNum","ruleNum","configurationEffort","savedEditingEffort","partialSEE",
         				"totalFalsePositiveNum","goodCaseNum","isInfluencedByFP",
         				"trialTime","diffTime","APITime","cloneInstance"};
         for(int i = 0; i < titles.length; i++){

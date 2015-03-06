@@ -44,7 +44,7 @@ public class AnalyzeStatisticsHandler extends AbstractHandler {
 		CloneSets sets = clonepedia.Activator.plainSets;
 		int count = 0;
 		//TODO what is the program name
-		String projectName = "JFreeChart";
+		String projectName = "jasperreports";
 		ExcelExporterWithPOI exporter = new ExcelExporterWithPOI();
 		exporter.start();
 
@@ -149,6 +149,8 @@ public class AnalyzeStatisticsHandler extends AbstractHandler {
 				exportList.add(data.getConfigurationEffort() + "");
 				//savedEditingEffort;
 				exportList.add(data.getSavedEditingEffort() + "");
+				//PartialSEE;
+				exportList.add(data.getPartialSEE() + "");
 				//totalFalsePositiveNum;
 				exportList.add(data.getTotalFalsePositiveNum() + "");
 				//goodCaseNum;
