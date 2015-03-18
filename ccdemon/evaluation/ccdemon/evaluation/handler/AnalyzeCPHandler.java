@@ -44,15 +44,20 @@ public class AnalyzeCPHandler extends AbstractHandler {
 		int count = 0;
 
 		//TODO what is the program name
-		String projectName = "JHotDraw";
+		String projectName = "osworkflow";
 		CPExcelExporterWithPOI exporter = new CPExcelExporterWithPOI();
 		exporter.start();
+		
+//		ArrayList<String> output = new ArrayList<String>();
 		
 		for(clonepedia.model.ontology.CloneSet clonepediaSet: sets.getCloneList()){
 
 			System.out.println("--------------------current: " + sets.getCloneList().indexOf(clonepediaSet) + ", total: " + sets.getCloneList().size() + " -----------------------");
 			System.out.println("Clone set ID: " + clonepediaSet.getId());
 
+//			if(!clonepediaSet.getId().equals("15827")){
+//				continue;
+//			}
 			
 			CloneSet set = CCDemonUtil.adaptMCIDiffModel(clonepediaSet);
 			
@@ -65,7 +70,11 @@ public class AnalyzeCPHandler extends AbstractHandler {
 					ArrayList<String> exportList = new ArrayList<String>();
 					exportList.add(cpData.rightCandidateRank + "");
 					exportList.add(cpData.totalCandidateNum + "");
-					exportList.add(data.getCloneInstance().toString());
+					exportList.add(data.toString());
+					
+//					if(cpData.totalCandidateNum > 200){
+//						output.add("rank: " + cpData.rightCandidateRank + ", total: " + cpData.totalCandidateNum);
+//					}
 					
 					exporter.export(exportList, count);
 					count++;
@@ -75,5 +84,6 @@ public class AnalyzeCPHandler extends AbstractHandler {
 
 		exporter.end(projectName);
         System.out.println("excel export done");
+//        System.out.println(output);
 	}
 }
