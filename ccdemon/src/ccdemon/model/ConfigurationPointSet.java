@@ -34,7 +34,6 @@ import ccdemon.model.rule.RuleItem;
 
 
 public class ConfigurationPointSet {
-	private boolean isFirstRanking = true;
 	
 	private ArrayList<ConfigurationPoint> configurationPoints = new ArrayList<>();
 	//private CloneSet referrableCloneSet;
@@ -279,6 +278,11 @@ public class ConfigurationPointSet {
 					APITime += endAPITime - startAPITime;
 					if(subset.size() != 0){
 						for(Class sub : subset){
+							//filter non direct class out
+							if(!sub.getSuperclass().equals(c)){
+								continue;
+							}
+							
 							//avoid duplication with existing type candidate
 							boolean candidateExist = false;
 							for(Candidate candidate : point.getCandidates()){

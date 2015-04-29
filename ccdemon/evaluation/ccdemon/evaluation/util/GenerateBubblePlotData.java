@@ -85,8 +85,8 @@ public class GenerateBubblePlotData {
 	    		continue;
 	    	}
 	    	
-	    	Cell yCell = row.getCell(8);
-	    	Cell xCell = row.getCell(13);
+	    	Cell yCell = row.getCell(6); //recall
+	    	Cell xCell = row.getCell(14); //psee
 	    	
 //	    	if(yCell.getCachedFormulaResultType() == Cell.CELL_TYPE_ERROR
 	    	if(yCell.getCellType() == Cell.CELL_TYPE_STRING
@@ -95,6 +95,9 @@ public class GenerateBubblePlotData {
 	    		continue;
 	    	}else{
 		    	double x = xCell.getNumericCellValue();
+		    	if(x < 0){
+		    		continue;
+		    	}
 		    	double y = yCell.getNumericCellValue();
 		    	Data d = new Data(x, y);
 		    	if(dataMap.containsKey(d)){

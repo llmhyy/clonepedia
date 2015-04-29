@@ -57,6 +57,8 @@ public class CloneRecoverer {
 		private long diffTime = 0;
 		private long APITime = 0;
 		
+		private ArrayList<CPData> cpDataList;
+		
 		public String toString(){
 			return "\ntarget: " + targetInstance.toString() + "\nsource: " + sourceInstance.toString()
 					+ "\nconfigurationEffort: "
@@ -318,6 +320,19 @@ public class CloneRecoverer {
 		public void setPartialSEE(double partialSEE) {
 			this.partialSEE = partialSEE;
 		}
+
+		public ArrayList<CPData> getCpDataList() {
+			return cpDataList;
+		}
+
+		public void setCpDataList(ArrayList<CPData> cpDataList) {
+			this.cpDataList = cpDataList;
+		}
+	}
+	
+	public class CPData{
+		public int rightCandidateRank;
+		public int totalCandidateNum;
 	}
 	
 	private int historyNum = 0;
@@ -414,6 +429,8 @@ public class CloneRecoverer {
 		int totalFalsePositiveNum = 0;
 		int goodCaseNum = 0;
 		
+		ArrayList<CPData> cpDataList = new ArrayList<CPData>();
+		
 		for(int i=0; i<cps.getConfigurationPoints().size(); i++){
 			ConfigurationPoint cp = cps.getConfigurationPoints().get(i);
 			TokenSeq correctSeq = wrapperList.findCorrectSeq(cp);
@@ -425,7 +442,12 @@ public class CloneRecoverer {
 				}
 			}
 			
-			if(configurationEffort != -1){
+			if(configurationEffort != -1){				
+				CPData cpData = new CPData();
+				cpData.rightCandidateRank = configurationEffort;
+				cpData.totalCandidateNum = cp.getCandidates().size();
+				cpDataList.add(cpData);
+				
 				totalConfigurationEffort += (double)configurationEffort/cp.getCandidates().size();
 				configurableSize++;
 				
@@ -466,6 +488,7 @@ public class CloneRecoverer {
 		}
 		
 		CollectedData data = new CollectedData();
+		data.setCpDataList(cpDataList);
 		data.setConfigurationEffort(totalConfigurationEffort);
 		data.setSavedEditingEffort(savedEditingEffort);
 		data.setTotalFalsePositiveNum(totalFalsePositiveNum);

@@ -99,6 +99,10 @@
             class="ccdemon.evaluation.handler.CountTypeIIorIIIHandler"
             commandId="ccdemon.evaluation.countTypeIIorIII">
       </handler>
+      <handler
+            class="ccdemon.evaluation.handler.AnalyzeCPHandler"
+            commandId="ccdemon.evaluation.analyzeCP">
+      </handler>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -142,6 +146,11 @@
             defaultHandler="ccdemon.evaluation.handler.SearchTypeConfigurationPointHandler"
             id="ccdemon.evaluation.searchTCP"
             name="SearchTCP">
+      </command>
+      <command
+            defaultHandler="ccdemon.evaluation.handler.AnalyzeCPHandler"
+            id="ccdemon.evaluation.analyzeCP"
+            name="AnalyzeCP">
       </command>
    </extension>
    <extension
@@ -208,6 +217,13 @@
                   icon="icons/countType.png"
                   id="ccdemon.command.evaluation.countType"
                   label="Count Type II or III"
+                  style="push">
+            </command>
+            <command
+                  commandId="ccdemon.evaluation.analyzeCP"
+                  icon="icons/cp.png"
+                  id="ccdemon.command.evaluation.analyzeCP"
+                  label="Analyze Cp"
                   style="push">
             </command>
          </toolbar>
