@@ -1,7 +1,5 @@
 package clonepedia.filepraser;
 
-import java.io.File;
-
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
