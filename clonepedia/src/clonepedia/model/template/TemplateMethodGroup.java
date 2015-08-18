@@ -2,16 +2,14 @@ package clonepedia.model.template;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
 import java.util.TreeSet;
 
-import clonepedia.model.cluster.IClusterable;
 import clonepedia.model.ontology.Class;
 import clonepedia.model.ontology.CloneSet;
 import clonepedia.model.ontology.ComplexType;
 import clonepedia.model.ontology.Method;
 import clonepedia.util.MinerUtil;
+import datamining.cluster.IClusterable;
 /**
  * 
  * renaming, the concept is as follows:

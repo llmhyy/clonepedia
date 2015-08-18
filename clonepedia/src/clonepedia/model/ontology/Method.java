@@ -5,8 +5,9 @@ import java.util.HashSet;
 import java.util.TreeSet;
 
 import clonepedia.java.util.JavaMetricComputingUtil;
-import clonepedia.model.cluster.IClusterable;
 import clonepedia.model.template.TemplateMethodGroup;
+import datamining.cluster.IClusterable;
+
 
 public class Method extends MergeableSimpleOntologicalElement implements  IClusterable, Comparable<Method>{
 	/**

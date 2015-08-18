@@ -5,7 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 
 import clonepedia.java.util.JavaMetricComputingUtil;
-import clonepedia.model.cluster.IClusterable;
+import datamining.cluster.IClusterable;
+
 
 public class Class extends ComplexType implements PureVarType, IClusterable{
 	/**
