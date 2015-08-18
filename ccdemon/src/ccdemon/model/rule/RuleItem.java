@@ -11,6 +11,9 @@ public class RuleItem {
 	 */
 	private ConfigurationPoint configurationPoint;
 	
+	/**
+	 * this list is used to represent the pattern such as <parse, *, Element>
+	 */
 	private ArrayList<Component> componentList;
 	private ArrayList<NameInstance> nameInstanceList = new ArrayList<>();
 	
