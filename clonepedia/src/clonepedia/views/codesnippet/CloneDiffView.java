@@ -204,7 +204,9 @@ public class CloneDiffView extends ViewPart {
 			ownerName = instanceWrapper.getCloneInstance().getSimpleFileName();
 			methodName = "";
 		}
-		label.setText(ownerName + ":" + methodName);
+		String typeName = ownerName.substring(ownerName.lastIndexOf("/")+1, ownerName.length());
+		label.setText(typeName);
+		label.setToolTipText(ownerName + ":" + methodName);
 		
 		GridData scrollCodeLayoutData = new GridData(GridData.FILL_BOTH);
 		scrollCodeLayoutData.heightHint = widgetHeight; 
