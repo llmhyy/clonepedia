@@ -25,6 +25,7 @@ import org.eclipse.ui.internal.handlers.WidgetMethodHandler;
 
 import ccdemon.model.ReferrableCloneSet;
 import ccdemon.model.SelectedCodeRange;
+import ccdemon.model.rule.Component;
 import ccdemon.model.rule.PatternMatchingComponent;
 import ccdemon.model.rule.TemplateMatch;
 import clonepedia.model.ontology.CloneSets;
@@ -73,14 +74,14 @@ public class CCDemonUtil {
 		return materials;
 	}
 	
-	public static TemplateMatch matchPattern(String[] patternArray, String[] instanceArray){
+	public static TemplateMatch matchPattern(String[] patternArray, ArrayList<Component> patternInstances, String[] instanceArray){
 		PatternMatchingComponent[] patternList = transferToPatternComponentList(patternArray);
 		PatternMatchingComponent[] instanceList = transferToPatternComponentList(instanceArray);
 		
 		double[][] scoreTable = new double[patternArray.length+1][instanceArray.length+1];
 		for(int i=1; i<scoreTable.length; i++){
 			for(int j=1; j<scoreTable[0].length; j++){
-				double replaceValue = patternList[i-1].computeSimilarity(instanceList[j-1]);
+				double replaceValue = patternList[i-1].computeSimilarity(instanceList[j-1], patternInstances.get(i-1));
 				
 				double replaceV = scoreTable[i-1][j-1] + replaceValue;
 				double addV = scoreTable[i-1][j];
@@ -97,7 +98,7 @@ public class CCDemonUtil {
 		if(optimalValue >= Settings.patternMatchingThreshold){
 			match.setMatchable(true);
 			for(int i=patternArray.length, j=instanceArray.length; i>0&&j>0;){
-				double replaceValue = patternList[i-1].computeSimilarity(instanceList[j-1]);
+				double replaceValue = patternList[i-1].computeSimilarity(instanceList[j-1], patternInstances.get(i-1));
 				double replaceScore = scoreTable[i][j] - scoreTable[i-1][j-1];
 				
 				if(Math.abs(replaceValue-replaceScore)<0.01){

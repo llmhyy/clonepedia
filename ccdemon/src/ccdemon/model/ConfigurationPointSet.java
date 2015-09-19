@@ -363,6 +363,8 @@ public class ConfigurationPointSet {
 		
 		for(ConfigurationPoint point: this.configurationPoints){
 			Collections.sort(point.getCandidates(), comparator);
+			
+			System.currentTimeMillis();
 		}
 		
 		/*if(isFirstRanking){

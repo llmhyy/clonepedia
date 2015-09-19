@@ -1,5 +1,8 @@
 package ccdemon.model.rule;
 
+import mcidiff.util.DiffUtil;
+import ccdemon.util.CCDemonUtil;
+
 public class PatternMatchingComponent {
 	private String content;
 	private double position;
@@ -37,9 +40,13 @@ public class PatternMatchingComponent {
 		this.position = position;
 	}
 	
-	public double computeSimilarity(PatternMatchingComponent patternComponent){
-		double contentWeight = 0.5;
-		double positionWeight = 0.5;
+	public double computeSimilarity(PatternMatchingComponent patternComponent, Component instance){
+		double contentWeight = 0.4;
+		double positionWeight = 0.3;
+		/**
+		 * consider the similarity between pattern instances and current instance.
+		 */
+		double instanceWeight = 0.3;
 		
 		double contentValue = (patternComponent.getContent().toLowerCase().equals(getContent().toLowerCase())) ? 1 : 0;
 		if(getContent().equals(Component.ABS_LITERAL) || patternComponent.equals(Component.ABS_LITERAL)){
@@ -48,6 +55,16 @@ public class PatternMatchingComponent {
 		
 		double positionValue = 1 - Math.abs(patternComponent.getPosition()-getPosition());
 		
-		return contentWeight*contentValue + positionWeight*positionValue;
+		double instanceValue = 0;
+		boolean f2 = DiffUtil.isJavaIdentifier(patternComponent.getContent());
+		for(String ins: instance.getSupportingNames()){
+			boolean f1 = DiffUtil.isJavaIdentifier(ins);
+			if(f1 && f2){
+				instanceValue++;
+			}
+		}
+		instanceValue /= instance.getSupportingNames().length;
+		
+		return contentWeight*contentValue + positionWeight*positionValue + instanceWeight*instanceValue;
 	}
 }

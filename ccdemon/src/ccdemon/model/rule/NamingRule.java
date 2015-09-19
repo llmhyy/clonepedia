@@ -85,6 +85,7 @@ public class NamingRule {
 	public void applyRule(String candidateString, ConfigurationPoint currentPoint){
 		EquivalentComponentGroup group = this.equivalentComponentGroupList.findEquivalentGroup(currentPoint);
 		RuleItem ruleItem = this.equivalentComponentGroupList.findMatchingRuleItem(currentPoint);
+		
 		matchingCandidateStringToNamingPattern(candidateString, false, group, ruleItem);
 		
 		/*if(!currentPoint.getCopiedTokenSeq().isSingleToken()){
@@ -108,13 +109,16 @@ public class NamingRule {
 					String currentValue = comp.getGroup().getCurrentValue();
 					if(comp.isAbstract() && currentValue != null){
 						//The first non-type component is usually in lower case.
-						currentValue = parseStringToCamel(i, item, currentValue);
+						currentValue = parseStringToCamel(i, item, currentValue, null);
 						buffer.append(currentValue);
 						isValidForAdding = true;
 					}
 					else if(!comp.isAbstract()){
+						if(currentValue != null && !comp.getAbstractName().toLowerCase().equals(currentValue.toLowerCase())){
+							isValidForAdding = true;
+						}
 						currentValue = (currentValue != null) ? currentValue : comp.getAbstractName();
-						currentValue = parseStringToCamel(i, item, currentValue);
+						currentValue = parseStringToCamel(i, item, currentValue, comp.getAbstractName());
 						comp.getGroup().setCurrentValue(currentValue);
 						buffer.append(currentValue);
 					}
@@ -127,7 +131,7 @@ public class NamingRule {
 				
 				if(isValidForAdding){
 					String newValue = buffer.toString();
-					newValue = parseStringToCamel(0, item, newValue);
+					newValue = parseStringToCamel(0, item, newValue, null);
 					ConfigurationPoint point = item.getConfigurationPoint();
 					//point.clearRuleGeneratedCandidates();
 					/*if(!point.containsByIgnoringCase(newValue)){
@@ -141,25 +145,37 @@ public class NamingRule {
 	}
 	
 	
-	private String parseStringToCamel(int position, RuleItem item, String value){
+	private String parseStringToCamel(int position, RuleItem item, String value, String referenceValue){
 		String currentValue = value;
 		
 		if(currentValue.length() == 0){
 			return currentValue;
 		}
-		
-		if(position == 0 && 
-				!(item.getConfigurationPoint().isType() || 
-						item.getConfigurationPoint().isConstructor() || 
-						item.getConfigurationPoint().containsExpression())){
-			char[] chars = currentValue.toCharArray();
-			chars[0] = String.valueOf(chars[0]).toLowerCase().charAt(0);
-			currentValue = String.valueOf(chars);
+		if(referenceValue == null){
+			if(position == 0 && 
+					!(item.getConfigurationPoint().isType() || 
+							item.getConfigurationPoint().isConstructor() || item.getConfigurationPoint().containsExpression())){
+				char[] chars = currentValue.toCharArray();
+				chars[0] = String.valueOf(chars[0]).toLowerCase().charAt(0);
+				currentValue = String.valueOf(chars);
+			}
+			else if(position != 0 ){
+				char[] chars = currentValue.toCharArray();
+				chars[0] = String.valueOf(chars[0]).toUpperCase().charAt(0);
+				currentValue = String.valueOf(chars);
+			}
 		}
-		else if(position != 0){
-			char[] chars = currentValue.toCharArray();
-			chars[0] = String.valueOf(chars[0]).toUpperCase().charAt(0);
-			currentValue = String.valueOf(chars);
+		else{
+			if(Character.isUpperCase(referenceValue.charAt(0))){
+				char[] chars = currentValue.toCharArray();
+				chars[0] = String.valueOf(chars[0]).toUpperCase().charAt(0);
+				currentValue = String.valueOf(chars);
+			}
+			else{
+				char[] chars = currentValue.toCharArray();
+				chars[0] = String.valueOf(chars[0]).toLowerCase().charAt(0);
+				currentValue = String.valueOf(chars);
+			}
 		}
 		return currentValue;
 	}
@@ -183,7 +199,7 @@ public class NamingRule {
 				patternArray[i] = components.get(i).getAbstractName();
 			}
 			
-			TemplateMatch templateMatch = CCDemonUtil.matchPattern(patternArray, instanceArray);
+			TemplateMatch templateMatch = CCDemonUtil.matchPattern(patternArray, components, instanceArray);
 			if(templateMatch.isMatchable()){
 				/**
 				 * find which component in the new candidate string are corresponded to the abstract component
@@ -449,6 +465,7 @@ public class NamingRule {
 				Iterator<Component> iter = compList.iterator();
 				while(iter.hasNext()){
 					Component comp = iter.next();
+										
 					if(/*comp.equals(component)*/comp.compareSupportingNamesWith(component) 
 							>= Settings.equivalentComponentThreshold){
 						group.addComponent(comp);
