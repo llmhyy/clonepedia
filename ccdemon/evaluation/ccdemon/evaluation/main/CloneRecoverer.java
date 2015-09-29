@@ -599,6 +599,12 @@ public class CloneRecoverer {
 		return list;
 	}
 
+	/**
+	 * find the position of {@code correctSeq} in {@code candidates}
+	 * @param candidates
+	 * @param correctSeq
+	 * @return
+	 */
 	private int findCandidate(ArrayList<Candidate> candidates, TokenSeq correctSeq) {
 		for(int i=0; i<candidates.size(); i++){
 			Candidate candidate = candidates.get(i);
