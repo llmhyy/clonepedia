@@ -617,7 +617,7 @@ public class CloneSet extends HashSet<CloneInstance> implements RegionalOwner, I
 		OntologicalElement element = formerPath.getLastElement();
 		
 		if(element == null){
-			System.out.println();
+//			System.out.println();
 		}
 		
 		if(element.getSuccessors().size() == 0){

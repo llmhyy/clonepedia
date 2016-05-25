@@ -232,10 +232,6 @@ public class DiffPropertyView extends ViewPart {
 				ArrayList<DiffElement> relations = relationMap.get(node); 
 				if(node.children.size() > 0 || relations != null){
 					
-					if(relations != null){
-						System.out.println();
-					}
-					
 					int increment = (relations == null) ? 0 : relations.size();
 					int size = node.children.size() + increment;
 					Object[] list = new Object[size];
