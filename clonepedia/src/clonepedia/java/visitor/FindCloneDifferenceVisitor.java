@@ -11,8 +11,8 @@ import org.eclipse.jdt.core.dom.Statement;
 
 import clonepedia.java.model.CloneInstanceWrapper;
 import clonepedia.java.model.CloneSetWrapper;
-import clonepedia.java.model.DiffCounterRelationGroupEmulator;
-import clonepedia.java.model.DiffInstanceElementRelationEmulator;
+import clonepedia.java.model.Diff;
+import clonepedia.java.model.DiffElement;
 import clonepedia.java.util.MinerUtilforJava;
 import clonepedia.wizard.CodeSkeletonGenerationUtil;
 
@@ -39,11 +39,11 @@ public class FindCloneDifferenceVisitor extends ASTVisitor {
 	}
 	
 	public void preVisit(ASTNode targetNode){
-		for(DiffCounterRelationGroupEmulator diff: setWrapper.getRelationGroups()){
+		for(Diff diff: setWrapper.getDiffs()){
 			
 			//if(diff.getElements().size() != setWrapper.size())continue;
 			
-			for(DiffInstanceElementRelationEmulator diffElement: diff.getElements()){
+			for(DiffElement diffElement: diff.getElements()){
 				ASTNode node = diffElement.getNode();
 				
 				if(node.equals(targetNode)){

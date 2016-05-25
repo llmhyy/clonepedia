@@ -43,10 +43,10 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 	public int endStatementContextIndex = 0;
 	
 	private ArrayList<HashSet<ASTNode>> patternNodeSets = new ArrayList<HashSet<ASTNode>>();
-	private ArrayList<DiffCounterRelationGroupEmulator> relationGroups = new ArrayList<DiffCounterRelationGroupEmulator>();
+	private ArrayList<Diff> diffList = new ArrayList<Diff>();
 	
 	private ArrayList<HashSet<Statement>> counterStatementSets = new ArrayList<HashSet<Statement>>();
-	private ArrayList<DiffCounterRelationGroupEmulator> relationStatementGroups = new ArrayList<DiffCounterRelationGroupEmulator>();
+	private ArrayList<Diff> relationStatementGroups = new ArrayList<Diff>();
 	
 	
 	/**
@@ -335,7 +335,7 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 				if (!instance.isMarked(instance.comparePointer)) {
 					HashSet<ASTNode> patternNodeSet = new HashSet<ASTNode>();
 					//String groupId = "cg" + UUID.randomUUID();
-					DiffCounterRelationGroupEmulator relationGroup = new DiffCounterRelationGroupEmulator();
+					Diff relationGroup = new Diff();
 					
 					
 					ArrayList<CloneInstanceWrapper> otherInstances = this.getOtherInstancesInSet(instance);
@@ -344,7 +344,7 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 						System.out.print("");*/
 					
 					patternNodeSet.add(currentNode);
-					relationGroup.addRelation(new DiffInstanceElementRelationEmulator(instance, currentNode));
+					relationGroup.addElement(new DiffElement(instance, currentNode));
 					
 					//instance.markIndex(instance.comparePointer);
 					for (CloneInstanceWrapper i : otherInstances) {
@@ -356,7 +356,7 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 							ASTNode similarNode = i.getAstNodeList()[index];
 							
 							patternNodeSet.add(similarNode);
-							relationGroup.addRelation(new DiffInstanceElementRelationEmulator(i, similarNode));
+							relationGroup.addElement(new DiffElement(i, similarNode));
 							
 							i.markIndex(index);
 							instance.markIndex(instance.comparePointer);
@@ -366,7 +366,7 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 					if (patternNodeSet.size() > 1) {
 						this.getPatternNodeSets().add(patternNodeSet);
 						relationGroup.setId("cr" + UUID.randomUUID());
-						this.addRelationGroup(relationGroup);
+						this.addDiff(relationGroup);
 					}
 				}
 				instance.comparePointer++;
@@ -616,9 +616,9 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 	}
 	
 	private void generateDiffPartInCounterRelationalStatements() {
-		for(DiffCounterRelationGroupEmulator relationStatementGroup: relationStatementGroups){
+		for(Diff relationStatementGroup: relationStatementGroups){
 			ArrayList<CloneInstanceWrapper> instanceList = new ArrayList<CloneInstanceWrapper>();
-			for(DiffInstanceElementRelationEmulator relation: relationStatementGroup.getElements()){
+			for(DiffElement relation: relationStatementGroup.getElements()){
 				CloneInstanceWrapper instance = relation.getInstanceWrapper();
 				Statement stat = (Statement) relation.getNode();
 				
@@ -776,7 +776,7 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 				if (!instance.isStatementMarked(instance.compareStatementPointer)) {
 					HashSet<Statement> counterStatementSet = new HashSet<Statement>();
 					
-					DiffCounterRelationGroupEmulator relationStatementGroup = new DiffCounterRelationGroupEmulator();
+					Diff relationStatementGroup = new Diff();
 					
 					
 					Statement currentStatement = instance.getStatementList()[instance.compareStatementPointer];
@@ -785,7 +785,7 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 						System.out.print("");*/
 					
 					counterStatementSet.add(currentStatement);
-					relationStatementGroup.addRelation(new DiffInstanceElementRelationEmulator(instance, currentStatement));
+					relationStatementGroup.addElement(new DiffElement(instance, currentStatement));
 					
 					//instance.markIndex(instance.comparePointer);
 					for (CloneInstanceWrapper i : otherInstances) {
@@ -798,7 +798,7 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 							Statement similarStatement = i.getStatementList()[index];
 							
 							counterStatementSet.add(similarStatement);
-							relationStatementGroup.addRelation(new DiffInstanceElementRelationEmulator(i, similarStatement));
+							relationStatementGroup.addElement(new DiffElement(i, similarStatement));
 							
 							i.markStatementIndex(index);
 							instance.markStatementIndex(instance.compareStatementPointer);
@@ -951,17 +951,17 @@ public class CloneSetWrapper extends HashSet<CloneInstanceWrapper>{
 		this.commonASTNodeList = commonASTNodeList;
 	}
 
-	public ArrayList<DiffCounterRelationGroupEmulator> getRelationGroups() {
-		return relationGroups;
+	public ArrayList<Diff> getDiffs() {
+		return diffList;
 	}
 
-	public void setRelationGroups(
-			ArrayList<DiffCounterRelationGroupEmulator> relationGroups) {
-		this.relationGroups = relationGroups;
+	public void setDiffLists(
+			ArrayList<Diff> diffs) {
+		this.diffList = diffs;
 	}
 	
-	public void addRelationGroup(DiffCounterRelationGroupEmulator relationGroup){
-		this.relationGroups.add(relationGroup);
+	public void addDiff(Diff diff){
+		this.diffList.add(diff);
 	}
 
 	public ArrayList<HashSet<ASTNode>> getPatternNodeSets() {

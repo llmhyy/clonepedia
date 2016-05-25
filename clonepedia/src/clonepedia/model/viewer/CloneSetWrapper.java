@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import clonepedia.Activator;
-import clonepedia.java.model.DiffCounterRelationGroupEmulator;
+import clonepedia.java.model.Diff;
 import clonepedia.model.ontology.CloneInstance;
 import clonepedia.model.ontology.CloneSet;
 import clonepedia.model.syntactic.ClonePatternGroup;

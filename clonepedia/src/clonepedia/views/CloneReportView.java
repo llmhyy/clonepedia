@@ -71,6 +71,7 @@ import clonepedia.views.codesnippet.CloneDiffView;
 import clonepedia.views.multiorient.MultiOrientedContentProvider;
 import clonepedia.views.multiorient.MultiOrientedLabelProvider;
 import clonepedia.views.multiorient.PlainCloneSetViewComarator;
+import clonepedia.views.util.DiffUtil;
 import clonepedia.views.util.ViewUIUtil;
 import clonepedia.views.util.ViewUtil;
 
@@ -147,16 +148,17 @@ public class CloneReportView extends SummaryView {
 					clonepedia.java.model.CloneSetWrapper syntacticSetWrapper = 
 							new clonepedia.java.model.CloneSetWrapper(cloneSetWrapper.getCloneSet(), new CompilationUnitPool());
 					
-					if(Settings.diffComparisonMode.equals("ASTNode_Based")){
-						syntacticSetWrapper = new CloneInformationExtractor().extractCounterRelationalDifferencesOfCloneSet(syntacticSetWrapper);					
-					}
-					else if(Settings.diffComparisonMode.equals("Statement_Based")){
-						try {
-							syntacticSetWrapper = new CloneInformationExtractor().extractCounterRelationalDifferencesWithinSyntacticBoundary(syntacticSetWrapper);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
+					syntacticSetWrapper = DiffUtil.constructDiff(syntacticSetWrapper);
+//					if(Settings.diffComparisonMode.equals("ASTNode_Based")){
+//						syntacticSetWrapper = new CloneInformationExtractor().extractCounterRelationalDifferencesOfCloneSet(syntacticSetWrapper);					
+//					}
+//					else if(Settings.diffComparisonMode.equals("Statement_Based")){
+//						try {
+//							syntacticSetWrapper = new CloneInformationExtractor().extractCounterRelationalDifferencesWithinSyntacticBoundary(syntacticSetWrapper);
+//						} catch (Exception e) {
+//							e.printStackTrace();
+//						}
+//					}
 					
 					cloneSetWrapper.setSyntacticSetWrapper(syntacticSetWrapper);
 					

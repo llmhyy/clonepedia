@@ -38,8 +38,8 @@ import org.eclipse.jdt.internal.corext.callhierarchy.MethodWrapper;
 
 import clonepedia.java.model.CloneInstanceWrapper;
 import clonepedia.java.model.CloneSetWrapper;
-import clonepedia.java.model.DiffCounterRelationGroupEmulator;
-import clonepedia.java.model.DiffInstanceElementRelationEmulator;
+import clonepedia.java.model.Diff;
+import clonepedia.java.model.DiffElement;
 import clonepedia.java.util.MinerUtilforJava;
 import clonepedia.model.ontology.CloneInstance;
 import clonepedia.model.ontology.CloneSet;

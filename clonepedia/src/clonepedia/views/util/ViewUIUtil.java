@@ -12,8 +12,8 @@ import org.eclipse.swt.widgets.TreeItem;
 
 import clonepedia.java.CloneInformationExtractor;
 import clonepedia.java.CompilationUnitPool;
-import clonepedia.java.model.DiffCounterRelationGroupEmulator;
-import clonepedia.java.model.DiffInstanceElementRelationEmulator;
+import clonepedia.java.model.Diff;
+import clonepedia.java.model.DiffElement;
 import clonepedia.java.util.MinerUtilforJava;
 import clonepedia.model.cluster.SemanticCluster;
 import clonepedia.model.ontology.CloneInstance;
@@ -119,10 +119,10 @@ public class ViewUIUtil {
 		
 		if(obj instanceof CloneSetWrapper){
 			CloneSetWrapper setWrapper = (CloneSetWrapper)obj;
-			for(DiffCounterRelationGroupEmulator group: setWrapper.getSyntacticSetWrapper().getRelationGroups()){
+			for(Diff group: setWrapper.getSyntacticSetWrapper().getDiffs()){
 				TreeItem counterItem = createSimpleTreeItem(tree, "CRD:", "", group);
 				int index = 0;
-				for(DiffInstanceElementRelationEmulator relation: group.getElements()){
+				for(DiffElement relation: group.getElements()){
 					CloneInstance instance = relation.getInstanceWrapper().getCloneInstance();
 					String instanceContent =  instance.toString();
 					

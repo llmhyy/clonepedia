@@ -21,8 +21,8 @@ import clonepedia.db.schema.Entity;
 import clonepedia.db.schema.Relation;
 import clonepedia.java.model.CloneInstanceWrapper;
 import clonepedia.java.model.CloneSetWrapper;
-import clonepedia.java.model.DiffCounterRelationGroupEmulator;
-import clonepedia.java.model.DiffInstanceElementRelationEmulator;
+import clonepedia.java.model.Diff;
+import clonepedia.java.model.DiffElement;
 import clonepedia.java.util.MinerUtilforJava;
 import clonepedia.model.db.DataRecord;
 import clonepedia.model.ontology.Class;
@@ -767,9 +767,9 @@ public class OntologicalDBDataFetcher extends OntologicalDataFetcher{
 		
 		CloneSet set = setWrapper.getCloneSet();
 		
-		for(DiffCounterRelationGroupEmulator group: setWrapper.getRelationGroups()){
+		for(Diff group: setWrapper.getDiffs()){
 			String groupId = group.getId();
-			for(DiffInstanceElementRelationEmulator relation: group.getElements()){
+			for(DiffElement relation: group.getElements()){
 				ASTNode node = relation.getNode();
 				if(MinerUtilforJava.isConcernedType(node) /*|| node.getNodeType() == ASTNode.PRIMITIVE_TYPE*/){
 					ProgrammingElement element = transferASTNodesToProgrammingElement(node, set, set.getProject());

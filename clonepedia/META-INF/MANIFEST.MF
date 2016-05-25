@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Clonepedia
-Bundle-SymbolicName: Clonepedia;singleton:=true
+Bundle-Name: clonepedia
+Bundle-SymbolicName: clonepedia;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: clonepedia.Activator
 Require-Bundle: org.eclipse.ui,

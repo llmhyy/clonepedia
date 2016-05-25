@@ -116,7 +116,7 @@ public class CloneDetectionAction implements IWorkbenchWindowActionDelegate {
 				
 				CloneSets sets = convertToCloneSets(simGroups);
 				
-				filterCloneSetByCriteria(proj, javaProject, sets);
+				//filterCloneSetByCriteria(proj, javaProject, sets);
 				
 				CloneDetectionFileWriter writer = new CloneDetectionFileWriter();
 				writer.writeToXML(sets);

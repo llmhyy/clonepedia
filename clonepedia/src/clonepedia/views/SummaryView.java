@@ -39,7 +39,7 @@ import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.ui.part.ViewPart;
 
-import clonepedia.java.model.DiffCounterRelationGroupEmulator;
+import clonepedia.java.model.Diff;
 import clonepedia.model.ontology.CloneInstance;
 import clonepedia.model.ontology.CloneSet;
 import clonepedia.model.syntactic.Path;
@@ -296,8 +296,8 @@ public abstract class SummaryView extends ViewPart {
 				TreeItem item = propertyTree.getItem(new Point(e.x, e.y));
 				if(item != null){					
 					Object domainObj = item.getData();
-					if(domainObj instanceof DiffCounterRelationGroupEmulator){
-						DiffCounterRelationGroupEmulator group = (DiffCounterRelationGroupEmulator)domainObj;
+					if(domainObj instanceof Diff){
+						Diff group = (Diff)domainObj;
 						CloneDiffView diffViewPart = (CloneDiffView)getSite().getWorkbenchWindow().getActivePage().findView(CloneDiffPerspective.CLONE_DIFF_VIEW);
 						if(diffViewPart != null){							
 							//CloneSet set = group.getRelations().get(0).getInstanceWrapper().getCloneInstance().getCloneSet();

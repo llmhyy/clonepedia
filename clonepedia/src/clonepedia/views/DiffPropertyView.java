@@ -41,8 +41,8 @@ import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.ui.part.ViewPart;
 
 import clonepedia.java.model.CloneInstanceWrapper;
-import clonepedia.java.model.DiffCounterRelationGroupEmulator;
-import clonepedia.java.model.DiffInstanceElementRelationEmulator;
+import clonepedia.java.model.Diff;
+import clonepedia.java.model.DiffElement;
 import clonepedia.java.util.MinerUtilforJava;
 import clonepedia.model.ontology.CloneInstance;
 import clonepedia.model.ontology.ProgrammingElement;
@@ -59,11 +59,11 @@ public class DiffPropertyView extends ViewPart {
 	private ScrolledForm form;
 	private Composite parentComposite;
 	
-	private DiffCounterRelationGroupEmulator diff;
+	private Diff diff;
 	private clonepedia.java.model.CloneSetWrapper syntacticSetWrapper;
 	
 	private TreeViewer viewer;
-	private HashMap<TypeNode, ArrayList<DiffInstanceElementRelationEmulator>> relationMap;
+	private HashMap<TypeNode, ArrayList<DiffElement>> relationMap;
 	
 	public DiffPropertyView() {
 		// TODO Auto-generated constructor stub
@@ -87,7 +87,7 @@ public class DiffPropertyView extends ViewPart {
 		
 	}
 	
-	public void showDiffInformation(DiffCounterRelationGroupEmulator diff){
+	public void showDiffInformation(Diff diff){
 		this.diff = diff;
 		for(Control control: this.form.getBody().getChildren()){
 			if(control instanceof Section){
@@ -102,7 +102,7 @@ public class DiffPropertyView extends ViewPart {
 		this.form.getBody().update();
 	}
 	
-	public void showDiffInformation(DiffCounterRelationGroupEmulator diff, clonepedia.java.model.CloneSetWrapper syntacticSetWrapper){
+	public void showDiffInformation(Diff diff, clonepedia.java.model.CloneSetWrapper syntacticSetWrapper){
 		this.syntacticSetWrapper = syntacticSetWrapper;
 		showDiffInformation(diff);
 	}
@@ -127,8 +127,8 @@ public class DiffPropertyView extends ViewPart {
 					return node.binding.getName();
 				}
 			}
-			else if(element instanceof DiffInstanceElementRelationEmulator){
-				DiffInstanceElementRelationEmulator relation = (DiffInstanceElementRelationEmulator)element;
+			else if(element instanceof DiffElement){
+				DiffElement relation = (DiffElement)element;
 				return MinerUtilforJava.getConcernedASTNodeName(relation.getNode());
 			}
 			return null;
@@ -153,8 +153,8 @@ public class DiffPropertyView extends ViewPart {
 					return JavaPluginImages.get(JavaPluginImages.IMG_OBJS_BREAKPOINT_INSTALLED);
 				}
 			}
-			else if(element instanceof DiffInstanceElementRelationEmulator){
-				ASTNode node = ((DiffInstanceElementRelationEmulator)element).getNode();
+			else if(element instanceof DiffElement){
+				ASTNode node = ((DiffElement)element).getNode();
 				
 				if(node instanceof SimpleName){
 					SimpleName name = (SimpleName)node;
@@ -229,7 +229,7 @@ public class DiffPropertyView extends ViewPart {
 			if(parentElement instanceof TypeNode){
 				TypeNode node = (TypeNode)parentElement;
 				
-				ArrayList<DiffInstanceElementRelationEmulator> relations = relationMap.get(node); 
+				ArrayList<DiffElement> relations = relationMap.get(node); 
 				if(node.children.size() > 0 || relations != null){
 					
 					if(relations != null){
@@ -246,7 +246,7 @@ public class DiffPropertyView extends ViewPart {
 					}
 					
 					if(relations != null){
-						for(DiffInstanceElementRelationEmulator relation: relations){
+						for(DiffElement relation: relations){
 							list[i++] = relation;
 						}
 					}
@@ -266,7 +266,7 @@ public class DiffPropertyView extends ViewPart {
 
 		@Override
 		public boolean hasChildren(Object element) {
-			if(element instanceof DiffInstanceElementRelationEmulator){
+			if(element instanceof DiffElement){
 				return false;
 			}
 			return true;
@@ -349,8 +349,8 @@ public class DiffPropertyView extends ViewPart {
 		TreeViewerColumn instanceCol = createTreeColumn(viewer, titles[1], bounds[1], 1);
 		instanceCol.setLabelProvider(new ColumnLabelProvider(){
 			public String getText(Object element) {
-				if(element instanceof DiffInstanceElementRelationEmulator){
-					DiffInstanceElementRelationEmulator relation = (DiffInstanceElementRelationEmulator)element;
+				if(element instanceof DiffElement){
+					DiffElement relation = (DiffElement)element;
 					return relation.getInstanceWrapper().getCloneInstance().toString();
 				}
 				return null;
@@ -369,8 +369,8 @@ public class DiffPropertyView extends ViewPart {
 		return viewerCol;
 	}
 
-	private void createTreeItemsForSingleDiff(Tree tree, DiffCounterRelationGroupEmulator diff){
-		for(DiffInstanceElementRelationEmulator tuple: diff.getElements()){
+	private void createTreeItemsForSingleDiff(Tree tree, Diff diff){
+		for(DiffElement tuple: diff.getElements()){
 			TreeItem item = new TreeItem(tree, SWT.NONE);
 			
 			CloneInstance instance = tuple.getInstanceWrapper().getCloneInstance();
@@ -546,24 +546,31 @@ public class DiffPropertyView extends ViewPart {
 	private HashMap<String, ArrayList<CloneInstance>> reorgnizeCRD(){
 		HashMap<String, ArrayList<CloneInstance>> bucketSet = new HashMap<String, ArrayList<CloneInstance>>();
 		if(this.diff != null){
-			for(DiffInstanceElementRelationEmulator tuple: diff.getElements()){
+			for(DiffElement tuple: diff.getElements()){
+				
 				try {
 					CloneInstanceWrapper instanceWrapper = tuple.getInstanceWrapper();
 					CloneInstance instance = instanceWrapper.getCloneInstance();
 					
 					ASTNode node = tuple.getNode();
-					ProgrammingElement element = MinerUtilforJava.transferASTNodesToProgrammingElementType(node);
-					String elementString = element.toString();
+					if(node != null){
+						ProgrammingElement element = MinerUtilforJava.transferASTNodesToProgrammingElementType(node);
+						if(element != null){
+							String elementString = element.toString();
+							
+							ArrayList<CloneInstance> instanceList = bucketSet.get(elementString);
+							if(instanceList == null){
+								instanceList = new ArrayList<CloneInstance>();
+								instanceList.add(instance);
+								bucketSet.put(elementString, instanceList);
+							}
+							else{
+								instanceList.add(instance);
+							}
+						}
+						
+					}
 					
-					ArrayList<CloneInstance> instanceList = bucketSet.get(elementString);
-					if(instanceList == null){
-						instanceList = new ArrayList<CloneInstance>();
-						instanceList.add(instance);
-						bucketSet.put(elementString, instanceList);
-					}
-					else{
-						instanceList.add(instance);
-					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -603,25 +610,32 @@ public class DiffPropertyView extends ViewPart {
 		
 		HashMap<String, TypeNode> nodes = new HashMap<String, TypeNode>();
 		
-		this.relationMap = new HashMap<TypeNode, ArrayList<DiffInstanceElementRelationEmulator>>();
+		this.relationMap = new HashMap<TypeNode, ArrayList<DiffElement>>();
 		
 		HashSet<TypeNode> tmpSet = new HashSet<TypeNode>();
-		for(DiffInstanceElementRelationEmulator relation: diff.getElements()){
+		for(DiffElement relation: diff.getElements()){
 			ASTNode node = relation.getNode();
-			ITypeBinding binding = MinerUtilforJava.getBinding(node);
-			
-			TypeNode typeNode = new TypeNode(binding);
-			
-			tmpSet.add(typeNode);
-			
-			ArrayList<DiffInstanceElementRelationEmulator> relationList = relationMap.get(typeNode);
-			if(relationList == null){
-				relationList = new ArrayList<DiffInstanceElementRelationEmulator>();
-				relationMap.put(typeNode, relationList);
+			if(node != null){
+				ITypeBinding binding = MinerUtilforJava.getBinding(node);
+				
+				if(binding != null){
+					TypeNode typeNode = new TypeNode(binding);
+					
+					tmpSet.add(typeNode);
+					
+					ArrayList<DiffElement> relationList = relationMap.get(typeNode);
+					if(relationList == null){
+						relationList = new ArrayList<DiffElement>();
+						relationMap.put(typeNode, relationList);
+					}
+					relationList.add(relation);
+					
+					nodes.put(binding.getQualifiedName(), typeNode);
+					
+				}
 			}
-			relationList.add(relation);
 			
-			nodes.put(binding.getQualifiedName(), typeNode);
+			
 		}
 		
 		while(tmpSet.size() != 0){

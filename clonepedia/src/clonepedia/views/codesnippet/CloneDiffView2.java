@@ -2,7 +2,6 @@ package clonepedia.views.codesnippet;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspace;
@@ -48,18 +47,19 @@ import clonepedia.java.ASTComparator;
 import clonepedia.java.model.CloneInstanceWrapper;
 import clonepedia.java.model.Diff;
 import clonepedia.java.model.DiffElement;
+import clonepedia.java.util.MinerUtilforJava;
 import clonepedia.model.ontology.CloneInstance;
 import clonepedia.perspective.CloneDiffPerspective;
 import clonepedia.util.ImageUI;
 import clonepedia.views.DiffPropertyView;
 import clonepedia.views.util.ViewUtil;
-import mcidiff.model.SeqMultiset;
-import mcidiff.model.TokenSeq;
+import mcidiff.model.CloneSet;
+import mcidiff.model.Multiset;
 
-public class CloneDiffView extends ViewPart {
+public class CloneDiffView2 extends ViewPart {
 
 	private clonepedia.java.model.CloneSetWrapper set;
-	private Diff diff;
+	private Diff relationGroup;
 //	private CloneSet set;
 //	private Multiset diffList;
 	
@@ -75,7 +75,8 @@ public class CloneDiffView extends ViewPart {
 		this.diffIndex = diffIndex;
 	}
 
-	public CloneDiffView() {
+	public CloneDiffView2() {
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -104,14 +105,14 @@ public class CloneDiffView extends ViewPart {
 					if(diffIndex > list.size()-1){
 						diffIndex = 0;
 					}
-					diff = list.get(diffIndex);
+					relationGroup = list.get(diffIndex);
 				}
 				
-				showCodeSnippet(diff);
+				showCodeSnippet(relationGroup);
 				
 				DiffPropertyView propertyViewPart = (DiffPropertyView)getSite().getWorkbenchWindow().getActivePage().findView(CloneDiffPerspective.DIFF_PROPERTY_VIEW);
 				if(propertyViewPart != null){
-					propertyViewPart.showDiffInformation(diff);
+					propertyViewPart.showDiffInformation(relationGroup);
 					propertyViewPart.setFocus();
 				}
 			}
@@ -129,14 +130,14 @@ public class CloneDiffView extends ViewPart {
 				}
 				
 				if(diffIndex >= 0){					
-					diff = list.get(diffIndex);
+					relationGroup = list.get(diffIndex);
 				}
 				
-				showCodeSnippet(diff);
+				showCodeSnippet(relationGroup);
 				
 				DiffPropertyView propertyViewPart = (DiffPropertyView)getSite().getWorkbenchWindow().getActivePage().findView(CloneDiffPerspective.DIFF_PROPERTY_VIEW);
 				if(propertyViewPart != null){
-					propertyViewPart.showDiffInformation(diff);
+					propertyViewPart.showDiffInformation(relationGroup);
 				}
 			}
 		};
@@ -158,7 +159,7 @@ public class CloneDiffView extends ViewPart {
 		//CloneSetWrapper setWrapper = new clonepedia.java.model.CloneSetWrapper(set, pool);
 		//this.set = new CloneInformationExtractor().extractCounterRelationalDifferencesWithinSyntacticBoundary(setWrapper);
 		this.set = syntacticCloneSetWrapper;
-		this.diff = relationGroup;
+		this.relationGroup = relationGroup;
 		/**
 		 * If there is no these two statements, the following sash form will not present in UI.
 		 */
@@ -237,7 +238,6 @@ public class CloneDiffView extends ViewPart {
 		codeComposite.layout();
 	}
 	
-	@SuppressWarnings("deprecation")
 	private void generateCodeText(CloneInstanceWrapper instanceWrapper, Composite parent, GridData scrollCodeLayoutData){
 		final StyledText text = new StyledText(parent, SWT.V_SCROLL | SWT.H_SCROLL);
 		
@@ -306,23 +306,23 @@ public class CloneDiffView extends ViewPart {
 			
 			ArrayList<StyleRange> rangeList = new ArrayList<>();
 			
-			//ArrayList<StyleRange> keywordList = generateKeywordsStyle(text);
-			//rangeList.addAll(keywordList);
+			ArrayList<StyleRange> keywordList = generateKeywordsStyle(text);
+			rangeList.addAll(keywordList);
 			
 			if(doc != null){
 				ArrayList<StyleRange> list = generateStyleRangeFromASTNode(text, doc, methodStartPosition, 
-						CloneDiffView.DOC_STYLE, 0, false);
+						CloneDiffView2.DOC_STYLE, 0, false);
 				rangeList.addAll(list);
 			}
 			/**
 			 * for counter relationally difference
 			 */
-			for(Diff diff: this.set.getDiffs()){
-				for(DiffElement diffElement: diff.getElements()){
-					CloneInstanceWrapper referInstance = diffElement.getInstanceWrapper();
+			for(Diff relationGroup: this.set.getDiffs()){
+				for(DiffElement relation: relationGroup.getElements()){
+					CloneInstanceWrapper referInstance = relation.getInstanceWrapper();
 					if(referInstance.equals(instanceWrapper)){
-						ArrayList<StyleRange> list = generateStyleRangeFromASTNode(text, diffElement.getSeq(), 
-								methodStartPosition, getDiffStyle(diff), diff.getElements().size(), false);
+						ArrayList<StyleRange> list = generateStyleRangeFromASTNode(text, relation.getNode(), 
+								methodStartPosition, getDiffStyle(relationGroup), relationGroup.getElements().size(), false);
 						rangeList.addAll(list);
 					}
 				}
@@ -331,24 +331,26 @@ public class CloneDiffView extends ViewPart {
 			/**
 			 * for uncounter relationally difference
 			 */
-//			for(ASTNode node: instanceWrapper.getUncounterRelationalDifferenceNodes()){
-//				ArrayList<StyleRange> list = generateStyleRangeFromASTNode(text, node, methodStartPosition, 
-//						CloneDiffView.GAP_DIFF_STYLE, 1, false);
-//				rangeList.addAll(list);
-//			}
+			for(ASTNode node: instanceWrapper.getUncounterRelationalDifferenceNodes()){
+				ArrayList<StyleRange> list = generateStyleRangeFromASTNode(text, node, methodStartPosition, 
+						CloneDiffView2.GAP_DIFF_STYLE, 1, false);
+				rangeList.addAll(list);
+			}
 			
 			/**
 			 * for selected counter relational difference
 			 */
-			if(diff != null){
-				for(DiffElement diffElement: diff.getElements()){
-					if(diffElement.getInstanceWrapper().equals(instanceWrapper)){
-						ArrayList<StyleRange> list = generateStyleRangeFromASTNode(text, diffElement.getSeq(),
-								methodStartPosition, getDiffStyle(diff), diff.getElements().size(), true);
+			if(relationGroup != null){
+				for(DiffElement relation: relationGroup.getElements()){
+					if(relation.getInstanceWrapper().equals(instanceWrapper)){
+						ASTNode node = relation.getNode();
+						
+						ArrayList<StyleRange> list = generateStyleRangeFromASTNode(text, node,
+								methodStartPosition, getDiffStyle(relationGroup), relationGroup.getElements().size(), true);
 						rangeList.addAll(list);
 						
-						text.setTopIndex(cu.getLineNumber(diffElement.getSeq().getStartPosition()) - 3);
-						text.setHorizontalIndex(cu.getColumnNumber(diffElement.getSeq().getStartPosition()) - 20);
+						text.setTopIndex(cu.getLineNumber(node.getStartPosition()) - 3);
+						text.setHorizontalIndex(cu.getColumnNumber(node.getStartPosition()) - 20);
 					}
 				}
 			}
@@ -412,21 +414,21 @@ public class CloneDiffView extends ViewPart {
 		}
 	}
 	
-	private int getDiffStyle(Diff diff){
+	private int getDiffStyle(Diff relationGroup){
 		
-		SeqMultiset multiset = new SeqMultiset();
-		for(DiffElement ele: diff.getElements()){
-			multiset.addTokenSeq(ele.getSeq());
+		ASTNode[] nodeList = new ASTNode[relationGroup.getElements().size()];
+		int count = 0;
+		for(DiffElement relation: relationGroup.getElements()){
+			ASTNode node = relation.getNode();
+			nodeList[count++] = node;
 		}
 		
-		
-		if(multiset.isGapped()){
-			return COUNTER_GAP_DIFF_STYPE;
+		if(relationGroup.getElements().size() == set.size()){
+			return isAllTheElementDifferent(nodeList)? COUNTER_EVEN_DIFF_STYLE : COUNTER_PARTIAL_DIFF_STYLE;
 		}
 		else{
-			return multiset.containsDuplicate() ? COUNTER_PARTIAL_DIFF_STYLE : COUNTER_EVEN_DIFF_STYLE ;
+			return isAllTheElementDifferent(nodeList)? COUNTER_GAP_DIFF_STYPE : COUNTER_GAP_STYLE;
 		}
-		
 	}
 	
 	private boolean isAllTheElementDifferent(ASTNode[] nodeList){
@@ -493,64 +495,9 @@ public class CloneDiffView extends ViewPart {
 			int methodStartPosition, int codeTextStyle, int relationGroupSize, boolean highlight){
 		ArrayList<StyleRange> rangeList = new ArrayList<>();
 		
-		int style = SWT.NORMAL;
-		
-		Color color = determineColor(codeTextStyle);
-		
-		if(highlight){
-			style = SWT.BOLD;
-		}
-		
-		int startNodePosition = node.getStartPosition();
-		int length = node.getLength();
-		
-		StyleRange styleRange = new StyleRange();
-		styleRange.start = startNodePosition;
-		styleRange.length = length;
-		styleRange.foreground = color;
-		styleRange.fontStyle = style;	
-		
-		rangeList.add(styleRange);
-		text.setStyleRange(styleRange);
-		
-		return rangeList;
-	}
-	
-	private ArrayList<StyleRange> generateStyleRangeFromASTNode(StyledText text, TokenSeq seq, 
-			int methodStartPosition, int codeTextStyle, int relationGroupSize, boolean highlight){
-		ArrayList<StyleRange> rangeList = new ArrayList<>();
-		
-		int style = SWT.NORMAL;
-		
-		Color color = determineColor(codeTextStyle);
-		
-		if(highlight){
-			style = SWT.BOLD;
-		}
-		
-		int startNodePosition = seq.getStartPosition();
-		int length = seq.getPositionLength();
-		if(seq.isEpisolonTokenSeq()){
-			startNodePosition = seq.getTokens().get(0).getPreviousToken().getStartPosition();
-			length = 0;
-		}
-		
-		
-		
-		StyleRange styleRange = new StyleRange();
-		styleRange.start = startNodePosition;
-		styleRange.length = length;
-		styleRange.foreground = color;
-		styleRange.fontStyle = style;	
-		
-		rangeList.add(styleRange);
-		text.setStyleRange(styleRange);
-		
-		return rangeList;
-	}
-
-	private Color determineColor(int codeTextStyle) {
 		Color color = Display.getCurrent().getSystemColor(SWT.COLOR_GRAY);
+		int style = SWT.NORMAL;
+		
 		switch(codeTextStyle){
 		case DOC_STYLE:
 			color = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GREEN);
@@ -572,7 +519,76 @@ public class CloneDiffView extends ViewPart {
 			color = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_MAGENTA);
 			break;
 		}
-		return color;
+		
+		if(highlight){
+			style = SWT.BOLD;
+		}
+		
+		
+		int startNodePosition = node.getStartPosition();
+		int length = node.getLength();
+		
+		if(MinerUtilforJava.isComplexStatement(node)){
+			StyleRange styleRange1 = new StyleRange();
+			StyleRange styleRange2 = new StyleRange();
+			////styleRange1.start = startNodePosition - methodStartPosition;
+			////styleRange2.start = startNodePosition - methodStartPosition + length -1;
+			styleRange1.start = startNodePosition;
+			styleRange2.start = startNodePosition + length -1;
+			
+			switch(node.getNodeType()){
+			case ASTNode.BLOCK: 
+				styleRange1.length = 1;
+				break;
+			case ASTNode.IF_STATEMENT: 
+				styleRange1.length = 2;
+				break;
+			case ASTNode.FOR_STATEMENT:
+				styleRange1.length = 3;
+				break;
+			case ASTNode.ENHANCED_FOR_STATEMENT:
+				styleRange1.length = 3;
+				break;
+			case ASTNode.WHILE_STATEMENT:
+				styleRange1.length = 5;
+				break;
+			case ASTNode.DO_STATEMENT:
+				styleRange1.length = 2;
+				break;
+			case ASTNode.TRY_STATEMENT:
+				styleRange1.length = 3;
+				break;
+			case ASTNode.SYNCHRONIZED_STATEMENT:
+				styleRange1.length = 12;
+				break;
+			case ASTNode.SWITCH_STATEMENT:
+				styleRange1.length = 5;
+				break;
+			default:
+				styleRange1.length = 0;	
+			}
+			
+			styleRange2.length = 1;
+			styleRange1.foreground = styleRange2.foreground = color;
+			styleRange1.fontStyle = styleRange2.fontStyle = style;
+			
+			rangeList.add(styleRange1);
+			rangeList.add(styleRange2);
+			text.setStyleRange(styleRange1);
+			text.setStyleRange(styleRange2);
+		}
+		else{
+			StyleRange styleRange = new StyleRange();
+			styleRange.start = startNodePosition;
+			styleRange.length = length;
+			styleRange.foreground = color;
+			styleRange.fontStyle = style;	
+			
+			rangeList.add(styleRange);
+			text.setStyleRange(styleRange);
+		}
+		
+		return rangeList;
 	}
 	
 	@Override
