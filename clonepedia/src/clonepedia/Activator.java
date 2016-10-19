@@ -108,11 +108,9 @@ public class Activator extends AbstractUIPlugin {
 	 * @param path the path
 	 * @return the image descriptor
 	 */
-	@SuppressWarnings("deprecation")
 	public static ImageDescriptor getImageDescriptor(String path) {
 		try {
-			URL installURL = getDefault().getDescriptor().getInstallURL();
-			//URL installURL = getPlugin().getBundle().getEntry("/");
+			URL installURL = plugin.getBundle().getEntry("/");
 			URL url = new URL(installURL, path);
 			return ImageDescriptor.createFromURL(url);
 		} catch (MalformedURLException e) {
