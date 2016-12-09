@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 
+import mcidiff.model.Token;
 import mcidiff.model.TokenSeq;
 
 /**
