@@ -2,7 +2,6 @@ package clonepedia.views.codesnippet;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspace;
@@ -54,6 +53,7 @@ import clonepedia.util.ImageUI;
 import clonepedia.views.DiffPropertyView;
 import clonepedia.views.util.ViewUtil;
 import mcidiff.model.SeqMultiset;
+import mcidiff.model.Token;
 import mcidiff.model.TokenSeq;
 
 public class CloneDiffView extends ViewPart {
@@ -531,11 +531,12 @@ public class CloneDiffView extends ViewPart {
 		int startNodePosition = seq.getStartPosition();
 		int length = seq.getPositionLength();
 		if(seq.isEpisolonTokenSeq()){
-			startNodePosition = seq.getTokens().get(0).getPreviousToken().getStartPosition();
+			Token previousToken = seq.getTokens().get(0).getPreviousToken();
+			if(previousToken != null){
+				startNodePosition = previousToken.getStartPosition();
+			}
 			length = 0;
 		}
-		
-		
 		
 		StyleRange styleRange = new StyleRange();
 		styleRange.start = startNodePosition;
