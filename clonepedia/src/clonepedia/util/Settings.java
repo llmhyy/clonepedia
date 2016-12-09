@@ -6,7 +6,6 @@ import clonepedia.preference.ClonepediaPreferencePage;
 public class Settings {
 	
 	static{
-		//Preferences preferences = ConfigurationScope.INSTANCE.getNode("Clonepedia");
 		if(Activator.getDefault() != null){
 			try{
 				projectName = Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.TARGET_PORJECT);
@@ -17,11 +16,6 @@ public class Settings {
 				diffComparisonMode = Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.DIFF_LEVEL);
 				skipPattern = Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.SKIP_PATTERN);
 				
-				/*templateMethodGroupCallingStrength = Integer.valueOf(Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.TEMPLATE_METHOD_STRENGTH));
-				abstractMethodGroupCallingStrength = Integer.valueOf(Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.ABSTRACT_METHOD_STRENGTH));
-				thresholdDistanceForTMGFilteringAndSplitting = Double.valueOf(Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.THRESHOLD_FOR_TMG_FORMING));
-				thresholdDistanceForTMGLocationClustering = Double.valueOf(Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.THRESHOLD_FOR_TMG_LOCATION));
-				thresholdDistanceForDeclaringClassClustering = Double.valueOf(Activator.getDefault().getPreferenceStore().getString(ClonepediaPreferencePage.THRESHOLD_FOR_TCG_FORMING));*/				
 			}
 			catch(Exception e){
 				e.printStackTrace();
