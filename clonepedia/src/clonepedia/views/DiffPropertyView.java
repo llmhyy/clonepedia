@@ -115,7 +115,6 @@ public class DiffPropertyView extends ViewPart {
 		}
 		
 		createEmptySection(parent);
-		
 	}
 	
 	public class StructureLabelProvider extends ColumnLabelProvider{
@@ -402,11 +401,9 @@ public class DiffPropertyView extends ViewPart {
 	
 	private String generateOverallDiffDescription(){
 		String word1 = "<form>There are "; 
-		String word2 = " differential multisets in this clone set.";
-		String word3 = "The differences are ";; 
-		String word4 = "generally regular</form>";
+		String word2 = " differential multisets in this clone set.</form>";
 		
-		return word1 + this.syntacticSetWrapper.getPatternNodeSets().size() + word2 + word3 + word4;
+		return word1 + this.syntacticSetWrapper.getDiffs().size() + word2;
 	}
 
 	private void createDiffTypeSection(Composite parent) {
@@ -548,24 +545,19 @@ public class DiffPropertyView extends ViewPart {
 					CloneInstanceWrapper instanceWrapper = tuple.getInstanceWrapper();
 					CloneInstance instance = instanceWrapper.getCloneInstance();
 					
-					ASTNode node = tuple.getNode();
-					if(node != null){
-						ProgrammingElement element = MinerUtilforJava.transferASTNodesToProgrammingElementType(node);
-						if(element != null){
-							String elementString = element.toString();
-							
-							ArrayList<CloneInstance> instanceList = bucketSet.get(elementString);
-							if(instanceList == null){
-								instanceList = new ArrayList<CloneInstance>();
-								instanceList.add(instance);
-								bucketSet.put(elementString, instanceList);
-							}
-							else{
-								instanceList.add(instance);
-							}
-						}
-						
+					
+					String elementString = tuple.getSeq().toString();
+					
+					ArrayList<CloneInstance> instanceList = bucketSet.get(elementString);
+					if(instanceList == null){
+						instanceList = new ArrayList<CloneInstance>();
+						instanceList.add(instance);
+						bucketSet.put(elementString, instanceList);
 					}
+					else{
+						instanceList.add(instance);
+					}
+					
 					
 				} catch (Exception e) {
 					e.printStackTrace();
