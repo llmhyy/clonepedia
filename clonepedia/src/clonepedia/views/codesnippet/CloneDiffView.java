@@ -151,14 +151,24 @@ public class CloneDiffView extends ViewPart {
 		if(this.set != null){
 			showCodeSnippet(this.set, relationGroup);
 		}
+		
+		for(DiffElement d: relationGroup.getElements()){
+			System.out.println(d.getSeq());
+		}
 	}
 	
-	public void showCodeSnippet(clonepedia.java.model.CloneSetWrapper syntacticCloneSetWrapper, Diff relationGroup){
+	/**
+	 * {@code diff} is the diff to be highlighted in syntacticCloneSetWrapper
+	 * 
+	 * @param syntacticCloneSetWrapper
+	 * @param diff
+	 */
+	public void showCodeSnippet(clonepedia.java.model.CloneSetWrapper syntacticCloneSetWrapper, Diff diff){
 		//CompilationUnitPool pool = new CompilationUnitPool();
 		//CloneSetWrapper setWrapper = new clonepedia.java.model.CloneSetWrapper(set, pool);
 		//this.set = new CloneInformationExtractor().extractCounterRelationalDifferencesWithinSyntacticBoundary(setWrapper);
 		this.set = syntacticCloneSetWrapper;
-		this.diff = relationGroup;
+		this.diff = diff;
 		/**
 		 * If there is no these two statements, the following sash form will not present in UI.
 		 */

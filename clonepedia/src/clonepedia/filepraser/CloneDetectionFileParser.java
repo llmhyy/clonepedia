@@ -18,6 +18,11 @@ public class CloneDetectionFileParser extends FileParser {
 	
 	private CloneSets cloneSets = new CloneSets();
 
+	/**
+	 * if the debugState is specified as true, then we will only show the clone set with the given setIdInDebug. 
+	 * @param debugState
+	 * @param setIdInDebug
+	 */
 	public CloneDetectionFileParser(boolean debugState, String setIdInDebug){
 		Document doc = getDocument(Settings.inputCloneFile);
 		
