@@ -331,9 +331,12 @@ public class CloneDiffView extends ViewPart {
 				for(DiffElement diffElement: diff.getElements()){
 					CloneInstanceWrapper referInstance = diffElement.getInstanceWrapper();
 					if(referInstance.equals(instanceWrapper)){
-						ArrayList<StyleRange> list = generateStyleRangeFromASTNode(text, diffElement.getSeq(), 
-								methodStartPosition, getDiffStyle(diff), diff.getElements().size(), false);
-						rangeList.addAll(list);
+						if(!diffElement.getSeq().isEpisolonTokenSeq()){
+							ArrayList<StyleRange> list = generateStyleRangeFromASTNode(text, diffElement.getSeq(), 
+									methodStartPosition, getDiffStyle(diff), diff.getElements().size(), false);
+							rangeList.addAll(list);							
+						}
+						
 					}
 				}
 			}
@@ -352,13 +355,15 @@ public class CloneDiffView extends ViewPart {
 			 */
 			if(diff != null){
 				for(DiffElement diffElement: diff.getElements()){
-					if(diffElement.getInstanceWrapper().equals(instanceWrapper)){
-						ArrayList<StyleRange> list = generateStyleRangeFromASTNode(text, diffElement.getSeq(),
-								methodStartPosition, getDiffStyle(diff), diff.getElements().size(), true);
-						rangeList.addAll(list);
-						
-						text.setTopIndex(cu.getLineNumber(diffElement.getSeq().getStartPosition()) - 3);
-						text.setHorizontalIndex(cu.getColumnNumber(diffElement.getSeq().getStartPosition()) - 20);
+					if(!diffElement.getSeq().isEpisolonTokenSeq()){
+						if(diffElement.getInstanceWrapper().equals(instanceWrapper)){
+							ArrayList<StyleRange> list = generateStyleRangeFromASTNode(text, diffElement.getSeq(),
+									methodStartPosition, getDiffStyle(diff), diff.getElements().size(), true);
+							rangeList.addAll(list);
+							
+							text.setTopIndex(cu.getLineNumber(diffElement.getSeq().getStartPosition()) - 3);
+							text.setHorizontalIndex(cu.getColumnNumber(diffElement.getSeq().getStartPosition()) - 20);
+						}
 					}
 				}
 			}
