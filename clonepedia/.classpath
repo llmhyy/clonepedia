@@ -5,7 +5,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/log4j-1.2.8.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jxl.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/org.eclipse.ui.ide_3.7.0.v20110928-1505.jar" sourcepath="lib/org.eclipse.ui.ide.source_3.7.0.v20110928-1505.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
@@ -27,5 +26,10 @@
 	<classpathentry kind="lib" path="lib/org.eclipse.jface.text_3.6.0.v20100526-0800.jar" sourcepath="lib/org.eclipse.jface.text.source_3.6.0.v20100526-0800.jar"/>
 	<classpathentry kind="lib" path="lib/required/carrot2-core-3.6.0.jar"/>
 	<classpathentry kind="lib" path="lib/optional/attributes-processor-1.0.1.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+		<accessrules>
+			<accessrule kind="accessible" pattern="org/eclipse/jdt/internal/ui/viewsupport/BasicElementLabels"/>
+		</accessrules>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
