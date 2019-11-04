@@ -143,7 +143,8 @@ public class ImportsManager {
 	public void create(boolean needsSave, IProgressMonitor monitor)
 			throws CoreException {
 		TextEdit edit = fImportsRewrite.rewriteImports(monitor);
-		JavaModelUtil.applyEdit(fImportsRewrite.getCompilationUnit(), edit, needsSave, null);
+//		JavaModelUtil.applyEdit(fImportsRewrite.getCompilationUnit(), edit, needsSave, null);
+		fImportsRewrite.getCompilationUnit().applyTextEdit(edit, monitor);
 	}
 
 	public void removeImport(String qualifiedName) {
