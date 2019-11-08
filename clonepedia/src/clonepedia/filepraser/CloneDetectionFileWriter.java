@@ -77,7 +77,7 @@ public class CloneDetectionFileWriter{
 			
 			File cloneFile = new File(Settings.inputCloneFile);
 			
-			String dirPath = Settings.inputCloneFile.substring(0, Settings.inputCloneFile.lastIndexOf("\\"));
+			String dirPath = Settings.inputCloneFile.substring(0, Settings.inputCloneFile.lastIndexOf(File.separator));
 			File dir = new File(dirPath);
 			if(!dir.exists()){
 				dir.mkdirs();
